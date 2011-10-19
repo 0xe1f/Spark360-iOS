@@ -1,0 +1,12 @@
+{
+	GameLastPlayed = "Last played %@";
+	GameAchievementStats = "%@/%@";
+	GameScoreStats = "%@/%@";
+    Accounts = "Accounts";
+    LoginInfo = "Login Settings";
+    AddAccount = "Add Account";
+    Username = "Username";
+    Password = "Password";
+    XboxLiveUsername = "Xbox Live Username";
+    XboxLivePassword = "Xbox Live Password";
+}

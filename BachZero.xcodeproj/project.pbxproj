@@ -1,0 +1,457 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FE20CD3713F7B86B0060D902 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE20CD3513F7B86B0060D902 /* AccountListController.m */; };
+		FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE20CD3613F7B86B0060D902 /* AccountList.xib */; };
+		FE3FE14D13F72F7E009467EF /* g_small.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3FE14C13F72F7E009467EF /* g_small.png */; };
+		FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3013EDD8A700420372 /* CFImageCache.m */; };
+		FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3413EE125700420372 /* CFImageCacheOperation.m */; };
+		FE76A93A13E636A9006D6AFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93913E636A9006D6AFC /* UIKit.framework */; };
+		FE76A93C13E636A9006D6AFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93B13E636A9006D6AFC /* Foundation.framework */; };
+		FE76A93E13E636A9006D6AFC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */; };
+		FE76A94013E636A9006D6AFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93F13E636A9006D6AFC /* CoreData.framework */; };
+		FE76A94813E636A9006D6AFC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94713E636A9006D6AFC /* main.m */; };
+		FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */; };
+		FE76A95213E636A9006D6AFC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE76A95013E636A9006D6AFC /* MainWindow.xib */; };
+		FE76A95513E636A9006D6AFC /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A95413E636A9006D6AFC /* GameListController.m */; };
+		FE76A95813E636A9006D6AFC /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE76A95613E636A9006D6AFC /* GameList.xib */; };
+		FE9E371113F8E94A00A6EE36 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E370F13F8E94A00A6EE36 /* AccountAddController.m */; };
+		FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */; };
+		FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */; };
+		FEAC6F0F13E924EE000D86D1 /* CFAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F0E13E924EE000D86D1 /* CFAccount.m */; };
+		FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */; };
+		FEAC6F1813E92E2C000D86D1 /* XboxLiveAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1713E92E2C000D86D1 /* XboxLiveAccount.m */; };
+		FEAC6F1B13EA7F73000D86D1 /* XboxGameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */; };
+		FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */; };
+		FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14013E6404900095480 /* GTMNSString+HTML.m */; };
+		FEB3E14413E6404900095480 /* CFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14213E6404900095480 /* CFParser.m */; };
+		FED5AD2113EEFA9A00808BFF /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FED5AD1F13EEFA9A00808BFF /* XboxLive.xcdatamodeld */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FE20CD3413F7B86B0060D902 /* AccountListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountListController.h; sourceTree = "<group>"; };
+		FE20CD3513F7B86B0060D902 /* AccountListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountListController.m; sourceTree = "<group>"; };
+		FE20CD3613F7B86B0060D902 /* AccountList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountList.xib; sourceTree = "<group>"; };
+		FE3FE14C13F72F7E009467EF /* g_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = g_small.png; path = Images/g_small.png; sourceTree = "<group>"; };
+		FE610D2F13EDD8A700420372 /* CFImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCache.h; sourceTree = "<group>"; };
+		FE610D3013EDD8A700420372 /* CFImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCache.m; sourceTree = "<group>"; };
+		FE610D3313EE125700420372 /* CFImageCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCacheOperation.h; sourceTree = "<group>"; };
+		FE610D3413EE125700420372 /* CFImageCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCacheOperation.m; sourceTree = "<group>"; };
+		FE610D3613EE15CA00420372 /* CFCaffeine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFCaffeine.h; sourceTree = "<group>"; };
+		FE76A93513E636A9006D6AFC /* BachZero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BachZero.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE76A93913E636A9006D6AFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		FE76A93B13E636A9006D6AFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		FE76A93F13E636A9006D6AFC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		FE76A94313E636A9006D6AFC /* BachZero-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "BachZero-Info.plist"; path = "ListTest/BachZero-Info.plist"; sourceTree = "<group>"; };
+		FE76A94713E636A9006D6AFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ListTest/main.m; sourceTree = "<group>"; };
+		FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "BachZero-Prefix.pch"; path = "ListTest/BachZero-Prefix.pch"; sourceTree = "<group>"; };
+		FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BachAppDelegate.h; path = ListTest/BachAppDelegate.h; sourceTree = "<group>"; };
+		FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BachAppDelegate.m; path = ListTest/BachAppDelegate.m; sourceTree = "<group>"; };
+		FE76A95113E636A9006D6AFC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		FE76A95313E636A9006D6AFC /* GameListController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GameListController.h; path = ListTest/GameListController.h; sourceTree = "<group>"; };
+		FE76A95413E636A9006D6AFC /* GameListController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GameListController.m; path = ListTest/GameListController.m; sourceTree = "<group>"; };
+		FE76A95713E636A9006D6AFC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GameList.xib; sourceTree = "<group>"; };
+		FE9E370E13F8E94A00A6EE36 /* AccountAddController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountAddController.h; sourceTree = "<group>"; };
+		FE9E370F13F8E94A00A6EE36 /* AccountAddController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountAddController.m; sourceTree = "<group>"; };
+		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
+		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewTextFieldCell.h; sourceTree = "<group>"; };
+		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewTextFieldCell.m; sourceTree = "<group>"; };
+		FEAC6F0D13E924EE000D86D1 /* CFAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFAccount.h; sourceTree = "<group>"; };
+		FEAC6F0E13E924EE000D86D1 /* CFAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFAccount.m; sourceTree = "<group>"; };
+		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
+		FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveParser.m; sourceTree = "<group>"; };
+		FEAC6F1613E92E2C000D86D1 /* XboxLiveAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveAccount.h; sourceTree = "<group>"; };
+		FEAC6F1713E92E2C000D86D1 /* XboxLiveAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveAccount.m; sourceTree = "<group>"; };
+		FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = XboxGameCell.xib; path = ListTest/XboxGameCell.xib; sourceTree = "<group>"; };
+		FEAC6F2613EA8E8A000D86D1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FEB3E13E13E6404900095480 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
+		FEB3E13F13E6404900095480 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		FEB3E14013E6404900095480 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		FEB3E14113E6404900095480 /* CFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFParser.h; sourceTree = "<group>"; };
+		FEB3E14213E6404900095480 /* CFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFParser.m; sourceTree = "<group>"; };
+		FED5AD2013EEFA9A00808BFF /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FE76A93213E636A9006D6AFC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE76A93A13E636A9006D6AFC /* UIKit.framework in Frameworks */,
+				FE76A93C13E636A9006D6AFC /* Foundation.framework in Frameworks */,
+				FE76A93E13E636A9006D6AFC /* CoreGraphics.framework in Frameworks */,
+				FE76A94013E636A9006D6AFC /* CoreData.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FE3FE14913F72AD2009467EF /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				FE3FE14C13F72F7E009467EF /* g_small.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		FE5CAE1313F728BC004BC903 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */,
+				FED5AD1F13EEFA9A00808BFF /* XboxLive.xcdatamodeld */,
+				FE76A95013E636A9006D6AFC /* MainWindow.xib */,
+				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
+				FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */,
+				FE5CAE1513F728F4004BC903 /* Cells */,
+				FE3FE14913F72AD2009467EF /* Images */,
+				FE5CAE1413F728E5004BC903 /* UI */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		FE5CAE1413F728E5004BC903 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
+				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
+				FE76A95613E636A9006D6AFC /* GameList.xib */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		FE5CAE1513F728F4004BC903 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		FE5CAE1613F72980004BC903 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
+				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
+				FE610D3713EE938400420372 /* Controllers */,
+				FE9E371413F8EA2300A6EE36 /* UI */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		FE610D3713EE938400420372 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FE9E370E13F8E94A00A6EE36 /* AccountAddController.h */,
+				FE9E370F13F8E94A00A6EE36 /* AccountAddController.m */,
+				FE20CD3413F7B86B0060D902 /* AccountListController.h */,
+				FE20CD3513F7B86B0060D902 /* AccountListController.m */,
+				FE76A95313E636A9006D6AFC /* GameListController.h */,
+				FE76A95413E636A9006D6AFC /* GameListController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		FE76A92A13E636A9006D6AFC = {
+			isa = PBXGroup;
+			children = (
+				FE5CAE1613F72980004BC903 /* Classes */,
+				FE5CAE1313F728BC004BC903 /* Resources */,
+				FEAC6F1113E925A2000D86D1 /* Bach */,
+				FEB3E13B13E6402900095480 /* Caffeine */,
+				FE76A94713E636A9006D6AFC /* main.m */,
+				FE76A93813E636A9006D6AFC /* Frameworks */,
+				FE76A93613E636A9006D6AFC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FE76A93613E636A9006D6AFC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FE76A93513E636A9006D6AFC /* BachZero.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FE76A93813E636A9006D6AFC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FE76A93913E636A9006D6AFC /* UIKit.framework */,
+				FE76A93B13E636A9006D6AFC /* Foundation.framework */,
+				FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */,
+				FE76A93F13E636A9006D6AFC /* CoreData.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FE9E371413F8EA2300A6EE36 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */,
+				FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		FEAC6F1113E925A2000D86D1 /* Bach */ = {
+			isa = PBXGroup;
+			children = (
+				FEAC6F1613E92E2C000D86D1 /* XboxLiveAccount.h */,
+				FEAC6F1713E92E2C000D86D1 /* XboxLiveAccount.m */,
+				FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */,
+				FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */,
+			);
+			name = Bach;
+			sourceTree = "<group>";
+		};
+		FEB3E13B13E6402900095480 /* Caffeine */ = {
+			isa = PBXGroup;
+			children = (
+				FEB3E13D13E6404900095480 /* GTM */,
+				FE610D3613EE15CA00420372 /* CFCaffeine.h */,
+				FEAC6F0D13E924EE000D86D1 /* CFAccount.h */,
+				FEAC6F0E13E924EE000D86D1 /* CFAccount.m */,
+				FE610D2F13EDD8A700420372 /* CFImageCache.h */,
+				FE610D3013EDD8A700420372 /* CFImageCache.m */,
+				FE610D3313EE125700420372 /* CFImageCacheOperation.h */,
+				FE610D3413EE125700420372 /* CFImageCacheOperation.m */,
+				FEB3E14113E6404900095480 /* CFParser.h */,
+				FEB3E14213E6404900095480 /* CFParser.m */,
+			);
+			name = Caffeine;
+			sourceTree = "<group>";
+		};
+		FEB3E13D13E6404900095480 /* GTM */ = {
+			isa = PBXGroup;
+			children = (
+				FEB3E13E13E6404900095480 /* GTMDefines.h */,
+				FEB3E13F13E6404900095480 /* GTMNSString+HTML.h */,
+				FEB3E14013E6404900095480 /* GTMNSString+HTML.m */,
+			);
+			path = GTM;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FE76A93413E636A9006D6AFC /* BachZero */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FE76A95B13E636A9006D6AFC /* Build configuration list for PBXNativeTarget "BachZero" */;
+			buildPhases = (
+				FE76A93113E636A9006D6AFC /* Sources */,
+				FE76A93213E636A9006D6AFC /* Frameworks */,
+				FE76A93313E636A9006D6AFC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BachZero;
+			productName = ListTest;
+			productReference = FE76A93513E636A9006D6AFC /* BachZero.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FE76A92C13E636A9006D6AFC /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = FE76A92F13E636A9006D6AFC /* Build configuration list for PBXProject "BachZero" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FE76A92A13E636A9006D6AFC;
+			productRefGroup = FE76A93613E636A9006D6AFC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FE76A93413E636A9006D6AFC /* BachZero */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FE76A93313E636A9006D6AFC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE76A95213E636A9006D6AFC /* MainWindow.xib in Resources */,
+				FE76A95813E636A9006D6AFC /* GameList.xib in Resources */,
+				FEAC6F1B13EA7F73000D86D1 /* XboxGameCell.xib in Resources */,
+				FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */,
+				FE3FE14D13F72F7E009467EF /* g_small.png in Resources */,
+				FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */,
+				FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FE76A93113E636A9006D6AFC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FE76A94813E636A9006D6AFC /* main.m in Sources */,
+				FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */,
+				FE76A95513E636A9006D6AFC /* GameListController.m in Sources */,
+				FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */,
+				FEB3E14413E6404900095480 /* CFParser.m in Sources */,
+				FEAC6F0F13E924EE000D86D1 /* CFAccount.m in Sources */,
+				FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */,
+				FEAC6F1813E92E2C000D86D1 /* XboxLiveAccount.m in Sources */,
+				FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */,
+				FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */,
+				FED5AD2113EEFA9A00808BFF /* XboxLive.xcdatamodeld in Sources */,
+				FE20CD3713F7B86B0060D902 /* AccountListController.m in Sources */,
+				FE9E371113F8E94A00A6EE36 /* AccountAddController.m in Sources */,
+				FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		FE76A95013E636A9006D6AFC /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FE76A95113E636A9006D6AFC /* en */,
+			);
+			name = MainWindow.xib;
+			path = ListTest;
+			sourceTree = "<group>";
+		};
+		FE76A95613E636A9006D6AFC /* GameList.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FE76A95713E636A9006D6AFC /* en */,
+			);
+			name = GameList.xib;
+			path = ListTest;
+			sourceTree = "<group>";
+		};
+		FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FEAC6F2613EA8E8A000D86D1 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FE76A95913E636A9006D6AFC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		FE76A95A13E636A9006D6AFC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FE76A95C13E636A9006D6AFC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ListTest/BachZero-Prefix.pch";
+				INFOPLIST_FILE = "ListTest/BachZero-Info.plist";
+				PRODUCT_NAME = BachZero;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FE76A95D13E636A9006D6AFC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ListTest/BachZero-Prefix.pch";
+				INFOPLIST_FILE = "ListTest/BachZero-Info.plist";
+				PRODUCT_NAME = BachZero;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FE76A92F13E636A9006D6AFC /* Build configuration list for PBXProject "BachZero" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE76A95913E636A9006D6AFC /* Debug */,
+				FE76A95A13E636A9006D6AFC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FE76A95B13E636A9006D6AFC /* Build configuration list for PBXNativeTarget "BachZero" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE76A95C13E636A9006D6AFC /* Debug */,
+				FE76A95D13E636A9006D6AFC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		FED5AD1F13EEFA9A00808BFF /* XboxLive.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FED5AD2013EEFA9A00808BFF /* XboxLive.xcdatamodel */,
+			);
+			currentVersion = FED5AD2013EEFA9A00808BFF /* XboxLive.xcdatamodel */;
+			name = XboxLive.xcdatamodeld;
+			path = ListTest/XboxLive.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = FE76A92C13E636A9006D6AFC /* Project object */;
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="562" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="XboxPlayedGame">
+        <attribute name="AccountId" optional="YES" attributeType="String"/>
+        <attribute name="AchDirty" optional="YES" attributeType="Boolean"/>
+        <attribute name="AchTotal" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="AchUnlocked" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="BoxArtUrl" optional="YES" attributeType="String"/>
+        <attribute name="GameUrl" optional="YES" attributeType="String"/>
+        <attribute name="Index" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="LastPlayed" optional="YES" attributeType="Date"/>
+        <attribute name="LastUpdated" optional="YES" attributeType="Date"/>
+        <attribute name="PointsAcquired" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="PointsTotal" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
+        <attribute name="Title" optional="YES" attributeType="String"/>
+        <attribute name="Uid" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="XboxProfile">
+        <attribute name="AccountId" optional="YES" attributeType="String"/>
+        <attribute name="Gamerscore" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
+        <attribute name="Gamertag" optional="YES" attributeType="String"/>
+        <attribute name="IconUrl" optional="YES" attributeType="String"/>
+        <attribute name="IsGold" optional="YES" attributeType="Boolean"/>
+        <attribute name="Motto" optional="YES" attributeType="String"/>
+        <attribute name="PointsBalance" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
+        <attribute name="Rep" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
+        <attribute name="Tier" optional="YES" attributeType="String"/>
+        <attribute name="UnreadMessages" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
+        <attribute name="UnreadNotifications" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
+        <attribute name="Zone" optional="YES" attributeType="String"/>
+    </entity>
+    <elements>
+        <element name="XboxPlayedGame" positionX="160" positionY="192" width="128" height="240"/>
+        <element name="XboxProfile" positionX="160" positionY="192" width="128" height="225"/>
+    </elements>
+</model>
