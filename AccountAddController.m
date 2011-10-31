@@ -8,11 +8,17 @@
 
 #import "AccountAddController.h"
 
+// TODO?
+#import "XboxLiveAccount.h"
+#import "XboxLiveParser.h"
+
 @implementation AccountAddController
 
 @synthesize usernameCell = _usernameCell;
 @synthesize passwordCell = _passwordCell;
 @synthesize tableView = _tableView;
+@synthesize password, username;
+@synthesize account;
 
 #define WRONG_FIELD_COLOR [UIColor colorWithRed:0.7 green:0.0 blue:0.0 alpha:1.0]
 #define GOOD_FIELD_COLOR [UIColor blackColor]
@@ -138,7 +144,6 @@
 
 #pragma mark UITextField methods
 
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField 
 {
     if (textField.returnKeyType == UIReturnKeyNext) 
@@ -170,7 +175,9 @@ replacementString:(NSString *)string
 {
     UITableViewCell *cell = (UITableViewCell *)[textField superview];
     NSMutableString *result = [NSMutableString stringWithString:textField.text];
-    [result replaceCharactersInRange:range withString:string];
+    
+    [result replaceCharactersInRange:range 
+                          withString:string];
     
     cell.textLabel.textColor = ([result length] == 0) ? WRONG_FIELD_COLOR : GOOD_FIELD_COLOR;        
     
@@ -182,10 +189,16 @@ replacementString:(NSString *)string
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-        
+    
     saveButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave 
                                                                target:self 
                                                                action:@selector(save:)];
+    
+    if (account)
+    {
+        self.username = account.username;
+        self.password = account.password;
+    }
     
     self.navigationItem.title = NSLocalizedString(@"AddAccount", nil);
     self.navigationItem.rightBarButtonItem = saveButton;	
@@ -211,13 +224,79 @@ replacementString:(NSString *)string
     [usernameTextField resignFirstResponder];
     [passwordTextField resignFirstResponder];
 	
-    //if ([self.username isEqualToString:usernameTextField.text]
-    //    && [self.password isEqualToString:passwordTextField.text]) 
-    //{
-    //    [self.navigationController popToRootViewControllerAnimated:YES];
-    //} else {
-    //    [self validateFields];
-    //}
+    if ([self.username isEqualToString:usernameTextField.text]
+        && [self.password isEqualToString:passwordTextField.text]) 
+    {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    } 
+    else
+    {
+        [self validateFields];
+    }
+    
+    // TODO TODO
+    XboxLiveAccount *xblAccount = [[XboxLiveAccount alloc] init];
+    
+    xblAccount.username = self.username;
+    xblAccount.password = self.password;
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] init];
+    BOOL success = [parser authenticateAccount:xblAccount 
+                                   withContext:nil];
+    
+    [parser release];
+    [account release];
+    
+    NSLog(@"Result: %i", success);
 }
+
+-(void)validateFields 
+{
+    self.username = usernameTextField.text;
+    self.password = passwordTextField.text;
+    
+    BOOL validFields = YES;
+    
+    if ([usernameTextField.text isEqualToString:@""]) 
+    {
+        validFields = NO;
+        self.usernameCell.textLabel.textColor = WRONG_FIELD_COLOR;
+    }
+    if ([passwordTextField.text isEqualToString:@""]) 
+    {
+        validFields = NO;
+        self.passwordCell.textLabel.textColor = WRONG_FIELD_COLOR;
+    }
+}
+
+/*
+- (void)checkURL {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *urlToValidate = urlTextField.text;    
+	
+    if(![urlToValidate hasPrefix:@"http"])
+        urlToValidate = [NSString stringWithFormat:@"http://%@", url];
+	
+    urlToValidate = [urlToValidate stringByReplacingOccurrencesOfRegex:@"/wp-login.php$" withString:@""];
+    urlToValidate = [urlToValidate stringByReplacingOccurrencesOfRegex:@"/wp-admin/?$" withString:@""]; 
+    urlToValidate = [urlToValidate stringByReplacingOccurrencesOfRegex:@"/?$" withString:@""]; 
+	
+    [FileLogger log:@"%@ %@ %@", self, NSStringFromSelector(_cmd), urlToValidate];
+	ASIHTTPRequest *xmlrpcRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:urlToValidate]];
+	[xmlrpcRequest setValidatesSecureCertificate:NO]; 
+	[xmlrpcRequest setShouldPresentCredentialsBeforeChallenge:NO];
+	[xmlrpcRequest setShouldPresentAuthenticationDialog:YES];
+	[xmlrpcRequest setUseKeychainPersistence:YES];
+	[xmlrpcRequest setNumberOfTimesToRetryOnTimeout:2];
+	[xmlrpcRequest setDidFinishSelector:@selector(remoteValidate:)];
+	[xmlrpcRequest setDidFailSelector:@selector(checkURLWentWrong:)];
+	[xmlrpcRequest setDelegate:self];
+	[xmlrpcRequest startAsynchronous];
+	
+	[xmlrpcRequest release];
+  	[pool release];    
+}
+*/
 
 @end

@@ -12,6 +12,8 @@
 
 - (id)initWithAccountId:(NSString*)accountGuid;
 
-@property (nonatomic, copy) NSString *accountId;
+@property (nonatomic, retain) NSString *accountId;
+@property (nonatomic, retain) NSString *username;
+@property (nonatomic, retain) NSString *password;
 
 @end

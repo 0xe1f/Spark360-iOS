@@ -11,6 +11,8 @@
 
 @implementation CFParser
 
+#define TIMEOUT_SECONDS 30
+
 - (id)init
 {
     if (!(self = [super init]))
@@ -30,12 +32,11 @@
 }
 
 - (NSString*)loadWithMethod:(NSString*)method
-                        url:(NSString*)url 
+                        url:(NSString*)requestUrl
                      fields:(NSDictionary*)fields
 {
     NSString *httpBody = nil;
-    
-    // TODO: timeouts
+    NSURL *url = [NSURL URLWithString:requestUrl];
     
     if (fields)
     {
@@ -53,33 +54,43 @@
         [urlBuilder release];
     }
     
-    NSURL *webServiceURL = [NSURL URLWithString:url];
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:webServiceURL];
+    NSUInteger bodyLength = [httpBody lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     
-    [urlRequest setHTTPMethod:method];
-    [urlRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [urlRequest setHTTPBody:[httpBody dataUsingEncoding:NSUTF8StringEncoding]];
-    [urlRequest setValue:[NSString stringWithFormat:@"%d",
-                          [httpBody lengthOfBytesUsingEncoding:NSUTF8StringEncoding]] 
-      forHTTPHeaderField:@"Content-Length"];
+    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:
+                             @"text/javascript, text/html, application/xml, text/xml, */*", @"Accept",
+                             @"ISO-8859-1,utf-8;q=0.7,*;q=0.7", @"Accept-Charset",
+                             [NSString stringWithFormat:@"%d", bodyLength], @"Content-Length",
+                             @"application/x-www-form-urlencoded", @"Content-Type",
+                             nil];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                       timeoutInterval:TIMEOUT_SECONDS];
+    
+    [request setHTTPMethod:method];
+    [request setHTTPBody:[httpBody dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setAllHTTPHeaderFields:headers];
     
     NSURLResponse *response = nil;
     NSError *error = nil;
     
-    NSData *data = [NSURLConnection sendSynchronousRequest:urlRequest
+    NSData *data = [NSURLConnection sendSynchronousRequest:request
                                          returningResponse:&response
                                                      error:&error];
     
     if (!data)
     {
-        // TODO: error!
         if (error)
         {
-            // TODO: which?
+            // TODO
+            // NSLog(@"ERROR: %@", [error localizedDescription]);
         }
+        
+        return nil;
     }
     
-    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    return [[[NSString alloc] initWithData:data 
+                                  encoding:NSUTF8StringEncoding] autorelease];
 }
 
 - (NSString*)loadWithGET:(NSString*)url 

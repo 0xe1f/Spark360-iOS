@@ -11,8 +11,17 @@
 
 @interface XboxLiveParser : CFParser
 
-- (NSString*)getUniversalIcon:(NSString*)icon;
-- (void)parseGames:(XboxLiveAccount*)account
+-(void)parseGames:(XboxLiveAccount*)account
            context:(NSManagedObjectContext*)context;
+-(BOOL)authenticateAccount:(XboxLiveAccount*)account
+               withContext:(NSManagedObjectContext*)context;
+
+// Private
+
++(NSString*)getActionUrl:(NSString*)text;
++(NSDate*)parseDate:(NSString*)dateStr;
++(NSString*)getUniversalIcon:(NSString*)icon;
++(NSMutableDictionary*)getInputs:(NSString*)response
+                     namePattern:(NSRegularExpression*)namePattern;
 
 @end

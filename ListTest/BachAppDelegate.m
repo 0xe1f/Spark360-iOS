@@ -202,4 +202,30 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
++ (void)initialize
+{
+    NSString *path = [[NSBundle mainBundle] bundlePath];
+    NSString *pListPath = [path stringByAppendingPathComponent:@"Settings.bundle/Root.plist"];
+    NSDictionary *pList = [NSDictionary dictionaryWithContentsOfFile:pListPath];
+    
+    NSMutableArray *prefsArray = [pList objectForKey:@"PreferenceSpecifiers"];
+    NSMutableDictionary *regDict = [NSMutableDictionary dictionary];
+    
+    for (NSDictionary *dict in prefsArray)
+    {
+        NSString *key = [dict objectForKey:@"Key"];
+        if (key)
+        {
+            id value = [dict objectForKey:@"DefaultValue"];
+            if (value)
+            {
+                [regDict setObject:value
+                            forKey:key];
+            }
+        }
+    }
+    
+    [[NSUserDefaults standardUserDefaults] registerDefaults:regDict];
+}
+
 @end

@@ -11,6 +11,8 @@
 @implementation CFAccount
 
 @synthesize accountId;
+@synthesize username;
+@synthesize password;
 
 - (id)init
 {
@@ -35,6 +37,8 @@
 - (void)dealloc
 {
     [self.accountId release];
+    [self.username release];
+    [self.password release];
     
     [super dealloc];
 }

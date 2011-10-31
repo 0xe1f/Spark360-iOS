@@ -12,6 +12,16 @@
 @implementation XboxLiveParser
 
 NSString* const URL_GAMES = @"http://www.akop.org/xtest/games.html";
+NSString* const URL_LOGIN = @"http://login.live.com/login.srf?wa=wsignin1.0&wreply=%@";
+NSString* const URL_LOGIN_MSN = @"https://msnia.login.live.com/ppsecure/post.srf?wa=wsignin1.0&wreply=%@";
+
+NSString* const URL_REPLY_TO = @"https://live.xbox.com/xweb/live/passport/setCookies.ashx";
+
+NSString* const PATTERN_LOGIN_LIVE_AUTH_URL = @"var\\s*srf_uPost\\s*=\\s*'([^']*)'";
+NSString* const PATTERN_LOGIN_PPSX = @"var\\s*srf_sRBlob\\s*=\\s*'([^']*)'";
+NSString* const PATTERN_LOGIN_ATTR_LIST = @"<input((\\s+\\w+=\"[^\"]*\")+)[^>]*>";
+NSString* const PATTERN_LOGIN_GET_ATTRS = @"(\\w+)=\"([^\"]*)\"";
+NSString* const PATTERN_LOGIN_ACTION_URL = @"action=\"(https?://[^\"]+)\"";
 
 NSString* const PATTERN_GAMES = @"<div *class=\"LineItem\">(.*?)<br clear=\"all\" />";
 NSString* const PATTERN_GAME_TITLE = @"<h3><a href=\"([^\"]*)\"[^>]*?>([^<]*)<";
@@ -21,7 +31,7 @@ NSString* const PATTERN_GAME_ACHIEVEMENT_URL = @"href=\"([^\"]*Achievements\\?ti
 NSString* const PATTERN_GAME_BOXART_URL = @"src=\"([^\"]*)\" class=\"BoxShot\"";
 NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*<";
 
-- (id)init
+-(id)init
 {
     if (!(self = [super init]))
         return nil;
@@ -29,43 +39,89 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return self;
 }
 
-- (void)dealloc
+-(void)dealloc
 {
     [super dealloc];
 }
 
-- (NSDate*)parseDate:(NSString*)dateStr
+-(BOOL)authenticateAccount:(XboxLiveAccount*)account
+               withContext:(NSManagedObjectContext*)context
 {
-    NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    NSString *url = [NSString stringWithFormat:([account.username hasSuffix:@"@msn.com"]) 
+                     ? URL_LOGIN_MSN : URL_LOGIN, URL_REPLY_TO];
     
-    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    // Remove the authentication cookies
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray *array = [cookieStorage cookiesForURL:[NSURL URLWithString:url]];
+    for (NSHTTPCookie *cookie in array)
+        [cookieStorage deleteCookie:cookie];
     
-    return [dateFormatter dateFromString:dateStr];
+    NSError *error = nil;
+    NSTextCheckingResult *match;
+    
+    NSString *loginPage = [self loadWithGET:url
+                                     fields:nil];
+    
+    NSRegularExpression *getLiveAuthUrl = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_LIVE_AUTH_URL
+                                                                                    options:NSRegularExpressionCaseInsensitive
+                                                                                      error:&error];
+    
+    match = [getLiveAuthUrl firstMatchInString:loginPage
+                                       options:0
+                                         range:NSMakeRange(0, [loginPage length])];
+    
+    if (!match)
+        return NO;
+    
+    NSString *postUrl = [loginPage substringWithRange:[match rangeAtIndex:1]];
+    
+    if ([account.username hasSuffix:@"@msn.com"])
+        postUrl = [postUrl stringByReplacingOccurrencesOfString:@"://login.live.com/" 
+                                                     withString:@"://msnia.login.live.com/"];
+    
+    NSRegularExpression *getPpsxValue = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_PPSX
+                                                                                  options:0
+                                                                                    error:&error];
+    
+    match = [getPpsxValue firstMatchInString:loginPage
+                                     options:0
+                                       range:NSMakeRange(0, [loginPage length])];
+    
+    if (!match)
+        return NO;
+    
+    NSString *ppsx = [loginPage substringWithRange:[match rangeAtIndex:1]];
+    
+    NSMutableDictionary *inputs = [XboxLiveParser getInputs:loginPage
+                                                namePattern:nil];
+    
+    [inputs setValue:account.username
+              forKey:@"login"];
+    [inputs setValue:account.password
+              forKey:@"passwd"];
+    [inputs setValue:@"1"
+              forKey:@"LoginOptions"];
+    [inputs setValue:ppsx
+              forKey:@"PPSX"];
+    
+    NSString *loginResponse = [self loadWithPOST:postUrl
+                                          fields:inputs];
+    
+    NSString *redirUrl = [XboxLiveParser getActionUrl:loginResponse];
+    
+    inputs = [XboxLiveParser getInputs:loginResponse
+                           namePattern:nil];
+    
+    if (![inputs objectForKey:@"ANON"])
+        return NO;
+    
+    [self loadWithPOST:redirUrl
+                fields:inputs];
+    
+    return YES;
 }
 
-- (NSString*)getUniversalIcon:(NSString*)icon
-{
-    if (!icon)
-        return nil;
-    
-    return icon; // TODO!
-    /*
-     private static final Pattern PATTERN_LOADBAL_ICON = Pattern
-     .compile("^http://([0-9\\.]+/)");
-     
-     Matcher m;
-     if (!(m = PATTERN_LOADBAL_ICON.matcher(loadBalIcon)).find())
-     return loadBalIcon;
-     
-     String replacement = loadBalIcon.substring(0, m.start(1))
-     + loadBalIcon.substring(m.end(1));
-     
-     return replacement;
-     */
-}
-
-- (void)parseGames:(XboxLiveAccount*)account
+-(void)parseGames:(XboxLiveAccount*)account
            context:(NSManagedObjectContext*)context
 {
     NSString *aStr = [self loadWithGET:URL_GAMES
@@ -184,7 +240,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
              {
                  NSString *boxArtUrl = [gameSection substringWithRange:[match rangeAtIndex:1]];
                  
-                 [game setValue:[self getUniversalIcon:boxArtUrl] forKey:@"BoxArtUrl"];
+                 [game setValue:[XboxLiveParser getUniversalIcon:boxArtUrl] 
+                         forKey:@"BoxArtUrl"];
              }
          }
          
@@ -239,7 +296,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
          NSDate *lastPlayed = nil;
          
          if (match)
-             lastPlayed = [self parseDate:[gameSection substringWithRange:[match rangeAtIndex:1]]];
+             lastPlayed = [XboxLiveParser parseDate:[gameSection substringWithRange:[match rangeAtIndex:1]]];
          
          [game setValue:lastPlayed forKey:@"LastPlayed"];
          [game setValue:lastUpdated forKey:@"LastUpdated"];
@@ -274,6 +331,129 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     // TODO: notify list?
     
     NSLog(@"Done");
+}
+
+#pragma mark Helpers
+
++(NSString*)getActionUrl:(NSString*)text
+{
+    NSError *error = nil;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_ACTION_URL
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:&error];
+    
+    NSTextCheckingResult *match = [regex firstMatchInString:text
+                                                    options:0
+                                                      range:NSMakeRange(0, [text length])];
+    
+    if (match)
+        return [text substringWithRange:[match rangeAtIndex:1]];
+    
+    return nil;
+}
+
++(NSDate*)parseDate:(NSString*)dateStr
+{
+    NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    
+    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    
+    return [dateFormatter dateFromString:dateStr];
+}
+
++(NSString*)getUniversalIcon:(NSString*)icon
+{
+    if (!icon)
+        return nil;
+    
+    return icon; // TODO!
+    /*
+     private static final Pattern PATTERN_LOADBAL_ICON = Pattern
+     .compile("^http://([0-9\\.]+/)");
+     
+     Matcher m;
+     if (!(m = PATTERN_LOADBAL_ICON.matcher(loadBalIcon)).find())
+     return loadBalIcon;
+     
+     String replacement = loadBalIcon.substring(0, m.start(1))
+     + loadBalIcon.substring(m.end(1));
+     
+     return replacement;
+     */
+}
+
++(NSMutableDictionary*)getInputs:(NSString*)response
+                     namePattern:(NSRegularExpression*)namePattern
+{
+    NSMutableDictionary *inputs = [[NSMutableDictionary alloc] init];
+    
+    NSError *error = nil;
+    NSRegularExpression *allAttrs = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_ATTR_LIST
+                                                                              options:NSRegularExpressionCaseInsensitive
+                                                                                error:&error];
+    
+    NSRegularExpression *attrs = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_GET_ATTRS
+                                                                           options:0
+                                                                             error:&error];
+    
+    [allAttrs enumerateMatchesInString:response 
+                               options:0
+                                 range:NSMakeRange(0, [response length])
+                            usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) 
+     {
+         __block NSString *name = nil;
+         __block NSString *value = nil;
+         
+         NSString *chunk = [response substringWithRange:[result rangeAtIndex:1]];
+         
+         [attrs enumerateMatchesInString:chunk 
+                                 options:0
+                                   range:NSMakeRange(0, [chunk length])
+                                 usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) 
+          {
+              NSString *attrName = [chunk substringWithRange:[result rangeAtIndex:1]];
+              NSString *attrValue = [chunk substringWithRange:[result rangeAtIndex:2]];
+              
+              if ([attrName caseInsensitiveCompare:@"name"] == NSOrderedSame)
+                  name = attrValue;
+              else if ([attrName caseInsensitiveCompare:@"value"] == NSOrderedSame)
+                  value = attrValue;
+          }];
+         
+         if (name != nil && value != nil)
+         {
+             BOOL add = true;
+             
+             if (namePattern != nil)
+             {
+                 NSTextCheckingResult *match = [namePattern firstMatchInString:name
+                                                                       options:0
+                                                                         range:NSMakeRange(0, [name length])];
+                 
+                 if (!match)
+                     add = false;
+             }
+             
+             if (add)
+             {
+                 for (NSString *key in inputs)
+                 {
+                     if ([key isEqualToString:name])
+                     {
+                         add = false;
+                         break;
+                     }
+                 }
+             }
+             
+             if (add)
+                 [inputs setValue:value 
+                           forKey:name];
+         }
+     }];
+    
+    return [inputs autorelease];
 }
 
 @end

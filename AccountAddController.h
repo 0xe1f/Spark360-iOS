@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "UITableViewTextFieldCell.h"
+#import "CFAccount.h"
 
 @interface AccountAddController : UIViewController<UITableViewDelegate, UITextFieldDelegate>
 {
@@ -16,11 +17,20 @@
     
     UITextField *usernameTextField;
     UITextField *passwordTextField;
+    
+    CFAccount *account;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
 
 @property (nonatomic, retain) UITableViewTextFieldCell *usernameCell;
 @property (nonatomic, retain) UITableViewTextFieldCell *passwordCell;
+
+@property (nonatomic, retain) NSString *password, *username;
+@property (nonatomic, retain) CFAccount *account;
+
+// Private
+
+-(void)validateFields;
 
 @end

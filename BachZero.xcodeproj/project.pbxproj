@@ -24,6 +24,7 @@
 		FE9E371113F8E94A00A6EE36 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E370F13F8E94A00A6EE36 /* AccountAddController.m */; };
 		FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */; };
 		FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */; };
+		FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FEA47124144FED35009F0CB4 /* Settings.bundle */; };
 		FEAC6F0F13E924EE000D86D1 /* CFAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F0E13E924EE000D86D1 /* CFAccount.m */; };
 		FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */; };
 		FEAC6F1813E92E2C000D86D1 /* XboxLiveAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1713E92E2C000D86D1 /* XboxLiveAccount.m */; };
@@ -63,6 +64,7 @@
 		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
 		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewTextFieldCell.h; sourceTree = "<group>"; };
 		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewTextFieldCell.m; sourceTree = "<group>"; };
+		FEA47124144FED35009F0CB4 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		FEAC6F0D13E924EE000D86D1 /* CFAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFAccount.h; sourceTree = "<group>"; };
 		FEAC6F0E13E924EE000D86D1 /* CFAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFAccount.m; sourceTree = "<group>"; };
 		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				FE5CAE1513F728F4004BC903 /* Cells */,
 				FE3FE14913F72AD2009467EF /* Images */,
 				FE5CAE1413F728E5004BC903 /* UI */,
+				FEA47124144FED35009F0CB4 /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				FE3FE14D13F72F7E009467EF /* g_small.png in Resources */,
 				FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */,
 				FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */,
+				FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
