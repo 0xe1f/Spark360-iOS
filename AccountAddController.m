@@ -12,6 +12,14 @@
 #import "XboxLiveAccount.h"
 #import "XboxLiveParser.h"
 
+@interface AccountAddController (PrivateMethods)
+
+-(void)validateFields;
+-(void)validationSucceeded;
+-(void)validationFailed:(NSString*)message;
+
+@end
+
 @implementation AccountAddController
 
 @synthesize usernameCell = _usernameCell;
@@ -52,6 +60,8 @@
     usernameTextField = nil;
     [passwordTextField release]; 
     passwordTextField = nil;
+    [savingIndicator release];
+    savingIndicator = nil;
     
     [super dealloc];
 }
@@ -85,7 +95,8 @@
             
             if (self.usernameCell == nil) 
             {
-                self.usernameCell = [[[UITableViewTextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UsernameCell"] autorelease];
+                self.usernameCell = [[[UITableViewTextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault 
+                                                                     reuseIdentifier:@"UsernameCell"] autorelease];
                 
 				self.usernameCell.textLabel.text = NSLocalizedString(@"Username", @"");
 				usernameTextField = [self.usernameCell.textField retain];
@@ -108,7 +119,8 @@
             self.passwordCell = (UITableViewTextFieldCell *)[self.tableView dequeueReusableCellWithIdentifier:@"PasswordCell"];
             if (self.passwordCell == nil) 
             {
-                self.passwordCell = [[[UITableViewTextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"PasswordCell"] autorelease];
+                self.passwordCell = [[[UITableViewTextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault 
+                                                                     reuseIdentifier:@"PasswordCell"] autorelease];
                 
 				self.passwordCell.textLabel.text = NSLocalizedString(@"Password", @"");
 				passwordTextField = [self.passwordCell.textField retain];
@@ -224,6 +236,23 @@ replacementString:(NSString *)string
     [usernameTextField resignFirstResponder];
     [passwordTextField resignFirstResponder];
 	
+	if (savingIndicator == nil) 
+    {
+		savingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        
+		[savingIndicator setFrame:CGRectMake(0,0,20,20)];
+		[savingIndicator setCenter:CGPointMake(self.tableView.center.x, savingIndicator.center.y)];
+		
+        UIView *aView = [[UIView alloc] init];
+		[aView addSubview:savingIndicator];
+		
+		[self.tableView setTableFooterView:aView];
+        [aView release];
+	}
+    
+	[savingIndicator setHidden:NO];
+	[savingIndicator startAnimating];
+    
     if ([self.username isEqualToString:usernameTextField.text]
         && [self.password isEqualToString:passwordTextField.text]) 
     {
@@ -233,27 +262,13 @@ replacementString:(NSString *)string
     {
         [self validateFields];
     }
-    
-    // TODO TODO
-    XboxLiveAccount *xblAccount = [[XboxLiveAccount alloc] init];
-    
-    xblAccount.username = self.username;
-    xblAccount.password = self.password;
-    
-    XboxLiveParser *parser = [[XboxLiveParser alloc] init];
-    BOOL success = [parser authenticateAccount:xblAccount 
-                                   withContext:nil];
-    
-    [parser release];
-    [account release];
-    
-    NSLog(@"Result: %i", success);
 }
 
 -(void)validateFields 
 {
-    self.username = usernameTextField.text;
-    self.password = passwordTextField.text;
+    saveButton.enabled = NO;
+    [self.navigationItem  setHidesBackButton:YES
+                                    animated:NO];
     
     BOOL validFields = YES;
     
@@ -267,36 +282,82 @@ replacementString:(NSString *)string
         validFields = NO;
         self.passwordCell.textLabel.textColor = WRONG_FIELD_COLOR;
     }
+    
+    if (validFields)
+    {
+        self.username = usernameTextField.text;
+        self.password = passwordTextField.text;
+        
+        [self performSelectorInBackground:@selector(checkLogin) 
+                               withObject:nil];
+    }
+    else
+    {
+        [self validationFailed:NSLocalizedString(@"ProvideValidUsernameAndPassword", @"")];
+    }
 }
 
-/*
-- (void)checkURL {
+-(void)checkLogin
+{
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSString *urlToValidate = urlTextField.text;    
-	
-    if(![urlToValidate hasPrefix:@"http"])
-        urlToValidate = [NSString stringWithFormat:@"http://%@", url];
-	
-    urlToValidate = [urlToValidate stringByReplacingOccurrencesOfRegex:@"/wp-login.php$" withString:@""];
-    urlToValidate = [urlToValidate stringByReplacingOccurrencesOfRegex:@"/wp-admin/?$" withString:@""]; 
-    urlToValidate = [urlToValidate stringByReplacingOccurrencesOfRegex:@"/?$" withString:@""]; 
-	
-    [FileLogger log:@"%@ %@ %@", self, NSStringFromSelector(_cmd), urlToValidate];
-	ASIHTTPRequest *xmlrpcRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:urlToValidate]];
-	[xmlrpcRequest setValidatesSecureCertificate:NO]; 
-	[xmlrpcRequest setShouldPresentCredentialsBeforeChallenge:NO];
-	[xmlrpcRequest setShouldPresentAuthenticationDialog:YES];
-	[xmlrpcRequest setUseKeychainPersistence:YES];
-	[xmlrpcRequest setNumberOfTimesToRetryOnTimeout:2];
-	[xmlrpcRequest setDidFinishSelector:@selector(remoteValidate:)];
-	[xmlrpcRequest setDidFailSelector:@selector(checkURLWentWrong:)];
-	[xmlrpcRequest setDelegate:self];
-	[xmlrpcRequest startAsynchronous];
-	
-	[xmlrpcRequest release];
-  	[pool release];    
+    
+    XboxLiveAccount *xblAccount = [[XboxLiveAccount alloc] init];
+    
+    xblAccount.username = self.username;
+    xblAccount.password = self.password;
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] init];
+    BOOL success = [parser authenticateAccount:xblAccount 
+                                   withContext:nil];
+    
+    [parser release];
+    [account release]; // TODO
+    
+    if (success)
+    {
+        [self performSelectorOnMainThread:@selector(validationSucceeded) 
+                               withObject:nil
+                            waitUntilDone:NO];
+    }
+    else
+    {
+        [self performSelectorOnMainThread:@selector(validationFailed:) 
+                               withObject:NSLocalizedString(@"VerifyUsernameAndPassword", @"")
+                            waitUntilDone:NO];
+    }
+    
+    [pool release];
 }
-*/
+
+-(void)validationSucceeded
+{
+    [savingIndicator stopAnimating];
+    [savingIndicator setHidden:YES];
+    
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    
+    saveButton.enabled = YES;
+    [self.navigationItem setHidesBackButton:NO 
+                                   animated:NO];
+}
+
+-(void)validationFailed:(NSString*)message
+{
+    [savingIndicator stopAnimating];
+    [savingIndicator setHidden:YES];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LoginFailed", @"") 
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    
+    [alertView show];
+    [alertView release];
+    
+    saveButton.enabled = YES;
+    [self.navigationItem setHidesBackButton:NO 
+                                   animated:NO];
+}
 
 @end

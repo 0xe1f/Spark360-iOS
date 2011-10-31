@@ -17,6 +17,7 @@
     
     UITextField *usernameTextField;
     UITextField *passwordTextField;
+    UIActivityIndicatorView *savingIndicator;
     
     CFAccount *account;
 }
@@ -28,9 +29,5 @@
 
 @property (nonatomic, retain) NSString *password, *username;
 @property (nonatomic, retain) CFAccount *account;
-
-// Private
-
--(void)validateFields;
 
 @end

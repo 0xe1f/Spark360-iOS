@@ -7,6 +7,10 @@
     AddAccount = "Add Account";
     Username = "Username";
     Password = "Password";
-    XboxLiveUsername = "Xbox Live Username";
-    XboxLivePassword = "Xbox Live Password";
+    XboxLiveUsername = "XBL Email Address";
+    XboxLivePassword = "XBL Password";
+    LoginFailed = "Login Failed";
+    VerifyUsernameAndPassword = "Please make sure your email address and password are correct";
+    ProvideValidUsernameAndPassword = "Please provide a valid email address and password combination";
+    OK = "OK";
 }

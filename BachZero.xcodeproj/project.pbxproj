@@ -266,6 +266,9 @@
 /* Begin PBXProject section */
 		FE76A92C13E636A9006D6AFC /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = FE76A92F13E636A9006D6AFC /* Build configuration list for PBXProject "BachZero" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -403,6 +406,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ListTest/BachZero-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "ListTest/BachZero-Info.plist";
 				PRODUCT_NAME = BachZero;
 				WRAPPER_EXTENSION = app;
@@ -414,6 +418,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ListTest/BachZero-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "ListTest/BachZero-Info.plist";
 				PRODUCT_NAME = BachZero;
 				WRAPPER_EXTENSION = app;
