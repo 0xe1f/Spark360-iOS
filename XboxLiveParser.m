@@ -9,12 +9,26 @@
 #import "GTMNSString+HTML.h"
 #import "XboxLiveParser.h"
 
+@interface XboxLiveParser (PrivateMethods)
+
++(NSString*)getActionUrl:(NSString*)text;
++(NSDate*)parseDate:(NSString*)dateStr;
++(NSString*)getUniversalIcon:(NSString*)icon;
++(NSMutableDictionary*)getInputs:(NSString*)response
+                     namePattern:(NSRegularExpression*)namePattern;
+
+@end
+
 @implementation XboxLiveParser
 
 NSString* const URL_GAMES = @"http://www.akop.org/xtest/games.html";
 NSString* const URL_LOGIN = @"http://login.live.com/login.srf?wa=wsignin1.0&wreply=%@";
 NSString* const URL_LOGIN_MSN = @"https://msnia.login.live.com/ppsecure/post.srf?wa=wsignin1.0&wreply=%@";
 
+/*
+NSString* const URL_JSON_PROFILE = @"http://live.xbox.com/Handlers/ShellData.ashx?culture=%@&XBXMChg=%2$d&XBXNChg=%2$d&XBXSPChg=%2$d&XBXChg=%2$d" + 
+@"&leetcallback=jsonp1287728723001";
+*/
 NSString* const URL_REPLY_TO = @"https://live.xbox.com/xweb/live/passport/setCookies.ashx";
 
 NSString* const PATTERN_LOGIN_LIVE_AUTH_URL = @"var\\s*srf_uPost\\s*=\\s*'([^']*)'";
@@ -44,6 +58,99 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     [super dealloc];
 }
 
+-(void)synchronizeAccount:(XboxAccount*)account
+              withContext:(NSManagedObjectContext*)context
+{
+    // TODO: reauth if expired!
+    /*
+    NSString *url = [NSString stringWithFormat:([account.username hasSuffix:@"@msn.com"]) 
+                     ? URL_LOGIN_MSN : URL_LOGIN, URL_REPLY_TO];
+    
+    // Remove the authentication cookies
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray *array = [cookieStorage cookiesForURL:[NSURL URLWithString:url]];
+    for (NSHTTPCookie *cookie in array)
+        [cookieStorage deleteCookie:cookie];
+    
+    NSError *error = nil;
+    NSTextCheckingResult *match;
+    
+    NSString *loginPage = [self loadWithGET:url
+                                     fields:nil];
+    */
+}
+
+/*
+ private ContentValues parseSummaryData(XboxLiveAccount account)
+ throws ParserException, IOException
+ {
+ long started = System.currentTimeMillis();
+ 
+ String url = String.format(URL_JSON_PROFILE, 
+ mContext.getString(R.string.locale),
+ System.currentTimeMillis());
+ 
+ HttpUriRequest request = new HttpGet(url);
+ request.addHeader("Referer", URL_JSON_PROFILE_REFERER);
+ request.addHeader("X-Requested-With", "XMLHttpRequest");
+ 
+ String page = getResponse(request);
+ 
+ if (App.LOGV)
+ started = displayTimeTaken("Profile page fetch", started);
+ 
+ ContentValues cv = new ContentValues(15);
+ 
+ String gamertag;
+ JSONObject json = getJSONObject(page);
+ 
+ try
+ {
+ gamertag = json.getString("gamertag");
+ }
+ catch(JSONException e)
+ {
+ throw new ParserException(mContext, 
+ R.string.error_json_parser_error);
+ }
+ 
+ cv.put(Profiles.GAMERTAG, gamertag);
+ cv.put(Profiles.ICON_URL, json.optString("gamerpic"));
+ cv.put(Profiles.POINTS_BALANCE, json.optInt("pointsbalancetext"));
+ cv.put(Profiles.IS_GOLD, json.optInt("tier") >= 6);
+ cv.put(Profiles.TIER, json.optString("tiertext"));
+ cv.put(Profiles.GAMERSCORE, json.optInt("gamerscore"));
+ cv.put(Profiles.UNREAD_MESSAGES, json.optInt("messages"));
+ cv.put(Profiles.UNREAD_NOTIFICATIONS, json.optInt("notifications"));
+ 
+ url = getGamercardUrl(gamertag);
+ 
+ try
+ {
+ page = getResponse(url);
+ }
+ catch(Exception e)
+ {
+ // Ignore errors - not vital
+ page = null;
+ if (App.LOGV)
+ e.printStackTrace();
+ }
+ 
+ int rep = 0;
+ String zone = null;
+ 
+ if (page != null)
+ {
+ rep = getStarRating(page);
+ }
+ 
+ cv.put(Profiles.REP, rep);
+ cv.put(Profiles.ZONE, zone);
+ 
+ return cv;
+ }
+ */
 -(BOOL)authenticateAccount:(XboxLiveAccount*)account
                withContext:(NSManagedObjectContext*)context
 {

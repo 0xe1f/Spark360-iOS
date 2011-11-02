@@ -19,6 +19,16 @@
 
 @synthesize navigationController = _navigationController;
 
+static BachAppDelegate *bachApp = NULL;
+
+-(id)init
+{
+    if (!bachApp)
+        bachApp = [super init];
+    
+    return bachApp;
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
@@ -99,6 +109,14 @@
             abort();
         } 
     }
+}
+
++(BachAppDelegate*)sharedApp 
+{
+    if (!bachApp)
+        bachApp = [[BachAppDelegate alloc] init];
+    
+    return bachApp;
 }
 
 #pragma mark - Core Data stack
@@ -202,7 +220,7 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-+ (void)initialize
++(void)initialize
 {
     NSString *path = [[NSBundle mainBundle] bundlePath];
     NSString *pListPath = [path stringByAppendingPathComponent:@"Settings.bundle/Root.plist"];

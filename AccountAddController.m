@@ -8,6 +8,9 @@
 
 #import "AccountAddController.h"
 
+#import "BachAppDelegate.h"
+#import "XboxAccount.h"
+
 // TODO?
 #import "XboxLiveAccount.h"
 #import "XboxLiveParser.h"
@@ -331,6 +334,17 @@ replacementString:(NSString *)string
 
 -(void)validationSucceeded
 {
+    // Save account object
+    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+    
+    XboxAccount *xboxAccount = [NSEntityDescription 
+                                insertNewObjectForEntityForName:@"XboxAccount"
+                                inManagedObjectContext:bachApp.managedObjectContext];
+    
+    xboxAccount.emailAddress = self.username;
+    xboxAccount.password = self.password;
+    [xboxAccount save];
+    
     [savingIndicator stopAnimating];
     [savingIndicator setHidden:YES];
     

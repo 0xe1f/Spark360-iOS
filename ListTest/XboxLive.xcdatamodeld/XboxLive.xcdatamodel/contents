@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="562" systemVersion="11A511" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="11C74" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="XboxAccount" representedClassName="XboxAccount" syncable="YES">
+        <attribute name="emailAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="iconUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isGold" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastFriendSync" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastGameSync" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastMessageSync" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastSummarySync" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pointsBalance" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="rep" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="screenName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unreadMessages" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="unreadNotifications" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
     <entity name="XboxPlayedGame">
         <attribute name="AccountId" optional="YES" attributeType="String"/>
         <attribute name="AchDirty" optional="YES" attributeType="Boolean"/>
@@ -32,5 +48,6 @@
     <elements>
         <element name="XboxPlayedGame" positionX="160" positionY="192" width="128" height="240"/>
         <element name="XboxProfile" positionX="160" positionY="192" width="128" height="225"/>
+        <element name="XboxAccount" positionX="160" positionY="192" width="128" height="255"/>
     </elements>
 </model>

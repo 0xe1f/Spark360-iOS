@@ -19,6 +19,8 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
++ (BachAppDelegate*)sharedApp;
+
 @property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
 
 @end

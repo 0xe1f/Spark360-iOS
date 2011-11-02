@@ -162,7 +162,7 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[managedObject valueForKey:@"Gamertag"] description];
+    cell.textLabel.text = [[managedObject valueForKey:@"emailAddress"] description];
 }
 
 - (void)insertNewObject
@@ -210,7 +210,7 @@
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxProfile" 
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxAccount" 
                                               inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
@@ -218,7 +218,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"Gamertag" 
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"emailAddress" 
                                                                    ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
