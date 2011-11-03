@@ -16,7 +16,8 @@
 
 - (NSString*)loadWithMethod:(NSString*)method
                         url:(NSString*)url 
-                     fields:(NSDictionary*)fields;
+                     fields:(NSDictionary*)fields
+                 addHeaders:(NSDictionary*)addHeaders;
 - (NSString*)loadWithGET:(NSString*)url 
                   fields:(NSDictionary*)fields;
 - (NSString*)loadWithPOST:(NSString*)url 

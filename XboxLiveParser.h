@@ -16,5 +16,7 @@
            context:(NSManagedObjectContext*)context;
 -(BOOL)authenticateAccount:(XboxLiveAccount*)account
                withContext:(NSManagedObjectContext*)context;
+-(void)synchronizeAccount:(XboxAccount*)account
+              withContext:(NSManagedObjectContext*)context;
 
 @end

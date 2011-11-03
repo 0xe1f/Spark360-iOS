@@ -24,7 +24,7 @@
 		FE726B6B14611E9C00534279 /* SBJsonTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B5D14611E9C00534279 /* SBJsonTokeniser.m */; };
 		FE726B6C14611E9C00534279 /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B5F14611E9C00534279 /* SBJsonUTF8Stream.m */; };
 		FE726B6D14611E9C00534279 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B6114611E9C00534279 /* SBJsonWriter.m */; };
-		FE726B701461207000534279 /* XboxAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B6F1461207000534279 /* XboxAccount.m */; };
+		FE726B73146261B800534279 /* XboxAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B72146261B800534279 /* XboxAccount.m */; };
 		FE76A93A13E636A9006D6AFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93913E636A9006D6AFC /* UIKit.framework */; };
 		FE76A93C13E636A9006D6AFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93B13E636A9006D6AFC /* Foundation.framework */; };
 		FE76A93E13E636A9006D6AFC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */; };
@@ -83,8 +83,8 @@
 		FE726B5F14611E9C00534279 /* SBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonUTF8Stream.m; sourceTree = "<group>"; };
 		FE726B6014611E9C00534279 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		FE726B6114611E9C00534279 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
-		FE726B6E1461207000534279 /* XboxAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XboxAccount.h; path = Models/XboxAccount.h; sourceTree = "<group>"; };
-		FE726B6F1461207000534279 /* XboxAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XboxAccount.m; path = Models/XboxAccount.m; sourceTree = "<group>"; };
+		FE726B71146261B800534279 /* XboxAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XboxAccount.h; path = Models/XboxAccount.h; sourceTree = "<group>"; };
+		FE726B72146261B800534279 /* XboxAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XboxAccount.m; path = Models/XboxAccount.m; sourceTree = "<group>"; };
 		FE76A93513E636A9006D6AFC /* BachZero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BachZero.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE76A93913E636A9006D6AFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FE76A93B13E636A9006D6AFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -206,8 +206,8 @@
 		FE726B471461120100534279 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				FE726B6E1461207000534279 /* XboxAccount.h */,
-				FE726B6F1461207000534279 /* XboxAccount.m */,
+				FE726B71146261B800534279 /* XboxAccount.h */,
+				FE726B72146261B800534279 /* XboxAccount.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -252,9 +252,9 @@
 				FE5CAE1313F728BC004BC903 /* Resources */,
 				FEAC6F1113E925A2000D86D1 /* Bach */,
 				FEB3E13B13E6402900095480 /* Caffeine */,
-				FE76A94713E636A9006D6AFC /* main.m */,
 				FE76A93813E636A9006D6AFC /* Frameworks */,
 				FE76A93613E636A9006D6AFC /* Products */,
+				FE76A94713E636A9006D6AFC /* main.m */,
 			);
 			sourceTree = "<group>";
 		};
@@ -418,7 +418,7 @@
 				FE726B6B14611E9C00534279 /* SBJsonTokeniser.m in Sources */,
 				FE726B6C14611E9C00534279 /* SBJsonUTF8Stream.m in Sources */,
 				FE726B6D14611E9C00534279 /* SBJsonWriter.m in Sources */,
-				FE726B701461207000534279 /* XboxAccount.m in Sources */,
+				FE726B73146261B800534279 /* XboxAccount.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

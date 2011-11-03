@@ -34,6 +34,7 @@
 - (NSString*)loadWithMethod:(NSString*)method
                         url:(NSString*)requestUrl
                      fields:(NSDictionary*)fields
+                 addHeaders:(NSDictionary*)addHeaders
 {
     NSString *httpBody = nil;
     NSURL *url = [NSURL URLWithString:requestUrl];
@@ -56,12 +57,21 @@
     
     NSUInteger bodyLength = [httpBody lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     
-    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:
+    NSMutableDictionary *headers = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                              @"text/javascript, text/html, application/xml, text/xml, */*", @"Accept",
                              @"ISO-8859-1,utf-8;q=0.7,*;q=0.7", @"Accept-Charset",
                              [NSString stringWithFormat:@"%d", bodyLength], @"Content-Length",
                              @"application/x-www-form-urlencoded", @"Content-Type",
                              nil];
+    
+    if (addHeaders)
+    {
+        for (NSString *header in addHeaders)
+        {
+            [headers setObject:[addHeaders objectForKey:header] 
+                        forKey:header];
+        }
+    }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
                                                            cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
@@ -98,7 +108,8 @@
 {
     return [self loadWithMethod:@"GET"
                             url:url
-                         fields:fields];
+                         fields:fields
+                     addHeaders:nil];
 }
 
 - (NSString*)loadWithPOST:(NSString*)url 
@@ -106,7 +117,8 @@
 {
     return [self loadWithMethod:@"POST"
                             url:url
-                         fields:fields];
+                         fields:fields
+                     addHeaders:nil];
 }
 
 + (NSString*)getSingleMatch:(NSRegularExpression*)regex

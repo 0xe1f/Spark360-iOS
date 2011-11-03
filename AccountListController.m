@@ -162,7 +162,7 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[managedObject valueForKey:@"emailAddress"] description];
+    cell.textLabel.text = [[managedObject valueForKey:@"screenName"] description];
 }
 
 - (void)insertNewObject
@@ -218,7 +218,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"emailAddress" 
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"screenName" 
                                                                    ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     

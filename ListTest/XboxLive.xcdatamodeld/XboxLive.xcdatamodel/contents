@@ -2,6 +2,7 @@
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="11C74" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="XboxAccount" representedClassName="XboxAccount" syncable="YES">
         <attribute name="emailAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gamerscore" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="iconUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isGold" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastFriendSync" optional="YES" attributeType="Date" syncable="YES"/>
@@ -31,23 +32,8 @@
         <attribute name="Title" optional="YES" attributeType="String"/>
         <attribute name="Uid" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="XboxProfile">
-        <attribute name="AccountId" optional="YES" attributeType="String"/>
-        <attribute name="Gamerscore" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
-        <attribute name="Gamertag" optional="YES" attributeType="String"/>
-        <attribute name="IconUrl" optional="YES" attributeType="String"/>
-        <attribute name="IsGold" optional="YES" attributeType="Boolean"/>
-        <attribute name="Motto" optional="YES" attributeType="String"/>
-        <attribute name="PointsBalance" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
-        <attribute name="Rep" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
-        <attribute name="Tier" optional="YES" attributeType="String"/>
-        <attribute name="UnreadMessages" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
-        <attribute name="UnreadNotifications" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
-        <attribute name="Zone" optional="YES" attributeType="String"/>
-    </entity>
     <elements>
         <element name="XboxPlayedGame" positionX="160" positionY="192" width="128" height="240"/>
-        <element name="XboxProfile" positionX="160" positionY="192" width="128" height="225"/>
-        <element name="XboxAccount" positionX="160" positionY="192" width="128" height="255"/>
+        <element name="XboxAccount" positionX="160" positionY="192" width="128" height="270"/>
     </elements>
 </model>

@@ -343,6 +343,12 @@ replacementString:(NSString *)string
     
     xboxAccount.emailAddress = self.username;
     xboxAccount.password = self.password;
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] init];
+    [parser synchronizeAccount:xboxAccount
+                   withContext:bachApp.managedObjectContext];
+    [parser release];
+    
     [xboxAccount save];
     
     [savingIndicator stopAnimating];
