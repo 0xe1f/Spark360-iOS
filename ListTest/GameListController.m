@@ -11,7 +11,6 @@
 #import "CFImageCache.h"
 
 #import "XboxLiveParser.h"
-#import "XboxLiveAccount.h"
 
 @interface GameListController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -41,6 +40,7 @@
     self.navigationItem.rightBarButtonItem = addButton;
     [addButton release];
     
+    /*
     /// TODO
     XboxLiveAccount *account = [[XboxLiveAccount alloc] init];
     //[account setAccountId:2];
@@ -50,6 +50,7 @@
                context:self.managedObjectContext];
     [parser release];
     [account release];
+    */
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -268,6 +269,7 @@
         abort();
     }
     */
+    /*
     XboxLiveAccount *account = [[XboxLiveAccount alloc] init];
     //[account setAccountId:2];
     
@@ -276,6 +278,7 @@
                context:self.managedObjectContext];
     [parser release];
     [account release];
+    */
 }
 
 #pragma mark - Fetched results controller

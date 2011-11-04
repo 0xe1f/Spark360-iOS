@@ -129,10 +129,10 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
      */
 }
 
--(BOOL)authenticateAccount:(XboxLiveAccount*)account
-               withContext:(NSManagedObjectContext*)context
+-(BOOL)authenticate:(NSString*)emailAddress
+       withPassword:(NSString*)password
 {
-    NSString *url = [NSString stringWithFormat:([account.username hasSuffix:@"@msn.com"]) 
+    NSString *url = [NSString stringWithFormat:([emailAddress hasSuffix:@"@msn.com"]) 
                      ? URL_LOGIN_MSN : URL_LOGIN, URL_REPLY_TO];
     
     // Remove the authentication cookies
@@ -160,7 +160,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     NSString *postUrl = [loginPage substringWithRange:[match rangeAtIndex:1]];
     
-    if ([account.username hasSuffix:@"@msn.com"])
+    if ([emailAddress hasSuffix:@"@msn.com"])
         postUrl = [postUrl stringByReplacingOccurrencesOfString:@"://login.live.com/" 
                                                      withString:@"://msnia.login.live.com/"];
     
@@ -180,9 +180,9 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     NSMutableDictionary *inputs = [XboxLiveParser getInputs:loginPage
                                                 namePattern:nil];
     
-    [inputs setValue:account.username
+    [inputs setValue:emailAddress
               forKey:@"login"];
-    [inputs setValue:account.password
+    [inputs setValue:password
               forKey:@"passwd"];
     [inputs setValue:@"1"
               forKey:@"LoginOptions"];
@@ -206,9 +206,10 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return YES;
 }
 
--(void)parseGames:(XboxLiveAccount*)account
+-(void)parseGames:(XboxAccount*)account
            context:(NSManagedObjectContext*)context
 {
+    /*
     NSString *aStr = [self loadWithGET:URL_GAMES
                                 fields:nil];
     
@@ -280,6 +281,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
          
          // Fetch game, or create a new one
          NSManagedObject *game;
+         
          NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(Uid = %@) AND (AccountId = %d)", uid, [account accountId]];
          
          NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
@@ -413,8 +415,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         abort();
     }
     
-    // TODO: notify list?
-    
+    */
     NSLog(@"Done");
 }
 

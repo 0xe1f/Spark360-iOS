@@ -7,15 +7,14 @@
 //
 
 #import "CFParser.h"
-#import "XboxLiveAccount.h"
 #import "XboxAccount.h"
 
 @interface XboxLiveParser : CFParser
 
--(void)parseGames:(XboxLiveAccount*)account
-           context:(NSManagedObjectContext*)context;
--(BOOL)authenticateAccount:(XboxLiveAccount*)account
-               withContext:(NSManagedObjectContext*)context;
+-(void)parseGames:(XboxAccount*)account
+          context:(NSManagedObjectContext*)context;
+-(BOOL)authenticate:(NSString*)emailAddress
+       withPassword:(NSString*)password;
 -(void)synchronizeAccount:(XboxAccount*)account
               withContext:(NSManagedObjectContext*)context;
 

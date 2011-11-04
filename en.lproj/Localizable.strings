@@ -5,6 +5,7 @@
     Accounts = "Accounts";
     LoginInfo = "Login Settings";
     AddAccount = "Add Account";
+    EditAccount = "Edit Account";
     Username = "Username";
     Password = "Password";
     XboxLiveUsername = "XBL Email Address";
@@ -12,5 +13,6 @@
     LoginFailed = "Login Failed";
     VerifyUsernameAndPassword = "Please make sure your email address and password are correct";
     ProvideValidUsernameAndPassword = "Please provide a valid email address and password combination";
+    AnAccountAlreadyExists = "An account with that email address already exists";
     OK = "OK";
 }

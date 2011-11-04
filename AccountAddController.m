@@ -11,8 +11,6 @@
 #import "BachAppDelegate.h"
 #import "XboxAccount.h"
 
-// TODO?
-#import "XboxLiveAccount.h"
 #import "XboxLiveParser.h"
 
 @interface AccountAddController (PrivateMethods)
@@ -34,7 +32,8 @@
 #define WRONG_FIELD_COLOR [UIColor colorWithRed:0.7 green:0.0 blue:0.0 alpha:1.0]
 #define GOOD_FIELD_COLOR [UIColor blackColor]
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithNibName:(NSString *)nibNameOrNil 
+               bundle:(NSBundle *)nibBundleOrNil
 {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) 
     {
@@ -209,11 +208,22 @@ replacementString:(NSString *)string
                                                                target:self 
                                                                action:@selector(save:)];
     
+    /*
+    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+    
+    XboxAccount *xboxAccount = [NSEntityDescription 
+                                insertNewObjectForEntityForName:@"XboxAccount"
+                                inManagedObjectContext:bachApp.managedObjectContext];
+    
+    xboxAccount.emailAddress = self.username;
+    xboxAccount.password = self.password;
+    
     if (account)
     {
         self.username = account.username;
         self.password = account.password;
     }
+    */
     
     self.navigationItem.title = NSLocalizedString(@"AddAccount", nil);
     self.navigationItem.rightBarButtonItem = saveButton;	
@@ -286,35 +296,51 @@ replacementString:(NSString *)string
         self.passwordCell.textLabel.textColor = WRONG_FIELD_COLOR;
     }
     
-    if (validFields)
-    {
-        self.username = usernameTextField.text;
-        self.password = passwordTextField.text;
-        
-        [self performSelectorInBackground:@selector(checkLogin) 
-                               withObject:nil];
-    }
-    else
+    if (!validFields)
     {
         [self validationFailed:NSLocalizedString(@"ProvideValidUsernameAndPassword", @"")];
+        return;
     }
+    
+    self.username = usernameTextField.text;
+    self.password = passwordTextField.text;
+    
+    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+    
+    NSManagedObjectContext *context = bachApp.managedObjectContext;
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    
+    [request setEntity:[NSEntityDescription entityForName:@"XboxAccount"
+                                   inManagedObjectContext:context]];
+    [request setPredicate:[NSPredicate predicateWithFormat:@"(emailAddress = %@)", 
+                           self.username]];
+    
+    NSArray *array = [context executeFetchRequest:request 
+                                            error:nil];
+    
+    if ([array count] > 0)
+    {
+        // Account with that email address already exists
+        
+        [self validationFailed:NSLocalizedString(@"AnAccountAlreadyExists", @"")];
+        return;
+    }
+    
+    [self performSelectorInBackground:@selector(checkLogin) 
+                           withObject:nil];
 }
+
+
 
 -(void)checkLogin
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    XboxLiveAccount *xblAccount = [[XboxLiveAccount alloc] init];
-    
-    xblAccount.username = self.username;
-    xblAccount.password = self.password;
-    
     XboxLiveParser *parser = [[XboxLiveParser alloc] init];
-    BOOL success = [parser authenticateAccount:xblAccount 
-                                   withContext:nil];
+    BOOL success = [parser authenticate:self.username
+                           withPassword:self.password];
     
     [parser release];
-    [account release]; // TODO
     
     if (success)
     {
@@ -337,9 +363,10 @@ replacementString:(NSString *)string
     // Save account object
     BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
     
-    XboxAccount *xboxAccount = [NSEntityDescription 
-                                insertNewObjectForEntityForName:@"XboxAccount"
-                                inManagedObjectContext:bachApp.managedObjectContext];
+    NSManagedObjectContext *context = bachApp.managedObjectContext;
+    XboxAccount *xboxAccount = [[[XboxAccount alloc] initWithEntity:[NSEntityDescription entityForName:@"XboxAccount"
+                                                                               inManagedObjectContext:context]
+                                    insertIntoManagedObjectContext:context] autorelease];
     
     xboxAccount.emailAddress = self.username;
     xboxAccount.password = self.password;
@@ -365,6 +392,9 @@ replacementString:(NSString *)string
 {
     [savingIndicator stopAnimating];
     [savingIndicator setHidden:YES];
+    
+    self.username = nil;
+    self.password = nil;
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"LoginFailed", @"") 
                                                         message:message

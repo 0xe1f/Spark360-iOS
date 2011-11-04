@@ -9,9 +9,12 @@
 #import "AccountListController.h"
 
 #import "AccountAddController.h"
+#import "AccountEditController.h"
 
 @interface AccountListController ()
+
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+
 @end
 
 @implementation AccountListController
@@ -22,14 +25,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     // Set up the edit and add buttons.
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
+                                                                               target:self 
+                                                                               action:@selector(insertNewObject)];
+    
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    
     self.navigationItem.title = NSLocalizedString(@"Accounts", nil);
-    
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
     self.navigationItem.rightBarButtonItem = addButton;
+    
     [addButton release];
+    
+    self.tableView.allowsSelectionDuringEditing = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -87,14 +95,12 @@
     return cell;
 }
 
-/*
  // Override to support conditional editing of the table view.
  - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
  {
- // Return NO if you do not want the specified item to be editable.
- return YES;
+     // Return NO if you do not want the specified item to be editable.
+     return YES;
  }
- */
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -109,6 +115,7 @@
         if (![context save:&error])
         {
             /*
+             TODO
              Replace this implementation with code to handle the error appropriately.
              
              abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
@@ -116,7 +123,7 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
-    }   
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
@@ -127,12 +134,58 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([tableView cellForRowAtIndexPath:indexPath].editing)
+    {
+        XboxAccount *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        
+        AccountEditController *editController;
+        editController = [[AccountEditController alloc] initWithNibName:@"AccountAdd" 
+                                                         bundle:nil];
+        
+        editController.account = account;
+        
+        [self.navigationController pushViewController:editController 
+                                             animated:YES];
+        
+        [editController release];
+        [tableView setEditing:NO 
+                     animated:YES];
+    }
+    
     /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
+     if ([aTableView cellForRowAtIndexPath:indexPath].editing) {
+     Blog *blog = [resultsController objectAtIndexPath:indexPath];
+     
+     EditSiteViewController *editSiteViewController;
+     editSiteViewController = [[EditSiteViewController alloc] initWithNibName:@"EditSiteViewController" bundle:nil];
+     
+     editSiteViewController.blog = blog;
+     if (DeviceIsPad()) {
+     UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:editSiteViewController];
+     aNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+     aNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+     aNavigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+     appDelegate.navigationController = aNavigationController;
+     [appDelegate.splitViewController presentModalViewController:aNavigationController animated:YES];
+     [self cancel:self];
+     [aNavigationController release];
+     }
+     else {
+     [self.navigationController pushViewController:editSiteViewController animated:YES];
+     }
+     [editSiteViewController release];
+     [aTableView setEditing:NO animated:YES];
+     }
+     else {	// if ([self canChangeCurrentBlog]) {
+     Blog *blog = [resultsController objectAtIndexPath:indexPath];
+     [self showBlog:blog animated:YES];
+     
+     //we should keep a reference to the last selected blog
+     if (DeviceIsPad() == YES) {
+     self.currentBlog = blog;
+     }
+     }
+     [aTableView deselectRowAtIndexPath:[aTableView indexPathForSelectedRow] animated:YES];
      */
 }
 
@@ -156,6 +209,7 @@
 {
     [__fetchedResultsController release];
     [__managedObjectContext release];
+    
     [super dealloc];
 }
 

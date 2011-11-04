@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "UITableViewTextFieldCell.h"
-#import "CFAccount.h"
+#import "XboxAccount.h"
 
 @interface AccountAddController : UIViewController<UITableViewDelegate, UITextFieldDelegate>
 {
@@ -19,7 +19,7 @@
     UITextField *passwordTextField;
     UIActivityIndicatorView *savingIndicator;
     
-    CFAccount *account;
+    XboxAccount *account;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
@@ -28,6 +28,6 @@
 @property (nonatomic, retain) UITableViewTextFieldCell *passwordCell;
 
 @property (nonatomic, retain) NSString *password, *username;
-@property (nonatomic, retain) CFAccount *account;
+@property (nonatomic, retain) XboxAccount *account;
 
 @end

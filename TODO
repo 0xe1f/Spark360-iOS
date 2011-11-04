@@ -1,0 +1,3 @@
+* Finish Account Editing
+* When "Edit" is clicked, "Done" needs to change back to "Edit" 
+* Account adding fails, because cookies from other sessions seem to be interfering
