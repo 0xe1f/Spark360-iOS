@@ -8,26 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-#import "UITableViewTextFieldCell.h"
-#import "XboxAccount.h"
+#import "AccountEditController.h"
 
-@interface AccountAddController : UIViewController<UITableViewDelegate, UITextFieldDelegate>
+@interface AccountAddController : AccountEditController
 {
-    UIBarButtonItem *saveButton;
-    
-    UITextField *usernameTextField;
-    UITextField *passwordTextField;
-    UIActivityIndicatorView *savingIndicator;
-    
-    XboxAccount *account;
 }
-
-@property (nonatomic, retain) IBOutlet UITableView *tableView;
-
-@property (nonatomic, retain) UITableViewTextFieldCell *usernameCell;
-@property (nonatomic, retain) UITableViewTextFieldCell *passwordCell;
-
-@property (nonatomic, retain) NSString *password, *username;
-@property (nonatomic, retain) XboxAccount *account;
 
 @end

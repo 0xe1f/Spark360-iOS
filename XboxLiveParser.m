@@ -92,7 +92,6 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 }
 
 -(void)synchronizeAccount:(XboxAccount*)account
-              withContext:(NSManagedObjectContext*)context
 {
     int ticks = [[NSDate date] timeIntervalSince1970] * 1000;
     NSString *url = [NSString stringWithFormat:URL_JSON_PROFILE, 

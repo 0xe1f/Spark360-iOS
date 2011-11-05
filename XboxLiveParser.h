@@ -15,7 +15,6 @@
           context:(NSManagedObjectContext*)context;
 -(BOOL)authenticate:(NSString*)emailAddress
        withPassword:(NSString*)password;
--(void)synchronizeAccount:(XboxAccount*)account
-              withContext:(NSManagedObjectContext*)context;
+-(void)synchronizeAccount:(XboxAccount*)account;
 
 @end

@@ -95,13 +95,6 @@
     return cell;
 }
 
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
-     // Return NO if you do not want the specified item to be editable.
-     return YES;
- }
-
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete)
@@ -114,12 +107,6 @@
         NSError *error = nil;
         if (![context save:&error])
         {
-            /*
-             TODO
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-             */
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
@@ -151,42 +138,6 @@
         [tableView setEditing:NO 
                      animated:YES];
     }
-    
-    /*
-     if ([aTableView cellForRowAtIndexPath:indexPath].editing) {
-     Blog *blog = [resultsController objectAtIndexPath:indexPath];
-     
-     EditSiteViewController *editSiteViewController;
-     editSiteViewController = [[EditSiteViewController alloc] initWithNibName:@"EditSiteViewController" bundle:nil];
-     
-     editSiteViewController.blog = blog;
-     if (DeviceIsPad()) {
-     UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:editSiteViewController];
-     aNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-     aNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-     aNavigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
-     appDelegate.navigationController = aNavigationController;
-     [appDelegate.splitViewController presentModalViewController:aNavigationController animated:YES];
-     [self cancel:self];
-     [aNavigationController release];
-     }
-     else {
-     [self.navigationController pushViewController:editSiteViewController animated:YES];
-     }
-     [editSiteViewController release];
-     [aTableView setEditing:NO animated:YES];
-     }
-     else {	// if ([self canChangeCurrentBlog]) {
-     Blog *blog = [resultsController objectAtIndexPath:indexPath];
-     [self showBlog:blog animated:YES];
-     
-     //we should keep a reference to the last selected blog
-     if (DeviceIsPad() == YES) {
-     self.currentBlog = blog;
-     }
-     }
-     [aTableView deselectRowAtIndexPath:[aTableView indexPathForSelectedRow] animated:YES];
-     */
 }
 
 - (void)didReceiveMemoryWarning
@@ -227,26 +178,8 @@
     // TODO: set properties here
     [self.navigationController pushViewController:ctrl 
                                          animated:YES];
+    
     [ctrl release];
-    
-    /*
-    // Create a new instance of the entity managed by the fetched results controller.
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    
-    // If appropriate, configure the new managed object.
-    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-    [newManagedObject setValue:[NSDate date] forKey:@"Gamertag"];
-    
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error])
-    {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-    */
 }
 
 #pragma mark - Fetched results controller
@@ -258,9 +191,6 @@
         return __fetchedResultsController;
     }
     
-    /*
-     Set up the fetched results controller.
-     */
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
@@ -358,15 +288,5 @@
 {
     [self.tableView endUpdates];
 }
-
-/*
- // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
- {
- // In the simplest, most efficient, case, reload the table view.
- [self.tableView reloadData];
- }
- */
 
 @end

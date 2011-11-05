@@ -13,6 +13,6 @@
     LoginFailed = "Login Failed";
     VerifyUsernameAndPassword = "Please make sure your email address and password are correct";
     ProvideValidUsernameAndPassword = "Please provide a valid email address and password combination";
-    AnAccountAlreadyExists = "An account with that email address already exists";
+    AnAccountAlreadyExists = "Another account with that email address already exists";
     OK = "OK";
 }
