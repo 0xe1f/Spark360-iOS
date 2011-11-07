@@ -3,24 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>PreferenceSpecifiers</key>
-	<array>
-		<dict>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-			<key>Title</key>
-			<string>Password</string>
-			<key>Key</key>
-			<string>AccountPasswordKey</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-			<key>Key</key>
-			<string>AccountUsernameKey</string>
-			<key>Title</key>
-			<string>Username</string>
-		</dict>
-	</array>
+	<array/>
 	<key>StringsTable</key>
 	<string>Root</string>
 </dict>

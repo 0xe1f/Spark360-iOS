@@ -20,6 +20,13 @@
                      namePattern:(NSRegularExpression*)namePattern;
 +(NSDictionary*)jsonObjectFromLive:(NSString*)script;
 
+-(void)saveSessionForEmailAddress:(NSString*)emailAddress;
+-(void)saveSessionForAccount:(XboxAccount*)account;
+-(BOOL)restoreSessionForAccount:(XboxAccount*)account;
+-(void)clearAllSessions;
+
+-(BOOL)parseSynchronizeAccount:(XboxAccount*)account;
+
 @end
 
 @implementation XboxLiveParser
@@ -29,6 +36,8 @@ NSString* const CULTURE = @"en-US";
 NSString* const URL_GAMES = @"http://www.akop.org/xtest/games.html";
 NSString* const URL_LOGIN = @"http://login.live.com/login.srf?wa=wsignin1.0&wreply=%@";
 NSString* const URL_LOGIN_MSN = @"https://msnia.login.live.com/ppsecure/post.srf?wa=wsignin1.0&wreply=%@";
+
+NSString* const URL_GAMERCARD = @"http://gamercard.xbox.com/%@/%@.card";
 
 NSString* const URL_JSON_PROFILE = @"http://live.xbox.com/Handlers/ShellData.ashx?culture=%@&XBXMChg=%i&XBXNChg=%i&XBXSPChg=%i&XBXChg=%i&leetcallback=jsonp1287728723001";
 NSString* const REFERER_JSON_PROFILE = @"http://live.xbox.com/%@/MyXbox";
@@ -93,6 +102,43 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 
 -(void)synchronizeAccount:(XboxAccount*)account
 {
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticate:account.emailAddress
+                   withPassword:account.password])
+        {
+            // Authentication failed. Critical
+            // TODO: FAIL
+        }
+    }
+    
+    if (![self parseSynchronizeAccount:account])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticate:account.emailAddress
+                   withPassword:account.password])
+        {
+            // Re-authentication failed. Critical
+            // TODO: FAIL
+        }
+        
+        if (![self parseSynchronizeAccount:account])
+        {
+            // Account parsing failed. Critical
+            // TODO: FAIL
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+}
+
+-(BOOL)parseSynchronizeAccount:(XboxAccount*)account
+{
     int ticks = [[NSDate date] timeIntervalSince1970] * 1000;
     NSString *url = [NSString stringWithFormat:URL_JSON_PROFILE, 
                      CULTURE, ticks, ticks, ticks, ticks];
@@ -107,7 +153,12 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                                        fields:nil
                                    addHeaders:headers];
     
+    if (!jsonPage)
+        return NO;
+    
     NSDictionary *object = [XboxLiveParser jsonObjectFromLive:jsonPage];
+    if (!object)
+        return NO;
     
     // TODO: what if error?
     
@@ -122,23 +173,109 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     /*
      TODO: Load REP from Gamercard
-           Block duplicate email addresses
-           When first bad login fails, second bad login just exits authentication
-           Account editing
      */
+    
+    /*
+     return String.format(URL_GAMERCARD,
+     mContext.getString(R.string.locale),
+     URLEncoder.encode(gamertag, "UTF-8")).replace("+", "%20");
+     
+     url = getGamercardUrl(gamertag);
+     
+     try
+     {
+     page = getResponse(url);
+     }
+     catch(Exception e)
+     {
+     // Ignore errors - not vital
+     page = null;
+     if (App.LOGV)
+     e.printStackTrace();
+     }
+     
+     int rep = 0;
+     String zone = null;
+     
+     if (page != null)
+     {
+     rep = getStarRating(page);
+     }
+     
+     cv.put(Profiles.REP, rep);
+     cv.put(Profiles.ZONE, zone);
+     */
+    
+    return YES;
+}
+
+
+-(void)clearAllSessions
+{
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray *cookies = [cookieStorage cookies];
+    
+    for (NSHTTPCookie *cookie in cookies)
+        [cookieStorage deleteCookie:cookie];
+}
+
+-(BOOL)restoreSessionForAccount:(XboxAccount*)account
+{
+    NSLog(@"Restoring session for %@...", account.emailAddress);
+    
+    [self clearAllSessions];
+    
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSString *cookieKey = [NSString stringWithFormat:@"CookiesFor", account.emailAddress];
+    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:cookieKey];
+    
+    if (!data || [data length] <= 0)
+        return NO;
+    
+    NSArray *cookies = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    if (!cookies)
+        return NO;
+    
+    for (NSHTTPCookie *cookie in cookies)
+        [cookieStorage setCookie:cookie];
+    
+    return YES;
+}
+
+-(void)saveSessionForEmailAddress:(NSString*)emailAddress
+{
+    NSLog(@"Saving session for %@...", emailAddress);
+    
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSString *cookieKey = [NSString stringWithFormat:@"CookiesFor", emailAddress];
+    NSArray *cookies = [cookieStorage cookies];
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    if ([cookies count] > 0)
+    {
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
+        [prefs setObject:data 
+                  forKey:cookieKey];
+    }
+    
+    [prefs synchronize];
+}
+
+-(void)saveSessionForAccount:(XboxAccount*)account
+{
+    [self saveSessionForEmailAddress:account.emailAddress];
 }
 
 -(BOOL)authenticate:(NSString*)emailAddress
        withPassword:(NSString*)password
 {
-    NSString *url = [NSString stringWithFormat:([emailAddress hasSuffix:@"@msn.com"]) 
-                     ? URL_LOGIN_MSN : URL_LOGIN, URL_REPLY_TO];
+    [self clearAllSessions];
     
-    // Remove the authentication cookies
-    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSArray *array = [cookieStorage cookiesForURL:[NSURL URLWithString:url]];
-    for (NSHTTPCookie *cookie in array)
-        [cookieStorage deleteCookie:cookie];
+    NSLog(@"Authenticating...");
+    
+    BOOL isMsn = [emailAddress hasSuffix:@"@msn.com"];
+    NSString *url = [NSString stringWithFormat:isMsn ? URL_LOGIN_MSN : URL_LOGIN, 
+                     URL_REPLY_TO];
     
     NSError *error = nil;
     NSTextCheckingResult *match;
@@ -155,11 +292,14 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                                          range:NSMakeRange(0, [loginPage length])];
     
     if (!match)
+    {
+        NSLog(@"Authentication failed in stage 1: URL");
         return NO;
+    }
     
     NSString *postUrl = [loginPage substringWithRange:[match rangeAtIndex:1]];
     
-    if ([emailAddress hasSuffix:@"@msn.com"])
+    if (isMsn)
         postUrl = [postUrl stringByReplacingOccurrencesOfString:@"://login.live.com/" 
                                                      withString:@"://msnia.login.live.com/"];
     
@@ -172,7 +312,10 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                                        range:NSMakeRange(0, [loginPage length])];
     
     if (!match)
+    {
+        NSLog(@"Authentication failed in stage 1: PPSX");
         return NO;
+    }
     
     NSString *ppsx = [loginPage substringWithRange:[match rangeAtIndex:1]];
     
@@ -197,10 +340,15 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                            namePattern:nil];
     
     if (![inputs objectForKey:@"ANON"])
+    {
+        NSLog(@"Authentication failed in stage 2");
         return NO;
+    }
     
     [self loadWithPOST:redirUrl
                 fields:inputs];
+    
+    [self saveSessionForEmailAddress:emailAddress];
     
     return YES;
 }

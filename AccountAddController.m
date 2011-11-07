@@ -27,11 +27,8 @@
     
     self.navigationItem.title = NSLocalizedString(@"AddAccount", nil);
     
-    if (account)
-    {
-        self.emailAddress = account.emailAddress;
-        self.password = account.password;
-    }
+    self.emailAddress = @"";
+    self.password = @"";
 }
 
 #pragma mark etc

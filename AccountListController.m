@@ -49,6 +49,10 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [self setEditing:NO];
+    [self.tableView setEditing:NO 
+                      animated:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -101,6 +105,7 @@
     
     [self configureCell:cell 
             atIndexPath:indexPath];
+    
     return cell;
 }
 
@@ -144,8 +149,6 @@
                                              animated:YES];
         
         [editController release];
-        [tableView setEditing:NO 
-                     animated:YES];
     }
 }
 
@@ -203,7 +206,6 @@
     AccountAddController *ctrl = [[AccountAddController alloc] initWithNibName:@"AccountAdd"
                                                                         bundle:nil];
     
-    // TODO: set properties here
     [self.navigationController pushViewController:ctrl 
                                          animated:YES];
     
@@ -231,7 +233,8 @@
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"screenName" 
-                                                                   ascending:NO];
+                                                                   ascending:YES
+                                                                    selector:@selector(caseInsensitiveCompare:)];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
