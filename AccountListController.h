@@ -12,6 +12,8 @@
 
 @interface AccountListController : UITableViewController <NSFetchedResultsControllerDelegate>
 
+@property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
+
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 

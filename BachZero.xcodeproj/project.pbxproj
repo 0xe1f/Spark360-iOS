@@ -47,6 +47,7 @@
 		FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14013E6404900095480 /* GTMNSString+HTML.m */; };
 		FEB3E14413E6404900095480 /* CFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14213E6404900095480 /* CFParser.m */; };
 		FED5AD2113EEFA9A00808BFF /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FED5AD1F13EEFA9A00808BFF /* XboxLive.xcdatamodeld */; };
+		FEFF552814679ED900190D58 /* AccountCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFF552714679ED900190D58 /* AccountCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -121,6 +122,7 @@
 		FEB3E14113E6404900095480 /* CFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFParser.h; sourceTree = "<group>"; };
 		FEB3E14213E6404900095480 /* CFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFParser.m; sourceTree = "<group>"; };
 		FED5AD2013EEFA9A00808BFF /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
+		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,7 +156,6 @@
 				FE76A95013E636A9006D6AFC /* MainWindow.xib */,
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
 				FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */,
-				FE5CAE1513F728F4004BC903 /* Cells */,
 				FE3FE14913F72AD2009467EF /* Images */,
 				FE5CAE1413F728E5004BC903 /* UI */,
 				FEA47124144FED35009F0CB4 /* Settings.bundle */,
@@ -168,24 +169,18 @@
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
 				FE76A95613E636A9006D6AFC /* GameList.xib */,
+				FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */,
+				FEFF552714679ED900190D58 /* AccountCell.xib */,
 			);
 			name = UI;
-			sourceTree = "<group>";
-		};
-		FE5CAE1513F728F4004BC903 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */,
-			);
-			name = Cells;
 			sourceTree = "<group>";
 		};
 		FE5CAE1613F72980004BC903 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				FE726B471461120100534279 /* Models */,
 				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
 				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
+				FE726B471461120100534279 /* Models */,
 				FE610D3713EE938400420372 /* Controllers */,
 				FE9E371413F8EA2300A6EE36 /* UI */,
 			);
@@ -386,6 +381,7 @@
 				FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */,
 				FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */,
 				FE726B801463CD7600534279 /* TODO in Resources */,
+				FEFF552814679ED900190D58 /* AccountCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

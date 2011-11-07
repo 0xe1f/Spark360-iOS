@@ -11,6 +11,8 @@
 #import "AccountAddController.h"
 #import "AccountEditController.h"
 
+#import "CFImageCache.h"
+
 @interface AccountListController ()
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -22,6 +24,8 @@
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
 
+@synthesize tvCell;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -30,6 +34,8 @@
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
                                                                                target:self 
                                                                                action:@selector(insertNewObject)];
+    
+    [[CFImageCache sharedInstance] purgeInMemCache];
     
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     self.navigationItem.title = NSLocalizedString(@"Accounts", nil);
@@ -83,15 +89,18 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+    if (!cell)
+    {
+        [[NSBundle mainBundle] loadNibNamed:@"AccountCell"
+                                      owner:self
+                                    options:nil];
+        cell = [self tvCell];
     }
     
-    // Configure the cell.
-    [self configureCell:cell atIndexPath:indexPath];
+    [self configureCell:cell 
+            atIndexPath:indexPath];
     return cell;
 }
 
@@ -166,8 +175,27 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[managedObject valueForKey:@"screenName"] description];
+    XboxAccount *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    UILabel *label = (UILabel*)[cell viewWithTag:2];
+    [label setText:account.screenName];
+    
+    label = (UILabel*)[cell viewWithTag:3];
+    [label setText:NSLocalizedString(@"XboxLiveAccount", @"")];
+    
+    UIImage *boxArt = [[CFImageCache sharedInstance]
+                       getCachedFile:account.iconUrl
+                       notifyObject:self
+                       notifySelector:@selector(imageLoaded:)];
+    
+    UIImageView *view = (UIImageView*)[cell viewWithTag:6];
+    [view setImage:boxArt];
+}
+
+- (void)imageLoaded:(NSString*)url
+{
+    // TODO: this causes a full data reload; not a good idea
+    [self.tableView reloadData];
 }
 
 - (void)insertNewObject

@@ -14,5 +14,6 @@
     VerifyUsernameAndPassword = "Please make sure your email address and password are correct";
     ProvideValidUsernameAndPassword = "Please provide a valid email address and password combination";
     AnAccountAlreadyExists = "Another account with that email address already exists";
+    XboxLiveAccount = "Xbox Live";
     OK = "OK";
 }
