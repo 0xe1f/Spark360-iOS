@@ -16,24 +16,25 @@
         <attribute name="tier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unreadMessages" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="unreadNotifications" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="games" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxGame" inverseName="account" inverseEntity="XboxGame" syncable="YES"/>
     </entity>
-    <entity name="XboxPlayedGame">
-        <attribute name="AccountId" optional="YES" attributeType="String"/>
-        <attribute name="AchDirty" optional="YES" attributeType="Boolean"/>
-        <attribute name="AchTotal" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="AchUnlocked" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="BoxArtUrl" optional="YES" attributeType="String"/>
-        <attribute name="GameUrl" optional="YES" attributeType="String"/>
-        <attribute name="Index" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="LastPlayed" optional="YES" attributeType="Date"/>
-        <attribute name="LastUpdated" optional="YES" attributeType="Date"/>
-        <attribute name="PointsAcquired" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="PointsTotal" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="Title" optional="YES" attributeType="String"/>
-        <attribute name="Uid" optional="YES" attributeType="String"/>
+    <entity name="XboxGame" syncable="YES">
+        <attribute name="achievesDirty" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="achievesTotal" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="achievesUnlocked" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="boxArtUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gamerScoreEarned" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="gamerScoreTotal" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="gameUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastPlayed" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="listOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="account" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxAccount" inverseName="games" inverseEntity="XboxAccount" syncable="YES"/>
     </entity>
     <elements>
-        <element name="XboxPlayedGame" positionX="160" positionY="192" width="128" height="240"/>
-        <element name="XboxAccount" positionX="160" positionY="192" width="128" height="270"/>
+        <element name="XboxAccount" positionX="160" positionY="192" width="128" height="285"/>
+        <element name="XboxGame" positionX="160" positionY="192" width="128" height="240"/>
     </elements>
 </model>

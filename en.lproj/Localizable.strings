@@ -16,4 +16,5 @@
     AnAccountAlreadyExists = "Another account with that email address already exists";
     XboxLiveAccount = "Xbox Live";
     OK = "OK";
+    Locale = "en-US";
 }

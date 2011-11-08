@@ -9,6 +9,8 @@
 #import "XboxLiveParser.h"
 
 #import "GTMNSString+HTML.h"
+#import "GTMNSString+URLArguments.h"
+
 #import "SBJson.h"
 
 @interface XboxLiveParser (PrivateMethods)
@@ -19,6 +21,7 @@
 +(NSMutableDictionary*)getInputs:(NSString*)response
                      namePattern:(NSRegularExpression*)namePattern;
 +(NSDictionary*)jsonObjectFromLive:(NSString*)script;
++(NSNumber*)getStarRatingFromPage:(NSString*)html;
 
 -(void)saveSessionForEmailAddress:(NSString*)emailAddress;
 -(void)saveSessionForAccount:(XboxAccount*)account;
@@ -26,12 +29,13 @@
 -(void)clearAllSessions;
 
 -(BOOL)parseSynchronizeAccount:(XboxAccount*)account;
+-(BOOL)parseSynchronizeGames:(XboxAccount*)account;
 
 @end
 
 @implementation XboxLiveParser
 
-NSString* const CULTURE = @"en-US";
+#define LOCALE NSLocalizedString(@"Locale", nil)
 
 NSString* const URL_GAMES = @"http://www.akop.org/xtest/games.html";
 NSString* const URL_LOGIN = @"http://login.live.com/login.srf?wa=wsignin1.0&wreply=%@";
@@ -45,6 +49,8 @@ NSString* const REFERER_JSON_PROFILE = @"http://live.xbox.com/%@/MyXbox";
 NSString* const URL_REPLY_TO = @"https://live.xbox.com/xweb/live/passport/setCookies.ashx";
 
 NSString* const PATTERN_EXTRACT_JSON = @"^[^\\{]+(\\{.*\\})\\);?\\s*$";
+
+NSString* const PATTERN_GAMERCARD_REP = @"class=\"Star ([^\"]*)\"";
 
 NSString* const PATTERN_LOGIN_LIVE_AUTH_URL = @"var\\s*srf_uPost\\s*=\\s*'([^']*)'";
 NSString* const PATTERN_LOGIN_PPSX = @"var\\s*srf_sRBlob\\s*=\\s*'([^']*)'";
@@ -71,6 +77,30 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 -(void)dealloc
 {
     [super dealloc];
+}
+
++(NSNumber*)getStarRatingFromPage:(NSString*)html
+{
+    NSArray *starClasses = [NSArray arrayWithObjects:@"empty", @"quarter", 
+                            @"half", @"threequarter", @"full", nil];
+    NSRegularExpression *starMatcher = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAMERCARD_REP
+                                                                                 options:NSRegularExpressionCaseInsensitive
+                                                                                   error:nil];
+    
+    __block NSUInteger rating = 0;
+    [starMatcher enumerateMatchesInString:html 
+                                  options:0
+                                    range:NSMakeRange(0, [html length])
+                               usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) 
+     {
+         NSString *starClass = [html substringWithRange:[result rangeAtIndex:1]];
+         NSUInteger starValue = [starClasses indexOfObject:[starClass lowercaseString]];
+         
+         if (starValue != NSNotFound)
+             rating += starValue;
+     }];
+    
+    return [NSNumber numberWithUnsignedInteger:rating];
 }
 
 +(NSDictionary*)jsonObjectFromLive:(NSString*)script
@@ -137,12 +167,49 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     [self saveSessionForAccount:account];
 }
 
+-(void)synchronizeGames:(XboxAccount*)account
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticate:account.emailAddress
+                   withPassword:account.password])
+        {
+            // Authentication failed. Critical
+            // TODO: FAIL
+        }
+    }
+    
+    if (![self parseSynchronizeGames:account])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticate:account.emailAddress
+                   withPassword:account.password])
+        {
+            // Re-authentication failed. Critical
+            // TODO: FAIL
+        }
+        
+        if (![self parseSynchronizeGames:account])
+        {
+            // Account parsing failed. Critical
+            // TODO: FAIL
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+}
+
 -(BOOL)parseSynchronizeAccount:(XboxAccount*)account
 {
     int ticks = [[NSDate date] timeIntervalSince1970] * 1000;
     NSString *url = [NSString stringWithFormat:URL_JSON_PROFILE, 
-                     CULTURE, ticks, ticks, ticks, ticks];
-    NSString *referer = [NSString stringWithFormat:REFERER_JSON_PROFILE, CULTURE];
+                     LOCALE, ticks, ticks, ticks, ticks];
+    NSString *referer = [NSString stringWithFormat:REFERER_JSON_PROFILE, LOCALE];
     NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:
                              referer, @"Referer",
                              @"XMLHttpRequest", @"X-Requested-With", 
@@ -171,44 +238,20 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     account.unreadMessages = [NSNumber numberWithInt:[[object objectForKey:@"messages"] intValue]];
     account.unreadNotifications = [NSNumber numberWithInt:[[object objectForKey:@"notifications"] intValue]];
     
-    /*
-     TODO: Load REP from Gamercard
-     */
+    url = [NSString stringWithFormat:URL_GAMERCARD, LOCALE,
+           [account.screenName gtm_stringByEscapingForURLArgument]];
     
-    /*
-     return String.format(URL_GAMERCARD,
-     mContext.getString(R.string.locale),
-     URLEncoder.encode(gamertag, "UTF-8")).replace("+", "%20");
-     
-     url = getGamercardUrl(gamertag);
-     
-     try
-     {
-     page = getResponse(url);
-     }
-     catch(Exception e)
-     {
-     // Ignore errors - not vital
-     page = null;
-     if (App.LOGV)
-     e.printStackTrace();
-     }
-     
-     int rep = 0;
-     String zone = null;
-     
-     if (page != null)
-     {
-     rep = getStarRating(page);
-     }
-     
-     cv.put(Profiles.REP, rep);
-     cv.put(Profiles.ZONE, zone);
-     */
+    NSString *cardPage = [self loadWithGET:url
+                                    fields:nil];
+    
+    // An error is not fatal, so we ignore them
+    if (cardPage)
+    {
+        account.rep = [XboxLiveParser getStarRatingFromPage:cardPage];
+    }
     
     return YES;
 }
-
 
 -(void)clearAllSessions
 {
@@ -353,66 +396,64 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return YES;
 }
 
--(void)parseGames:(XboxAccount*)account
-           context:(NSManagedObjectContext*)context
+-(BOOL)parseSynchronizeGames:(XboxAccount*)account
 {
     /*
-    NSString *aStr = [self loadWithGET:URL_GAMES
+    NSString *page = [self loadWithGET:URL_GAMES
                                 fields:nil];
     
-    if (aStr == nil)
-        return; // TODO: raise an error
+    if (!page)
+        return NO;
     
-    NSError *error = nil;
     NSRegularExpression *regex = [NSRegularExpression 
                                   regularExpressionWithPattern:PATTERN_GAMES
                                   options:NSRegularExpressionDotMatchesLineSeparators
-                                  error:&error];
+                                  error:nil];
     
     NSRegularExpression *findGameTitle = [NSRegularExpression
                                           regularExpressionWithPattern:PATTERN_GAME_TITLE
                                           options:0
-                                          error:&error];
+                                          error:nil];
     NSRegularExpression *findGameAchUrl = [NSRegularExpression
                                            regularExpressionWithPattern:PATTERN_GAME_ACHIEVEMENT_URL
                                            options:0
-                                           error:&error];
+                                           error:nil];
     NSRegularExpression *findGameBoxArtUrl = [NSRegularExpression
                                               regularExpressionWithPattern:PATTERN_GAME_BOXART_URL
                                               options:0
-                                              error:&error];
+                                              error:nil];
     
     NSRegularExpression *findGameScore = [NSRegularExpression
                                           regularExpressionWithPattern:PATTERN_GAME_GAMERSCORE
                                           options:0
-                                          error:&error];
+                                          error:nil];
     NSRegularExpression *findGameAchs = [NSRegularExpression
                                          regularExpressionWithPattern:PATTERN_GAME_ACHIEVEMENTS
                                          options:0
-                                         error:&error];
+                                         error:nil];
     
     NSRegularExpression *findGameLastPlayed = [NSRegularExpression
                                                regularExpressionWithPattern:PATTERN_GAME_LAST_PLAYED
                                                options:0
-                                               error:&error];
+                                               error:nil];
     
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxPlayedGame"
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
                                                          inManagedObjectContext:context];
     
     __block int listOrder = 0;
     NSDate *lastUpdated = [NSDate date];
     
     // TODO: error check
-    [regex enumerateMatchesInString:aStr 
+    [regex enumerateMatchesInString:page 
                             options:0
-                              range:NSMakeRange(0, [aStr length])
+                              range:NSMakeRange(0, [page length])
                          usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) 
      {
          
          listOrder++;
          
          // Isolate the game section
-         NSString *gameSection = [aStr substringWithRange:[result rangeAtIndex:1]];
+         NSString *gameSection = [page substringWithRange:[result rangeAtIndex:1]];
          
          // Find the ach. URL (and therefore game UID)
          NSTextCheckingResult *match;
@@ -429,7 +470,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
          // Fetch game, or create a new one
          NSManagedObject *game;
          
-         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(Uid = %@) AND (AccountId = %d)", uid, [account accountId]];
+         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(uid = %@) AND (AccountId = %d)", 
+                                   uid, [account accountId]];
          
          NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
          [request setEntity:entityDescription];
@@ -443,12 +485,12 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
          if (!(game = [array lastObject]))
          {
              game = [NSEntityDescription 
-                     insertNewObjectForEntityForName:@"XboxPlayedGame"
+                     insertNewObjectForEntityForName:@"XboxGame"
                      inManagedObjectContext:context];
              
              // These will not change, so just set them up the first time
              
-             [game setValue:uid forKey:@"Uid"];
+             [game setValue:uid forKey:@"uid"];
              [game setValue:[account accountId] forKey:@"AccountId"];
              
              match = [findGameTitle 
@@ -461,8 +503,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                  NSString *gameUrl = [gameSection substringWithRange:[match rangeAtIndex:1]];
                  NSString *title = [[gameSection substringWithRange:[match rangeAtIndex:2]] gtm_stringByUnescapingFromHTML];
                  
-                 [game setValue:gameUrl forKey:@"GameUrl"];
-                 [game setValue:title forKey:@"Title"];
+                 [game setValue:gameUrl forKey:@"gameUrl"];
+                 [game setValue:title forKey:@"title"];
              }
              
              match = [findGameBoxArtUrl
@@ -475,7 +517,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                  NSString *boxArtUrl = [gameSection substringWithRange:[match rangeAtIndex:1]];
                  
                  [game setValue:[XboxLiveParser getUniversalIcon:boxArtUrl] 
-                         forKey:@"BoxArtUrl"];
+                         forKey:@"boxArtUrl"];
              }
          }
          
@@ -498,8 +540,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
              achTotal = [[gameSection substringWithRange:[match rangeAtIndex:2]] intValue];
          }
          
-         [game setValue:[NSNumber numberWithInt:achUnlocked] forKey:@"AchUnlocked"];
-         [game setValue:[NSNumber numberWithInt:achTotal] forKey:@"AchTotal"];
+         [game setValue:[NSNumber numberWithInt:achUnlocked] forKey:@"achievesUnlocked"];
+         [game setValue:[NSNumber numberWithInt:achTotal] forKey:@"achievesTotal"];
          
          // Game score
          
@@ -517,8 +559,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
              scoreTotal = [[gameSection substringWithRange:[match rangeAtIndex:2]] intValue];
          }
          
-         [game setValue:[NSNumber numberWithInt:scoreAcquired] forKey:@"PointsAcquired"];
-         [game setValue:[NSNumber numberWithInt:scoreTotal] forKey:@"PointsTotal"];
+         [game setValue:[NSNumber numberWithInt:scoreAcquired] forKey:@"gamerScoreEarned"];
+         [game setValue:[NSNumber numberWithInt:scoreTotal] forKey:@"gamerScoreTotal"];
          
          // Last played
          
@@ -532,14 +574,15 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
          if (match)
              lastPlayed = [XboxLiveParser parseDate:[gameSection substringWithRange:[match rangeAtIndex:1]]];
          
-         [game setValue:lastPlayed forKey:@"LastPlayed"];
-         [game setValue:lastUpdated forKey:@"LastUpdated"];
-         [game setValue:[NSNumber numberWithInt:listOrder] forKey:@"Index"];
+         [game setValue:lastPlayed forKey:@"lastPlayed"];
+         [game setValue:lastUpdated forKey:@"lastUpdated"];
+         [game setValue:[NSNumber numberWithInt:listOrder] forKey:@"listOrder"];
     }];
     
     // Find "stale" games
     
-    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"(AccountId==%d) AND (LastUpdated!=%@)", [account accountId], lastUpdated];
+    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"(AccountId==%d) AND (lastUpdated!=%@)", 
+                                   [account accountId], lastUpdated];
     
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
@@ -561,9 +604,9 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         // TODO
         abort();
     }
-    
     */
-    NSLog(@"Done");
+    
+    return YES;
 }
 
 #pragma mark Helpers

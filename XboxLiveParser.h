@@ -11,10 +11,9 @@
 
 @interface XboxLiveParser : CFParser
 
--(void)parseGames:(XboxAccount*)account
-          context:(NSManagedObjectContext*)context;
 -(BOOL)authenticate:(NSString*)emailAddress
        withPassword:(NSString*)password;
 -(void)synchronizeAccount:(XboxAccount*)account;
+-(void)synchronizeGames:(XboxAccount*)account;
 
 @end

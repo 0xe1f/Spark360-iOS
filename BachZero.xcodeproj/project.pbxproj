@@ -36,11 +36,11 @@
 		FE76A95213E636A9006D6AFC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE76A95013E636A9006D6AFC /* MainWindow.xib */; };
 		FE76A95513E636A9006D6AFC /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A95413E636A9006D6AFC /* GameListController.m */; };
 		FE76A95813E636A9006D6AFC /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE76A95613E636A9006D6AFC /* GameList.xib */; };
+		FE8EA2BA1468EE02009E26F0 /* GTMNSString+URLArguments.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */; };
 		FE9E371113F8E94A00A6EE36 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E370F13F8E94A00A6EE36 /* AccountAddController.m */; };
 		FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */; };
 		FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */; };
 		FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FEA47124144FED35009F0CB4 /* Settings.bundle */; };
-		FEAC6F0F13E924EE000D86D1 /* CFAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F0E13E924EE000D86D1 /* CFAccount.m */; };
 		FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */; };
 		FEAC6F1B13EA7F73000D86D1 /* XboxGameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */; };
 		FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */; };
@@ -104,14 +104,15 @@
 		FE76A95313E636A9006D6AFC /* GameListController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GameListController.h; path = ListTest/GameListController.h; sourceTree = "<group>"; };
 		FE76A95413E636A9006D6AFC /* GameListController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GameListController.m; path = ListTest/GameListController.m; sourceTree = "<group>"; };
 		FE76A95713E636A9006D6AFC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GameList.xib; sourceTree = "<group>"; };
+		FE8EA2B81468EE02009E26F0 /* GTMNSString+URLArguments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+URLArguments.h"; sourceTree = "<group>"; };
+		FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+URLArguments.m"; sourceTree = "<group>"; };
+		FE8EA2BC1468EE2E009E26F0 /* GTMGarbageCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMGarbageCollection.h; sourceTree = "<group>"; };
 		FE9E370E13F8E94A00A6EE36 /* AccountAddController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountAddController.h; sourceTree = "<group>"; };
 		FE9E370F13F8E94A00A6EE36 /* AccountAddController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountAddController.m; sourceTree = "<group>"; };
 		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
 		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewTextFieldCell.h; sourceTree = "<group>"; };
 		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewTextFieldCell.m; sourceTree = "<group>"; };
 		FEA47124144FED35009F0CB4 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		FEAC6F0D13E924EE000D86D1 /* CFAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFAccount.h; sourceTree = "<group>"; };
-		FEAC6F0E13E924EE000D86D1 /* CFAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFAccount.m; sourceTree = "<group>"; };
 		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
 		FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveParser.m; sourceTree = "<group>"; };
 		FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = XboxGameCell.xib; path = ListTest/XboxGameCell.xib; sourceTree = "<group>"; };
@@ -300,8 +301,6 @@
 			children = (
 				FEB3E13D13E6404900095480 /* GTM */,
 				FE610D3613EE15CA00420372 /* CFCaffeine.h */,
-				FEAC6F0D13E924EE000D86D1 /* CFAccount.h */,
-				FEAC6F0E13E924EE000D86D1 /* CFAccount.m */,
 				FE610D2F13EDD8A700420372 /* CFImageCache.h */,
 				FE610D3013EDD8A700420372 /* CFImageCache.m */,
 				FE610D3313EE125700420372 /* CFImageCacheOperation.h */,
@@ -315,6 +314,9 @@
 		FEB3E13D13E6404900095480 /* GTM */ = {
 			isa = PBXGroup;
 			children = (
+				FE8EA2BC1468EE2E009E26F0 /* GTMGarbageCollection.h */,
+				FE8EA2B81468EE02009E26F0 /* GTMNSString+URLArguments.h */,
+				FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */,
 				FEB3E13E13E6404900095480 /* GTMDefines.h */,
 				FEB3E13F13E6404900095480 /* GTMNSString+HTML.h */,
 				FEB3E14013E6404900095480 /* GTMNSString+HTML.m */,
@@ -397,7 +399,6 @@
 				FE76A95513E636A9006D6AFC /* GameListController.m in Sources */,
 				FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */,
 				FEB3E14413E6404900095480 /* CFParser.m in Sources */,
-				FEAC6F0F13E924EE000D86D1 /* CFAccount.m in Sources */,
 				FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */,
 				FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */,
 				FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */,
@@ -419,6 +420,7 @@
 				FE726B6D14611E9C00534279 /* SBJsonWriter.m in Sources */,
 				FE726B73146261B800534279 /* XboxAccount.m in Sources */,
 				FE726B7E1463CAD200534279 /* AccountEditController.m in Sources */,
+				FE8EA2BA1468EE02009E26F0 /* GTMNSString+URLArguments.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

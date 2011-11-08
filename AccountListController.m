@@ -10,6 +10,7 @@
 
 #import "AccountAddController.h"
 #import "AccountEditController.h"
+#import "GameListController.h"
 
 #import "CFImageCache.h"
 
@@ -135,10 +136,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    XboxAccount *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
     if ([tableView cellForRowAtIndexPath:indexPath].editing)
     {
-        XboxAccount *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        
         AccountEditController *editController;
         editController = [[AccountEditController alloc] initWithNibName:@"AccountAdd" 
                                                          bundle:nil];
@@ -149,6 +150,20 @@
                                              animated:YES];
         
         [editController release];
+    }
+    else
+    {
+        GameListController *ctlr;
+        ctlr = [[GameListController alloc] initWithNibName:@"GameList" 
+                                                    bundle:nil];
+        
+        ctlr.account = account;
+        ctlr.managedObjectContext = self.managedObjectContext;
+        
+        [self.navigationController pushViewController:ctlr 
+                                             animated:YES];
+        
+        [ctlr release];
     }
 }
 
