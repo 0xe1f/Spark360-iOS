@@ -35,6 +35,6 @@
     </entity>
     <elements>
         <element name="XboxAccount" positionX="160" positionY="192" width="128" height="285"/>
-        <element name="XboxGame" positionX="160" positionY="192" width="128" height="240"/>
+        <element name="XboxGame" positionX="-162" positionY="201" width="128" height="240"/>
     </elements>
 </model>

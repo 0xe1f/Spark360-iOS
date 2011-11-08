@@ -37,7 +37,7 @@
 
 #define LOCALE NSLocalizedString(@"Locale", nil)
 
-NSString* const URL_GAMES = @"http://www.akop.org/xtest/games.html";
+NSString* const URL_GAMES = @"http://live.xbox.com/%@/GameCenter";
 NSString* const URL_LOGIN = @"http://login.live.com/login.srf?wa=wsignin1.0&wreply=%@";
 NSString* const URL_LOGIN_MSN = @"https://msnia.login.live.com/ppsecure/post.srf?wa=wsignin1.0&wreply=%@";
 
@@ -398,8 +398,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 
 -(BOOL)parseSynchronizeGames:(XboxAccount*)account
 {
-    /*
-    NSString *page = [self loadWithGET:URL_GAMES
+    NSString *url = [NSString stringWithFormat:URL_GAMES, LOCALE];
+    NSString *page = [self loadWithGET:url
                                 fields:nil];
     
     if (!page)
@@ -437,6 +437,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                                                options:0
                                                error:nil];
     
+    NSManagedObjectContext *context = [account managedObjectContext];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
                                                          inManagedObjectContext:context];
     
@@ -469,17 +470,17 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
          
          // Fetch game, or create a new one
          NSManagedObject *game;
+         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND account == %@", 
+                                   uid, account];
          
-         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(uid = %@) AND (AccountId = %d)", 
-                                   uid, [account accountId]];
-         
-         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+         NSFetchRequest *request = [[NSFetchRequest alloc] init];
          [request setEntity:entityDescription];
          [request setPredicate:predicate];
          
          NSError *innerError = nil;
          NSArray *array = [context executeFetchRequest:request 
                                                  error:&innerError];
+         [request release];
          
          // If no such game exists, create a new one
          if (!(game = [array lastObject]))
@@ -491,7 +492,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
              // These will not change, so just set them up the first time
              
              [game setValue:uid forKey:@"uid"];
-             [game setValue:[account accountId] forKey:@"AccountId"];
+             [game setValue:account forKey:@"account"];
              
              match = [findGameTitle 
                       firstMatchInString:gameSection
@@ -581,16 +582,17 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     // Find "stale" games
     
-    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"(AccountId==%d) AND (lastUpdated!=%@)", 
-                                   [account accountId], lastUpdated];
+    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND account == %@", 
+                                   lastUpdated, account];
     
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     [request setPredicate:stalePredicate];
     
     NSError *innerError = nil;
     NSArray *staleObjs = [context executeFetchRequest:request 
                                                 error:&innerError];
+    [request release];
     
     // Delete "stale" games
     
@@ -599,12 +601,11 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     // Save
     
-    if (![context save:&error])
+    if (![context save:&innerError])
     {
-        // TODO
-        abort();
+        NSLog(@"parseSynchronizeGames: save failed");
+        return NO; // TODO: 
     }
-    */
     
     return YES;
 }
@@ -630,12 +631,15 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 
 +(NSDate*)parseDate:(NSString*)dateStr
 {
-    NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
     
     [dateFormatter setDateFormat:@"MM/dd/yyyy"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
     
-    return [dateFormatter dateFromString:dateStr];
+    NSDate *date = [dateFormatter dateFromString:dateStr];
+    [dateFormatter release];
+    
+    return date;
 }
 
 +(NSString*)getUniversalIcon:(NSString*)icon
