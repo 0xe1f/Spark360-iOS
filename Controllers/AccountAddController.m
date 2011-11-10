@@ -33,24 +33,25 @@
 
 #pragma mark etc
 
--(void)validationSucceeded
+-(void)validationSucceeded:(NSDictionary*)profile
 {
     // Save account object
     BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
     
     NSManagedObjectContext *context = bachApp.managedObjectContext;
-    account = [[[XboxAccount alloc] initWithEntity:[NSEntityDescription entityForName:@"XboxAccount"
-                                                               inManagedObjectContext:context]
-                    insertIntoManagedObjectContext:context] autorelease];
     
-    account.emailAddress = self.emailAddress;
-    account.password = self.password;
+    self.account = [NSEntityDescription insertNewObjectForEntityForName:@"XboxAccount"
+                                            inManagedObjectContext:context];
     
-    XboxLiveParser *parser = [[XboxLiveParser alloc] init];
-    [parser synchronizeAccount:account];
-    [parser release];
+    self.account.emailAddress = self.emailAddress;
+    self.account.password = self.password;
     
-    [account save];
+    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    [parser synchronizeProfileWithAccount:self.account
+                      withRetrievedObject:profile];
+    
+    // TODO: Error?
+    [[self.account managedObjectContext] save:nil];
     
     [savingIndicator stopAnimating];
     [savingIndicator setHidden:YES];
@@ -92,7 +93,7 @@
     [self.navigationItem  setHidesBackButton:YES
                                     animated:NO];
     
-    [self performSelectorInBackground:@selector(checkLogin) 
+    [self performSelectorInBackground:@selector(authenticate) 
                            withObject:nil];
 }
 

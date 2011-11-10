@@ -21,8 +21,6 @@
     UITextField *usernameTextField;
     UITextField *passwordTextField;
     UIActivityIndicatorView *savingIndicator;
-    
-    XboxAccount *account;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
@@ -34,8 +32,9 @@
 @property (nonatomic, retain) XboxAccount *account;
 
 -(void)validateFields;
--(void)validationSucceeded;
+-(void)validationSucceeded:(NSDictionary*)profile;
 -(void)validationFailed:(NSString*)message;
 
+-(void)authenticate;
 
 @end

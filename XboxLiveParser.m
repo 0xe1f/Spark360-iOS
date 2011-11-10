@@ -24,12 +24,16 @@
 +(NSNumber*)getStarRatingFromPage:(NSString*)html;
 
 -(void)saveSessionForEmailAddress:(NSString*)emailAddress;
--(void)saveSessionForAccount:(XboxAccount*)account;
--(BOOL)restoreSessionForAccount:(XboxAccount*)account;
+-(BOOL)restoreSessionForEmailAddress:(NSString*)emailAddress;
 -(void)clearAllSessions;
 
--(BOOL)parseSynchronizeAccount:(XboxAccount*)account;
+//-(BOOL)parseSynchronizeAccount:(XboxAccount*)account;
 -(BOOL)parseSynchronizeGames:(XboxAccount*)account;
+
+-(BOOL)parseSynchronizeProfile:(NSMutableDictionary*)profile
+                  emailAddress:(NSString*)emailAddress
+                      password:(NSString*)password
+                         error:(NSError**)error;
 
 @end
 
@@ -79,99 +83,11 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     [super dealloc];
 }
 
-+(NSNumber*)getStarRatingFromPage:(NSString*)html
-{
-    NSArray *starClasses = [NSArray arrayWithObjects:@"empty", @"quarter", 
-                            @"half", @"threequarter", @"full", nil];
-    NSRegularExpression *starMatcher = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAMERCARD_REP
-                                                                                 options:NSRegularExpressionCaseInsensitive
-                                                                                   error:nil];
-    
-    __block NSUInteger rating = 0;
-    [starMatcher enumerateMatchesInString:html 
-                                  options:0
-                                    range:NSMakeRange(0, [html length])
-                               usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) 
-     {
-         NSString *starClass = [html substringWithRange:[result rangeAtIndex:1]];
-         NSUInteger starValue = [starClasses indexOfObject:[starClass lowercaseString]];
-         
-         if (starValue != NSNotFound)
-             rating += starValue;
-     }];
-    
-    return [NSNumber numberWithUnsignedInteger:rating];
-}
-
-+(NSDictionary*)jsonObjectFromLive:(NSString*)script
-{
-    NSRegularExpression *extractJson = [NSRegularExpression
-                                        regularExpressionWithPattern:PATTERN_EXTRACT_JSON
-                                        options:0
-                                        error:nil];
-    
-    NSTextCheckingResult *match = [extractJson
-                                   firstMatchInString:script
-                                   options:0
-                                   range:NSMakeRange(0, [script length])];
-    
-    if (match)
-    {
-        NSString *json = [script substringWithRange:[match rangeAtIndex:1]];
-        
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        NSDictionary *dict = [parser objectWithString:json 
-                                                error:nil];
-        [parser release];
-        
-        return dict;
-    }
-    
-    return nil;
-}
-
--(void)synchronizeAccount:(XboxAccount*)account
-{
-    // Try restoring the session
-    
-    if (![self restoreSessionForAccount:account])
-    {
-        // Session couldn't be restored. Try re-authenticating
-        
-        if (![self authenticate:account.emailAddress
-                   withPassword:account.password])
-        {
-            // Authentication failed. Critical
-            // TODO: FAIL
-        }
-    }
-    
-    if (![self parseSynchronizeAccount:account])
-    {
-        // Account parsing failed. Try re-authenticating
-        
-        if (![self authenticate:account.emailAddress
-                   withPassword:account.password])
-        {
-            // Re-authentication failed. Critical
-            // TODO: FAIL
-        }
-        
-        if (![self parseSynchronizeAccount:account])
-        {
-            // Account parsing failed. Critical
-            // TODO: FAIL
-        }
-    }
-    
-    [self saveSessionForAccount:account];
-}
-
 -(void)synchronizeGames:(XboxAccount*)account
 {
     // Try restoring the session
     
-    if (![self restoreSessionForAccount:account])
+    if (![self restoreSessionForEmailAddress:account.emailAddress])
     {
         // Session couldn't be restored. Try re-authenticating
         
@@ -201,10 +117,90 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         }
     }
     
-    [self saveSessionForAccount:account];
+    [self saveSessionForEmailAddress:account.emailAddress];
 }
 
--(BOOL)parseSynchronizeAccount:(XboxAccount*)account
+-(NSDictionary*)retrieveProfileWithEmailAddress:(NSString*)emailAddress
+                                       password:(NSString*)password;
+{
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    // Try restoring the session
+    
+    if (![self restoreSessionForEmailAddress:emailAddress])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticate:emailAddress
+                   withPassword:password])
+        {
+            // Authentication failed. Critical
+            // TODO: FAIL
+        }
+    }
+    
+    if (![self parseSynchronizeProfile:dict
+                          emailAddress:emailAddress
+                              password:password
+                                 error:nil])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticate:emailAddress
+                   withPassword:password])
+        {
+            // Re-authentication failed. Critical
+            // TODO: FAIL
+        }
+        
+        if (![self parseSynchronizeProfile:dict
+                              emailAddress:emailAddress
+                                  password:password
+                                     error:nil])
+        {
+            // Account parsing failed. Critical
+            // TODO: FAIL
+        }
+    }
+    
+    [self saveSessionForEmailAddress:emailAddress];
+    
+    return [dict autorelease];
+}
+
+-(void)synchronizeProfileWithAccount:(XboxAccount*)account
+      withRetrievedObject:(NSDictionary*)dict
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    id value;
+    if ((value = [dict objectForKey:@"screenName"]))
+        account.screenName = value;
+    if ((value = [dict objectForKey:@"iconUrl"]))
+        account.iconUrl = value;
+    if ((value = [dict objectForKey:@"tier"]))
+        account.tier = value;
+    if ((value = [dict objectForKey:@"pointsBalance"]))
+        account.pointsBalance = value;
+    if ((value = [dict objectForKey:@"gamerscore"]))
+        account.gamerscore = value;
+    if ((value = [dict objectForKey:@"isGold"]))
+        account.isGold = value;
+    if ((value = [dict objectForKey:@"unreadMessages"]))
+        account.unreadMessages = value;
+    if ((value = [dict objectForKey:@"unreadNotifications"]))
+        account.unreadNotifications = value;
+    if ((value = [dict objectForKey:@"rep"]))
+        account.rep = value;
+    
+    NSLog(@"synchronizeProfileWithAccount: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(BOOL)parseSynchronizeProfile:(NSMutableDictionary*)profile
+                  emailAddress:(NSString*)emailAddress
+                      password:(NSString*)password
+                         error:(NSError**)error
 {
     int ticks = [[NSDate date] timeIntervalSince1970] * 1000;
     NSString *url = [NSString stringWithFormat:URL_JSON_PROFILE, 
@@ -229,169 +225,29 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     // TODO: what if error?
     
-    account.screenName = [object objectForKey:@"gamertag"];
-    account.iconUrl = [object objectForKey:@"gamerpic"];
-    account.pointsBalance = [NSNumber numberWithInt:[[object objectForKey:@"pointsbalancetext"] intValue]];
-    account.isGold = [NSNumber numberWithInt:[[object objectForKey:@"tier"] intValue] >= 6];
-    account.tier = [object objectForKey:@"tiertext"];
-    account.gamerscore = [NSNumber numberWithInt:[[object objectForKey:@"gamerscore"] intValue]];
-    account.unreadMessages = [NSNumber numberWithInt:[[object objectForKey:@"messages"] intValue]];
-    account.unreadNotifications = [NSNumber numberWithInt:[[object objectForKey:@"notifications"] intValue]];
+    NSString *gamertag = [object objectForKey:@"gamertag"];
+    
+    [profile setObject:gamertag forKey:@"screenName"];
+    [profile setObject:[object objectForKey:@"gamerpic"] forKey:@"iconUrl"];
+    [profile setObject:[object objectForKey:@"tiertext"] forKey:@"tier"];
+    
+    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"pointsbalancetext"] intValue]] forKey:@"pointsBalance"];
+    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"gamerscore"] intValue]] forKey:@"gamerscore"];
+    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"tier"] intValue] >= 6] forKey:@"isGold"];
+    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"messages"] intValue]] forKey:@"unreadMessages"];
+    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"notifications"] intValue]] forKey:@"unreadNotifications"];
     
     url = [NSString stringWithFormat:URL_GAMERCARD, LOCALE,
-           [account.screenName gtm_stringByEscapingForURLArgument]];
+           [gamertag gtm_stringByEscapingForURLArgument]];
     
     NSString *cardPage = [self loadWithGET:url
                                     fields:nil];
     
-    // An error is not fatal, so we ignore them
+    // An error for rep not fatal, so we ignore them
     if (cardPage)
     {
-        account.rep = [XboxLiveParser getStarRatingFromPage:cardPage];
+        [profile setObject:[XboxLiveParser getStarRatingFromPage:cardPage] forKey:@"rep"];
     }
-    
-    return YES;
-}
-
--(void)clearAllSessions
-{
-    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSArray *cookies = [cookieStorage cookies];
-    
-    for (NSHTTPCookie *cookie in cookies)
-        [cookieStorage deleteCookie:cookie];
-}
-
--(BOOL)restoreSessionForAccount:(XboxAccount*)account
-{
-    NSLog(@"Restoring session for %@...", account.emailAddress);
-    
-    [self clearAllSessions];
-    
-    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSString *cookieKey = [NSString stringWithFormat:@"CookiesFor", account.emailAddress];
-    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:cookieKey];
-    
-    if (!data || [data length] <= 0)
-        return NO;
-    
-    NSArray *cookies = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    if (!cookies)
-        return NO;
-    
-    for (NSHTTPCookie *cookie in cookies)
-        [cookieStorage setCookie:cookie];
-    
-    return YES;
-}
-
--(void)saveSessionForEmailAddress:(NSString*)emailAddress
-{
-    NSLog(@"Saving session for %@...", emailAddress);
-    
-    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSString *cookieKey = [NSString stringWithFormat:@"CookiesFor", emailAddress];
-    NSArray *cookies = [cookieStorage cookies];
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
-    if ([cookies count] > 0)
-    {
-        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
-        [prefs setObject:data 
-                  forKey:cookieKey];
-    }
-    
-    [prefs synchronize];
-}
-
--(void)saveSessionForAccount:(XboxAccount*)account
-{
-    [self saveSessionForEmailAddress:account.emailAddress];
-}
-
--(BOOL)authenticate:(NSString*)emailAddress
-       withPassword:(NSString*)password
-{
-    [self clearAllSessions];
-    
-    NSLog(@"Authenticating...");
-    
-    BOOL isMsn = [emailAddress hasSuffix:@"@msn.com"];
-    NSString *url = [NSString stringWithFormat:isMsn ? URL_LOGIN_MSN : URL_LOGIN, 
-                     URL_REPLY_TO];
-    
-    NSError *error = nil;
-    NSTextCheckingResult *match;
-    
-    NSString *loginPage = [self loadWithGET:url
-                                     fields:nil];
-    
-    NSRegularExpression *getLiveAuthUrl = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_LIVE_AUTH_URL
-                                                                                    options:NSRegularExpressionCaseInsensitive
-                                                                                      error:&error];
-    
-    match = [getLiveAuthUrl firstMatchInString:loginPage
-                                       options:0
-                                         range:NSMakeRange(0, [loginPage length])];
-    
-    if (!match)
-    {
-        NSLog(@"Authentication failed in stage 1: URL");
-        return NO;
-    }
-    
-    NSString *postUrl = [loginPage substringWithRange:[match rangeAtIndex:1]];
-    
-    if (isMsn)
-        postUrl = [postUrl stringByReplacingOccurrencesOfString:@"://login.live.com/" 
-                                                     withString:@"://msnia.login.live.com/"];
-    
-    NSRegularExpression *getPpsxValue = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_PPSX
-                                                                                  options:0
-                                                                                    error:&error];
-    
-    match = [getPpsxValue firstMatchInString:loginPage
-                                     options:0
-                                       range:NSMakeRange(0, [loginPage length])];
-    
-    if (!match)
-    {
-        NSLog(@"Authentication failed in stage 1: PPSX");
-        return NO;
-    }
-    
-    NSString *ppsx = [loginPage substringWithRange:[match rangeAtIndex:1]];
-    
-    NSMutableDictionary *inputs = [XboxLiveParser getInputs:loginPage
-                                                namePattern:nil];
-    
-    [inputs setValue:emailAddress
-              forKey:@"login"];
-    [inputs setValue:password
-              forKey:@"passwd"];
-    [inputs setValue:@"1"
-              forKey:@"LoginOptions"];
-    [inputs setValue:ppsx
-              forKey:@"PPSX"];
-    
-    NSString *loginResponse = [self loadWithPOST:postUrl
-                                          fields:inputs];
-    
-    NSString *redirUrl = [XboxLiveParser getActionUrl:loginResponse];
-    
-    inputs = [XboxLiveParser getInputs:loginResponse
-                           namePattern:nil];
-    
-    if (![inputs objectForKey:@"ANON"])
-    {
-        NSLog(@"Authentication failed in stage 2");
-        return NO;
-    }
-    
-    [self loadWithPOST:redirUrl
-                fields:inputs];
-    
-    [self saveSessionForEmailAddress:emailAddress];
     
     return YES;
 }
@@ -610,7 +466,198 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return YES;
 }
 
+#pragma mark Authentication, sessions
+
+-(void)clearAllSessions
+{
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray *cookies = [cookieStorage cookies];
+    
+    for (NSHTTPCookie *cookie in cookies)
+        [cookieStorage deleteCookie:cookie];
+}
+
+-(BOOL)restoreSessionForEmailAddress:(NSString*)emailAddress
+{
+    NSLog(@"Restoring session for %@...", emailAddress);
+    
+    [self clearAllSessions];
+    
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSString *cookieKey = [NSString stringWithFormat:@"CookiesFor", emailAddress];
+    NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:cookieKey];
+    
+    if (!data || [data length] <= 0)
+        return NO;
+    
+    NSArray *cookies = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    if (!cookies)
+        return NO;
+    
+    for (NSHTTPCookie *cookie in cookies)
+        [cookieStorage setCookie:cookie];
+    
+    return YES;
+}
+
+-(void)saveSessionForEmailAddress:(NSString*)emailAddress
+{
+    NSLog(@"Saving session for %@...", emailAddress);
+    
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSString *cookieKey = [NSString stringWithFormat:@"CookiesFor", emailAddress];
+    NSArray *cookies = [cookieStorage cookies];
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    if ([cookies count] > 0)
+    {
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:cookies];
+        [prefs setObject:data 
+                  forKey:cookieKey];
+    }
+    
+    [prefs synchronize];
+}
+
+-(BOOL)authenticate:(NSString*)emailAddress
+       withPassword:(NSString*)password
+{
+    [self clearAllSessions];
+    
+    NSLog(@"Authenticating...");
+    
+    BOOL isMsn = [emailAddress hasSuffix:@"@msn.com"];
+    NSString *url = [NSString stringWithFormat:isMsn ? URL_LOGIN_MSN : URL_LOGIN, 
+                     URL_REPLY_TO];
+    
+    NSError *error = nil;
+    NSTextCheckingResult *match;
+    
+    NSString *loginPage = [self loadWithGET:url
+                                     fields:nil];
+    
+    NSRegularExpression *getLiveAuthUrl = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_LIVE_AUTH_URL
+                                                                                    options:NSRegularExpressionCaseInsensitive
+                                                                                      error:&error];
+    
+    match = [getLiveAuthUrl firstMatchInString:loginPage
+                                       options:0
+                                         range:NSMakeRange(0, [loginPage length])];
+    
+    if (!match)
+    {
+        NSLog(@"Authentication failed in stage 1: URL");
+        return NO;
+    }
+    
+    NSString *postUrl = [loginPage substringWithRange:[match rangeAtIndex:1]];
+    
+    if (isMsn)
+        postUrl = [postUrl stringByReplacingOccurrencesOfString:@"://login.live.com/" 
+                                                     withString:@"://msnia.login.live.com/"];
+    
+    NSRegularExpression *getPpsxValue = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_PPSX
+                                                                                  options:0
+                                                                                    error:&error];
+    
+    match = [getPpsxValue firstMatchInString:loginPage
+                                     options:0
+                                       range:NSMakeRange(0, [loginPage length])];
+    
+    if (!match)
+    {
+        NSLog(@"Authentication failed in stage 1: PPSX");
+        return NO;
+    }
+    
+    NSString *ppsx = [loginPage substringWithRange:[match rangeAtIndex:1]];
+    
+    NSMutableDictionary *inputs = [XboxLiveParser getInputs:loginPage
+                                                namePattern:nil];
+    
+    [inputs setValue:emailAddress
+              forKey:@"login"];
+    [inputs setValue:password
+              forKey:@"passwd"];
+    [inputs setValue:@"1"
+              forKey:@"LoginOptions"];
+    [inputs setValue:ppsx
+              forKey:@"PPSX"];
+    
+    NSString *loginResponse = [self loadWithPOST:postUrl
+                                          fields:inputs];
+    
+    NSString *redirUrl = [XboxLiveParser getActionUrl:loginResponse];
+    
+    inputs = [XboxLiveParser getInputs:loginResponse
+                           namePattern:nil];
+    
+    if (![inputs objectForKey:@"ANON"])
+    {
+        NSLog(@"Authentication failed in stage 2");
+        return NO;
+    }
+    
+    [self loadWithPOST:redirUrl
+                fields:inputs];
+    
+    [self saveSessionForEmailAddress:emailAddress];
+    
+    return YES;
+}
+
 #pragma mark Helpers
+
++(NSNumber*)getStarRatingFromPage:(NSString*)html
+{
+    NSArray *starClasses = [NSArray arrayWithObjects:@"empty", @"quarter", 
+                            @"half", @"threequarter", @"full", nil];
+    NSRegularExpression *starMatcher = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAMERCARD_REP
+                                                                                 options:NSRegularExpressionCaseInsensitive
+                                                                                   error:nil];
+    
+    __block NSUInteger rating = 0;
+    [starMatcher enumerateMatchesInString:html 
+                                  options:0
+                                    range:NSMakeRange(0, [html length])
+                               usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) 
+     {
+         NSString *starClass = [html substringWithRange:[result rangeAtIndex:1]];
+         NSUInteger starValue = [starClasses indexOfObject:[starClass lowercaseString]];
+         
+         if (starValue != NSNotFound)
+             rating += starValue;
+     }];
+    
+    return [NSNumber numberWithUnsignedInteger:rating];
+}
+
++(NSDictionary*)jsonObjectFromLive:(NSString*)script
+{
+    NSRegularExpression *extractJson = [NSRegularExpression
+                                        regularExpressionWithPattern:PATTERN_EXTRACT_JSON
+                                        options:0
+                                        error:nil];
+    
+    NSTextCheckingResult *match = [extractJson
+                                   firstMatchInString:script
+                                   options:0
+                                   range:NSMakeRange(0, [script length])];
+    
+    if (match)
+    {
+        NSString *json = [script substringWithRange:[match rangeAtIndex:1]];
+        
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        NSDictionary *dict = [parser objectWithString:json 
+                                                error:nil];
+        [parser release];
+        
+        return dict;
+    }
+    
+    return nil;
+}
 
 +(NSString*)getActionUrl:(NSString*)text
 {

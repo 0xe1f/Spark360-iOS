@@ -291,48 +291,65 @@ replacementString:(NSString *)string
     [self.navigationItem  setHidesBackButton:YES
                                     animated:NO];
     
-    [self performSelectorInBackground:@selector(checkLogin) 
+    [self performSelectorInBackground:@selector(authenticate) 
                            withObject:nil];
 }
 
--(void)checkLogin
+-(void)authenticate
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    XboxLiveParser *parser = [[XboxLiveParser alloc] init];
+    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
     BOOL success = [parser authenticate:self.emailAddress
                            withPassword:self.password];
     
-    if (success)
+    NSString *errorMessage = nil;
+    NSDictionary *profile = nil;
+    
+    if (!success)
     {
-        account.emailAddress = self.emailAddress;
-        account.password = self.password;
+        errorMessage = NSLocalizedString(@"VerifyUsernameAndPassword", nil);
+    }
+    else
+    {
+        profile = [parser retrieveProfileWithEmailAddress:self.emailAddress
+                                                 password:self.password];
         
-        [[account managedObjectContext] save:nil];
-        
-        [parser synchronizeAccount:account];
+        if (!profile)
+        {
+            success = false;
+            errorMessage = NSLocalizedString(@"UnableToRetrieveProfile", @"");
+        }
     }
     
-    [parser release];
-    
     if (success)
     {
-        [self performSelectorOnMainThread:@selector(validationSucceeded) 
-                               withObject:nil
+        [self performSelectorOnMainThread:@selector(validationSucceeded:) 
+                               withObject:profile
                             waitUntilDone:NO];
     }
     else
     {
         [self performSelectorOnMainThread:@selector(validationFailed:) 
-                               withObject:NSLocalizedString(@"VerifyUsernameAndPassword", @"")
+                               withObject:errorMessage
                             waitUntilDone:NO];
     }
     
     [pool release];
 }
 
--(void)validationSucceeded
+-(void)validationSucceeded:(NSDictionary*)profile
 {
+    account.emailAddress = self.emailAddress;
+    account.password = self.password;
+    
+    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    [parser synchronizeProfileWithAccount:account
+                      withRetrievedObject:profile];
+     
+    // TODO: Error?
+    [[account managedObjectContext] save:nil];
+    
     [savingIndicator stopAnimating];
     [savingIndicator setHidden:YES];
     

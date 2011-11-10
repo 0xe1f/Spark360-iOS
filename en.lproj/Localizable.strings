@@ -14,6 +14,7 @@
     VerifyUsernameAndPassword = "Please make sure your email address and password are correct";
     ProvideValidUsernameAndPassword = "Please provide a valid email address and password combination";
     AnAccountAlreadyExists = "Another account with that email address already exists";
+    UnableToRetrieveProfile = "Unable to retrieve your profile. Please try again in a bit";
     XboxLiveAccount = "Xbox Live";
     OK = "OK";
     Locale = "en-US";

@@ -174,7 +174,7 @@
     [__managedObjectContext release];
     [__numberFormatter release];
     
-    [account release];
+    account = nil;
     
     [super dealloc];
 }
