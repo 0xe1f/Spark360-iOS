@@ -42,7 +42,6 @@
 		FEAC6F1B13EA7F73000D86D1 /* XboxGameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */; };
 		FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */; };
 		FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14013E6404900095480 /* GTMNSString+HTML.m */; };
-		FEB3E14413E6404900095480 /* CFParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14213E6404900095480 /* CFParser.m */; };
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
 		FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA7146BB25400D31608 /* AccountListController.m */; };
 		FEC26EAC146BB25400D31608 /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA9146BB25400D31608 /* GameListController.m */; };
@@ -114,8 +113,6 @@
 		FEB3E13E13E6404900095480 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		FEB3E13F13E6404900095480 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		FEB3E14013E6404900095480 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
-		FEB3E14113E6404900095480 /* CFParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFParser.h; sourceTree = "<group>"; };
-		FEB3E14213E6404900095480 /* CFParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFParser.m; sourceTree = "<group>"; };
 		FEC26EA4146BB25400D31608 /* AccountAddController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountAddController.h; path = Controllers/AccountAddController.h; sourceTree = "<group>"; };
 		FEC26EA5146BB25400D31608 /* AccountAddController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountAddController.m; path = Controllers/AccountAddController.m; sourceTree = "<group>"; };
 		FEC26EA6146BB25400D31608 /* AccountListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountListController.h; path = Controllers/AccountListController.h; sourceTree = "<group>"; };
@@ -305,8 +302,6 @@
 				FE610D3013EDD8A700420372 /* CFImageCache.m */,
 				FE610D3313EE125700420372 /* CFImageCacheOperation.h */,
 				FE610D3413EE125700420372 /* CFImageCacheOperation.m */,
-				FEB3E14113E6404900095480 /* CFParser.h */,
-				FEB3E14213E6404900095480 /* CFParser.m */,
 			);
 			name = Caffeine;
 			sourceTree = "<group>";
@@ -397,7 +392,6 @@
 				FE76A94813E636A9006D6AFC /* main.m in Sources */,
 				FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */,
 				FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */,
-				FEB3E14413E6404900095480 /* CFParser.m in Sources */,
 				FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */,
 				FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */,
 				FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */,

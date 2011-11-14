@@ -13,14 +13,31 @@
 
 #import "SBJson.h"
 
+#define TIMEOUT_SECONDS 30
+
+NSString* const BachErrorDomain = @"com.akop.bach";
+
 @interface XboxLiveParser (PrivateMethods)
+
+- (NSString*)loadWithMethod:(NSString*)method
+                        url:(NSString*)url 
+                     fields:(NSDictionary*)fields
+                 addHeaders:(NSDictionary*)headers
+                      error:(NSError**)error;
+- (NSString*)loadWithGET:(NSString*)url 
+                  fields:(NSDictionary*)fields
+                   error:(NSError**)error;
+- (NSString*)loadWithPOST:(NSString*)url 
+                   fields:(NSDictionary*)fields
+                    error:(NSError**)error;
 
 +(NSString*)getActionUrl:(NSString*)text;
 +(NSDate*)parseDate:(NSString*)dateStr;
 +(NSString*)getUniversalIcon:(NSString*)icon;
 +(NSMutableDictionary*)getInputs:(NSString*)response
                      namePattern:(NSRegularExpression*)namePattern;
-+(NSDictionary*)jsonObjectFromLive:(NSString*)script;
++(NSDictionary*)jsonObjectFromLive:(NSString*)script
+                             error:(NSError**)error;
 +(NSNumber*)getStarRatingFromPage:(NSString*)html;
 
 -(void)saveSessionForEmailAddress:(NSString*)emailAddress;
@@ -35,11 +52,18 @@
                       password:(NSString*)password
                          error:(NSError**)error;
 
++(NSError*)errorWithCode:(NSInteger)code
+                 message:(NSString*)message;
++(NSError*)errorWithCode:(NSInteger)code
+         localizationKey:(NSString*)key;
+
 @end
 
 @implementation XboxLiveParser
 
-#define LOCALE NSLocalizedString(@"Locale", nil)
+#define LOCALE (NSLocalizedString(@"Locale", nil))
+
+NSString* const ErrorDomainAuthentication = @"Authentication";
 
 NSString* const URL_GAMES = @"http://live.xbox.com/%@/GameCenter";
 NSString* const URL_LOGIN = @"http://login.live.com/login.srf?wa=wsignin1.0&wreply=%@";
@@ -83,6 +107,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     [super dealloc];
 }
 
+/*
 -(void)synchronizeGames:(XboxAccount*)account
 {
     // Try restoring the session
@@ -119,11 +144,13 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     [self saveSessionForEmailAddress:account.emailAddress];
 }
+*/
 
 -(NSDictionary*)retrieveProfileWithEmailAddress:(NSString*)emailAddress
-                                       password:(NSString*)password;
+                                       password:(NSString*)password
+                                          error:(NSError**)error;
 {
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
     
     // Try restoring the session
     
@@ -132,40 +159,39 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         // Session couldn't be restored. Try re-authenticating
         
         if (![self authenticate:emailAddress
-                   withPassword:password])
+                   withPassword:password
+                          error:error])
         {
-            // Authentication failed. Critical
-            // TODO: FAIL
+            return nil;
         }
     }
     
     if (![self parseSynchronizeProfile:dict
                           emailAddress:emailAddress
                               password:password
-                                 error:nil])
+                                 error:NULL])
     {
         // Account parsing failed. Try re-authenticating
         
         if (![self authenticate:emailAddress
-                   withPassword:password])
+                   withPassword:password
+                          error:error])
         {
-            // Re-authentication failed. Critical
-            // TODO: FAIL
+            return nil;
         }
         
         if (![self parseSynchronizeProfile:dict
                               emailAddress:emailAddress
                                   password:password
-                                     error:nil])
+                                     error:error])
         {
-            // Account parsing failed. Critical
-            // TODO: FAIL
+            return nil;
         }
     }
     
     [self saveSessionForEmailAddress:emailAddress];
     
-    return [dict autorelease];
+    return dict;
 }
 
 -(void)synchronizeProfileWithAccount:(XboxAccount*)account
@@ -214,16 +240,17 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     NSString *jsonPage = [self loadWithMethod:@"GET"
                                           url:url
                                        fields:nil
-                                   addHeaders:headers];
+                                   addHeaders:headers
+                                        error:error];
     
     if (!jsonPage)
         return NO;
     
-    NSDictionary *object = [XboxLiveParser jsonObjectFromLive:jsonPage];
+    NSDictionary *object = [XboxLiveParser jsonObjectFromLive:jsonPage
+                                                        error:error];
+    
     if (!object)
         return NO;
-    
-    // TODO: what if error?
     
     NSString *gamertag = [object objectForKey:@"gamertag"];
     
@@ -241,7 +268,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
            [gamertag gtm_stringByEscapingForURLArgument]];
     
     NSString *cardPage = [self loadWithGET:url
-                                    fields:nil];
+                                    fields:nil
+                                     error:nil];
     
     // An error for rep not fatal, so we ignore them
     if (cardPage)
@@ -254,9 +282,11 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 
 -(BOOL)parseSynchronizeGames:(XboxAccount*)account
 {
+    /*
     NSString *url = [NSString stringWithFormat:URL_GAMES, LOCALE];
     NSString *page = [self loadWithGET:url
-                                fields:nil];
+                                fields:nil
+                                 error:error];
     
     if (!page)
         return NO;
@@ -462,7 +492,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         NSLog(@"parseSynchronizeGames: save failed");
         return NO; // TODO: 
     }
-    
+    */
     return YES;
 }
 
@@ -519,8 +549,27 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     [prefs synchronize];
 }
 
++(NSError*)errorWithCode:(NSInteger)code
+                 message:(NSString*)message
+{
+    NSDictionary *info = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:message]
+                                                     forKeys:[NSArray arrayWithObject:NSLocalizedDescriptionKey]];
+    
+    return [NSError errorWithDomain:BachErrorDomain
+                               code:code
+                           userInfo:info];
+}
+
++(NSError*)errorWithCode:(NSInteger)code
+         localizationKey:(NSString*)key
+{
+    return [self errorWithCode:code
+                       message:NSLocalizedString(key, nil)];
+}
+
 -(BOOL)authenticate:(NSString*)emailAddress
        withPassword:(NSString*)password
+              error:(NSError**)error
 {
     [self clearAllSessions];
     
@@ -530,15 +579,18 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     NSString *url = [NSString stringWithFormat:isMsn ? URL_LOGIN_MSN : URL_LOGIN, 
                      URL_REPLY_TO];
     
-    NSError *error = nil;
     NSTextCheckingResult *match;
     
     NSString *loginPage = [self loadWithGET:url
-                                     fields:nil];
+                                     fields:nil
+                                      error:error];
+    
+    if (!loginPage)
+        return NO;
     
     NSRegularExpression *getLiveAuthUrl = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_LIVE_AUTH_URL
                                                                                     options:NSRegularExpressionCaseInsensitive
-                                                                                      error:&error];
+                                                                                      error:NULL];
     
     match = [getLiveAuthUrl firstMatchInString:loginPage
                                        options:0
@@ -546,6 +598,12 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     if (!match)
     {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorLoginStageOne"];
+        }
+        
         NSLog(@"Authentication failed in stage 1: URL");
         return NO;
     }
@@ -558,7 +616,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     NSRegularExpression *getPpsxValue = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_PPSX
                                                                                   options:0
-                                                                                    error:&error];
+                                                                                    error:NULL];
     
     match = [getPpsxValue firstMatchInString:loginPage
                                      options:0
@@ -566,6 +624,12 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     if (!match)
     {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorLoginStageOne"];
+        }
+        
         NSLog(@"Authentication failed in stage 1: PPSX");
         return NO;
     }
@@ -575,17 +639,17 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     NSMutableDictionary *inputs = [XboxLiveParser getInputs:loginPage
                                                 namePattern:nil];
     
-    [inputs setValue:emailAddress
-              forKey:@"login"];
-    [inputs setValue:password
-              forKey:@"passwd"];
-    [inputs setValue:@"1"
-              forKey:@"LoginOptions"];
-    [inputs setValue:ppsx
-              forKey:@"PPSX"];
+    [inputs setValue:emailAddress forKey:@"login"];
+    [inputs setValue:password forKey:@"passwd"];
+    [inputs setValue:@"1" forKey:@"LoginOptions"];
+    [inputs setValue:ppsx forKey:@"PPSX"];
     
     NSString *loginResponse = [self loadWithPOST:postUrl
-                                          fields:inputs];
+                                          fields:inputs
+                                           error:error];
+    
+    if (!loginResponse)
+        return NO;
     
     NSString *redirUrl = [XboxLiveParser getActionUrl:loginResponse];
     
@@ -594,12 +658,22 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     if (![inputs objectForKey:@"ANON"])
     {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPAuthenticationError
+                                   localizationKey:@"ErrorLoginInvalidCredentials"];
+        }
+        
         NSLog(@"Authentication failed in stage 2");
         return NO;
     }
     
-    [self loadWithPOST:redirUrl
-                fields:inputs];
+    if (![self loadWithPOST:redirUrl
+                     fields:inputs
+                      error:error])
+    {
+        return NO;
+    }
     
     [self saveSessionForEmailAddress:emailAddress];
     
@@ -633,6 +707,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 }
 
 +(NSDictionary*)jsonObjectFromLive:(NSString*)script
+                             error:(NSError**)error
 {
     NSRegularExpression *extractJson = [NSRegularExpression
                                         regularExpressionWithPattern:PATTERN_EXTRACT_JSON
@@ -644,19 +719,25 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                                    options:0
                                    range:NSMakeRange(0, [script length])];
     
-    if (match)
+    if (!match)
     {
-        NSString *json = [script substringWithRange:[match rangeAtIndex:1]];
+        if (error)
+        {
+            *error = [self errorWithCode:XBLPParsingError
+                         localizationKey:@"ErrorParsingJSONFormat"];
+        }
         
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        NSDictionary *dict = [parser objectWithString:json 
-                                                error:nil];
-        [parser release];
-        
-        return dict;
+        return nil;
     }
     
-    return nil;
+    NSString *json = [script substringWithRange:[match rangeAtIndex:1]];
+    
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    NSDictionary *dict = [parser objectWithString:json 
+                                            error:nil];
+    [parser release];
+    
+    return dict;
 }
 
 +(NSString*)getActionUrl:(NSString*)text
@@ -781,6 +862,100 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
      }];
     
     return [inputs autorelease];
+}
+
+#pragma mark Core stuff
+
+- (NSString*)loadWithMethod:(NSString*)method
+                        url:(NSString*)requestUrl
+                     fields:(NSDictionary*)fields
+                 addHeaders:(NSDictionary*)headers
+                      error:(NSError**)error
+{
+    NSString *httpBody = nil;
+    NSURL *url = [NSURL URLWithString:requestUrl];
+    
+    if (fields)
+    {
+        NSMutableArray *urlBuilder = [[NSMutableArray alloc] init];
+        
+        for (NSString *key in fields)
+        {
+            NSString *ueKey = [key stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSString *ueValue = [[fields objectForKey:key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            
+            [urlBuilder addObject:[NSString stringWithFormat:@"%@=%@", ueKey, ueValue]];
+        }
+        
+        httpBody = [urlBuilder componentsJoinedByString:@"&"];
+        [urlBuilder release];
+    }
+    
+    NSUInteger bodyLength = [httpBody lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSMutableDictionary *allHeaders = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                       @"text/javascript, text/html, application/xml, text/xml, */*", @"Accept",
+                                       @"ISO-8859-1,utf-8;q=0.7,*;q=0.7", @"Accept-Charset",
+                                       [NSString stringWithFormat:@"%d", bodyLength], @"Content-Length",
+                                       @"application/x-www-form-urlencoded", @"Content-Type",
+                                       nil];
+    
+    if (headers)
+    {
+        for (NSString *header in headers)
+            [allHeaders setObject:[headers objectForKey:header] 
+                           forKey:header];
+    }
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                       timeoutInterval:TIMEOUT_SECONDS];
+    
+    [request setHTTPMethod:method];
+    [request setHTTPBody:[httpBody dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setAllHTTPHeaderFields:allHeaders];
+    
+    NSURLResponse *response = nil;
+    NSError *netError = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request
+                                         returningResponse:&response
+                                                     error:&netError];
+    
+    if (!data)
+    {
+        if (error && netError)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPNetworkError
+                                           message:[netError localizedDescription]];
+        }
+        
+        return nil;
+    }
+    
+    return [[[NSString alloc] initWithData:data 
+                                  encoding:NSUTF8StringEncoding] autorelease];
+}
+
+- (NSString*)loadWithGET:(NSString*)url 
+                  fields:(NSDictionary*)fields
+                   error:(NSError**)error
+{
+    return [self loadWithMethod:@"GET"
+                            url:url
+                         fields:fields
+                     addHeaders:nil
+                          error:error];
+}
+
+- (NSString*)loadWithPOST:(NSString*)url 
+                   fields:(NSDictionary*)fields
+                    error:(NSError**)error
+{
+    return [self loadWithMethod:@"POST"
+                            url:url
+                         fields:fields
+                     addHeaders:nil
+                          error:error];
 }
 
 @end

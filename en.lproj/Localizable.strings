@@ -18,4 +18,8 @@
     XboxLiveAccount = "Xbox Live";
     OK = "OK";
     Locale = "en-US";
+    ErrorLoginStageOne = "Unexpected login response (stage 1)";
+    ErrorLoginStageTwo = "Unexpected login response (stage 2)";
+    ErrorLoginInvalidCredentials = "Invalid email address or password";
+    ErrorParsingJSONFormat = "Could not understand Live's response (JSON)";
 }

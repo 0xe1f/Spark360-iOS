@@ -299,21 +299,27 @@ replacementString:(NSString *)string
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
+    NSError *error = nil;
     XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
     BOOL success = [parser authenticate:self.emailAddress
-                           withPassword:self.password];
+                           withPassword:self.password
+                                  error:&error];
     
     NSString *errorMessage = nil;
     NSDictionary *profile = nil;
     
     if (!success)
     {
-        errorMessage = NSLocalizedString(@"VerifyUsernameAndPassword", nil);
+        if (error && [error code] != XBLPAuthenticationError)
+            errorMessage = [error localizedDescription]; // Non-authentication error
+        else
+            errorMessage = NSLocalizedString(@"VerifyUsernameAndPassword", nil);
     }
     else
     {
         profile = [parser retrieveProfileWithEmailAddress:self.emailAddress
-                                                 password:self.password];
+                                                 password:self.password
+                                                    error:&error];
         
         if (!profile)
         {
