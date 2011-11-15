@@ -30,6 +30,9 @@ typedef enum _XboxLiveParserErrorType
 -(NSDictionary*)retrieveProfileWithEmailAddress:(NSString*)emailAddress
                                        password:(NSString*)password
                                           error:(NSError**)error;
+-(NSDictionary*)retrieveGamesWithEmailAddress:(NSString*)emailAddress
+                                     password:(NSString*)password
+                                        error:(NSError**)error;
 
 // Synchronize* are expected to be called from the main thread
 -(void)synchronizeProfileWithAccount:(XboxAccount*)account

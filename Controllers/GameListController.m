@@ -45,11 +45,12 @@
     */
     
     // TODO: this needs to be done in a background thread
-    /*
     XboxLiveParser *parser = [[XboxLiveParser alloc] init];
-    [parser synchronizeGames:account];
+    NSError *error = nil;
+    NSDictionary *dict = [parser retrieveGamesWithEmailAddress:account.emailAddress
+                                                      password:account.password
+                                                         error:&error];
     [parser release];
-     */
 }
 
 - (void)viewWillAppear:(BOOL)animated
