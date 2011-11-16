@@ -24,4 +24,8 @@
 	"ErrorParsingJSONFormat" = "Could not understand Live's response (JSON)";
 	"ErrorCannotObtainToken" = "Could not initialize request";
 	"ErrorJSONDidNotSucceed" = "Request was unsuccessful - please try again in a bit";
+	DataError = Error;
+	ErrorCouldNotSave = "Could not save the data";
+	"ErrorCouldNotSaveProfile" = "Could not save profile information";
+	"ErrorCouldNotSaveGameList" = "Could not save game list";
 }

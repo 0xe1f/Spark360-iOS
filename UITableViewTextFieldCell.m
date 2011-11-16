@@ -21,7 +21,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.textField = [[[UITextField alloc] initWithFrame:self.bounds] autorelease];
-        self.textField.adjustsFontSizeToFitWidth = YES;
+        self.textField.adjustsFontSizeToFitWidth = NO;
         self.textField.textColor = [UIColor blackColor];
         self.textField.backgroundColor = [UIColor clearColor];
         self.textField.autocorrectionType = UITextAutocorrectionTypeNo;

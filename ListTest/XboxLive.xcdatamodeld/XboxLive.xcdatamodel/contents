@@ -16,7 +16,6 @@
         <attribute name="tier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unreadMessages" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="unreadNotifications" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="games" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxGame" inverseName="account" inverseEntity="XboxGame" syncable="YES"/>
     </entity>
     <entity name="XboxGame" syncable="YES">
         <attribute name="achievesDirty" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -31,7 +30,7 @@
         <attribute name="listOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="account" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxAccount" inverseName="games" inverseEntity="XboxAccount" syncable="YES"/>
+        <relationship name="account" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxAccount" syncable="YES"/>
     </entity>
     <elements>
         <element name="XboxAccount" positionX="160" positionY="192" width="128" height="285"/>

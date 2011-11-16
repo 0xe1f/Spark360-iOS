@@ -48,10 +48,10 @@
     
     XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
     [parser synchronizeProfileWithAccount:self.account
-                      withRetrievedObject:profile];
+                      withRetrievedObject:profile
+                                    error:nil];
     
     // TODO: Error?
-    [[self.account managedObjectContext] save:nil];
     
     [savingIndicator stopAnimating];
     [savingIndicator setHidden:YES];

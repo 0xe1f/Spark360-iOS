@@ -13,7 +13,12 @@
 #import "XboxLiveParser.h"
 
 @interface GameListController ()
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+-(void)retrieveInBackground;
+-(void)retrieveFailedWithError:(NSError*)error;
+-(void)retrievedData:(NSDictionary*)data;
+
+-(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+-(void)refresh;
 @end
 
 @implementation GameListController
@@ -24,6 +29,58 @@
 @synthesize numberFormatter = __numberFormatter;
 
 @synthesize account;
+
+-(void)retrievedData:(NSDictionary*)data
+{
+    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    [parser synchronizeGamesWithAccount:account
+                    withRetrievedObject:data
+                                  error:nil]; // TODO: error?
+}
+
+-(void)retrieveFailedWithError:(NSError*)error
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DataError", @"") 
+                                                        message:[error localizedDescription]
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    
+    [alertView show];
+    [alertView release];
+}
+
+-(void)retrieveInBackground
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    
+    NSError *error = nil;
+    NSDictionary *data = [parser retrieveGamesWithEmailAddress:account.emailAddress
+                                                      password:account.password
+                                                         error:&error];
+    
+    if (data)
+    {
+        [self performSelectorOnMainThread:@selector(retrievedData:) 
+                               withObject:data
+                            waitUntilDone:NO];
+    }
+    else
+    {
+        [self performSelectorOnMainThread:@selector(retrieveFailedWithError:) 
+                               withObject:error
+                            waitUntilDone:NO];
+    }
+    
+    [pool release];
+}
+
+-(void)refresh
+{
+    [self performSelectorInBackground:@selector(retrieveInBackground) 
+                           withObject:nil];
+}
 
 - (void)viewDidLoad
 {
@@ -44,13 +101,28 @@
     [addButton release];
     */
     
-    // TODO: this needs to be done in a background thread
-    XboxLiveParser *parser = [[XboxLiveParser alloc] init];
-    NSError *error = nil;
-    NSDictionary *dict = [parser retrieveGamesWithEmailAddress:account.emailAddress
-                                                      password:account.password
-                                                         error:&error];
-    [parser release];
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *lastUpdatedKey = [NSString stringWithFormat:@"LastUpdated:%@", account.emailAddress];
+    NSDate *lastUpdated = [prefs objectForKey:lastUpdatedKey];
+    
+    NSDateComponents *comps = [[[NSDateComponents alloc] init] autorelease];
+    [comps setMinute:-4];
+    
+    NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+    NSDate *refreshDate = [gregorian dateByAddingComponents:comps 
+                                                     toDate:[NSDate date] 
+                                                    options:0];
+    
+    if (!lastUpdated || [lastUpdated compare:refreshDate] == NSOrderedAscending)
+    {
+        NSLog(@"Updating");
+        [self refresh];
+    }
+    else
+    {
+        NSLog(@"Skipping; no need: lastUpdated %@; refresh date: %@",
+              lastUpdated, refreshDate);        
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated

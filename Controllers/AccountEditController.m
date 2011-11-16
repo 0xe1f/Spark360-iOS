@@ -351,10 +351,8 @@ replacementString:(NSString *)string
     
     XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
     [parser synchronizeProfileWithAccount:account
-                      withRetrievedObject:profile];
-     
-    // TODO: Error?
-    [[account managedObjectContext] save:nil];
+                      withRetrievedObject:profile
+                                    error:nil];
     
     [savingIndicator stopAnimating];
     [savingIndicator setHidden:YES];

@@ -16,6 +16,7 @@ typedef enum _XboxLiveParserErrorType
     XBLPAuthenticationError = 1,
     XBLPNetworkError = 2,
     XBLPParsingError = 3,
+    XBLPCoreDataError = 4,
 } XboxLiveParserErrorType;
 
 @interface XboxLiveParser : NSObject
@@ -35,7 +36,11 @@ typedef enum _XboxLiveParserErrorType
                                         error:(NSError**)error;
 
 // Synchronize* are expected to be called from the main thread
--(void)synchronizeProfileWithAccount:(XboxAccount*)account
-                 withRetrievedObject:(NSDictionary*)retrieved;
+-(BOOL)synchronizeProfileWithAccount:(XboxAccount*)account
+                 withRetrievedObject:(NSDictionary*)retrieved
+                               error:(NSError**)error;
+-(BOOL)synchronizeGamesWithAccount:(XboxAccount*)account
+               withRetrievedObject:(NSDictionary*)retrieved
+                             error:(NSError**)error;
 
 @end

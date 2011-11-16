@@ -215,8 +215,9 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return dict;
 }
 
--(void)synchronizeProfileWithAccount:(XboxAccount*)account
+-(BOOL)synchronizeProfileWithAccount:(XboxAccount*)account
                  withRetrievedObject:(NSDictionary*)dict
+                               error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -240,8 +241,146 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     if ((value = [dict objectForKey:@"rep"]))
         account.rep = value;
     
+    if (![[account managedObjectContext] save:nil])
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                   localizationKey:@"ErrorCouldNotSaveProfile"];
+        }
+        
+        return NO;
+    }
+    
     NSLog(@"synchronizeProfileWithAccount: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
+}
+
+-(BOOL)synchronizeGamesWithAccount:(XboxAccount*)account
+               withRetrievedObject:(NSDictionary*)dict
+                             error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSDate *lastUpdated = [NSDate date];
+    NSManagedObjectContext *context = [account managedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
+                                                         inManagedObjectContext:context];
+    
+    int newItems = 0;
+    int existingItems = 0;
+    int listOrder = 0;
+    
+    NSArray *gameDicts = [dict objectForKey:@"games"];
+    
+    for (NSDictionary *gameDict in gameDicts)
+    {
+        listOrder++;
+        
+        // Fetch game, or create a new one
+        NSManagedObject *game;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND account == %@", 
+                                  [gameDict objectForKey:@"uid"], account];
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        
+        [request setEntity:entityDescription];
+        [request setPredicate:predicate];
+        
+        NSArray *array = [context executeFetchRequest:request 
+                                                error:nil];
+        
+        [request release];
+        
+        if (!(game = [array lastObject]))
+        {
+            newItems++;
+            game = [NSEntityDescription 
+                    insertNewObjectForEntityForName:@"XboxGame"
+                    inManagedObjectContext:context];
+            
+            // These will not change, so just set them up the first time
+            
+            [game setValue:[gameDict objectForKey:@"uid"] forKey:@"uid"];
+            [game setValue:account forKey:@"account"];
+            [game setValue:[gameDict objectForKey:@"gameUrl"] forKey:@"gameUrl"];
+            [game setValue:[gameDict objectForKey:@"title"] forKey:@"title"];
+            [game setValue:[gameDict objectForKey:@"boxArtUrl"] forKey:@"boxArtUrl"];
+            [game setValue:[NSNumber numberWithBool:YES] forKey:@"achievesDirty"];
+        }
+        else
+        {
+            existingItems++;
+            if (![[game valueForKey:@"achievesUnlocked"] isEqualToNumber:[gameDict objectForKey:@"achievesUnlocked"]] ||
+                ![[game valueForKey:@"achievesTotal"] isEqualToNumber:[gameDict objectForKey:@"achievesTotal"]] ||
+                ![[game valueForKey:@"gamerScoreEarned"] isEqualToNumber:[gameDict objectForKey:@"gamerScoreEarned"]] ||
+                ![[game valueForKey:@"gamerScoreTotal"] isEqualToNumber:[gameDict objectForKey:@"gamerScoreTotal"]])
+            {
+                [game setValue:[NSNumber numberWithBool:YES] forKey:@"achievesDirty"];
+            }
+        }
+        
+        // We now have a game object (new or existing)
+        // Handle the rest of the data
+        
+        // Game achievements
+        
+        [game setValue:[gameDict objectForKey:@"achievesUnlocked"] forKey:@"achievesUnlocked"];
+        [game setValue:[gameDict objectForKey:@"achievesTotal"] forKey:@"achievesTotal"];
+        
+        // Game score
+        
+        [game setValue:[gameDict objectForKey:@"gamerScoreEarned"] forKey:@"gamerScoreEarned"];
+        [game setValue:[gameDict objectForKey:@"gamerScoreTotal"] forKey:@"gamerScoreTotal"];
+        
+        // Last played
+        
+        NSDate *lastPlayed = nil;
+        if ([gameDict objectForKey:@"lastPlayed"] != [NSDate distantPast])
+            lastPlayed = [gameDict objectForKey:@"lastPlayed"];
+        
+        [game setValue:lastPlayed forKey:@"lastPlayed"];
+        [game setValue:lastUpdated forKey:@"lastUpdated"];
+        [game setValue:[NSNumber numberWithInt:listOrder] forKey:@"listOrder"];
+    }
+    
+    // Find "stale" games
+    
+    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND account == %@", 
+    lastUpdated, account];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    [request setPredicate:stalePredicate];
+    
+    NSArray *staleObjs = [context executeFetchRequest:request 
+                                                error:NULL];
+    [request release];
+    
+    // Delete "stale" games
+    
+    for (NSManagedObject *staleObj in staleObjs)
+        [context deleteObject:staleObj];
+    
+    // Save
+    
+    if (![context save:NULL])
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                   localizationKey:@"ErrorCouldNotSaveGameList"];
+        }
+        
+        return NO;
+    }
+    
+    NSLog(@"synchronizeGamesWithAccount: (%i new, %i existing) %.04fs", 
+          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
 }
 
 -(BOOL)parseSynchronizeProfile:(NSMutableDictionary*)profile
@@ -259,7 +398,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                              referer, @"Referer",
                              nil];
     
-    NSString *jsonPage = [self loadWithMethod:@"GET"
+    NSString *jsonPage = [self loadWithMethod:XBLPGet
                                           url:url
                                        fields:nil
                                    addHeaders:headers
@@ -362,18 +501,14 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                 continue;
             
             NSDate *lastPlayed = [XboxLiveParser getTicksFromJSONString:[progress objectForKey:@"LastPlayed"]];
-            NSNumber *totalScore = [NSNumber numberWithInt:[[jsonGame objectForKey:@"PossibleScore"] intValue]];
-            NSNumber *score = [NSNumber numberWithInt:[[progress objectForKey:@"Score"] intValue]];
-            NSNumber *totalAchieves = [NSNumber numberWithInt:[[jsonGame objectForKey:@"PossibleAchievements"] intValue]];
-            NSNumber *achieves = [NSNumber numberWithInt:[[progress objectForKey:@"Achievements"] intValue]];
             
             NSMutableArray *objects = [[[NSMutableArray alloc] init] autorelease];
             
-            [objects addObject:[jsonGame objectForKey:@"Id"]];
-            [objects addObject:achieves];
-            [objects addObject:totalAchieves];
-            [objects addObject:score];
-            [objects addObject:totalScore];
+            [objects addObject:[[jsonGame objectForKey:@"Id"] stringValue]];
+            [objects addObject:[progress objectForKey:@"Achievements"]];
+            [objects addObject:[jsonGame objectForKey:@"PossibleAchievements"]];
+            [objects addObject:[progress objectForKey:@"Score"]];
+            [objects addObject:[jsonGame objectForKey:@"PossibleScore"]];
             [objects addObject:lastPlayed];
             [objects addObject:[jsonGame objectForKey:@"Url"]];
             [objects addObject:[jsonGame objectForKey:@"Name"]];
@@ -391,10 +526,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
                              @"boxArtUrl",
                              nil];
             
-            NSDictionary *game = [NSDictionary dictionaryWithObjects:objects
-                                                             forKeys:keys];
-            
-            [gameList addObject:game];
+            [gameList addObject:[NSDictionary dictionaryWithObjects:objects
+                                                            forKeys:keys]];
         }
     }
     
@@ -402,6 +535,10 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     NSLog(@"parseSynchronizeGames: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSString *lastUpdatedKey = [NSString stringWithFormat:@"LastUpdated:%@", emailAddress];
+    [prefs setObject:[NSDate date] forKey:lastUpdatedKey];
     
     return YES;
 }
@@ -424,7 +561,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     [self clearAllSessions];
     
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSString *cookieKey = [NSString stringWithFormat:@"CookiesFor", emailAddress];
+    NSString *cookieKey = [NSString stringWithFormat:@"Cookies:%@", emailAddress];
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:cookieKey];
     
     if (!data || [data length] <= 0)
