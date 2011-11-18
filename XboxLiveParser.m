@@ -66,10 +66,13 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 
 -(NSString*)parseObtainNewToken;
 +(NSDate*)getTicksFromJSONString:(NSString*)jsonTicks;
+-(NSManagedObject*)profileForAccount:(XboxLiveAccount*)account;
 
 @end
 
 @implementation XboxLiveParser
+
+@synthesize context = _context;
 
 #define LOCALE (NSLocalizedString(@"Locale", nil))
 
@@ -106,16 +109,20 @@ NSString* const PATTERN_GAME_ACHIEVEMENT_URL = @"href=\"([^\"]*Achievements\\?ti
 NSString* const PATTERN_GAME_BOXART_URL = @"src=\"([^\"]*)\" class=\"BoxShot\"";
 NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*<";
 
--(id)init
+-(id)initWithManagedObjectContext:(NSManagedObjectContext*)context
 {
     if (!(self = [super init]))
         return nil;
+    
+    self.context = context;
     
     return self;
 }
 
 -(void)dealloc
 {
+    self.context = nil;
+    
     [super dealloc];
 }
 
@@ -215,33 +222,46 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return dict;
 }
 
--(BOOL)synchronizeProfileWithAccount:(XboxAccount*)account
+-(BOOL)synchronizeProfileWithAccount:(XboxLiveAccount*)account
                  withRetrievedObject:(NSDictionary*)dict
                                error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
-    id value;
-    if ((value = [dict objectForKey:@"screenName"]))
-        account.screenName = value;
-    if ((value = [dict objectForKey:@"iconUrl"]))
-        account.iconUrl = value;
-    if ((value = [dict objectForKey:@"tier"]))
-        account.tier = value;
-    if ((value = [dict objectForKey:@"pointsBalance"]))
-        account.pointsBalance = value;
-    if ((value = [dict objectForKey:@"gamerscore"]))
-        account.gamerscore = value;
-    if ((value = [dict objectForKey:@"isGold"]))
-        account.isGold = value;
-    if ((value = [dict objectForKey:@"unreadMessages"]))
-        account.unreadMessages = value;
-    if ((value = [dict objectForKey:@"unreadNotifications"]))
-        account.unreadNotifications = value;
-    if ((value = [dict objectForKey:@"rep"]))
-        account.rep = value;
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxProfile"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", account.uuid];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     
-    if (![[account managedObjectContext] save:nil])
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request error:nil];
+    
+    [request release];
+    
+    NSManagedObject *profile = [array lastObject];
+    if (!profile)
+    {
+        // The profile is gone/nonexistent. Create a new one
+        
+        profile = [NSEntityDescription insertNewObjectForEntityForName:@"XboxProfile" 
+                                                inManagedObjectContext:self.context];
+        
+        [profile setValue:account.uuid forKey:@"uuid"];
+    }
+    
+    [profile setValue:[dict objectForKey:@"screenName"] forKey:@"screenName"];
+    [profile setValue:[dict objectForKey:@"iconUrl"] forKey:@"iconUrl"];
+    [profile setValue:[dict objectForKey:@"tier"] forKey:@"tier"];
+    [profile setValue:[dict objectForKey:@"pointsBalance"] forKey:@"pointsBalance"];
+    [profile setValue:[dict objectForKey:@"gamerscore"] forKey:@"gamerscore"];
+    [profile setValue:[dict objectForKey:@"isGold"] forKey:@"isGold"];
+    [profile setValue:[dict objectForKey:@"unreadMessages"] forKey:@"unreadMessages"];
+    [profile setValue:[dict objectForKey:@"unreadNotifications"] forKey:@"unreadNotifications"];
+    [profile setValue:[dict objectForKey:@"rep"] forKey:@"rep"];
+    
+    if (![self.context save:nil])
     {
         if (error)
         {
@@ -258,16 +278,17 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return YES;
 }
 
--(BOOL)synchronizeGamesWithAccount:(XboxAccount*)account
+-(BOOL)synchronizeGamesWithAccount:(XboxLiveAccount*)account
                withRetrievedObject:(NSDictionary*)dict
                              error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
+    NSManagedObject *profile = [self profileForAccount:account];
+    
     NSDate *lastUpdated = [NSDate date];
-    NSManagedObjectContext *context = [account managedObjectContext];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
-                                                         inManagedObjectContext:context];
+                                                         inManagedObjectContext:self.context];
     
     int newItems = 0;
     int existingItems = 0;
@@ -281,30 +302,29 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         
         // Fetch game, or create a new one
         NSManagedObject *game;
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND account == %@", 
-                                  [gameDict objectForKey:@"uid"], account];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
+                                  [gameDict objectForKey:@"uid"], profile];
         
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         
         [request setEntity:entityDescription];
         [request setPredicate:predicate];
         
-        NSArray *array = [context executeFetchRequest:request 
-                                                error:nil];
+        NSArray *array = [self.context executeFetchRequest:request 
+                                                     error:nil];
         
         [request release];
         
         if (!(game = [array lastObject]))
         {
             newItems++;
-            game = [NSEntityDescription 
-                    insertNewObjectForEntityForName:@"XboxGame"
-                    inManagedObjectContext:context];
+            game = [NSEntityDescription insertNewObjectForEntityForName:@"XboxGame"
+                                                 inManagedObjectContext:self.context];
             
             // These will not change, so just set them up the first time
             
             [game setValue:[gameDict objectForKey:@"uid"] forKey:@"uid"];
-            [game setValue:account forKey:@"account"];
+            [game setValue:profile forKey:@"profile"];
             [game setValue:[gameDict objectForKey:@"gameUrl"] forKey:@"gameUrl"];
             [game setValue:[gameDict objectForKey:@"title"] forKey:@"title"];
             [game setValue:[gameDict objectForKey:@"boxArtUrl"] forKey:@"boxArtUrl"];
@@ -348,25 +368,25 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     
     // Find "stale" games
     
-    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND account == %@", 
-    lastUpdated, account];
+    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND profile == %@", 
+    lastUpdated, profile];
     
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     [request setPredicate:stalePredicate];
     
-    NSArray *staleObjs = [context executeFetchRequest:request 
-                                                error:NULL];
+    NSArray *staleObjs = [self.context executeFetchRequest:request 
+                                                     error:NULL];
     [request release];
     
     // Delete "stale" games
     
     for (NSManagedObject *staleObj in staleObjs)
-        [context deleteObject:staleObj];
+        [self.context deleteObject:staleObj];
     
     // Save
     
-    if (![context save:NULL])
+    if (![self.context save:NULL])
     {
         if (error)
         {
@@ -376,6 +396,9 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         
         return NO;
     }
+    
+    account.lastGamesUpdate = [NSDate date];
+    [account save];
     
     NSLog(@"synchronizeGamesWithAccount: (%i new, %i existing) %.04fs", 
           newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
@@ -536,11 +559,26 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     NSLog(@"parseSynchronizeGames: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    NSString *lastUpdatedKey = [NSString stringWithFormat:@"LastUpdated:%@", emailAddress];
-    [prefs setObject:[NSDate date] forKey:lastUpdatedKey];
-    
     return YES;
+}
+
+-(NSManagedObject*)profileForAccount:(XboxLiveAccount*)account
+{
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxProfile"
+                                                         inManagedObjectContext:self.context];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", account.uuid];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    return [array lastObject];
 }
 
 #pragma mark Authentication, sessions

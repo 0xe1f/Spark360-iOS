@@ -6,7 +6,7 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "XboxAccount.h"
+#import "XboxLiveAccount.h"
 
 extern NSString* const BachErrorDomain;
 
@@ -21,13 +21,16 @@ typedef enum _XboxLiveParserErrorType
 
 @interface XboxLiveParser : NSObject
 
+@property (nonatomic, retain) NSManagedObjectContext *context;
+
+-(id)initWithManagedObjectContext:(NSManagedObjectContext*)context;
+
 -(BOOL)authenticate:(NSString*)emailAddress
        withPassword:(NSString*)password
               error:(NSError**)error;
-//-(void)synchronizeGames:(XboxAccount*)account;
 
 // Retrieve* are expected to be called from background threads, and have a
-// valid autorelease pool
+// valid autorelease pool. They don't need a managed context
 -(NSDictionary*)retrieveProfileWithEmailAddress:(NSString*)emailAddress
                                        password:(NSString*)password
                                           error:(NSError**)error;
@@ -36,10 +39,10 @@ typedef enum _XboxLiveParserErrorType
                                         error:(NSError**)error;
 
 // Synchronize* are expected to be called from the main thread
--(BOOL)synchronizeProfileWithAccount:(XboxAccount*)account
+-(BOOL)synchronizeProfileWithAccount:(XboxLiveAccount*)account
                  withRetrievedObject:(NSDictionary*)retrieved
                                error:(NSError**)error;
--(BOOL)synchronizeGamesWithAccount:(XboxAccount*)account
+-(BOOL)synchronizeGamesWithAccount:(XboxLiveAccount*)account
                withRetrievedObject:(NSDictionary*)retrieved
                              error:(NSError**)error;
 

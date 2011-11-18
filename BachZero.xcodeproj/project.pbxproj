@@ -23,7 +23,6 @@
 		FE726B6B14611E9C00534279 /* SBJsonTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B5D14611E9C00534279 /* SBJsonTokeniser.m */; };
 		FE726B6C14611E9C00534279 /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B5F14611E9C00534279 /* SBJsonUTF8Stream.m */; };
 		FE726B6D14611E9C00534279 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B6114611E9C00534279 /* SBJsonWriter.m */; };
-		FE726B73146261B800534279 /* XboxAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B72146261B800534279 /* XboxAccount.m */; };
 		FE726B7E1463CAD200534279 /* AccountEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B7D1463CAD200534279 /* AccountEditController.m */; };
 		FE726B801463CD7600534279 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = FE726B7F1463CD7600534279 /* TODO */; };
 		FE76A93A13E636A9006D6AFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93913E636A9006D6AFC /* UIKit.framework */; };
@@ -34,6 +33,10 @@
 		FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */; };
 		FE76A95213E636A9006D6AFC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE76A95013E636A9006D6AFC /* MainWindow.xib */; };
 		FE76A95813E636A9006D6AFC /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE76A95613E636A9006D6AFC /* GameList.xib */; };
+		FE8CA9191474212800A5C9EA /* XboxLiveAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */; };
+		FE8CA91B1474586000A5C9EA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8CA91A1474586000A5C9EA /* Security.framework */; };
+		FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */; };
+		FE8CA92314745AED00A5C9EA /* AppPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA92214745AED00A5C9EA /* AppPreferences.m */; };
 		FE8EA2BA1468EE02009E26F0 /* GTMNSString+URLArguments.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */; };
 		FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */; };
 		FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */; };
@@ -82,8 +85,6 @@
 		FE726B5F14611E9C00534279 /* SBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonUTF8Stream.m; sourceTree = "<group>"; };
 		FE726B6014611E9C00534279 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		FE726B6114611E9C00534279 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
-		FE726B71146261B800534279 /* XboxAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XboxAccount.h; path = Models/XboxAccount.h; sourceTree = "<group>"; };
-		FE726B72146261B800534279 /* XboxAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XboxAccount.m; path = Models/XboxAccount.m; sourceTree = "<group>"; };
 		FE726B7C1463CAD200534279 /* AccountEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountEditController.h; path = Controllers/AccountEditController.h; sourceTree = "<group>"; };
 		FE726B7D1463CAD200534279 /* AccountEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountEditController.m; path = Controllers/AccountEditController.m; sourceTree = "<group>"; };
 		FE726B7F1463CD7600534279 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
@@ -99,6 +100,13 @@
 		FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BachAppDelegate.m; sourceTree = "<group>"; };
 		FE76A95113E636A9006D6AFC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		FE76A95713E636A9006D6AFC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GameList.xib; sourceTree = "<group>"; };
+		FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XboxLiveAccount.h; path = Classes/XboxLiveAccount.h; sourceTree = "<group>"; };
+		FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XboxLiveAccount.m; path = Classes/XboxLiveAccount.m; sourceTree = "<group>"; };
+		FE8CA91A1474586000A5C9EA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		FE8CA91E147459C200A5C9EA /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
+		FE8CA92114745AED00A5C9EA /* AppPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppPreferences.h; path = Classes/AppPreferences.h; sourceTree = "<group>"; };
+		FE8CA92214745AED00A5C9EA /* AppPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppPreferences.m; path = Classes/AppPreferences.m; sourceTree = "<group>"; };
 		FE8EA2B81468EE02009E26F0 /* GTMNSString+URLArguments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+URLArguments.h"; sourceTree = "<group>"; };
 		FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+URLArguments.m"; sourceTree = "<group>"; };
 		FE8EA2BC1468EE2E009E26F0 /* GTMGarbageCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMGarbageCollection.h; sourceTree = "<group>"; };
@@ -128,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE8CA91B1474586000A5C9EA /* Security.framework in Frameworks */,
 				FE76A93A13E636A9006D6AFC /* UIKit.framework in Frameworks */,
 				FE76A93C13E636A9006D6AFC /* Foundation.framework in Frameworks */,
 				FE76A93E13E636A9006D6AFC /* CoreGraphics.framework in Frameworks */,
@@ -178,6 +187,10 @@
 			children = (
 				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
 				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
+				FE8CA92114745AED00A5C9EA /* AppPreferences.h */,
+				FE8CA92214745AED00A5C9EA /* AppPreferences.m */,
+				FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */,
+				FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */,
 				FE726B471461120100534279 /* Models */,
 				FE610D3713EE938400420372 /* Controllers */,
 				FE9E371413F8EA2300A6EE36 /* UI */,
@@ -203,8 +216,6 @@
 		FE726B471461120100534279 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				FE726B71146261B800534279 /* XboxAccount.h */,
-				FE726B72146261B800534279 /* XboxAccount.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -244,6 +255,7 @@
 		FE76A92A13E636A9006D6AFC = {
 			isa = PBXGroup;
 			children = (
+				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
 				FE726B7F1463CD7600534279 /* TODO */,
 				FE726B4814611E9C00534279 /* JSON */,
 				FE5CAE1613F72980004BC903 /* Classes */,
@@ -267,12 +279,30 @@
 		FE76A93813E636A9006D6AFC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FE8CA91A1474586000A5C9EA /* Security.framework */,
 				FE76A93913E636A9006D6AFC /* UIKit.framework */,
 				FE76A93B13E636A9006D6AFC /* Foundation.framework */,
 				FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */,
 				FE76A93F13E636A9006D6AFC /* CoreData.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FE8CA91C1474592B00A5C9EA /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				FE8CA91D1474597C00A5C9EA /* GenericKeychain */,
+			);
+			path = ThirdParty;
+			sourceTree = "<group>";
+		};
+		FE8CA91D1474597C00A5C9EA /* GenericKeychain */ = {
+			isa = PBXGroup;
+			children = (
+				FE8CA91E147459C200A5C9EA /* KeychainItemWrapper.h */,
+				FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */,
+			);
+			path = GenericKeychain;
 			sourceTree = "<group>";
 		};
 		FE9E371413F8EA2300A6EE36 /* UI */ = {
@@ -409,12 +439,14 @@
 				FE726B6B14611E9C00534279 /* SBJsonTokeniser.m in Sources */,
 				FE726B6C14611E9C00534279 /* SBJsonUTF8Stream.m in Sources */,
 				FE726B6D14611E9C00534279 /* SBJsonWriter.m in Sources */,
-				FE726B73146261B800534279 /* XboxAccount.m in Sources */,
 				FE726B7E1463CAD200534279 /* AccountEditController.m in Sources */,
 				FE8EA2BA1468EE02009E26F0 /* GTMNSString+URLArguments.m in Sources */,
 				FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */,
 				FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */,
 				FEC26EAC146BB25400D31608 /* GameListController.m in Sources */,
+				FE8CA9191474212800A5C9EA /* XboxLiveAccount.m in Sources */,
+				FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */,
+				FE8CA92314745AED00A5C9EA /* AppPreferences.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

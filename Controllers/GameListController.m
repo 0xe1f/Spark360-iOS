@@ -32,10 +32,11 @@
 
 -(void)retrievedData:(NSDictionary*)data
 {
-    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:self.managedObjectContext];
     [parser synchronizeGamesWithAccount:account
                     withRetrievedObject:data
                                   error:nil]; // TODO: error?
+    [parser release];
 }
 
 -(void)retrieveFailedWithError:(NSError*)error
@@ -101,28 +102,8 @@
     [addButton release];
     */
     
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    NSString *lastUpdatedKey = [NSString stringWithFormat:@"LastUpdated:%@", account.emailAddress];
-    NSDate *lastUpdated = [prefs objectForKey:lastUpdatedKey];
-    
-    NSDateComponents *comps = [[[NSDateComponents alloc] init] autorelease];
-    [comps setMinute:-4];
-    
-    NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
-    NSDate *refreshDate = [gregorian dateByAddingComponents:comps 
-                                                     toDate:[NSDate date] 
-                                                    options:0];
-    
-    if (!lastUpdated || [lastUpdated compare:refreshDate] == NSOrderedAscending)
-    {
-        NSLog(@"Updating");
+    if ([account areGamesStale])
         [self refresh];
-    }
-    else
-    {
-        NSLog(@"Skipping; no need: lastUpdated %@; refresh date: %@",
-              lastUpdated, refreshDate);        
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -324,7 +305,7 @@
     */
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"account == %@", account];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"profile.uuid == %@", account.uuid];
     
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxGame" 

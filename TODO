@@ -1,2 +1,3 @@
-* "Finish" game parser
 * Place game list inside a TabController
+* Delete account from preferences
+* Fix CRYPTO stuff in XboxLiveAccount

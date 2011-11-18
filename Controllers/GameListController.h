@@ -10,12 +10,9 @@
 
 #import <CoreData/CoreData.h>
 
-#import "XboxAccount.h"
+#import "XboxLiveAccount.h"
 
 @interface GameListController : UITableViewController <NSFetchedResultsControllerDelegate>
-{
-    XboxAccount *account;
-}
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
 
@@ -23,6 +20,6 @@
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSNumberFormatter *numberFormatter;
 
-@property (nonatomic, retain) XboxAccount *account;
+@property (nonatomic, retain) XboxLiveAccount *account;
 
 @end

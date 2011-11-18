@@ -9,8 +9,7 @@
 #import "AccountAddController.h"
 
 #import "BachAppDelegate.h"
-#import "XboxAccount.h"
-
+#import "AppPreferences.h"
 #import "XboxLiveParser.h"
 
 @interface AccountAddController (PrivateMethods)
@@ -35,21 +34,19 @@
 
 -(void)validationSucceeded:(NSDictionary*)profile
 {
-    // Save account object
     BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
-    
     NSManagedObjectContext *context = bachApp.managedObjectContext;
     
-    self.account = [NSEntityDescription insertNewObjectForEntityForName:@"XboxAccount"
-                                            inManagedObjectContext:context];
-    
+    self.account = [AppPreferences createAndAddAccount];
     self.account.emailAddress = self.emailAddress;
     self.account.password = self.password;
+    [self.account save];
     
-    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];
     [parser synchronizeProfileWithAccount:self.account
                       withRetrievedObject:profile
                                     error:nil];
+    [parser autorelease];
     
     // TODO: Error?
     
@@ -68,22 +65,11 @@
     self.emailAddress = usernameTextField.text;
     self.password = passwordTextField.text;
     
-    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+    XboxLiveAccount *matchingAccount = [AppPreferences findAccountWithEmailAddress:self.emailAddress];
     
-    NSManagedObjectContext *context = bachApp.managedObjectContext;
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-    
-    [request setEntity:[NSEntityDescription entityForName:@"XboxAccount"
-                                   inManagedObjectContext:context]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"(emailAddress = %@)", 
-                           self.emailAddress]];
-    
-    NSArray *array = [context executeFetchRequest:request 
-                                            error:nil];
-    
-    if ([array count] > 0)
+    if (matchingAccount)
     {
-        // Account with that email address already exists
+        // An account already exists
         
         [self validationFailed:NSLocalizedString(@"AnAccountAlreadyExists", @"")];
         return;

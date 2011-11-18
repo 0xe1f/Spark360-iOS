@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "UITableViewTextFieldCell.h"
-#import "XboxAccount.h"
+#import "XboxLiveAccount.h"
 
 #define WRONG_FIELD_COLOR [UIColor colorWithRed:0.7 green:0.0 blue:0.0 alpha:1.0]
 #define GOOD_FIELD_COLOR [UIColor blackColor]
@@ -29,7 +29,7 @@
 @property (nonatomic, retain) UITableViewTextFieldCell *passwordCell;
 
 @property (nonatomic, retain) NSString *password, *emailAddress;
-@property (nonatomic, retain) XboxAccount *account;
+@property (nonatomic, retain) XboxLiveAccount *account;
 
 -(void)validateFields;
 -(void)validationSucceeded:(NSDictionary*)profile;

@@ -8,6 +8,7 @@
 
 #import "AccountListController.h"
 
+#import "AppPreferences.h"
 #import "AccountAddController.h"
 #import "AccountEditController.h"
 #import "GameListController.h"
@@ -116,7 +117,12 @@
     {
         // Delete the managed object for the given index path
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+        NSManagedObject *profile = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        
+        NSString *uuid = [profile valueForKey:@"uuid"];
+        [AppPreferences deleteAccountWithUuid:uuid];
+        
+        [context deleteObject:profile];
         
         // Save the context.
         NSError *error = nil;
@@ -136,34 +142,39 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    XboxAccount *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSManagedObject *profile = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString *uuid = [profile valueForKey:@"uuid"];
+    XboxLiveAccount *account = [XboxLiveAccount preferencesForUuid:uuid];
     
-    if ([tableView cellForRowAtIndexPath:indexPath].editing)
+    if (account)
     {
-        AccountEditController *editController;
-        editController = [[AccountEditController alloc] initWithNibName:@"AccountAdd" 
-                                                         bundle:nil];
-        
-        editController.account = account;
-        
-        [self.navigationController pushViewController:editController 
-                                             animated:YES];
-        
-        [editController release];
-    }
-    else
-    {
-        GameListController *ctlr;
-        ctlr = [[GameListController alloc] initWithNibName:@"GameList" 
-                                                    bundle:nil];
-        
-        ctlr.account = account;
-        ctlr.managedObjectContext = self.managedObjectContext;
-        
-        [self.navigationController pushViewController:ctlr 
-                                             animated:YES];
-        
-        [ctlr release];
+        if ([tableView cellForRowAtIndexPath:indexPath].editing)
+        {
+            AccountEditController *editController;
+            editController = [[AccountEditController alloc] initWithNibName:@"AccountAdd" 
+                                                             bundle:nil];
+            
+            editController.account = account;
+            
+            [self.navigationController pushViewController:editController 
+                                                 animated:YES];
+            
+            [editController release];
+        }
+        else
+        {
+            GameListController *ctlr;
+            ctlr = [[GameListController alloc] initWithNibName:@"GameList" 
+                                                        bundle:nil];
+            
+            ctlr.account = account;
+            ctlr.managedObjectContext = self.managedObjectContext;
+            
+            [self.navigationController pushViewController:ctlr 
+                                                 animated:YES];
+            
+            [ctlr release];
+        }
     }
 }
 
@@ -193,16 +204,16 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    XboxAccount *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSManagedObject *profile = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     UILabel *label = (UILabel*)[cell viewWithTag:2];
-    [label setText:account.screenName];
+    [label setText:[profile valueForKey:@"screenName"]];
     
     label = (UILabel*)[cell viewWithTag:3];
     [label setText:NSLocalizedString(@"XboxLiveAccount", @"")];
     
     UIImage *boxArt = [[CFImageCache sharedInstance]
-                       getCachedFile:account.iconUrl
+                       getCachedFile:[profile valueForKey:@"iconUrl"]
                        notifyObject:self
                        notifySelector:@selector(imageLoaded:)];
     
@@ -239,7 +250,7 @@
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxAccount" 
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxProfile" 
                                               inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     

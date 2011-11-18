@@ -9,8 +9,7 @@
 #import "AccountEditController.h"
 
 #import "BachAppDelegate.h"
-#import "XboxAccount.h"
-
+#import "AppPreferences.h"
 #import "XboxLiveParser.h"
 
 @implementation AccountEditController
@@ -266,23 +265,10 @@ replacementString:(NSString *)string
     self.emailAddress = usernameTextField.text;
     self.password = passwordTextField.text;
     
-    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+    XboxLiveAccount *matchingAccount = [AppPreferences findAccountWithEmailAddress:self.emailAddress];
     
-    NSManagedObjectContext *context = bachApp.managedObjectContext;
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-    
-    [request setEntity:[NSEntityDescription entityForName:@"XboxAccount"
-                                   inManagedObjectContext:context]];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"(emailAddress = %@)", 
-                           self.emailAddress]];
-    
-    NSArray *array = [context executeFetchRequest:request 
-                                            error:nil];
-    
-    if ([array count] > 0 && ![[[array lastObject] objectID] isEqual:[account objectID]])
+    if (matchingAccount && ![matchingAccount isEqualToAccount:account])
     {
-        // Account with that email address already exists
-        
         [self validationFailed:NSLocalizedString(@"AnAccountAlreadyExists", @"")];
         return;
     }
@@ -348,11 +334,16 @@ replacementString:(NSString *)string
 {
     account.emailAddress = self.emailAddress;
     account.password = self.password;
+    [account save];
     
-    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+    NSManagedObjectContext *context = bachApp.managedObjectContext;
+
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];
     [parser synchronizeProfileWithAccount:account
                       withRetrievedObject:profile
                                     error:nil];
+    [parser release];
     
     [savingIndicator stopAnimating];
     [savingIndicator setHidden:YES];
