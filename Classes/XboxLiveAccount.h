@@ -13,7 +13,7 @@
 -(id)initWithUuid:(NSString*)uuid;
 +(id)preferencesForUuid:(NSString*)uuid;
 
--(void)refresh;
+-(void)reload;
 -(void)save;
 -(void)purge;
 

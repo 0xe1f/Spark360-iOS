@@ -12,6 +12,7 @@
 #import "AccountAddController.h"
 #import "AccountEditController.h"
 #import "GameListController.h"
+#import "ProfileContainerController.h"
 
 #import "CFImageCache.h"
 
@@ -163,16 +164,12 @@
         }
         else
         {
-            GameListController *ctlr;
-            ctlr = [[GameListController alloc] initWithNibName:@"GameList" 
-                                                        bundle:nil];
-            
+            ProfileContainerController *ctlr = [[ProfileContainerController alloc] initWithNibName:@"ProfileContainer"
+                                                                                            bundle:nil];
             ctlr.account = account;
             ctlr.managedObjectContext = self.managedObjectContext;
             
-            [self.navigationController pushViewController:ctlr 
-                                                 animated:YES];
-            
+            [self.navigationController pushViewController:ctlr animated:YES];
             [ctlr release];
         }
     }

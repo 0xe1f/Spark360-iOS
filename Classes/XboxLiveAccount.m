@@ -43,7 +43,7 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
     return _uuid;
 }
 
--(void)refresh
+-(void)reload
 {
     if (self.uuid)
     {
@@ -52,12 +52,11 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
         self.lastGamesUpdate = [prefs objectForKey:[self keyForPreference:GameLastUpdatedKey]];
         self.browseRefreshPeriodInSeconds = [prefs objectForKey:[self keyForPreference:BrowseTimeoutKey]];
         
-        KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:KeychainPassword
+        KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
+                                                                                serviceName:KeychainPassword
                                                                                 accessGroup:nil];
-        
         self.emailAddress = [keychainItem objectForKey:kSecAttrAccount];
         self.password = [keychainItem objectForKey:kSecValueData];
-        
         [keychainItem release];
         
         [self resetDirtyFlags];
@@ -76,15 +75,10 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
     [prefs removeObjectForKey:[self keyForPreference:GameLastUpdatedKey]];
     [prefs removeObjectForKey:[self keyForPreference:BrowseTimeoutKey]];
     
-    KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:KeychainPassword
+    KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
+                                                                            serviceName:KeychainPassword
                                                                             accessGroup:nil];
-    
-    /* TODO: remove these!
-    [keychainItem 
-    self.emailAddress = [keychainItem objectForKey:kSecAttrAccount];
-    self.password = [keychainItem objectForKey:kSecValueData];
-    */
-    
+    [keychainItem resetKeychainItem];
     [keychainItem release];
 }
 
@@ -108,14 +102,11 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
         
         if (_emailAddressDirty || _passwordDirty)
         {
-            KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:KeychainPassword
+            KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
+                                                                                    serviceName:KeychainPassword
                                                                                     accessGroup:nil];
-            
-            [keychainItem setObject:self.password
-                             forKey:kSecValueData];
-            [keychainItem setObject:self.emailAddress
-                             forKey:kSecAttrAccount];
-            
+            [keychainItem setObject:self.password forKey:kSecValueData];
+            [keychainItem setObject:self.emailAddress forKey:kSecAttrAccount];
             [keychainItem release];
         }
         
@@ -237,7 +228,7 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
     if (self = [super init]) 
     {
         _uuid = [uuid copy];
-        [self refresh];
+        [self reload];
     }
     
     return self;

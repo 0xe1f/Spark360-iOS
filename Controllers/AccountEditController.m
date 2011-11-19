@@ -332,13 +332,13 @@ replacementString:(NSString *)string
 
 -(void)validationSucceeded:(NSDictionary*)profile
 {
+    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+    NSManagedObjectContext *context = bachApp.managedObjectContext;
+    
     account.emailAddress = self.emailAddress;
     account.password = self.password;
     [account save];
     
-    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
-    NSManagedObjectContext *context = bachApp.managedObjectContext;
-
     XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];
     [parser synchronizeProfileWithAccount:account
                       withRetrievedObject:profile

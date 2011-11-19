@@ -46,6 +46,8 @@
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
 		FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA7146BB25400D31608 /* AccountListController.m */; };
 		FEC26EAC146BB25400D31608 /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA9146BB25400D31608 /* GameListController.m */; };
+		FEEB8FE91477A3FB00C00CF2 /* ProfileContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */; };
+		FEEB8FEE1477A54000C00CF2 /* ProfileContainerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */; };
 		FEFE0E6014774542009C7084 /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E5F14774542009C7084 /* GameList.xib */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
 		FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */; };
@@ -53,7 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FE20CD3613F7B86B0060D902 /* AccountList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AccountList.xib; path = UI/AccountList.xib; sourceTree = "<group>"; };
+		FE20CD3613F7B86B0060D902 /* AccountList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountList.xib; sourceTree = "<group>"; };
 		FE3FE14C13F72F7E009467EF /* g_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = g_small.png; path = Images/g_small.png; sourceTree = "<group>"; };
 		FE610D2F13EDD8A700420372 /* CFImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCache.h; sourceTree = "<group>"; };
 		FE610D3013EDD8A700420372 /* CFImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCache.m; sourceTree = "<group>"; };
@@ -85,8 +87,8 @@
 		FE726B5F14611E9C00534279 /* SBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonUTF8Stream.m; sourceTree = "<group>"; };
 		FE726B6014611E9C00534279 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		FE726B6114611E9C00534279 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
-		FE726B7C1463CAD200534279 /* AccountEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountEditController.h; path = Controllers/AccountEditController.h; sourceTree = "<group>"; };
-		FE726B7D1463CAD200534279 /* AccountEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountEditController.m; path = Controllers/AccountEditController.m; sourceTree = "<group>"; };
+		FE726B7C1463CAD200534279 /* AccountEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountEditController.h; sourceTree = "<group>"; };
+		FE726B7D1463CAD200534279 /* AccountEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountEditController.m; sourceTree = "<group>"; };
 		FE726B7F1463CD7600534279 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		FE76A93513E636A9006D6AFC /* BachZero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BachZero.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE76A93913E636A9006D6AFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -108,27 +110,30 @@
 		FE8EA2B81468EE02009E26F0 /* GTMNSString+URLArguments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+URLArguments.h"; sourceTree = "<group>"; };
 		FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+URLArguments.m"; sourceTree = "<group>"; };
 		FE8EA2BC1468EE2E009E26F0 /* GTMGarbageCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMGarbageCollection.h; sourceTree = "<group>"; };
-		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AccountAdd.xib; path = UI/AccountAdd.xib; sourceTree = "<group>"; };
+		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
 		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewTextFieldCell.h; sourceTree = "<group>"; };
 		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewTextFieldCell.m; sourceTree = "<group>"; };
 		FEA47124144FED35009F0CB4 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
 		FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveParser.m; sourceTree = "<group>"; };
-		FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = XboxGameCell.xib; path = UI/XboxGameCell.xib; sourceTree = "<group>"; };
+		FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XboxGameCell.xib; sourceTree = "<group>"; };
 		FEAC6F2613EA8E8A000D86D1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FEB3E13E13E6404900095480 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		FEB3E13F13E6404900095480 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		FEB3E14013E6404900095480 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
-		FEC26EA4146BB25400D31608 /* AccountAddController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountAddController.h; path = Controllers/AccountAddController.h; sourceTree = "<group>"; };
-		FEC26EA5146BB25400D31608 /* AccountAddController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountAddController.m; path = Controllers/AccountAddController.m; sourceTree = "<group>"; };
-		FEC26EA6146BB25400D31608 /* AccountListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccountListController.h; path = Controllers/AccountListController.h; sourceTree = "<group>"; };
-		FEC26EA7146BB25400D31608 /* AccountListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountListController.m; path = Controllers/AccountListController.m; sourceTree = "<group>"; };
-		FEC26EA8146BB25400D31608 /* GameListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameListController.h; path = Controllers/GameListController.h; sourceTree = "<group>"; };
-		FEC26EA9146BB25400D31608 /* GameListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameListController.m; path = Controllers/GameListController.m; sourceTree = "<group>"; };
-		FEFE0E5F14774542009C7084 /* GameList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GameList.xib; path = UI/GameList.xib; sourceTree = "<group>"; };
-		FEFE0E6114774554009C7084 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = UI/MainWindow.xib; sourceTree = "<group>"; };
+		FEC26EA4146BB25400D31608 /* AccountAddController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountAddController.h; sourceTree = "<group>"; };
+		FEC26EA5146BB25400D31608 /* AccountAddController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountAddController.m; sourceTree = "<group>"; };
+		FEC26EA6146BB25400D31608 /* AccountListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountListController.h; sourceTree = "<group>"; };
+		FEC26EA7146BB25400D31608 /* AccountListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountListController.m; sourceTree = "<group>"; };
+		FEC26EA8146BB25400D31608 /* GameListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameListController.h; sourceTree = "<group>"; };
+		FEC26EA9146BB25400D31608 /* GameListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameListController.m; sourceTree = "<group>"; };
+		FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileContainer.xib; sourceTree = "<group>"; };
+		FEEB8FEB1477A54000C00CF2 /* ProfileContainerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileContainerController.h; sourceTree = "<group>"; };
+		FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileContainerController.m; sourceTree = "<group>"; };
+		FEFE0E5F14774542009C7084 /* GameList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameList.xib; sourceTree = "<group>"; };
+		FEFE0E6114774554009C7084 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
-		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AccountCell.xib; path = UI/AccountCell.xib; sourceTree = "<group>"; };
+		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,8 +183,9 @@
 				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
 				FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
+				FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */,
 			);
-			name = UI;
+			path = UI;
 			sourceTree = "<group>";
 		};
 		FE5CAE1613F72980004BC903 /* Classes */ = {
@@ -209,8 +215,10 @@
 				FEC26EA9146BB25400D31608 /* GameListController.m */,
 				FE726B7C1463CAD200534279 /* AccountEditController.h */,
 				FE726B7D1463CAD200534279 /* AccountEditController.m */,
+				FEEB8FEB1477A54000C00CF2 /* ProfileContainerController.h */,
+				FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */,
 			);
-			name = Controllers;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		FE726B471461120100534279 /* Models */ = {
@@ -256,7 +264,6 @@
 			isa = PBXGroup;
 			children = (
 				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
-				FE726B4814611E9C00534279 /* JSON */,
 				FE5CAE1613F72980004BC903 /* Classes */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
 				FEAC6F1113E925A2000D86D1 /* Bach */,
@@ -291,6 +298,8 @@
 		FE8CA91C1474592B00A5C9EA /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				FEB3E13D13E6404900095480 /* GTM */,
+				FE726B4814611E9C00534279 /* JSON */,
 				FE8CA91D1474597C00A5C9EA /* GenericKeychain */,
 			);
 			path = ThirdParty;
@@ -326,7 +335,6 @@
 		FEB3E13B13E6402900095480 /* Caffeine */ = {
 			isa = PBXGroup;
 			children = (
-				FEB3E13D13E6404900095480 /* GTM */,
 				FE610D3613EE15CA00420372 /* CFCaffeine.h */,
 				FE610D2F13EDD8A700420372 /* CFImageCache.h */,
 				FE610D3013EDD8A700420372 /* CFImageCache.m */,
@@ -409,6 +417,7 @@
 				FEFF552814679ED900190D58 /* AccountCell.xib in Resources */,
 				FEFE0E6014774542009C7084 /* GameList.xib in Resources */,
 				FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */,
+				FEEB8FE91477A3FB00C00CF2 /* ProfileContainer.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +456,7 @@
 				FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */,
 				FE8CA92314745AED00A5C9EA /* AppPreferences.m in Sources */,
 				FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */,
+				FEEB8FEE1477A54000C00CF2 /* ProfileContainerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

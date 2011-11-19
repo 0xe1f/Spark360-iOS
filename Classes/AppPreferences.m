@@ -32,19 +32,12 @@
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     NSString *uuidList = [prefs objectForKey:@"accountUuids"];
     
-    if (!uuidList || [uuidList length] < 1)
-    {
-        uuidList = uuid;
-    }
-    else
-    {
-        uuidList = [uuidList stringByAppendingFormat:@",%@", uuid];
-    }
+    NSMutableArray *uuids = [NSMutableArray arrayWithArray:[uuidList componentsSeparatedByString:@","]];
+    [uuids addObject:uuid];
     
-    [prefs setObject:uuidList forKey:@"accountUuids"];
+    [prefs setObject:[uuids componentsJoinedByString:@","] forKey:@"accountUuids"];
     
-    XboxLiveAccount *account = [[XboxLiveAccount alloc] initWithUuid:uuid];
-    return [account autorelease];
+    return [[[XboxLiveAccount alloc] initWithUuid:uuid] autorelease];
 }
 
 +(XboxLiveAccount*)findAccountWithEmailAddress:(NSString*)emailAddress
@@ -67,15 +60,18 @@
 {
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     NSString *uuidList = [prefs objectForKey:@"accountUuids"];
-    
     NSMutableArray *uuids = [NSMutableArray arrayWithArray:[uuidList componentsSeparatedByString:@","]];
-    [uuids removeObject:uuid];
     
-    [prefs setObject:[uuids componentsJoinedByString:@","]
-              forKey:@"accountUuids"];
-    
-    XboxLiveAccount *account = [XboxLiveAccount preferencesForUuid:uuid];
-    [account purge];
+    if ([uuids containsObject:uuid])
+    {
+        XboxLiveAccount *account = [XboxLiveAccount preferencesForUuid:uuid];
+        [account purge];
+        
+        [uuids removeObject:uuid];
+        
+        [prefs setObject:[uuids componentsJoinedByString:@","]
+                  forKey:@"accountUuids"];
+    }
 }
 
 @end
