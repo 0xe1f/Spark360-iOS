@@ -31,8 +31,6 @@
 		FE76A94013E636A9006D6AFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93F13E636A9006D6AFC /* CoreData.framework */; };
 		FE76A94813E636A9006D6AFC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94713E636A9006D6AFC /* main.m */; };
 		FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */; };
-		FE76A95213E636A9006D6AFC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE76A95013E636A9006D6AFC /* MainWindow.xib */; };
-		FE76A95813E636A9006D6AFC /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE76A95613E636A9006D6AFC /* GameList.xib */; };
 		FE8CA9191474212800A5C9EA /* XboxLiveAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */; };
 		FE8CA91B1474586000A5C9EA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8CA91A1474586000A5C9EA /* Security.framework */; };
 		FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */; };
@@ -48,7 +46,9 @@
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
 		FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA7146BB25400D31608 /* AccountListController.m */; };
 		FEC26EAC146BB25400D31608 /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA9146BB25400D31608 /* GameListController.m */; };
-		FED5AD2113EEFA9A00808BFF /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FED5AD1F13EEFA9A00808BFF /* XboxLive.xcdatamodeld */; };
+		FEFE0E6014774542009C7084 /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E5F14774542009C7084 /* GameList.xib */; };
+		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
+		FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */; };
 		FEFF552814679ED900190D58 /* AccountCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFF552714679ED900190D58 /* AccountCell.xib */; };
 /* End PBXBuildFile section */
 
@@ -93,13 +93,11 @@
 		FE76A93B13E636A9006D6AFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		FE76A93F13E636A9006D6AFC /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		FE76A94313E636A9006D6AFC /* BachZero-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "BachZero-Info.plist"; path = "ListTest/BachZero-Info.plist"; sourceTree = "<group>"; };
+		FE76A94313E636A9006D6AFC /* BachZero-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BachZero-Info.plist"; sourceTree = "<group>"; };
 		FE76A94713E636A9006D6AFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
-		FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "BachZero-Prefix.pch"; path = "ListTest/BachZero-Prefix.pch"; sourceTree = "<group>"; };
+		FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BachZero-Prefix.pch"; sourceTree = "<group>"; };
 		FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BachAppDelegate.h; sourceTree = "<group>"; };
 		FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BachAppDelegate.m; sourceTree = "<group>"; };
-		FE76A95113E636A9006D6AFC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		FE76A95713E636A9006D6AFC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GameList.xib; sourceTree = "<group>"; };
 		FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XboxLiveAccount.h; path = Classes/XboxLiveAccount.h; sourceTree = "<group>"; };
 		FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XboxLiveAccount.m; path = Classes/XboxLiveAccount.m; sourceTree = "<group>"; };
 		FE8CA91A1474586000A5C9EA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -127,7 +125,9 @@
 		FEC26EA7146BB25400D31608 /* AccountListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccountListController.m; path = Controllers/AccountListController.m; sourceTree = "<group>"; };
 		FEC26EA8146BB25400D31608 /* GameListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameListController.h; path = Controllers/GameListController.h; sourceTree = "<group>"; };
 		FEC26EA9146BB25400D31608 /* GameListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameListController.m; path = Controllers/GameListController.m; sourceTree = "<group>"; };
-		FED5AD2013EEFA9A00808BFF /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
+		FEFE0E5F14774542009C7084 /* GameList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GameList.xib; path = UI/GameList.xib; sourceTree = "<group>"; };
+		FEFE0E6114774554009C7084 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = UI/MainWindow.xib; sourceTree = "<group>"; };
+		FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
 		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AccountCell.xib; path = UI/AccountCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -158,9 +158,8 @@
 		FE5CAE1313F728BC004BC903 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */,
 				FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */,
-				FED5AD1F13EEFA9A00808BFF /* XboxLive.xcdatamodeld */,
-				FE76A95013E636A9006D6AFC /* MainWindow.xib */,
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
 				FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */,
 				FE3FE14913F72AD2009467EF /* Images */,
@@ -173,9 +172,10 @@
 		FE5CAE1413F728E5004BC903 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FEFE0E6114774554009C7084 /* MainWindow.xib */,
+				FEFE0E5F14774542009C7084 /* GameList.xib */,
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
-				FE76A95613E636A9006D6AFC /* GameList.xib */,
 				FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
 			);
@@ -256,7 +256,6 @@
 			isa = PBXGroup;
 			children = (
 				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
-				FE726B7F1463CD7600534279 /* TODO */,
 				FE726B4814611E9C00534279 /* JSON */,
 				FE5CAE1613F72980004BC903 /* Classes */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
@@ -265,6 +264,7 @@
 				FE76A93813E636A9006D6AFC /* Frameworks */,
 				FE76A93613E636A9006D6AFC /* Products */,
 				FE76A94713E636A9006D6AFC /* main.m */,
+				FE726B7F1463CD7600534279 /* TODO */,
 			);
 			sourceTree = "<group>";
 		};
@@ -399,8 +399,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FE76A95213E636A9006D6AFC /* MainWindow.xib in Resources */,
-				FE76A95813E636A9006D6AFC /* GameList.xib in Resources */,
 				FEAC6F1B13EA7F73000D86D1 /* XboxGameCell.xib in Resources */,
 				FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */,
 				FE3FE14D13F72F7E009467EF /* g_small.png in Resources */,
@@ -409,6 +407,8 @@
 				FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */,
 				FE726B801463CD7600534279 /* TODO in Resources */,
 				FEFF552814679ED900190D58 /* AccountCell.xib in Resources */,
+				FEFE0E6014774542009C7084 /* GameList.xib in Resources */,
+				FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,7 +425,6 @@
 				FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */,
 				FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */,
 				FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */,
-				FED5AD2113EEFA9A00808BFF /* XboxLive.xcdatamodeld in Sources */,
 				FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */,
 				FE726B6214611E9C00534279 /* NSObject+SBJson.m in Sources */,
 				FE726B6314611E9C00534279 /* SBJsonParser.m in Sources */,
@@ -447,30 +446,13 @@
 				FE8CA9191474212800A5C9EA /* XboxLiveAccount.m in Sources */,
 				FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */,
 				FE8CA92314745AED00A5C9EA /* AppPreferences.m in Sources */,
+				FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		FE76A95013E636A9006D6AFC /* MainWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FE76A95113E636A9006D6AFC /* en */,
-			);
-			name = MainWindow.xib;
-			path = ListTest;
-			sourceTree = "<group>";
-		};
-		FE76A95613E636A9006D6AFC /* GameList.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FE76A95713E636A9006D6AFC /* en */,
-			);
-			name = GameList.xib;
-			path = ListTest;
-			sourceTree = "<group>";
-		};
 		FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -529,9 +511,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ListTest/BachZero-Prefix.pch";
+				GCC_PREFIX_HEADER = "BachZero-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "ListTest/BachZero-Info.plist";
+				INFOPLIST_FILE = "BachZero-Info.plist";
 				PRODUCT_NAME = BachZero;
 				WRAPPER_EXTENSION = app;
 			};
@@ -541,9 +523,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ListTest/BachZero-Prefix.pch";
+				GCC_PREFIX_HEADER = "BachZero-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "ListTest/BachZero-Info.plist";
+				INFOPLIST_FILE = "BachZero-Info.plist";
 				PRODUCT_NAME = BachZero;
 				WRAPPER_EXTENSION = app;
 			};
@@ -573,14 +555,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		FED5AD1F13EEFA9A00808BFF /* XboxLive.xcdatamodeld */ = {
+		FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				FED5AD2013EEFA9A00808BFF /* XboxLive.xcdatamodel */,
+				FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */,
 			);
-			currentVersion = FED5AD2013EEFA9A00808BFF /* XboxLive.xcdatamodel */;
-			name = XboxLive.xcdatamodeld;
-			path = ListTest/XboxLive.xcdatamodeld;
+			currentVersion = FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */;
+			path = XboxLive.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
