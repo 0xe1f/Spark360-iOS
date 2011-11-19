@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE20CD3613F7B86B0060D902 /* AccountList.xib */; };
-		FE3FE14D13F72F7E009467EF /* g_small.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3FE14C13F72F7E009467EF /* g_small.png */; };
+		FE3FE14D13F72F7E009467EF /* gamerScore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3FE14C13F72F7E009467EF /* gamerScore.png */; };
 		FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3013EDD8A700420372 /* CFImageCache.m */; };
 		FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3413EE125700420372 /* CFImageCacheOperation.m */; };
 		FE726B6214611E9C00534279 /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B4A14611E9C00534279 /* NSObject+SBJson.m */; };
@@ -46,6 +46,9 @@
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
 		FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA7146BB25400D31608 /* AccountListController.m */; };
 		FEC26EAC146BB25400D31608 /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA9146BB25400D31608 /* GameListController.m */; };
+		FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D114782EF000537213 /* gamesTab@2x.png */; };
+		FEC7F9D414782EF000537213 /* gamesTab.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D214782EF000537213 /* gamesTab.png */; };
+		FEC7F9D61478323600537213 /* gamerScoreInverse.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D51478323600537213 /* gamerScoreInverse.png */; };
 		FEEB8FE91477A3FB00C00CF2 /* ProfileContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */; };
 		FEEB8FEE1477A54000C00CF2 /* ProfileContainerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */; };
 		FEFE0E6014774542009C7084 /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E5F14774542009C7084 /* GameList.xib */; };
@@ -56,7 +59,7 @@
 
 /* Begin PBXFileReference section */
 		FE20CD3613F7B86B0060D902 /* AccountList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountList.xib; sourceTree = "<group>"; };
-		FE3FE14C13F72F7E009467EF /* g_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = g_small.png; path = Images/g_small.png; sourceTree = "<group>"; };
+		FE3FE14C13F72F7E009467EF /* gamerScore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScore.png; sourceTree = "<group>"; };
 		FE610D2F13EDD8A700420372 /* CFImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCache.h; sourceTree = "<group>"; };
 		FE610D3013EDD8A700420372 /* CFImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCache.m; sourceTree = "<group>"; };
 		FE610D3313EE125700420372 /* CFImageCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCacheOperation.h; sourceTree = "<group>"; };
@@ -127,6 +130,9 @@
 		FEC26EA7146BB25400D31608 /* AccountListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountListController.m; sourceTree = "<group>"; };
 		FEC26EA8146BB25400D31608 /* GameListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameListController.h; sourceTree = "<group>"; };
 		FEC26EA9146BB25400D31608 /* GameListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameListController.m; sourceTree = "<group>"; };
+		FEC7F9D114782EF000537213 /* gamesTab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamesTab@2x.png"; sourceTree = "<group>"; };
+		FEC7F9D214782EF000537213 /* gamesTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamesTab.png; sourceTree = "<group>"; };
+		FEC7F9D51478323600537213 /* gamerScoreInverse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScoreInverse.png; sourceTree = "<group>"; };
 		FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileContainer.xib; sourceTree = "<group>"; };
 		FEEB8FEB1477A54000C00CF2 /* ProfileContainerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileContainerController.h; sourceTree = "<group>"; };
 		FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileContainerController.m; sourceTree = "<group>"; };
@@ -155,9 +161,12 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				FE3FE14C13F72F7E009467EF /* g_small.png */,
+				FEC7F9D51478323600537213 /* gamerScoreInverse.png */,
+				FEC7F9D114782EF000537213 /* gamesTab@2x.png */,
+				FEC7F9D214782EF000537213 /* gamesTab.png */,
+				FE3FE14C13F72F7E009467EF /* gamerScore.png */,
 			);
-			name = Images;
+			path = Images;
 			sourceTree = "<group>";
 		};
 		FE5CAE1313F728BC004BC903 /* Resources */ = {
@@ -409,7 +418,7 @@
 			files = (
 				FEAC6F1B13EA7F73000D86D1 /* XboxGameCell.xib in Resources */,
 				FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */,
-				FE3FE14D13F72F7E009467EF /* g_small.png in Resources */,
+				FE3FE14D13F72F7E009467EF /* gamerScore.png in Resources */,
 				FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */,
 				FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */,
 				FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */,
@@ -418,6 +427,9 @@
 				FEFE0E6014774542009C7084 /* GameList.xib in Resources */,
 				FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */,
 				FEEB8FE91477A3FB00C00CF2 /* ProfileContainer.xib in Resources */,
+				FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */,
+				FEC7F9D414782EF000537213 /* gamesTab.png in Resources */,
+				FEC7F9D61478323600537213 /* gamerScoreInverse.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
