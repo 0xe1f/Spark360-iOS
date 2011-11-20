@@ -337,6 +337,7 @@ replacementString:(NSString *)string
     
     account.emailAddress = self.emailAddress;
     account.password = self.password;
+    account.screenName = [profile objectForKey:@"screenName"];
     [account save];
     
     XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];

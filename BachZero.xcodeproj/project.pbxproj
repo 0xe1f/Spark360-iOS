@@ -49,9 +49,19 @@
 		FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D114782EF000537213 /* gamesTab@2x.png */; };
 		FEC7F9D414782EF000537213 /* gamesTab.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D214782EF000537213 /* gamesTab.png */; };
 		FEC7F9D61478323600537213 /* gamerScoreInverse.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D51478323600537213 /* gamerScoreInverse.png */; };
+		FEC7F9DA1478653600537213 /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9DB1478653600537213 /* GameList.xib */; };
+		FEC7F9F61479070F00537213 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC7F9EC1479070F00537213 /* EGORefreshTableHeaderView.m */; };
+		FEC7F9F71479070F00537213 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9EE1479070F00537213 /* blackArrow.png */; };
+		FEC7F9F81479070F00537213 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9EF1479070F00537213 /* blackArrow@2x.png */; };
+		FEC7F9F91479070F00537213 /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F01479070F00537213 /* blueArrow.png */; };
+		FEC7F9FA1479070F00537213 /* blueArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F11479070F00537213 /* blueArrow@2x.png */; };
+		FEC7F9FB1479070F00537213 /* grayArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F21479070F00537213 /* grayArrow.png */; };
+		FEC7F9FC1479070F00537213 /* grayArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F31479070F00537213 /* grayArrow@2x.png */; };
+		FEC7F9FD1479070F00537213 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F41479070F00537213 /* whiteArrow.png */; };
+		FEC7F9FE1479070F00537213 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F51479070F00537213 /* whiteArrow@2x.png */; };
+		FEC7FA00147908A300537213 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEC7F9FF147908A300537213 /* QuartzCore.framework */; };
 		FEEB8FE91477A3FB00C00CF2 /* ProfileContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */; };
 		FEEB8FEE1477A54000C00CF2 /* ProfileContainerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */; };
-		FEFE0E6014774542009C7084 /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E5F14774542009C7084 /* GameList.xib */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
 		FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */; };
 		FEFF552814679ED900190D58 /* AccountCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFF552714679ED900190D58 /* AccountCell.xib */; };
@@ -133,10 +143,21 @@
 		FEC7F9D114782EF000537213 /* gamesTab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamesTab@2x.png"; sourceTree = "<group>"; };
 		FEC7F9D214782EF000537213 /* gamesTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamesTab.png; sourceTree = "<group>"; };
 		FEC7F9D51478323600537213 /* gamerScoreInverse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScoreInverse.png; sourceTree = "<group>"; };
+		FEC7F9DB1478653600537213 /* GameList.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GameList.xib; sourceTree = "<group>"; };
+		FEC7F9EB1479070F00537213 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
+		FEC7F9EC1479070F00537213 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
+		FEC7F9EE1479070F00537213 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
+		FEC7F9EF1479070F00537213 /* blackArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackArrow@2x.png"; sourceTree = "<group>"; };
+		FEC7F9F01479070F00537213 /* blueArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blueArrow.png; sourceTree = "<group>"; };
+		FEC7F9F11479070F00537213 /* blueArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blueArrow@2x.png"; sourceTree = "<group>"; };
+		FEC7F9F21479070F00537213 /* grayArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grayArrow.png; sourceTree = "<group>"; };
+		FEC7F9F31479070F00537213 /* grayArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grayArrow@2x.png"; sourceTree = "<group>"; };
+		FEC7F9F41479070F00537213 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
+		FEC7F9F51479070F00537213 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
+		FEC7F9FF147908A300537213 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileContainer.xib; sourceTree = "<group>"; };
 		FEEB8FEB1477A54000C00CF2 /* ProfileContainerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileContainerController.h; sourceTree = "<group>"; };
 		FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileContainerController.m; sourceTree = "<group>"; };
-		FEFE0E5F14774542009C7084 /* GameList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameList.xib; sourceTree = "<group>"; };
 		FEFE0E6114774554009C7084 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
 		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountCell.xib; sourceTree = "<group>"; };
@@ -147,6 +168,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEC7FA00147908A300537213 /* QuartzCore.framework in Frameworks */,
 				FE8CA91B1474586000A5C9EA /* Security.framework in Frameworks */,
 				FE76A93A13E636A9006D6AFC /* UIKit.framework in Frameworks */,
 				FE76A93C13E636A9006D6AFC /* Foundation.framework in Frameworks */,
@@ -187,7 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				FEFE0E6114774554009C7084 /* MainWindow.xib */,
-				FEFE0E5F14774542009C7084 /* GameList.xib */,
+				FEC7F9DB1478653600537213 /* GameList.xib */,
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
 				FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */,
@@ -272,6 +294,7 @@
 		FE76A92A13E636A9006D6AFC = {
 			isa = PBXGroup;
 			children = (
+				FEC7F9FF147908A300537213 /* QuartzCore.framework */,
 				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
 				FE5CAE1613F72980004BC903 /* Classes */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
@@ -307,6 +330,7 @@
 		FE8CA91C1474592B00A5C9EA /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				FEC7F9E81479070F00537213 /* EGOTableViewPullRefresh */,
 				FEB3E13D13E6404900095480 /* GTM */,
 				FE726B4814611E9C00534279 /* JSON */,
 				FE8CA91D1474597C00A5C9EA /* GenericKeychain */,
@@ -364,6 +388,47 @@
 				FEB3E14013E6404900095480 /* GTMNSString+HTML.m */,
 			);
 			path = GTM;
+			sourceTree = "<group>";
+		};
+		FEC7F9E81479070F00537213 /* EGOTableViewPullRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				FEC7F9E91479070F00537213 /* Classes */,
+				FEC7F9ED1479070F00537213 /* Resources */,
+			);
+			path = EGOTableViewPullRefresh;
+			sourceTree = "<group>";
+		};
+		FEC7F9E91479070F00537213 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FEC7F9EA1479070F00537213 /* View */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		FEC7F9EA1479070F00537213 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FEC7F9EB1479070F00537213 /* EGORefreshTableHeaderView.h */,
+				FEC7F9EC1479070F00537213 /* EGORefreshTableHeaderView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FEC7F9ED1479070F00537213 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FEC7F9EE1479070F00537213 /* blackArrow.png */,
+				FEC7F9EF1479070F00537213 /* blackArrow@2x.png */,
+				FEC7F9F01479070F00537213 /* blueArrow.png */,
+				FEC7F9F11479070F00537213 /* blueArrow@2x.png */,
+				FEC7F9F21479070F00537213 /* grayArrow.png */,
+				FEC7F9F31479070F00537213 /* grayArrow@2x.png */,
+				FEC7F9F41479070F00537213 /* whiteArrow.png */,
+				FEC7F9F51479070F00537213 /* whiteArrow@2x.png */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -424,12 +489,20 @@
 				FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */,
 				FE726B801463CD7600534279 /* TODO in Resources */,
 				FEFF552814679ED900190D58 /* AccountCell.xib in Resources */,
-				FEFE0E6014774542009C7084 /* GameList.xib in Resources */,
+				FEC7F9DA1478653600537213 /* GameList.xib in Resources */,
 				FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */,
 				FEEB8FE91477A3FB00C00CF2 /* ProfileContainer.xib in Resources */,
 				FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */,
 				FEC7F9D414782EF000537213 /* gamesTab.png in Resources */,
 				FEC7F9D61478323600537213 /* gamerScoreInverse.png in Resources */,
+				FEC7F9F71479070F00537213 /* blackArrow.png in Resources */,
+				FEC7F9F81479070F00537213 /* blackArrow@2x.png in Resources */,
+				FEC7F9F91479070F00537213 /* blueArrow.png in Resources */,
+				FEC7F9FA1479070F00537213 /* blueArrow@2x.png in Resources */,
+				FEC7F9FB1479070F00537213 /* grayArrow.png in Resources */,
+				FEC7F9FC1479070F00537213 /* grayArrow@2x.png in Resources */,
+				FEC7F9FD1479070F00537213 /* whiteArrow.png in Resources */,
+				FEC7F9FE1479070F00537213 /* whiteArrow@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +542,7 @@
 				FE8CA92314745AED00A5C9EA /* AppPreferences.m in Sources */,
 				FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */,
 				FEEB8FEE1477A54000C00CF2 /* ProfileContainerController.m in Sources */,
+				FEC7F9F61479070F00537213 /* EGORefreshTableHeaderView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

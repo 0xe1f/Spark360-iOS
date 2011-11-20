@@ -19,11 +19,14 @@
 
 -(NSString*)uuid;
 
+-(NSString*)screenName;
+-(void)setScreenName:(NSString*)screenName;
+
 -(NSDate*)lastGamesUpdate;
 -(void)setLastGamesUpdate:(NSDate*)lastUpdate;
 
--(NSNumber*)browseRefreshPeriodInSeconds;
--(void)setBrowseRefreshPeriodInSeconds:(NSNumber*)browseRefreshPeriodInSeconds;
+-(NSNumber*)stalePeriodInSeconds;
+-(void)setStalePeriodInSeconds:(NSNumber*)browseRefreshPeriodInSeconds;
 
 -(NSString*)emailAddress;
 -(void)setEmailAddress:(NSString*)emailAddress;

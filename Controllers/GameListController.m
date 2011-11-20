@@ -22,6 +22,9 @@
 @end
 
 @implementation GameListController
+{
+    BOOL _reloading;
+}
 
 @synthesize tvCell;
 @synthesize fetchedResultsController = __fetchedResultsController;
@@ -32,6 +35,9 @@
 
 -(void)retrievedData:(NSDictionary*)data
 {
+    _reloading = NO;
+	[_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    
     XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:self.managedObjectContext];
     [parser synchronizeGamesWithAccount:account
                     withRetrievedObject:data
@@ -41,6 +47,9 @@
 
 -(void)retrieveFailedWithError:(NSError*)error
 {
+    _reloading = NO;
+    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DataError", @"") 
                                                         message:[error localizedDescription]
                                                        delegate:self
@@ -79,6 +88,8 @@
 
 -(void)refresh
 {
+    _reloading = YES;
+    
     [self performSelectorInBackground:@selector(retrieveInBackground) 
                            withObject:nil];
 }
@@ -87,11 +98,23 @@
 {
     [super viewDidLoad];
     
+    _reloading = NO;
     __numberFormatter = [[NSNumberFormatter alloc] init];
     [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     
     [[CFImageCache sharedInstance] purgeInMemCache];
     
+	if (_refreshHeaderView == nil) 
+    {
+		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
+		view.delegate = self;
+		[self.tableView addSubview:view];
+		_refreshHeaderView = view;
+		[view release];
+	}
+	
+	//  update the last update date
+	[_refreshHeaderView refreshLastUpdatedDate];
     // Set up the edit and add buttons.
     
     /*
@@ -106,24 +129,35 @@
         [self refresh];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [super viewWillAppear:animated];
+	[_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    [super viewDidAppear:animated];
+	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+#pragma mark -
+#pragma mark EGORefreshTableHeaderDelegate Methods
+
+-(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
 {
-	[super viewWillDisappear:animated];
+    [self refresh];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+-(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
-	[super viewDidDisappear:animated];
+	return _reloading;
+}
+
+-(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
+{
+	return self.account.lastGamesUpdate;
 }
 
 /*
@@ -229,6 +263,7 @@
     [__numberFormatter release];
     
     account = nil;
+    _refreshHeaderView = nil;
     
     [super dealloc];
 }

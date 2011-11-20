@@ -7,12 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import <CoreData/CoreData.h>
+
+#import "EGORefreshTableHeaderView.h"
 
 #import "XboxLiveAccount.h"
 
-@interface GameListController : UITableViewController <NSFetchedResultsControllerDelegate>
+@interface GameListController : UITableViewController <EGORefreshTableHeaderDelegate, NSFetchedResultsControllerDelegate>
+{
+    EGORefreshTableHeaderView *_refreshHeaderView;
+};
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
 

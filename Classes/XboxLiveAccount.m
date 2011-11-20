@@ -21,20 +21,22 @@
     NSString *_uuid;
     NSDate *_lastGamesUpdate;
     BOOL _lastGamesUpdateDirty;
-    NSNumber *_browseRefreshPeriodInSeconds;
+    NSNumber *_stalePeriodInSeconds;
     BOOL _browseRefreshPeriodInSecondsDirty;
     NSString *_emailAddress;
     BOOL _emailAddressDirty;
     NSString *_password;
     BOOL _passwordDirty;
+    NSString *_screenName;
+    BOOL _screenNameDirty;
 }
 
 NSString * const KeychainPassword = @"com.akop.bach";
 
-NSString * const BrowseTimeoutKey = @"BrowseTimeout:%@";
-NSString * const GameLastUpdatedKey = @"GameLastUpdated:%@";
-NSString * const CookiesKey = @"Cookies:%@";
-NSString * const EmailAddressKey = @"EmailAddress:%@";
+NSString * const StalePeriodKey = @"StalePeriod";
+NSString * const ScreenNameKey = @"ScreenName";
+NSString * const GameLastUpdatedKey = @"GamesLastUpdated";
+NSString * const CookiesKey = @"Cookies";
 
 #define DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS (60*5)
 
@@ -49,9 +51,12 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
     {
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         
+        // Load pref-based properties
         self.lastGamesUpdate = [prefs objectForKey:[self keyForPreference:GameLastUpdatedKey]];
-        self.browseRefreshPeriodInSeconds = [prefs objectForKey:[self keyForPreference:BrowseTimeoutKey]];
+        self.stalePeriodInSeconds = [prefs objectForKey:[self keyForPreference:StalePeriodKey]];
+        self.screenName = [prefs objectForKey:[self keyForPreference:ScreenNameKey]];
         
+        // Load Secure properties
         KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
                                                                                 serviceName:KeychainPassword
                                                                                 accessGroup:nil];
@@ -59,10 +64,12 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
         self.password = [keychainItem objectForKey:kSecValueData];
         [keychainItem release];
         
+        // Mark the properties 'clean'
         [self resetDirtyFlags];
         
-        if (!self.browseRefreshPeriodInSeconds)
-            self.browseRefreshPeriodInSeconds = [NSNumber numberWithInt:DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS];
+        // Set defaults
+        if (!self.stalePeriodInSeconds)
+            self.stalePeriodInSeconds = [NSNumber numberWithInt:DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS];
         if (!self.lastGamesUpdate)
             self.lastGamesUpdate = [NSDate distantPast];
     }
@@ -73,7 +80,8 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
     [prefs removeObjectForKey:[self keyForPreference:GameLastUpdatedKey]];
-    [prefs removeObjectForKey:[self keyForPreference:BrowseTimeoutKey]];
+    [prefs removeObjectForKey:[self keyForPreference:StalePeriodKey]];
+    [prefs removeObjectForKey:[self keyForPreference:ScreenNameKey]];
     
     KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
                                                                             serviceName:KeychainPassword
@@ -96,8 +104,14 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
         
         if (_browseRefreshPeriodInSecondsDirty)
         {
-            [prefs setObject:self.browseRefreshPeriodInSeconds 
-                      forKey:[self keyForPreference:BrowseTimeoutKey]];
+            [prefs setObject:self.stalePeriodInSeconds 
+                      forKey:[self keyForPreference:StalePeriodKey]];
+        }
+        
+        if (_screenNameDirty)
+        {
+            [prefs setObject:self.screenName 
+                      forKey:[self keyForPreference:ScreenNameKey]];
         }
         
         if (_emailAddressDirty || _passwordDirty)
@@ -120,6 +134,7 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
     _browseRefreshPeriodInSecondsDirty = NO;
     _emailAddressDirty = NO;
     _passwordDirty = NO;
+    _screenNameDirty = NO;
 }
 
 -(NSDate*)lastGamesUpdate
@@ -136,17 +151,31 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
     _lastGamesUpdateDirty = YES;
 }
 
--(NSNumber*)browseRefreshPeriodInSeconds
+-(NSString*)screenName
 {
-    return _browseRefreshPeriodInSeconds;
+    return _screenName;
 }
 
--(void)setBrowseRefreshPeriodInSeconds:(NSNumber*)browseRefreshPeriodInSeconds
+-(void)setScreenName:(NSString *)screenName
+{
+    [screenName retain];
+    [_screenName release];
+    
+    _screenName = screenName;
+    _screenNameDirty = YES;
+}
+
+-(NSNumber*)stalePeriodInSeconds
+{
+    return _stalePeriodInSeconds;
+}
+
+-(void)setStalePeriodInSeconds:(NSNumber*)browseRefreshPeriodInSeconds
 {
     [browseRefreshPeriodInSeconds retain];
-    [_browseRefreshPeriodInSeconds release];
+    [_stalePeriodInSeconds release];
     
-    _browseRefreshPeriodInSeconds = browseRefreshPeriodInSeconds;
+    _stalePeriodInSeconds = browseRefreshPeriodInSeconds;
     _browseRefreshPeriodInSecondsDirty = YES;
 }
 
@@ -181,7 +210,7 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
 -(BOOL)areGamesStale
 {
     NSDateComponents *comps = [[NSDateComponents alloc] init];
-    [comps setSecond:-[self.browseRefreshPeriodInSeconds intValue]];
+    [comps setSecond:-[self.stalePeriodInSeconds intValue]];
     
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDate *refreshDate = [gregorian dateByAddingComponents:comps 
@@ -251,9 +280,10 @@ NSString * const EmailAddressKey = @"EmailAddress:%@";
     _uuid = nil;
     
     self.lastGamesUpdate = nil;
-    self.browseRefreshPeriodInSeconds = nil;
+    self.stalePeriodInSeconds = nil;
     self.emailAddress = nil;
     self.password = nil;
+    self.screenName = nil;
     
     [super dealloc];
 }

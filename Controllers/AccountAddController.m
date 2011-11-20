@@ -40,6 +40,7 @@
     self.account = [AppPreferences createAndAddAccount];
     self.account.emailAddress = self.emailAddress;
     self.account.password = self.password;
+    self.account.screenName = [profile objectForKey:@"screenName"];
     [self.account save];
     
     XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];

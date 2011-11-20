@@ -76,6 +76,7 @@
     [super viewDidLoad];
     
     self.view = tabBarController.view;
+    self.title = account.screenName;
     
     gamesItem.title = NSLocalizedString(@"Games", @"");
     
