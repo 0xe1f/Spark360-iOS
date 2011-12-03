@@ -6,19 +6,19 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "GameListController.h"
+#import "AchievementListController.h"
 
 #import "CFImageCache.h"
 
 #import "XboxLiveParser.h"
 
-@interface GameListController (Private)
+@interface AchievementListController (Private)
 
 -(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
-@implementation GameListController
+@implementation AchievementListController
 
 @synthesize tvCell;
 @synthesize fetchedResultsController = __fetchedResultsController;
@@ -26,6 +26,8 @@
 @synthesize numberFormatter = __numberFormatter;
 
 @synthesize account;
+@synthesize gameUid;
+@synthesize gameTitle;
 
 -(void)syncCompleted:(NSNotification *)notification
 {
@@ -34,11 +36,51 @@
     [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
 
++(BOOL)startFromController:(UIViewController*)controller
+      managedObjectContext:(NSManagedObjectContext*)managedObjectContext
+                   account:(XboxLiveAccount*)account
+                   gameUid:(NSString*)uid
+{
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
+                                                         inManagedObjectContext:managedObjectContext];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@", uid];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [managedObjectContext executeFetchRequest:request 
+                                                         error:nil];
+    
+    NSManagedObject *game = [array lastObject];
+    
+    [request release];
+    
+    if (game == nil)
+        return NO;
+    
+    AchievementListController *ctlr = [[AchievementListController alloc] initWithNibName:@"AchievementList"
+                                                                                  bundle:nil];
+    
+    ctlr.account = account;
+    ctlr.gameTitle = [game valueForKey:@"title"];
+    ctlr.managedObjectContext = managedObjectContext;
+    
+    [controller.navigationController pushViewController:ctlr
+                                               animated:YES];
+    
+    [ctlr release];
+    
+    return YES;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"MyPlayedGames", nil);
+    self.title = [NSString localizedStringWithFormat:NSLocalizedString(@"Achievements_f", nil),
+                  gameTitle];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(syncCompleted:)
@@ -141,7 +183,7 @@
     
     if (!cell)
     {
-        [[NSBundle mainBundle] loadNibNamed:@"GameCell"
+        [[NSBundle mainBundle] loadNibNamed:@"AchievementCell"
                                       owner:self
                                     options:nil];
         cell = [self tvCell];
@@ -208,6 +250,9 @@
     [__numberFormatter release];
     
     account = nil;
+    gameTitle = nil;
+    gameUid = nil;
+    
     _refreshHeaderView = nil;
     
     [super dealloc];
@@ -285,10 +330,10 @@
     */
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"profile.uuid == %@", account.uuid];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"game.uid == %@", gameUid];
     
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxGame" 
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxAchievement" 
                                               inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predicate];

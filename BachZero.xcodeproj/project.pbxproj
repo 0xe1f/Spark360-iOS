@@ -40,7 +40,7 @@
 		FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */; };
 		FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FEA47124144FED35009F0CB4 /* Settings.bundle */; };
 		FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */; };
-		FEAC6F1B13EA7F73000D86D1 /* XboxGameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */; };
+		FEAC6F1B13EA7F73000D86D1 /* GameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */; };
 		FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */; };
 		FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14013E6404900095480 /* GTMNSString+HTML.m */; };
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
@@ -60,6 +60,11 @@
 		FEC7F9FD1479070F00537213 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F41479070F00537213 /* whiteArrow.png */; };
 		FEC7F9FE1479070F00537213 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F51479070F00537213 /* whiteArrow@2x.png */; };
 		FEC7FA00147908A300537213 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEC7F9FF147908A300537213 /* QuartzCore.framework */; };
+		FEC8400E148A1F37005BC782 /* ProfileOverview.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC8400D148A1F37005BC782 /* ProfileOverview.xib */; };
+		FEC84012148A1F6A005BC782 /* ProfileOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */; };
+		FEC84019148A29F6005BC782 /* AchievementList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84018148A29F6005BC782 /* AchievementList.xib */; };
+		FEC84020148A2EC9005BC782 /* AchievementListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC8401F148A2EC9005BC782 /* AchievementListController.m */; };
+		FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84021148A3AC1005BC782 /* AchievementCell.xib */; };
 		FEEB8FE91477A3FB00C00CF2 /* ProfileContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */; };
 		FEEB8FEE1477A54000C00CF2 /* ProfileContainerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
@@ -129,7 +134,7 @@
 		FEA47124144FED35009F0CB4 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
 		FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveParser.m; sourceTree = "<group>"; };
-		FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XboxGameCell.xib; sourceTree = "<group>"; };
+		FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameCell.xib; sourceTree = "<group>"; };
 		FEAC6F2613EA8E8A000D86D1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FEB3E13E13E6404900095480 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		FEB3E13F13E6404900095480 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
@@ -155,6 +160,13 @@
 		FEC7F9F41479070F00537213 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
 		FEC7F9F51479070F00537213 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
 		FEC7F9FF147908A300537213 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		FEC8400D148A1F37005BC782 /* ProfileOverview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileOverview.xib; sourceTree = "<group>"; };
+		FEC8400F148A1F6A005BC782 /* ProfileOverviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileOverviewController.h; sourceTree = "<group>"; };
+		FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileOverviewController.m; sourceTree = "<group>"; };
+		FEC84018148A29F6005BC782 /* AchievementList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementList.xib; sourceTree = "<group>"; };
+		FEC8401E148A2ACA005BC782 /* AchievementListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AchievementListController.h; sourceTree = "<group>"; };
+		FEC8401F148A2EC9005BC782 /* AchievementListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AchievementListController.m; sourceTree = "<group>"; };
+		FEC84021148A3AC1005BC782 /* AchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementCell.xib; sourceTree = "<group>"; };
 		FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileContainer.xib; sourceTree = "<group>"; };
 		FEEB8FEB1477A54000C00CF2 /* ProfileContainerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileContainerController.h; sourceTree = "<group>"; };
 		FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileContainerController.m; sourceTree = "<group>"; };
@@ -194,13 +206,13 @@
 		FE5CAE1313F728BC004BC903 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */,
-				FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */,
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
 				FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */,
+				FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */,
+				FEA47124144FED35009F0CB4 /* Settings.bundle */,
+				FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */,
 				FE3FE14913F72AD2009467EF /* Images */,
 				FE5CAE1413F728E5004BC903 /* UI */,
-				FEA47124144FED35009F0CB4 /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -208,13 +220,16 @@
 		FE5CAE1413F728E5004BC903 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				FEFE0E6114774554009C7084 /* MainWindow.xib */,
-				FEC7F9DB1478653600537213 /* GameList.xib */,
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
-				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
-				FEAC6F1A13EA7F73000D86D1 /* XboxGameCell.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
+				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
+				FEC84018148A29F6005BC782 /* AchievementList.xib */,
+				FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */,
+				FEC84021148A3AC1005BC782 /* AchievementCell.xib */,
+				FEC7F9DB1478653600537213 /* GameList.xib */,
 				FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */,
+				FEC8400D148A1F37005BC782 /* ProfileOverview.xib */,
+				FEFE0E6114774554009C7084 /* MainWindow.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -242,12 +257,16 @@
 				FEC26EA5146BB25400D31608 /* AccountAddController.m */,
 				FEC26EA6146BB25400D31608 /* AccountListController.h */,
 				FEC26EA7146BB25400D31608 /* AccountListController.m */,
+				FEC8401E148A2ACA005BC782 /* AchievementListController.h */,
+				FEC8401F148A2EC9005BC782 /* AchievementListController.m */,
 				FEC26EA8146BB25400D31608 /* GameListController.h */,
 				FEC26EA9146BB25400D31608 /* GameListController.m */,
 				FE726B7C1463CAD200534279 /* AccountEditController.h */,
 				FE726B7D1463CAD200534279 /* AccountEditController.m */,
 				FEEB8FEB1477A54000C00CF2 /* ProfileContainerController.h */,
 				FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */,
+				FEC8400F148A1F6A005BC782 /* ProfileOverviewController.h */,
+				FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -294,7 +313,6 @@
 		FE76A92A13E636A9006D6AFC = {
 			isa = PBXGroup;
 			children = (
-				FEC7F9FF147908A300537213 /* QuartzCore.framework */,
 				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
 				FE5CAE1613F72980004BC903 /* Classes */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
@@ -318,6 +336,7 @@
 		FE76A93813E636A9006D6AFC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FEC7F9FF147908A300537213 /* QuartzCore.framework */,
 				FE8CA91A1474586000A5C9EA /* Security.framework */,
 				FE76A93913E636A9006D6AFC /* UIKit.framework */,
 				FE76A93B13E636A9006D6AFC /* Foundation.framework */,
@@ -481,7 +500,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FEAC6F1B13EA7F73000D86D1 /* XboxGameCell.xib in Resources */,
+				FEAC6F1B13EA7F73000D86D1 /* GameCell.xib in Resources */,
 				FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */,
 				FE3FE14D13F72F7E009467EF /* gamerScore.png in Resources */,
 				FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */,
@@ -503,6 +522,9 @@
 				FEC7F9FC1479070F00537213 /* grayArrow@2x.png in Resources */,
 				FEC7F9FD1479070F00537213 /* whiteArrow.png in Resources */,
 				FEC7F9FE1479070F00537213 /* whiteArrow@2x.png in Resources */,
+				FEC8400E148A1F37005BC782 /* ProfileOverview.xib in Resources */,
+				FEC84019148A29F6005BC782 /* AchievementList.xib in Resources */,
+				FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -543,6 +565,8 @@
 				FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */,
 				FEEB8FEE1477A54000C00CF2 /* ProfileContainerController.m in Sources */,
 				FEC7F9F61479070F00537213 /* EGORefreshTableHeaderView.m in Sources */,
+				FEC84012148A1F6A005BC782 /* ProfileOverviewController.m in Sources */,
+				FEC84020148A2EC9005BC782 /* AchievementListController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -606,11 +630,15 @@
 		FE76A95C13E636A9006D6AFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BachZero-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "BachZero-Info.plist";
 				PRODUCT_NAME = BachZero;
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -618,11 +646,17 @@
 		FE76A95D13E636A9006D6AFC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BachZero-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "BachZero-Info.plist";
 				PRODUCT_NAME = BachZero;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

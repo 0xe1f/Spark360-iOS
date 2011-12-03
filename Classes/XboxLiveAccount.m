@@ -8,11 +8,17 @@
 
 #import "XboxLiveAccount.h"
 #import "KeychainItemWrapper.h"
+#import "XboxLiveParser.h"
 
 @interface XboxLiveAccount (Private)
 
 -(NSString*)keyForPreference:(NSString*)preference;
 -(void)resetDirtyFlags;
+
+-(void)syncCompletedWithNotificationName:(NSString*)notificationName;
+-(void)retrieveGamesInBackground:(NSManagedObjectContext*)managedObjectContext;
+-(void)retrievedGamesWithObjects:(NSDictionary*)objects;
+-(void)retrieveFailedWithError:(NSError*)error;
 
 @end
 
@@ -30,6 +36,8 @@
     NSString *_screenName;
     BOOL _screenNameDirty;
 }
+
+@synthesize isSyncingGames;
 
 NSString * const KeychainPassword = @"com.akop.bach";
 
@@ -225,6 +233,87 @@ NSString * const CookiesKey = @"Cookies";
     return stale;
 }
 
+-(void)syncGamesInManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+{
+    if (self.isSyncingGames)
+    {
+        NSLog(@"Ignoring game sync request; already syncing");
+        return;
+    }
+    
+    self.isSyncingGames = YES;
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    
+    [self performSelectorInBackground:@selector(retrieveGamesInBackground:) 
+                           withObject:managedObjectContext];
+}
+
+-(void)syncCompletedWithNotificationName:(NSString*)notificationName
+{
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName 
+                                                        object:self];
+}
+
+-(void)retrieveGamesInBackground:(NSManagedObjectContext*)managedObjectContext
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    
+    NSError *error = nil;
+    NSDictionary *data = [parser retrieveGamesWithAccount:self
+                                                    error:&error];
+    
+    if (data)
+    {
+        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                              managedObjectContext, @"context", 
+                              data, @"data", nil];
+        
+        [self performSelectorOnMainThread:@selector(retrievedGamesWithObjects:) 
+                               withObject:dict
+                            waitUntilDone:YES];
+    }
+    else
+    {
+        [self performSelectorOnMainThread:@selector(retrieveFailedWithError:) 
+                               withObject:error
+                            waitUntilDone:YES];
+    }
+    
+    [self performSelectorOnMainThread:@selector(syncCompletedWithNotificationName:) 
+                           withObject:@"GamesSynced"
+                        waitUntilDone:YES];
+    
+    [pool release];
+    
+    self.isSyncingGames = NO;
+}
+
+-(void)retrievedGamesWithObjects:(NSDictionary*)objects
+{
+    NSManagedObjectContext *context = [objects objectForKey:@"context"];
+    NSDictionary *data = [objects objectForKey:@"data"];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];
+    [parser synchronizeGamesWithAccount:self
+                    withRetrievedObject:data
+                                  error:nil]; // TODO: error?
+    [parser release];
+}
+
+-(void)retrieveFailedWithError:(NSError*)error
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DataError", @"") 
+                                                        message:[error localizedDescription]
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    
+    [alertView show];
+    [alertView release];
+}
+
 -(BOOL)isEqual:(id)object
 {
     if (![object isKindOfClass:[XboxLiveAccount class]])
@@ -258,6 +347,8 @@ NSString * const CookiesKey = @"Cookies";
     {
         _uuid = [uuid copy];
         [self reload];
+        
+        self.isSyncingGames = NO;
     }
     
     return self;

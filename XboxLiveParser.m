@@ -46,7 +46,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                 error:(NSError**)error;
 +(NSNumber*)getStarRatingFromPage:(NSString*)html;
 
+-(void)saveSessionForAccount:(XboxLiveAccount*)account;
 -(void)saveSessionForEmailAddress:(NSString*)emailAddress;
+-(BOOL)restoreSessionForAccount:(XboxLiveAccount*)account;
 -(BOOL)restoreSessionForEmailAddress:(NSString*)emailAddress;
 -(void)clearAllSessions;
 
@@ -55,8 +57,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                       password:(NSString*)password
                          error:(NSError**)error;
 -(BOOL)parseSynchronizeGames:(NSMutableDictionary*)games
-                emailAddress:(NSString*)emailAddress
-                    password:(NSString*)password
+                  forAccount:(XboxLiveAccount*)account
                        error:(NSError**)error;
 
 +(NSError*)errorWithCode:(NSInteger)code
@@ -126,50 +127,45 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     [super dealloc];
 }
 
--(NSDictionary*)retrieveGamesWithEmailAddress:(NSString*)emailAddress
-                                     password:(NSString*)password
-                                        error:(NSError**)error
+-(NSDictionary*)retrieveGamesWithAccount:(XboxLiveAccount*)account
+                                   error:(NSError**)error
 {
     NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
     
     // Try restoring the session
     
-    if (![self restoreSessionForEmailAddress:emailAddress])
+    if (![self restoreSessionForAccount:account])
     {
         // Session couldn't be restored. Try re-authenticating
         
-        if (![self authenticate:emailAddress
-                   withPassword:password
-                          error:error])
+        if (![self authenticateAccount:account
+                                 error:error])
         {
             return nil;
         }
     }
     
     if (![self parseSynchronizeGames:dict
-                        emailAddress:emailAddress
-                            password:password
+                          forAccount:account
                                error:NULL])
     {
         // Account parsing failed. Try re-authenticating
         
-        if (![self authenticate:emailAddress
-                   withPassword:password
-                          error:error])
+        if (![self authenticateAccount:account
+                                 error:error])
         {
             return nil;
         }
         
         if (![self parseSynchronizeGames:dict
-                            emailAddress:emailAddress
-                                password:password
+                              forAccount:account
                                    error:error])
         {
             return nil;
         }
     }
     
-    [self saveSessionForEmailAddress:emailAddress];
+    [self saveSessionForAccount:account];
     
     return dict;
 }
@@ -323,7 +319,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
             
             // These will not change, so just set them up the first time
             
-            [game setValue:[gameDict objectForKey:@"uid"] forKey:@"uid"];
+            [game setValue:[gameDict objectForKey:@"uid"] forKey:@"gameUid"];
             [game setValue:profile forKey:@"profile"];
             [game setValue:[gameDict objectForKey:@"gameUrl"] forKey:@"gameUrl"];
             [game setValue:[gameDict objectForKey:@"title"] forKey:@"title"];
@@ -470,9 +466,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 }
 
 -(BOOL)parseSynchronizeGames:(NSMutableDictionary*)games
-                emailAddress:(NSString*)emailAddress
-                    password:(NSString*)password
-                       error:(NSError**)error
+                  forAccount:(XboxLiveAccount*)account
+                       error:(NSError**)error;
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -592,6 +587,11 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         [cookieStorage deleteCookie:cookie];
 }
 
+-(BOOL)restoreSessionForAccount:(XboxLiveAccount*)account
+{
+    return [self restoreSessionForEmailAddress:account.emailAddress];
+}
+
 -(BOOL)restoreSessionForEmailAddress:(NSString*)emailAddress
 {
     NSLog(@"Restoring session for %@...", emailAddress);
@@ -613,6 +613,11 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         [cookieStorage setCookie:cookie];
     
     return YES;
+}
+
+-(void)saveSessionForAccount:(XboxLiveAccount*)account
+{
+    [self saveSessionForEmailAddress:account.emailAddress];
 }
 
 -(void)saveSessionForEmailAddress:(NSString*)emailAddress
@@ -650,6 +655,14 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 {
     return [self errorWithCode:code
                        message:NSLocalizedString(key, nil)];
+}
+
+-(BOOL)authenticateAccount:(XboxLiveAccount *)account
+                     error:(NSError **)error
+{
+    return [self authenticate:account.emailAddress
+                 withPassword:account.password
+                        error:error];
 }
 
 -(BOOL)authenticate:(NSString*)emailAddress

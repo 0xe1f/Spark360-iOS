@@ -1,3 +1,6 @@
+* Stop creation of new Account objects when one is pressed in Accounts list - 
+  reuse existing one
+
 * Place game list inside a TabController
 * Delete account from preferences
 * Fix CRYPTO stuff in XboxLiveAccount

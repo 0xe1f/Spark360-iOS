@@ -10,6 +10,8 @@
 
 @interface XboxLiveAccount : NSObject
 
+@property (nonatomic, assign) BOOL isSyncingGames;
+
 -(id)initWithUuid:(NSString*)uuid;
 +(id)preferencesForUuid:(NSString*)uuid;
 
@@ -37,5 +39,7 @@
 -(BOOL)isEqualToAccount:(XboxLiveAccount*)account;
 
 -(BOOL)areGamesStale;
+
+-(void)syncGamesInManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
 @end

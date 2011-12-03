@@ -13,6 +13,7 @@
 #import "AccountEditController.h"
 #import "GameListController.h"
 #import "ProfileContainerController.h"
+#import "ProfileOverviewController.h"
 
 #import "CFImageCache.h"
 
@@ -164,8 +165,9 @@
         }
         else
         {
-            ProfileContainerController *ctlr = [[ProfileContainerController alloc] initWithNibName:@"ProfileContainer"
-                                                                                            bundle:nil];
+            ProfileOverviewController *ctlr = [[ProfileOverviewController alloc] initWithNibName:@"ProfileOverview"
+                                                                                          bundle:nil];
+            
             ctlr.account = account;
             ctlr.managedObjectContext = self.managedObjectContext;
             

@@ -31,5 +31,7 @@
 	"ErrorCouldNotCreateAccount" = "Could not create a new account";
 	"ErrorCouldNotEditAccount" = "Could not edit account";
 	"ErrorCouldNotDeleteAccount" = "Could not delete account";
-	Games = Games;
+	MyPlayedGames = "My Played Games";
+	MyProfile = "My Profile";
+	Achievements_f = "%@ Achievements";
 }
