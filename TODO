@@ -1,3 +1,6 @@
+* Fix AchieveController/egoRefreshTableHeaderDataSourceIsLoading
+* Fix achievement fetch request when one is in progress (XboxLiveAccount)
+* Update Achieves notification to only stop spinner if requested achieves load
 * Stop creation of new Account objects when one is pressed in Accounts list - 
   reuse existing one
 

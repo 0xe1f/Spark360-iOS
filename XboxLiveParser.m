@@ -42,8 +42,10 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                      namePattern:(NSRegularExpression*)namePattern;
 +(NSDictionary*)jsonObjectFromLive:(NSString*)script
                              error:(NSError**)error;
++(NSDictionary*)jsonDataObjectFromPage:(NSString*)json
+                                 error:(NSError**)error;
 +(NSDictionary*)jsonObjectFromPage:(NSString*)json
-                                error:(NSError**)error;
+                             error:(NSError**)error;
 +(NSNumber*)getStarRatingFromPage:(NSString*)html;
 
 -(void)saveSessionForAccount:(XboxLiveAccount*)account;
@@ -59,6 +61,10 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(BOOL)parseSynchronizeGames:(NSMutableDictionary*)games
                   forAccount:(XboxLiveAccount*)account
                        error:(NSError**)error;
+-(BOOL)parseSynchronizeAchievements:(NSMutableDictionary*)achievements
+                         forAccount:(XboxLiveAccount*)account
+                            titleId:(NSString*)titleId
+                              error:(NSError**)error;
 
 +(NSError*)errorWithCode:(NSInteger)code
                  message:(NSString*)message;
@@ -67,7 +73,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 
 -(NSString*)parseObtainNewToken;
 +(NSDate*)getTicksFromJSONString:(NSString*)jsonTicks;
+
 -(NSManagedObject*)profileForAccount:(XboxLiveAccount*)account;
+-(NSManagedObject*)getGameWithTitleId:(NSString*)titleId;
 
 @end
 
@@ -89,6 +97,8 @@ NSString* const URL_JSON_PROFILE = @"http://live.xbox.com/Handlers/ShellData.ash
 NSString* const URL_JSON_GAME_LIST = @"http://live.xbox.com/%@/Activity/Summary";
 NSString* const REFERER_JSON_PROFILE = @"http://live.xbox.com/%@/MyXbox";
 
+NSString* const URL_ACHIEVEMENTS = @"http://live.xbox.com/%@/Activity/Details?titleId=%@";
+
 NSString* const URL_REPLY_TO = @"https://live.xbox.com/xweb/live/passport/setCookies.ashx";
 
 NSString* const PATTERN_EXTRACT_JSON = @"^[^\\{]+(\\{.*\\})\\);?\\s*$";
@@ -109,6 +119,10 @@ NSString* const PATTERN_GAME_ACHIEVEMENTS = @"Achievement Stat\">\\s*(\\d+)\\s*\
 NSString* const PATTERN_GAME_ACHIEVEMENT_URL = @"href=\"([^\"]*Achievements\\?titleId=(\\d+)[^\"]*)\"";
 NSString* const PATTERN_GAME_BOXART_URL = @"src=\"([^\"]*)\" class=\"BoxShot\"";
 NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*<";
+
+NSString* const PATTERN_ACH_JSON = @"loadActivityDetailsView\\((.*)\\);\\s*\\}\\);";
+
+NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/HiddenAchievement.png";
 
 -(id)initWithManagedObjectContext:(NSManagedObjectContext*)context
 {
@@ -160,6 +174,52 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         if (![self parseSynchronizeGames:dict
                               forAccount:account
                                    error:error])
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return dict;
+}
+
+-(NSDictionary*)retrieveAchievementsWithAccount:(XboxLiveAccount*)account
+                                        titleId:(NSString*)titleId
+                                          error:(NSError**)error
+{
+    NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    if (![self parseSynchronizeAchievements:dict
+                                 forAccount:account
+                                    titleId:titleId
+                                      error:NULL])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (![self parseSynchronizeAchievements:dict
+                                     forAccount:account
+                                        titleId:titleId
+                                          error:error])
         {
             return nil;
         }
@@ -319,7 +379,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
             
             // These will not change, so just set them up the first time
             
-            [game setValue:[gameDict objectForKey:@"uid"] forKey:@"gameUid"];
+            [game setValue:[gameDict objectForKey:@"uid"] forKey:@"uid"];
             [game setValue:profile forKey:@"profile"];
             [game setValue:[gameDict objectForKey:@"gameUrl"] forKey:@"gameUrl"];
             [game setValue:[gameDict objectForKey:@"title"] forKey:@"title"];
@@ -402,6 +462,148 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return YES;
 }
 
+-(BOOL)synchronizeAchievementsWithAccount:(XboxLiveAccount*)account
+                      withRetrievedObject:(NSDictionary*)retrieved
+                                    error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSManagedObject *game = [self getGameWithTitleId:[retrieved objectForKey:@"titleId"]];
+    
+    if (!game)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                   localizationKey:@"ErrorGameNotFound"];
+        }
+        
+        return NO;
+    }
+    
+    NSDate *lastUpdated = [NSDate date];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxAchievement"
+                                                         inManagedObjectContext:self.context];
+    
+    NSArray *inAchieves = [retrieved objectForKey:@"achievements"];
+    
+    int newItems = 0;
+    int existingItems = 0;
+    
+    for (NSDictionary *inAchieve in inAchieves)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND game == %@", 
+                                  [inAchieve objectForKey:@"uid"], game];
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        
+        [request setEntity:entityDescription];
+        [request setPredicate:predicate];
+        
+        NSArray *array = [self.context executeFetchRequest:request 
+                                                     error:nil];
+        
+        [request release];
+        
+        BOOL update = NO;
+        NSManagedObject *achieve = [array lastObject];
+        
+        if (!achieve)
+        {
+            achieve = [NSEntityDescription insertNewObjectForEntityForName:@"XboxAchievement"
+                                                    inManagedObjectContext:self.context];
+            
+            [achieve setValue:game forKey:@"game"];
+            [achieve setValue:[inAchieve objectForKey:@"uid"] forKey:@"uid"];
+            [achieve setValue:[inAchieve objectForKey:@"points"] forKey:@"points"];
+            
+            newItems++;
+            update = YES;
+        }
+        else
+        {
+            existingItems++;
+            update = [[inAchieve objectForKey:@"isLocked"] boolValue] 
+                != [[achieve valueForKey:@"isLocked"] boolValue];
+        }
+        
+        [achieve setValue:lastUpdated forKey:@"lastUpdated"];
+        [achieve setValue:[inAchieve objectForKey:@"sortIndex"] forKey:@"sortIndex"];
+        
+        if (update)
+        {
+            [achieve setValue:[inAchieve objectForKey:@"isSecret"] forKey:@"isSecret"];
+            [achieve setValue:[inAchieve objectForKey:@"isLocked"] forKey:@"isLocked"];
+            [achieve setValue:[inAchieve objectForKey:@"title"] forKey:@"title"];
+            [achieve setValue:[inAchieve objectForKey:@"iconUrl"] forKey:@"iconUrl"];
+            [achieve setValue:[inAchieve objectForKey:@"achDescription"] forKey:@"achDescription"];
+            [achieve setValue:[inAchieve objectForKey:@"acquired"] forKey:@"acquired"];
+        }
+    }
+    
+    NSDictionary *inGame = [retrieved objectForKey:@"game"];
+    if (inGame)
+    {
+        [game setValue:[inGame objectForKey:@"achievesTotal"]
+                forKey:@"achievesTotal"];
+        [game setValue:[inGame objectForKey:@"gamerScoreTotal"]
+                forKey:@"gamerScoreTotal"];
+        
+        if ([inGame objectForKey:@"achievesUnlocked"])
+            [game setValue:[inGame objectForKey:@"achievesUnlocked"]
+                    forKey:@"achievesUnlocked"];
+        if ([inGame objectForKey:@"gamerScoreEarned"])
+            [game setValue:[inGame objectForKey:@"gamerScoreEarned"]
+                    forKey:@"gamerScoreEarned"];
+        if ([inGame objectForKey:@"lastPlayed"])
+            [game setValue:[inGame objectForKey:@"lastPlayed"]
+                    forKey:@"lastPlayed"];
+        
+        [game setValue:lastUpdated
+                forKey:@"lastUpdated"];
+        [game setValue:[NSNumber numberWithBool:NO]
+                forKey:@"achievesDirty"];
+    }
+    
+    // Find achievements no longer in the game (will it ever happen?)
+    
+    NSPredicate *removedPredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND game == %@", 
+                                     lastUpdated, game];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:removedPredicate];
+    
+    NSArray *removedObjs = [self.context executeFetchRequest:request 
+                                                     error:NULL];
+    
+    [request release];
+    
+    // Delete removed achievements
+    
+    for (NSManagedObject *removedObj in removedObjs)
+        [self.context deleteObject:removedObj];
+    
+    // Save
+    
+    if (![self.context save:NULL])
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                   localizationKey:@"ErrorCouldNotSaveGameList"];
+        }
+        
+        return NO;
+    }
+    
+    NSLog(@"synchronizeAchievementsWithAccount: (%i new, %i existing) %.04fs", 
+          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
+}
+
 -(BOOL)parseSynchronizeProfile:(NSMutableDictionary*)profile
                   emailAddress:(NSString*)emailAddress
                       password:(NSString*)password
@@ -467,7 +669,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 
 -(BOOL)parseSynchronizeGames:(NSMutableDictionary*)games
                   forAccount:(XboxLiveAccount*)account
-                       error:(NSError**)error;
+                       error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -495,8 +697,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     if (!page)
         return NO;
     
-    NSDictionary *data = [XboxLiveParser jsonObjectFromPage:page
-                                                      error:error];
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                          error:error];
     
     if (!data)
         return NO;
@@ -557,12 +759,192 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
     return YES;
 }
 
+-(BOOL)parseSynchronizeAchievements:(NSMutableDictionary*)achievements
+                         forAccount:(XboxLiveAccount*)account
+                            titleId:(NSString*)titleId
+                              error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *url = [NSString stringWithFormat:URL_ACHIEVEMENTS, LOCALE, titleId];
+    NSString *achievementPage = [self loadWithGET:url
+                                           fields:nil
+                                           useXhr:NO
+                                            error:error];
+    
+    if (!achievementPage)
+        return NO;
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_ACH_JSON
+                                                                           options:0
+                                                                             error:NULL];
+    
+    NSTextCheckingResult *match = [regex firstMatchInString:achievementPage
+                                                    options:0
+                                                      range:NSMakeRange(0, [achievementPage length])];
+    
+    if (!match)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorAchievementsNotFound"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *jsonScript = [achievementPage substringWithRange:[match rangeAtIndex:1]];
+    NSDictionary *data = [XboxLiveParser jsonObjectFromPage:jsonScript
+                                                      error:error];
+    
+    if (!data)
+        return NO;
+    
+    NSArray *jsonAchieves = [data objectForKey:@"Achievements"];
+    NSArray *jsonPlayers = [data objectForKey:@"Players"];
+    
+    if ([jsonPlayers count] < 1)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError 
+                                           message:@"ErrorMissingGamertagInAchieves"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *gamertag = [[jsonPlayers objectAtIndex:0] objectForKey:@"Gamertag"];
+    
+    NSMutableArray *achieveList = [[[NSMutableArray alloc] init] autorelease];
+    
+    [achievements setObject:achieveList forKey:@"achievements"];
+    [achievements setObject:titleId forKey:@"titleId"];
+    
+    int index = 0;
+    for (NSDictionary *jsonAchieve in jsonAchieves)
+    {
+        if (![jsonAchieve objectForKey:@"Id"])
+            continue;
+        
+        NSDictionary *earnDates = [jsonAchieve objectForKey:@"EarnDates"];
+        if (!earnDates)
+            continue;
+        
+        NSMutableArray *objects = [[[NSMutableArray alloc] init] autorelease];
+        
+        if ([[jsonAchieve objectForKey:@"IsHidden"] boolValue])
+        {
+            [objects addObject:NSLocalizedString(@"SecretAchieveTitle", nil)]; // title
+            [objects addObject:NSLocalizedString(@"SecretAchieveDesc", nil)]; // achDescription
+            [objects addObject:URL_SECRET_ACHIEVE_TILE]; // iconUrl
+            [objects addObject:[NSNumber numberWithBool:YES]]; // isSecret
+        }
+        else
+        {
+            [objects addObject:[jsonAchieve objectForKey:@"Name"]]; // title
+            [objects addObject:[jsonAchieve objectForKey:@"Description"]]; // achDescription
+            [objects addObject:[jsonAchieve objectForKey:@"TileUrl"]]; // iconUrl
+            [objects addObject:[NSNumber numberWithBool:NO]]; // isSecret
+        }
+        
+        NSDictionary *earnDate = [earnDates objectForKey:gamertag];
+        if (earnDate)
+        {
+            [objects addObject:[NSNumber numberWithBool:NO]]; // isLocked
+            [objects addObject:[XboxLiveParser getTicksFromJSONString:[earnDate objectForKey:@"EarnedOn"]]]; // acquired
+        }
+        else
+        {
+            [objects addObject:[NSNumber numberWithBool:YES]]; // isLocked
+            [objects addObject:[NSDate distantPast]]; // acquired
+        }
+        
+        [objects addObject:[[jsonAchieve objectForKey:@"Id"] stringValue]]; // uid
+        [objects addObject:[NSNumber numberWithInt:[[jsonAchieve objectForKey:@"Score"] intValue]]]; // points
+        [objects addObject:[NSNumber numberWithInt:index++]]; // sortIndex
+        
+        NSArray *keys = [NSArray arrayWithObjects:
+                         @"title",
+                         @"achDescription",
+                         @"iconUrl",
+                         @"isSecret",
+                         @"isLocked",
+                         @"acquired",
+                         @"uid",
+                         @"points",
+                         @"sortIndex", 
+                         nil];
+        
+        [achieveList addObject:[NSDictionary dictionaryWithObjects:objects
+                                                           forKeys:keys]];
+    }
+    
+    NSDictionary *jsonGame = [data objectForKey:@"Game"];
+    if (jsonGame)
+    {
+        NSMutableArray *keys = [[[NSMutableArray alloc] init] autorelease];
+        NSMutableArray *objects = [[[NSMutableArray alloc] init] autorelease];
+        
+        [objects addObject:[jsonGame objectForKey:@"PossibleAchievements"]];
+        [objects addObject:[jsonGame objectForKey:@"PossibleScore"]];
+        
+        [keys addObject:@"achievesTotal"];
+        [keys addObject:@"gamerScoreTotal"];
+        
+        NSDictionary *progRoot = [jsonGame objectForKey:@"Progress"];
+        if (progRoot)
+        {
+            NSDictionary *progress = [progRoot objectForKey:gamertag];
+            if (progress)
+            {
+                [objects addObject:[progress objectForKey:@"Achievements"]];
+                [objects addObject:[progress objectForKey:@"Score"]];
+                [objects addObject:[XboxLiveParser getTicksFromJSONString:[progress objectForKey:@"LastPlayed"]]];
+                
+                [keys addObject:@"achievesUnlocked"];
+                [keys addObject:@"gamerScoreEarned"];
+                [keys addObject:@"lastPlayed"];
+            }
+        }
+        
+        [achievements setObject:[NSDictionary dictionaryWithObjects:objects
+                                                            forKeys:keys] 
+                         forKey:@"game"];
+    }
+    
+    NSLog(@"parseSynchronizeAchievements: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
+}
+
 -(NSManagedObject*)profileForAccount:(XboxLiveAccount*)account
 {
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxProfile"
                                                          inManagedObjectContext:self.context];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", account.uuid];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    return [array lastObject];
+}
+
+-(NSManagedObject*)getGameWithTitleId:(NSString*)titleId
+{
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
+                                                         inManagedObjectContext:self.context];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@", titleId];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     
     [request setEntity:entityDescription];
@@ -826,7 +1208,19 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         return nil;
     }
     
-    if (![[dict objectForKey:@"Success"] boolValue])
+    return dict;
+}
+
++(NSDictionary*)jsonDataObjectFromPage:(NSString*)json
+                                 error:(NSError**)error
+{
+    NSDictionary *object = [XboxLiveParser jsonObjectFromPage:json
+                                                        error:error];
+    
+    if (!object)
+        return nil;
+    
+    if (![[object objectForKey:@"Success"] boolValue])
     {
         if (error)
         {
@@ -837,7 +1231,7 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
         return nil;
     }
     
-    return [dict objectForKey:@"Data"];
+    return [object objectForKey:@"Data"];
 }
 
 +(NSDate*)getTicksFromJSONString:(NSString*)jsonTicks
@@ -1016,6 +1410,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 {
     NSString *httpBody = nil;
     NSURL *url = [NSURL URLWithString:requestUrl];
+    
+    NSLog(@"Fetching %@ ...", requestUrl);
     
     if (fields)
     {

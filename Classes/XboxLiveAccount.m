@@ -10,14 +10,21 @@
 #import "KeychainItemWrapper.h"
 #import "XboxLiveParser.h"
 
+NSString* const BACHGamesSynced = @"GamesSynced";
+NSString* const BACHAchievementsSynced = @"AchievementsSynced";
+
+NSString* const BACHNotificationGameTitleId = @"GameTitleId";
+
 @interface XboxLiveAccount (Private)
 
 -(NSString*)keyForPreference:(NSString*)preference;
 -(void)resetDirtyFlags;
 
--(void)syncCompletedWithNotificationName:(NSString*)notificationName;
+-(void)syncCompleted;
 -(void)retrieveGamesInBackground:(NSManagedObjectContext*)managedObjectContext;
+-(void)retrieveAchievementsInBackground:(NSDictionary*)arguments;
 -(void)retrievedGamesWithObjects:(NSDictionary*)objects;
+-(void)retrievedAchievementsWithObjects:(NSDictionary*)objects;
 -(void)retrieveFailedWithError:(NSError*)error;
 
 @end
@@ -248,11 +255,22 @@ NSString * const CookiesKey = @"Cookies";
                            withObject:managedObjectContext];
 }
 
--(void)syncCompletedWithNotificationName:(NSString*)notificationName
+-(void)syncAchievementsInManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+                                  gameTitleId:(NSString*)gameTitleId
+{
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               managedObjectContext, @"context",
+                               gameTitleId, @"id", nil];
+    
+    [self performSelectorInBackground:@selector(retrieveAchievementsInBackground:) 
+                           withObject:arguments];
+}
+
+-(void)syncCompleted
 {
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    [[NSNotificationCenter defaultCenter] postNotificationName:notificationName 
-                                                        object:self];
 }
 
 -(void)retrieveGamesInBackground:(NSManagedObjectContext*)managedObjectContext
@@ -281,13 +299,61 @@ NSString * const CookiesKey = @"Cookies";
                             waitUntilDone:YES];
     }
     
-    [self performSelectorOnMainThread:@selector(syncCompletedWithNotificationName:) 
-                           withObject:@"GamesSynced"
+    [self performSelectorOnMainThread:@selector(syncCompleted) 
+                           withObject:nil
                         waitUntilDone:YES];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:BACHGamesSynced 
+                                                        object:self
+                                                      userInfo:nil];
     
     [pool release];
     
     self.isSyncingGames = NO;
+}
+
+-(void)retrieveAchievementsInBackground:(NSDictionary*)arguments
+{
+    NSManagedObjectContext *managedObjectContext = [arguments objectForKey:@"context"];
+    NSString *gameTitleId = [arguments objectForKey:@"id"];
+    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
+    
+    NSError *error = nil;
+    NSDictionary *data = [parser retrieveAchievementsWithAccount:self
+                                                         titleId:gameTitleId
+                                                           error:&error];
+    
+    if (data)
+    {
+        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                              managedObjectContext, @"context", 
+                              data, @"data", nil];
+        
+        [self performSelectorOnMainThread:@selector(retrievedAchievementsWithObjects:) 
+                               withObject:dict
+                            waitUntilDone:YES];
+    }
+    else
+    {
+        [self performSelectorOnMainThread:@selector(retrieveFailedWithError:) 
+                               withObject:error
+                            waitUntilDone:YES];
+    }
+    
+    [self performSelectorOnMainThread:@selector(syncCompleted) 
+                           withObject:nil
+                        waitUntilDone:YES];
+    
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                              gameTitleId, BACHNotificationGameTitleId, nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:BACHAchievementsSynced 
+                                                        object:self
+                                                      userInfo:userInfo];
+    
+    [pool release];
 }
 
 -(void)retrievedGamesWithObjects:(NSDictionary*)objects
@@ -299,6 +365,19 @@ NSString * const CookiesKey = @"Cookies";
     [parser synchronizeGamesWithAccount:self
                     withRetrievedObject:data
                                   error:nil]; // TODO: error?
+    [parser release];
+}
+
+-(void)retrievedAchievementsWithObjects:(NSDictionary *)objects
+{
+    NSManagedObjectContext *context = [objects objectForKey:@"context"];
+    NSDictionary *data = [objects objectForKey:@"data"];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];
+    [parser synchronizeAchievementsWithAccount:self
+                    withRetrievedObject:data
+                                  error:nil]; // TODO: error?
+    
     [parser release];
 }
 

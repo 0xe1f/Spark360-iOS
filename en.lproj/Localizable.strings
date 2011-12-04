@@ -1,6 +1,6 @@
 {
 	GameLastPlayed = "Last played %@";
-	GameAchievementStats = "%@/%@";
+	GameAchievementStats = "%@/%@ achievements";
 	GameScoreStats = "%@/%@";
 	Accounts = Accounts;
 	LoginInfo = "Login Settings";
@@ -14,7 +14,7 @@
 	"VerifyUsernameAndPassword" = "Please make sure your email address and password are correct";
 	"ProvideValidUsernameAndPassword" = "Please provide a valid email address and password combination";
 	"AnAccountAlreadyExists" = "Another account with that email address already exists";
-	"UnableToRetrieveProfile" = "Unable to retrieve your profile. Please try again in a bit";
+	"UnableToRetrieveProfile" = "Unable to retrieve your profile. Please try again shortly";
 	XboxLiveAccount = "Xbox Live";
 	OK = OK;
 	Locale = "en-US";
@@ -23,7 +23,7 @@
 	"ErrorLoginInvalidCredentials" = "Invalid email address or password";
 	"ErrorParsingJSONFormat" = "Could not understand Live's response (JSON)";
 	"ErrorCannotObtainToken" = "Could not initialize request";
-	"ErrorJSONDidNotSucceed" = "Request was unsuccessful - please try again in a bit";
+	"ErrorJSONDidNotSucceed" = "Request was unsuccessful - please try again shortly";
 	DataError = Error;
 	ErrorCouldNotSave = "Could not save the data";
 	"ErrorCouldNotSaveProfile" = "Could not save profile information";
@@ -31,7 +31,14 @@
 	"ErrorCouldNotCreateAccount" = "Could not create a new account";
 	"ErrorCouldNotEditAccount" = "Could not edit account";
 	"ErrorCouldNotDeleteAccount" = "Could not delete account";
-	MyPlayedGames = "My Played Games";
+	MyPlayedGames = "My Games";
 	MyProfile = "My Profile";
-	Achievements_f = "%@ Achievements";
+	Achievements_f = "%@";
+    ErrorAchievementsNotFound = "Unable to load list of achievements. Please try again shortly";
+    ErrorGameNotFound = "Game not found in your list of played games. Please refresh your games list";
+    ErrorMissingGamertagInAchieves = "Missing gamertag in achievement data. Please try again shortly";
+    SecretAchieveTitle = "Secret Achievement";
+    SecretAchieveDesc = "Continue playing to unlock this secret achievement.";
+	AchieveUnlocked_f = "Unlocked on %@";
+	AchieveLocked = "Locked";
 }

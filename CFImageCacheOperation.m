@@ -8,8 +8,6 @@
 
 #import "CFImageCacheOperation.h"
 
-#import "CFCaffeine.h"
-
 @implementation CFImageCacheOperation
 
 - (id)initWithURL:(NSString*)imageUrl

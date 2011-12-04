@@ -8,7 +8,6 @@
 
 #import "CFImageCache.h"
 
-#import "CFCaffeine.h"
 #import "CFImageCacheOperation.h"
 
 @implementation CFImageCache

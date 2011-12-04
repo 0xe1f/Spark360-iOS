@@ -4,11 +4,14 @@
         <attribute name="achDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="acquired" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="iconUrl" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="locked" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isLocked" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isSecret" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="points" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="sortIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="game" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="XboxGame" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="game" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxGame" syncable="YES"/>
     </entity>
     <entity name="XboxGame" syncable="YES">
         <attribute name="achievesDirty" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -23,7 +26,7 @@
         <attribute name="listOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="profile" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="XboxProfile" syncable="YES"/>
+        <relationship name="profile" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxProfile" syncable="YES"/>
     </entity>
     <entity name="XboxProfile" representedClassName="XboxAccount" syncable="YES">
         <attribute name="gamerscore" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -44,6 +47,6 @@
     <elements>
         <element name="XboxGame" positionX="-162" positionY="201" width="128" height="240"/>
         <element name="XboxProfile" positionX="160" positionY="192" width="128" height="255"/>
-        <element name="XboxAchievement" positionX="160" positionY="192" width="128" height="165"/>
+        <element name="XboxAchievement" positionX="160" positionY="192" width="128" height="210"/>
     </elements>
 </model>

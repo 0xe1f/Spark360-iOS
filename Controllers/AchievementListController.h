@@ -27,5 +27,12 @@
 @property (nonatomic, retain) XboxLiveAccount *account;
 @property (nonatomic, retain) NSString *gameUid;
 @property (nonatomic, retain) NSString *gameTitle;
+@property (nonatomic, retain) NSDate *gameLastUpdated;
+@property (nonatomic, assign) BOOL isGameDirty;
+
++(BOOL)startFromController:(UIViewController*)controller
+      managedObjectContext:(NSManagedObjectContext*)managedObjectContext
+                   account:(XboxLiveAccount*)account
+               gameTitleId:(NSString*)gameTitleId;
 
 @end

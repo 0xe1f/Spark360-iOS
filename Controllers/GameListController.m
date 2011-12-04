@@ -9,8 +9,8 @@
 #import "GameListController.h"
 
 #import "CFImageCache.h"
-
 #import "XboxLiveParser.h"
+#import "AchievementListController.h"
 
 @interface GameListController (Private)
 
@@ -42,7 +42,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(syncCompleted:)
-                                                 name:@"GamesSynced" 
+                                                 name:BACHGamesSynced
                                                object:nil];
     
     __numberFormatter = [[NSNumberFormatter alloc] init];
@@ -74,12 +74,12 @@
     
     if ([account areGamesStale])
     {
+        // This will force a refresh
+        
 		CGPoint offset = self.tableView.contentOffset;
 		offset.y = - 65.0f;
 		self.tableView.contentOffset = offset;
 		[_refreshHeaderView egoRefreshScrollViewDidEndDragging:self.tableView];
-        
-        [account syncGamesInManagedObjectContext:self.managedObjectContext];
     }
 }
 
@@ -153,44 +153,17 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
-        // Delete the managed object for the given index path
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error])
-        {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    }   
-}
-
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // The table view should not be re-orderable.
-    return NO;
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+    // Game selected
+    
+    NSManagedObject *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString *uid = [game valueForKey:@"uid"];
+    
+    [AchievementListController startFromController:self
+                              managedObjectContext:self.managedObjectContext
+                                           account:self.account
+                                       gameTitleId:uid];
 }
 
 - (void)didReceiveMemoryWarning
@@ -198,7 +171,7 @@
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
-    // Relinquish ownership any cached data, images, etc that aren't in use.
+    [[CFImageCache sharedInstance] purgeInMemCache];
 }
 
 - (void)dealloc

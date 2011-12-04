@@ -38,6 +38,9 @@ typedef enum _XboxLiveParserErrorType
                                           error:(NSError**)error;
 -(NSDictionary*)retrieveGamesWithAccount:(XboxLiveAccount*)account
                                    error:(NSError**)error;
+-(NSDictionary*)retrieveAchievementsWithAccount:(XboxLiveAccount*)account
+                                        titleId:(NSString*)titleId
+                                          error:(NSError**)error;
 
 // Synchronize* are expected to be called from the main thread
 -(BOOL)synchronizeProfileWithAccount:(XboxLiveAccount*)account
@@ -46,5 +49,8 @@ typedef enum _XboxLiveParserErrorType
 -(BOOL)synchronizeGamesWithAccount:(XboxLiveAccount*)account
                withRetrievedObject:(NSDictionary*)retrieved
                              error:(NSError**)error;
+-(BOOL)synchronizeAchievementsWithAccount:(XboxLiveAccount*)account
+                      withRetrievedObject:(NSDictionary*)retrieved
+                                    error:(NSError**)error;
 
 @end

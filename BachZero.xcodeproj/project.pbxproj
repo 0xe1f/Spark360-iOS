@@ -79,7 +79,6 @@
 		FE610D3013EDD8A700420372 /* CFImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCache.m; sourceTree = "<group>"; };
 		FE610D3313EE125700420372 /* CFImageCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCacheOperation.h; sourceTree = "<group>"; };
 		FE610D3413EE125700420372 /* CFImageCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCacheOperation.m; sourceTree = "<group>"; };
-		FE610D3613EE15CA00420372 /* CFCaffeine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFCaffeine.h; sourceTree = "<group>"; };
 		FE726B4914611E9C00534279 /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		FE726B4A14611E9C00534279 /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
 		FE726B4B14611E9C00534279 /* SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJson.h; sourceTree = "<group>"; };
@@ -387,7 +386,6 @@
 		FEB3E13B13E6402900095480 /* Caffeine */ = {
 			isa = PBXGroup;
 			children = (
-				FE610D3613EE15CA00420372 /* CFCaffeine.h */,
 				FE610D2F13EDD8A700420372 /* CFImageCache.h */,
 				FE610D3013EDD8A700420372 /* CFImageCache.m */,
 				FE610D3313EE125700420372 /* CFImageCacheOperation.h */,
