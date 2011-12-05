@@ -9,6 +9,7 @@
 #import "AchievementListController.h"
 
 #import "CFImageCache.h"
+#import "TaskController.h"
 
 #import "XboxLiveParser.h"
 
@@ -161,8 +162,9 @@
 
 -(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
 {
-    [account syncAchievementsInManagedObjectContext:self.managedObjectContext
-                                        gameTitleId:self.gameUid];
+    [[TaskController sharedInstance] synchronizeAchievementsForGame:self.gameUid
+                                                            account:account
+                                               managedObjectContext:self.managedObjectContext];
 }
 
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view

@@ -10,6 +10,10 @@
 
 extern NSString* const BachErrorDomain;
 
+extern NSString* const BACHAchievementsSynced;
+
+extern NSString* const BACHNotificationGameTitleId;
+
 typedef enum _XboxLiveParserErrorType
 {
     XBLPGeneralError = 0,
@@ -22,6 +26,7 @@ typedef enum _XboxLiveParserErrorType
 @interface XboxLiveParser : NSObject
 
 @property (nonatomic, retain) NSManagedObjectContext *context;
+@property (nonatomic, retain) NSError *lastError;
 
 -(id)initWithManagedObjectContext:(NSManagedObjectContext*)context;
 
@@ -36,11 +41,10 @@ typedef enum _XboxLiveParserErrorType
 -(NSDictionary*)retrieveProfileWithEmailAddress:(NSString*)emailAddress
                                        password:(NSString*)password
                                           error:(NSError**)error;
+-(NSDictionary*)retrieveProfileWithAccount:(XboxLiveAccount*)account
+                                     error:(NSError**)error;
 -(NSDictionary*)retrieveGamesWithAccount:(XboxLiveAccount*)account
                                    error:(NSError**)error;
--(NSDictionary*)retrieveAchievementsWithAccount:(XboxLiveAccount*)account
-                                        titleId:(NSString*)titleId
-                                          error:(NSError**)error;
 
 // Synchronize* are expected to be called from the main thread
 -(BOOL)synchronizeProfileWithAccount:(XboxLiveAccount*)account
@@ -49,8 +53,7 @@ typedef enum _XboxLiveParserErrorType
 -(BOOL)synchronizeGamesWithAccount:(XboxLiveAccount*)account
                withRetrievedObject:(NSDictionary*)retrieved
                              error:(NSError**)error;
--(BOOL)synchronizeAchievementsWithAccount:(XboxLiveAccount*)account
-                      withRetrievedObject:(NSDictionary*)retrieved
-                                    error:(NSError**)error;
+
+-(void)synchronizeAchievements:(NSDictionary*)arguments;
 
 @end

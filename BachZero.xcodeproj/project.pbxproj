@@ -65,6 +65,9 @@
 		FEC84019148A29F6005BC782 /* AchievementList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84018148A29F6005BC782 /* AchievementList.xib */; };
 		FEC84020148A2EC9005BC782 /* AchievementListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC8401F148A2EC9005BC782 /* AchievementListController.m */; };
 		FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84021148A3AC1005BC782 /* AchievementCell.xib */; };
+		FEC84025148C2F37005BC782 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84024148C2F37005BC782 /* TaskController.m */; };
+		FEC84027148C3678005BC782 /* TaskControllerOperation.h in Resources */ = {isa = PBXBuildFile; fileRef = FEC84026148C3678005BC782 /* TaskControllerOperation.h */; };
+		FEC84029148C3693005BC782 /* TaskControllerOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84028148C3693005BC782 /* TaskControllerOperation.m */; };
 		FEEB8FE91477A3FB00C00CF2 /* ProfileContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */; };
 		FEEB8FEE1477A54000C00CF2 /* ProfileContainerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
@@ -166,6 +169,10 @@
 		FEC8401E148A2ACA005BC782 /* AchievementListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AchievementListController.h; sourceTree = "<group>"; };
 		FEC8401F148A2EC9005BC782 /* AchievementListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AchievementListController.m; sourceTree = "<group>"; };
 		FEC84021148A3AC1005BC782 /* AchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementCell.xib; sourceTree = "<group>"; };
+		FEC84023148C2F2C005BC782 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskController.h; sourceTree = "<group>"; };
+		FEC84024148C2F37005BC782 /* TaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskController.m; sourceTree = "<group>"; };
+		FEC84026148C3678005BC782 /* TaskControllerOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskControllerOperation.h; sourceTree = "<group>"; };
+		FEC84028148C3693005BC782 /* TaskControllerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskControllerOperation.m; sourceTree = "<group>"; };
 		FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileContainer.xib; sourceTree = "<group>"; };
 		FEEB8FEB1477A54000C00CF2 /* ProfileContainerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileContainerController.h; sourceTree = "<group>"; };
 		FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileContainerController.m; sourceTree = "<group>"; };
@@ -377,6 +384,10 @@
 		FEAC6F1113E925A2000D86D1 /* Bach */ = {
 			isa = PBXGroup;
 			children = (
+				FEC84026148C3678005BC782 /* TaskControllerOperation.h */,
+				FEC84028148C3693005BC782 /* TaskControllerOperation.m */,
+				FEC84023148C2F2C005BC782 /* TaskController.h */,
+				FEC84024148C2F37005BC782 /* TaskController.m */,
 				FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */,
 				FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */,
 			);
@@ -523,6 +534,7 @@
 				FEC8400E148A1F37005BC782 /* ProfileOverview.xib in Resources */,
 				FEC84019148A29F6005BC782 /* AchievementList.xib in Resources */,
 				FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */,
+				FEC84027148C3678005BC782 /* TaskControllerOperation.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,6 +577,8 @@
 				FEC7F9F61479070F00537213 /* EGORefreshTableHeaderView.m in Sources */,
 				FEC84012148A1F6A005BC782 /* ProfileOverviewController.m in Sources */,
 				FEC84020148A2EC9005BC782 /* AchievementListController.m in Sources */,
+				FEC84025148C2F37005BC782 /* TaskController.m in Sources */,
+				FEC84029148C3693005BC782 /* TaskControllerOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

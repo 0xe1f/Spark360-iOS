@@ -9,9 +9,6 @@
 #import <Foundation/Foundation.h>
 
 extern NSString* const BACHGamesSynced;
-extern NSString* const BACHAchievementsSynced;
-
-extern NSString* const BACHNotificationGameTitleId;
 
 @interface XboxLiveAccount : NSObject
 
@@ -46,7 +43,5 @@ extern NSString* const BACHNotificationGameTitleId;
 -(BOOL)areGamesStale;
 
 -(void)syncGamesInManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
--(void)syncAchievementsInManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
-                                  gameTitleId:(NSString*)gameTitleId;
 
 @end
