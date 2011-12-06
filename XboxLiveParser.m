@@ -18,9 +18,12 @@
 #define XBLPGet  (@"GET")
 #define XBLPPost (@"POST")
 
-NSString* const BACHAchievementsSynced = @"AchievementsSynced";
+NSString* const BACHAchievementsSynced = @"BachAchievementsSynced";
+NSString* const BACHError = @"BachError";
 
-NSString* const BACHNotificationGameTitleId = @"GameTitleId";
+NSString* const BACHNotificationGameTitleId = @"BachGameTitleId";
+NSString* const BACHNotificationAccount = @"BachAccount";
+NSString* const BACHNotificationNSError = @"BachNSError";
 
 NSString* const BachErrorDomain = @"com.akop.bach";
 
@@ -87,6 +90,10 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                           error:(NSError**)error;
 
 -(void)writeAchievementData:(NSDictionary*)data;
+
+-(void)postNotificationOnMainThread:(NSString*)postNotificationName
+                           userInfo:(NSDictionary*)userInfo;
+-(void)postNotificationSelector:(NSDictionary*)args;
 
 @end
 
@@ -180,27 +187,35 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     {
         self.lastError = error;
         
-        /* TODO
-        [self performSelectorOnMainThread:@selector(retrieveFailedWithError:) 
-                               withObject:error
-                            waitUntilDone:YES];
-        */
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
     }
     
-    /* TODO
-    [self performSelectorOnMainThread:@selector(syncCompleted) 
-                           withObject:nil
-                        waitUntilDone:YES];
-    */
-    
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                              gameTitleId, BACHNotificationGameTitleId, nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:BACHAchievementsSynced 
-                                                        object:self
-                                                      userInfo:userInfo];
+    [self postNotificationOnMainThread:BACHAchievementsSynced
+                              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                        account, BACHNotificationAccount, 
+                                        gameTitleId, BACHNotificationGameTitleId, 
+                                        nil]];
     
     [pool release];
+}
+
+-(void)postNotificationOnMainThread:(NSString*)postNotificationName
+                           userInfo:(NSDictionary*)userInfo
+{
+    [self performSelectorOnMainThread:@selector(postNotificationSelector:) 
+                           withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                       postNotificationName, @"postNotificationName", 
+                                       userInfo, @"userInfo", nil]
+                        waitUntilDone:YES];
+}
+
+-(void)postNotificationSelector:(NSDictionary*)args
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:[args objectForKey:@"postNotificationName"]
+                                                        object:self
+                                                      userInfo:[args objectForKey:@"userInfo"]];
 }
 
 -(NSDictionary*)retrieveGamesWithAccount:(XboxLiveAccount*)account

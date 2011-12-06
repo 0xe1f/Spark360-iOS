@@ -1,9 +1,5 @@
-* Fix AchieveController/egoRefreshTableHeaderDataSourceIsLoading
-* Fix achievement fetch request when one is in progress (XboxLiveAccount)
-* Update Achieves notification to only stop spinner if requested achieves load
+* Add network spinner when TaskControllerOp is in progress
+* Add listeners for NSError's
+* Migrate GameController to GenericListController
 * Stop creation of new Account objects when one is pressed in Accounts list - 
   reuse existing one
-
-* Place game list inside a TabController
-* Delete account from preferences
-* Fix CRYPTO stuff in XboxLiveAccount

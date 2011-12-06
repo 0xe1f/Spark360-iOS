@@ -24,10 +24,7 @@
 
 @synthesize tvCell;
 @synthesize fetchedResultsController = __fetchedResultsController;
-@synthesize managedObjectContext = __managedObjectContext;
-@synthesize numberFormatter = __numberFormatter;
 
-@synthesize account;
 @synthesize gameUid;
 @synthesize gameTitle;
 @synthesize isGameDirty;
@@ -38,42 +35,47 @@
     NSLog(@"Got sync completed notification");
     
     [self updateGameStats];
-    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    [self hideRefreshHeaderTableView];
 }
 
-+(BOOL)startFromController:(UIViewController*)controller
-      managedObjectContext:(NSManagedObjectContext*)managedObjectContext
-                   account:(XboxLiveAccount*)account
-               gameTitleId:(NSString*)gameTitleId
+-(id)initWithAccount:(XboxLiveAccount*)account
+         gameTitleId:(NSString*)gameTitleId
 {
-    AchievementListController *ctlr = [[AchievementListController alloc] initWithNibName:@"AchievementList"
-                                                                                  bundle:nil];
+    if (self = [super initWithNibName:@"AchievementList" 
+                               bundle:nil])
+    {
+        self.account = account;
+        self.gameUid = gameTitleId;
+    }
     
-    ctlr.account = account;
-    ctlr.gameUid = gameTitleId;
-    ctlr.managedObjectContext = managedObjectContext;
+    return self;
+}
+
+-(void)dealloc
+{
+    [__fetchedResultsController release];
     
-    [controller.navigationController pushViewController:ctlr
-                                               animated:YES];
+    gameTitle = nil;
+    gameUid = nil;
+    gameLastUpdated = nil;
     
-    [ctlr release];
-    
-    return YES;
+    [super dealloc];
 }
 
 -(void)updateGameStats
 {
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
-                                                         inManagedObjectContext:self.managedObjectContext];
+                                                         inManagedObjectContext:managedObjectContext];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@", self.gameUid];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@", 
+                              self.gameUid];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     
     [request setEntity:entityDescription];
     [request setPredicate:predicate];
     
-    NSArray *array = [self.managedObjectContext executeFetchRequest:request 
-                                                              error:nil];
+    NSArray *array = [managedObjectContext executeFetchRequest:request 
+                                                         error:nil];
     
     NSManagedObject *game = [array lastObject];
     
@@ -87,64 +89,31 @@
     }
 }
 
-- (void)viewDidLoad
+-(void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self updateGameStats];
-    
-    self.title = [NSString localizedStringWithFormat:NSLocalizedString(@"Achievements_f", nil),
-                  gameTitle];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(syncCompleted:)
                                                  name:BACHAchievementsSynced 
                                                object:nil];
     
-    self.numberFormatter = [[NSNumberFormatter alloc] init];
-    [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [self updateGameStats];
     
-    [[CFImageCache sharedInstance] purgeInMemCache];
+    self.title = [NSString localizedStringWithFormat:NSLocalizedString(@"Achievements_f", nil),
+                  gameTitle];
     
-	if (_refreshHeaderView == nil) 
-    {
-		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
-		view.delegate = self;
-		[self.tableView addSubview:view];
-		_refreshHeaderView = view;
-		[view release];
-	}
-	
-	//  update the last update date
 	[_refreshHeaderView refreshLastUpdatedDate];
     
     if (self.isGameDirty)
-    {
-		CGPoint offset = self.tableView.contentOffset;
-		offset.y = - 65.0f;
-		self.tableView.contentOffset = offset;
-		[_refreshHeaderView egoRefreshScrollViewDidEndDragging:self.tableView];
-    }
+        [self refreshUsingRefreshHeaderTableView];
 }
 
-- (void)viewDidUnload
+-(void)viewDidUnload
 {
     [super viewDidUnload];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-#pragma mark -
-#pragma mark UIScrollViewDelegate Methods
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-	[_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
-}
-
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
 }
 
 #pragma mark -
@@ -154,7 +123,7 @@
 {
     [[TaskController sharedInstance] synchronizeAchievementsForGame:self.gameUid
                                                             account:self.account
-                                               managedObjectContext:self.managedObjectContext];
+                                               managedObjectContext:managedObjectContext];
 }
 
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
@@ -168,20 +137,18 @@
 	return self.gameLastUpdated;
 }
 
-// Customize the number of sections in the table view.
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [[self.fetchedResultsController sections] count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
-// Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView 
+-(UITableViewCell *)tableView:(UITableView *)tableView 
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
@@ -200,35 +167,12 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Achievement selected
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    
-    [[CFImageCache sharedInstance] purgeInMemCache];
-}
-
-- (void)dealloc
-{
-    [__fetchedResultsController release];
-    [__managedObjectContext release];
-    [__numberFormatter release];
-    
-    account = nil;
-    gameTitle = nil;
-    gameUid = nil;
-    gameLastUpdated = nil;
-    
-    _refreshHeaderView = nil;
-    
-    [super dealloc];
-}
-
-- (void)configureCell:(UITableViewCell *)cell 
+-(void)configureCell:(UITableViewCell *)cell 
           atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
@@ -279,7 +223,7 @@
     [view setClipsToBounds:YES];
 }
 
-- (void)imageLoaded:(NSString*)url
+-(void)imageLoaded:(NSString*)url
 {
     // TODO: this causes a full data reload; not a good idea
     [self.tableView reloadData];
@@ -287,24 +231,22 @@
 
 #pragma mark - Fetched results controller
 
-- (NSFetchedResultsController *)fetchedResultsController
+-(NSFetchedResultsController *)fetchedResultsController
 {
     if (__fetchedResultsController != nil)
     {
         return __fetchedResultsController;
     }
     
-    /*
-     Set up the fetched results controller.
-    */
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"game.uid == %@ AND game.profile.uuid == %@", 
-                              gameUid, account.uuid];
+                              gameUid, self.account.uuid];
     
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxAchievement" 
-                                              inManagedObjectContext:self.managedObjectContext];
+                                              inManagedObjectContext:managedObjectContext];
+    
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predicate];
     
@@ -321,7 +263,7 @@
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest 
-                                                                                                managedObjectContext:self.managedObjectContext 
+                                                                                                managedObjectContext:managedObjectContext 
                                                                                                   sectionNameKeyPath:nil 
                                                                                                            cacheName:nil]; // AK: cacheName was 'Root'
     aFetchedResultsController.delegate = self;
@@ -334,27 +276,17 @@
     
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])
-        {
-	    /*
-	     Replace this implementation with code to handle the error appropriately.
-
-	     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-	     */
 	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	    abort();
-	}
     
     return __fetchedResultsController;
 }    
 
-#pragma mark - Fetched results controller delegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+-(void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+-(void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
 {
     switch(type)
@@ -369,7 +301,7 @@
     }
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+-(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
@@ -397,7 +329,7 @@
     }
 }
 
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+-(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
 }

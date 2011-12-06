@@ -19,13 +19,10 @@
     NSManagedObjectContext *managedObjectContext;
 };
 
-@property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
-
-@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSNumberFormatter *numberFormatter;
-
 @property (nonatomic, retain) XboxLiveAccount *account;
 
 -(void)refreshUsingRefreshHeaderTableView;
+-(void)hideRefreshHeaderTableView;
 
 @end

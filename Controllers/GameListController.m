@@ -160,10 +160,13 @@
     NSManagedObject *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSString *uid = [game valueForKey:@"uid"];
     
-    [AchievementListController startFromController:self
-                              managedObjectContext:self.managedObjectContext
-                                           account:self.account
-                                       gameTitleId:uid];
+    AchievementListController *ctlr = [[AchievementListController alloc] initWithAccount:self.account
+                                                                             gameTitleId:uid];
+    
+    [self.navigationController pushViewController:ctlr
+                                         animated:YES];
+    
+    [ctlr release];
 }
 
 - (void)didReceiveMemoryWarning

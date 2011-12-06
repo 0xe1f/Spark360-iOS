@@ -9,30 +9,20 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-#import "EGORefreshTableHeaderView.h"
+#import "GenericListController.h"
 
-#import "XboxLiveAccount.h"
-
-@interface AchievementListController : UITableViewController <EGORefreshTableHeaderDelegate, NSFetchedResultsControllerDelegate>
-{
-    EGORefreshTableHeaderView *_refreshHeaderView;
-};
+@interface AchievementListController : GenericListController <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, retain) NSNumberFormatter *numberFormatter;
 
-@property (nonatomic, retain) XboxLiveAccount *account;
 @property (nonatomic, retain) NSString *gameUid;
 @property (nonatomic, retain) NSString *gameTitle;
 @property (nonatomic, retain) NSDate *gameLastUpdated;
 @property (nonatomic, assign) BOOL isGameDirty;
 
-+(BOOL)startFromController:(UIViewController*)controller
-      managedObjectContext:(NSManagedObjectContext*)managedObjectContext
-                   account:(XboxLiveAccount*)account
-               gameTitleId:(NSString*)gameTitleId;
+-(id)initWithAccount:(XboxLiveAccount*)account
+         gameTitleId:(NSString*)gameTitleId;
 
 @end

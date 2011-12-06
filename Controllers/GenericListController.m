@@ -13,22 +13,21 @@
 
 @implementation GenericListController
 
-@synthesize tvCell;
-@synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize numberFormatter = __numberFormatter;
-
 @synthesize account;
 
--(id)init
+-(id)initWithNibName:(NSString *)nibNameOrNil 
+              bundle:(NSBundle *)nibBundleOrNil
 {
-    if (!(self = [super init]))
-        return nil;
-    
-    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
-    managedObjectContext = bachApp.managedObjectContext;
-    
-    self.numberFormatter = [[NSNumberFormatter alloc] init];
-    [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    if (self = [super initWithNibName:nibNameOrNil 
+                                 bundle:nibBundleOrNil])
+    {
+        BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+        managedObjectContext = bachApp.managedObjectContext;
+        
+        self.numberFormatter = [[NSNumberFormatter alloc] init];
+        [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    }
     
     return self;
 }
@@ -37,12 +36,10 @@
 {
     self.numberFormatter = nil;
     self.account = nil;
-    self.fetchedResultsController = nil;
     
     [managedObjectContext release];
     managedObjectContext = nil;
     
-    [_refreshHeaderView release];
     _refreshHeaderView = nil;
     
     [super dealloc];
@@ -66,8 +63,6 @@
 		_refreshHeaderView = view;
 		[view release];
 	}
-	
-	[_refreshHeaderView refreshLastUpdatedDate];
 }
 
 -(void)viewDidUnload
@@ -121,6 +116,11 @@
     offset.y = - 65.0f;
     self.tableView.contentOffset = offset;
     [_refreshHeaderView egoRefreshScrollViewDidEndDragging:self.tableView];
+}
+
+-(void)hideRefreshHeaderTableView
+{
+    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
 }
 
 @end
