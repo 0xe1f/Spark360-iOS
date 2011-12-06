@@ -15,9 +15,14 @@
 }
 
 +(id)sharedInstance;
+
+-(BOOL)isOperationQueuedWithId:(NSString*)operationId;
 -(void)addOperation:(TaskControllerOperation*)op;
+
 -(void)synchronizeAchievementsForGame:(NSString*)gameUid
                               account:(XboxLiveAccount*)account
                  managedObjectContext:(NSManagedObjectContext*)moc;
+-(BOOL)isSynchronizingAchievementsForGame:(NSString*)gameUid
+                                  account:(XboxLiveAccount*)account;
 
 @end

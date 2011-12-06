@@ -52,6 +52,17 @@ static TaskController *sharedInstance = nil;
     NSLog(@"Operation %@ added to queue", op.identifier);
 }
 
+-(BOOL)isOperationQueuedWithId:(NSString*)operationId
+{
+    for (TaskControllerOperation *op in [opQueue operations])
+        if ([op.identifier isEqualToString:operationId])
+            return YES;
+    
+    return NO;
+}
+
+#pragma mark Specifics
+
 -(void)synchronizeAchievementsForGame:(NSString*)gameUid
                               account:(XboxLiveAccount*)account
                  managedObjectContext:(NSManagedObjectContext*)moc
@@ -74,6 +85,14 @@ static TaskController *sharedInstance = nil;
     [self addOperation:op];
 }
 
+-(BOOL)isSynchronizingAchievementsForGame:(NSString*)gameUid
+                                  account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Achievements:%@", 
+                            account.uuid, gameUid];
+    return [self isOperationQueuedWithId:identifier];
+}
+
 #pragma mark Singleton stuff
 
 // Your dealloc method will never be called, as the singleton survives for the duration of your app.
@@ -87,37 +106,37 @@ static TaskController *sharedInstance = nil;
 }
 
 // We don't want to allocate a new instance, so return the current one.
-+ (id)allocWithZone:(NSZone*)zone 
++(id)allocWithZone:(NSZone*)zone 
 {
     return [[self sharedInstance] retain];
 }
 
 // Equally, we don't want to generate multiple copies of the singleton.
-- (id)copyWithZone:(NSZone *)zone 
+-(id)copyWithZone:(NSZone *)zone 
 {
     return self;
 }
 
 // Once again - do nothing, as we don't have a retain counter for this object.
-- (id)retain 
+-(id)retain 
 {
     return self;
 }
 
 // Replace the retain counter so we can never release this object.
-- (NSUInteger)retainCount 
+-(NSUInteger)retainCount 
 {
     return NSUIntegerMax;
 }
 
 // This function is empty, as we don't want to let the user release this object.
-- (oneway void)release 
+-(oneway void)release 
 {
     
 }
 
 //Do nothing, other than return the shared instance - as this is expected from autorelease.
-- (id)autorelease 
+-(id)autorelease 
 {
     return self;
 }

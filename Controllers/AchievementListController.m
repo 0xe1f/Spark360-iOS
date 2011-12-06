@@ -101,7 +101,7 @@
                                                  name:BACHAchievementsSynced 
                                                object:nil];
     
-    __numberFormatter = [[NSNumberFormatter alloc] init];
+    self.numberFormatter = [[NSNumberFormatter alloc] init];
     [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     
     [[CFImageCache sharedInstance] purgeInMemCache];
@@ -117,16 +117,6 @@
 	
 	//  update the last update date
 	[_refreshHeaderView refreshLastUpdatedDate];
-    
-    // Set up the edit and add buttons.
-    
-    /*
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
-    self.navigationItem.rightBarButtonItem = addButton;
-    [addButton release];
-    */
     
     if (self.isGameDirty)
     {
@@ -163,13 +153,14 @@
 -(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
 {
     [[TaskController sharedInstance] synchronizeAchievementsForGame:self.gameUid
-                                                            account:account
+                                                            account:self.account
                                                managedObjectContext:self.managedObjectContext];
 }
 
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
-	return account.isSyncingGames; // TODO: WRONG
+    return [[TaskController sharedInstance] isSynchronizingAchievementsForGame:self.gameUid
+                                                                       account:self.account];
 }
 
 -(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
