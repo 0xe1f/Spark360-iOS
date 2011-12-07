@@ -56,7 +56,7 @@
 							<object class="IBUILabel" id="210505093">
 								<reference key="NSNextResponder" ref="388167779"/>
 								<int key="NSvFlags">256</int>
-								<string key="NSFrame">{{68, 4}, {240, 22}}</string>
+								<string key="NSFrame">{{68, 0}, {240, 22}}</string>
 								<reference key="NSSuperview" ref="388167779"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="134536145"/>
@@ -90,7 +90,7 @@
 							<object class="IBUILabel" id="134536145">
 								<reference key="NSNextResponder" ref="388167779"/>
 								<int key="NSvFlags">256</int>
-								<string key="NSFrame">{{68, 27}, {240, 18}}</string>
+								<string key="NSFrame">{{68, 30}, {240, 18}}</string>
 								<reference key="NSSuperview" ref="388167779"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView"/>
@@ -119,7 +119,7 @@
 								</object>
 							</object>
 						</array>
-						<string key="NSFrameSize">{300, 51}</string>
+						<string key="NSFrameSize">{320, 51}</string>
 						<reference key="NSSuperview" ref="519594575"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="218691664"/>
@@ -142,7 +142,6 @@
 				<string key="NSReuseIdentifierKey">_NS:358</string>
 				<reference key="IBUIBackgroundColor" ref="567678913"/>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-				<int key="IBUIAccessoryType">1</int>
 				<reference key="IBUIContentView" ref="388167779"/>
 			</object>
 		</array>
@@ -204,7 +203,7 @@
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
-				<string key="-1.CustomClassName">AccountListController</string>
+				<string key="-1.CustomClassName">MessageListController</string>
 				<string key="-1.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="-2.CustomClassName">UIResponder</string>
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -222,8 +221,16 @@
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
-					<string key="className">AccountListController</string>
+					<string key="className">GenericListController</string>
 					<string key="superclassName">UITableViewController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/GenericListController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">MessageListController</string>
+					<string key="superclassName">GenericListController</string>
 					<object class="NSMutableDictionary" key="outlets">
 						<string key="NS.key.0">tvCell</string>
 						<string key="NS.object.0">UITableViewCell</string>
@@ -237,7 +244,7 @@
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/AccountListController.h</string>
+						<string key="minorKey">./Classes/MessageListController.h</string>
 					</object>
 				</object>
 			</array>

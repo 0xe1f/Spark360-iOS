@@ -8,8 +8,10 @@
 
 #import "GameListController.h"
 
+#import "TaskController.h"
 #import "CFImageCache.h"
 #import "XboxLiveParser.h"
+
 #import "AchievementListController.h"
 
 @interface GameListController (Private)
@@ -22,98 +24,69 @@
 
 @synthesize tvCell;
 @synthesize fetchedResultsController = __fetchedResultsController;
-@synthesize managedObjectContext = __managedObjectContext;
-@synthesize numberFormatter = __numberFormatter;
 
-@synthesize account;
+-(id)initWithAccount:(XboxLiveAccount*)account
+{
+    if (self = [super initWithNibName:@"GameList" 
+                               bundle:nil])
+    {
+        self.account = account;
+    }
+    
+    return self;
+}
+
+-(void)dealloc
+{
+    [__fetchedResultsController release];
+    
+    [super dealloc];
+}
 
 -(void)syncCompleted:(NSNotification *)notification
 {
     NSLog(@"Got sync completed notification");
     
-    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    [self hideRefreshHeaderTableView];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"MyPlayedGames", nil);
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(syncCompleted:)
                                                  name:BACHGamesSynced
                                                object:nil];
     
-    __numberFormatter = [[NSNumberFormatter alloc] init];
-    [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    self.title = NSLocalizedString(@"MyPlayedGames", nil);
     
-    [[CFImageCache sharedInstance] purgeInMemCache];
-    
-	if (_refreshHeaderView == nil) 
-    {
-		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.view.frame.size.width, self.tableView.bounds.size.height)];
-		view.delegate = self;
-		[self.tableView addSubview:view];
-		_refreshHeaderView = view;
-		[view release];
-	}
-	
-	//  update the last update date
 	[_refreshHeaderView refreshLastUpdatedDate];
     
-    // Set up the edit and add buttons.
-    
-    /*
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-    
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
-    self.navigationItem.rightBarButtonItem = addButton;
-    [addButton release];
-    */
-    
-    if ([account areGamesStale])
-    {
-        // This will force a refresh
-        
-		CGPoint offset = self.tableView.contentOffset;
-		offset.y = - 65.0f;
-		self.tableView.contentOffset = offset;
-		[_refreshHeaderView egoRefreshScrollViewDidEndDragging:self.tableView];
-    }
+    if ([self.account areGamesStale])
+        [self refreshUsingRefreshHeaderTableView];
 }
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:BACHGamesSynced
+                                                  object:nil];
 }
 
-#pragma mark -
-#pragma mark UIScrollViewDelegate Methods
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-	[_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
-}
-
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
-}
-
-#pragma mark -
-#pragma mark EGORefreshTableHeaderDelegate Methods
+#pragma mark - EGORefreshTableHeaderDelegate Methods
 
 -(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
 {
-    [account syncGamesInManagedObjectContext:self.managedObjectContext];
+    [[TaskController sharedInstance] synchronizeGamesForAccount:self.account
+                                           managedObjectContext:managedObjectContext];
 }
 
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
-	return account.isSyncingGames;
+	return [[TaskController sharedInstance] isSynchronizingGamesForAccount:self.account];
 }
 
 -(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
@@ -167,26 +140,6 @@
                                          animated:YES];
     
     [ctlr release];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    [[CFImageCache sharedInstance] purgeInMemCache];
-}
-
-- (void)dealloc
-{
-    [__fetchedResultsController release];
-    [__managedObjectContext release];
-    [__numberFormatter release];
-    
-    account = nil;
-    _refreshHeaderView = nil;
-    
-    [super dealloc];
 }
 
 - (void)configureCell:(UITableViewCell *)cell 
@@ -256,16 +209,14 @@
         return __fetchedResultsController;
     }
     
-    /*
-     Set up the fetched results controller.
-    */
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"profile.uuid == %@", account.uuid];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"profile.uuid == %@", 
+                              self.account.uuid];
     
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxGame" 
-                                              inManagedObjectContext:self.managedObjectContext];
+                                              inManagedObjectContext:managedObjectContext];
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predicate];
     
@@ -282,7 +233,7 @@
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest 
-                                                                                                managedObjectContext:self.managedObjectContext 
+                                                                                                managedObjectContext:managedObjectContext 
                                                                                                   sectionNameKeyPath:nil 
                                                                                                            cacheName:nil]; // AK: cacheName was 'Root'
     aFetchedResultsController.delegate = self;
@@ -295,14 +246,8 @@
     
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])
-        {
-	    /*
-	     Replace this implementation with code to handle the error appropriately.
-
-	     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-	     */
+    {
 	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	    abort();
 	}
     
     return __fetchedResultsController;

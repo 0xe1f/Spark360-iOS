@@ -14,6 +14,7 @@
 @synthesize identifier = _identifier;
 @synthesize arguments = _arguments;
 @synthesize selectorOwner = _selectorOwner;
+@synthesize isNetworked;
 
 - (id)initWithIdentifier:(NSString*)identifier
            selectorOwner:(id)selectorOwner
@@ -22,6 +23,7 @@
 {
     if (self = [super init]) 
     {
+        self.isNetworked = YES;
         self.identifier = identifier;
         self.selectorOwner = selectorOwner;
         self.backgroundSelector = backgroundSelector;
@@ -39,6 +41,11 @@
     self.arguments = nil;
     
     [super dealloc];
+}
+
+- (void)toggleNetworkIndicator:(BOOL)isShowing
+{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = isShowing;
 }
 
 - (void)main

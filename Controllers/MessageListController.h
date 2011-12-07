@@ -1,17 +1,16 @@
 //
-//  RootViewController.h
-//  ListTest
+//  MessageListController.h
+//  BachZero
 //
-//  Created by Akop Karapetyan on 7/31/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Created by Akop Karapetyan on 12/7/11.
+//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
 
 #import "GenericListController.h"
 
-@interface GameListController : GenericListController <NSFetchedResultsControllerDelegate>
+@interface MessageListController : GenericListController <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
 

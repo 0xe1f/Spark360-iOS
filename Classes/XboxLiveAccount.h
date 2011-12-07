@@ -8,11 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString* const BACHGamesSynced;
-
 @interface XboxLiveAccount : NSObject
-
-@property (nonatomic, assign) BOOL isSyncingGames;
 
 -(id)initWithUuid:(NSString*)uuid;
 +(id)preferencesForUuid:(NSString*)uuid;
@@ -29,6 +25,9 @@ extern NSString* const BACHGamesSynced;
 -(NSDate*)lastGamesUpdate;
 -(void)setLastGamesUpdate:(NSDate*)lastUpdate;
 
+-(NSDate*)lastMessagesUpdate;
+-(void)setLastMessagesUpdate:(NSDate*)lastUpdate;
+
 -(NSNumber*)stalePeriodInSeconds;
 -(void)setStalePeriodInSeconds:(NSNumber*)browseRefreshPeriodInSeconds;
 
@@ -41,7 +40,6 @@ extern NSString* const BACHGamesSynced;
 -(BOOL)isEqualToAccount:(XboxLiveAccount*)account;
 
 -(BOOL)areGamesStale;
-
--(void)syncGamesInManagedObjectContext:(NSManagedObjectContext*)managedObjectContext;
+-(BOOL)areMessagesStale;
 
 @end

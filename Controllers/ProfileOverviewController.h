@@ -13,11 +13,13 @@
 @interface ProfileOverviewController : UIViewController
 {
     IBOutlet UIButton *gamesButton;
+    IBOutlet UIButton *messagesButton;
 }
 
 @property (nonatomic, retain) XboxLiveAccount *account;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 - (IBAction)viewGames:(id)sender;
+- (IBAction)viewMessages:(id)sender;
 
 @end

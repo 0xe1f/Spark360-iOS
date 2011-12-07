@@ -10,24 +10,18 @@
 
 #import "GTMNSString+HTML.h"
 #import "GTMNSString+URLArguments.h"
-
 #import "SBJson.h"
+
+#import "TaskController.h"
 
 #define TIMEOUT_SECONDS 30
 
 #define XBLPGet  (@"GET")
 #define XBLPPost (@"POST")
 
-NSString* const BACHAchievementsSynced = @"BachAchievementsSynced";
-NSString* const BACHError = @"BachError";
-
-NSString* const BACHNotificationGameTitleId = @"BachGameTitleId";
-NSString* const BACHNotificationAccount = @"BachAccount";
-NSString* const BACHNotificationNSError = @"BachNSError";
-
 NSString* const BachErrorDomain = @"com.akop.bach";
 
-@interface XboxLiveParser (PrivateMethods)
+@interface XboxLiveParser (Private)
 
 - (NSString*)loadWithMethod:(NSString*)method
                         url:(NSString*)url 
@@ -85,11 +79,17 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSManagedObject*)getGameWithTitleId:(NSString*)titleId
                               account:(XboxLiveAccount*)account;
 
+-(NSDictionary*)retrieveGamesWithAccount:(XboxLiveAccount*)account
+                                   error:(NSError**)error;
 -(NSDictionary*)retrieveAchievementsWithAccount:(XboxLiveAccount*)account
                                         titleId:(NSString*)titleId
                                           error:(NSError**)error;
+-(NSDictionary*)retrieveMessagesWithAccount:(XboxLiveAccount*)account
+                                      error:(NSError**)error;
 
+-(void)writeGameData:(NSDictionary*)args;
 -(void)writeAchievementData:(NSDictionary*)data;
+-(void)writeMessageData:(NSDictionary*)args;
 
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
                            userInfo:(NSDictionary*)userInfo;
@@ -161,6 +161,88 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     [super dealloc];
 }
 
+-(void)synchronizeGames:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveGamesWithAccount:account
+                                                  error:&error];
+    
+    self.lastError = error;
+    
+    if (data)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              data, @"data",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeGameData:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHGamesSynced
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)synchronizeMessages:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveMessagesWithAccount:account
+                                                     error:&error];
+    
+    self.lastError = error;
+    
+    if (data)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              data, @"data",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeMessageData:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHMessagesSynced
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
 -(void)synchronizeAchievements:(NSDictionary*)arguments
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -173,6 +255,8 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
                                                        titleId:gameTitleId
                                                          error:&error];
     
+    self.lastError = error;
+    
     if (data)
     {
         NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -183,20 +267,21 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
                                withObject:args
                             waitUntilDone:YES];
     }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHAchievementsSynced
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            gameTitleId, BACHNotificationGameTitleId, 
+                                            nil]];
+    }
     else
     {
-        self.lastError = error;
-        
         [self postNotificationOnMainThread:BACHError
                                   userInfo:[NSDictionary dictionaryWithObject:self.lastError
                                                                        forKey:BACHNotificationNSError]];
     }
-    
-    [self postNotificationOnMainThread:BACHAchievementsSynced
-                              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-                                        account, BACHNotificationAccount, 
-                                        gameTitleId, BACHNotificationGameTitleId, 
-                                        nil]];
     
     [pool release];
 }
@@ -204,6 +289,8 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
                            userInfo:(NSDictionary*)userInfo
 {
+    NSLog(@"Sending notification '%@' on main thread", postNotificationName);
+    
     [self performSelectorOnMainThread:@selector(postNotificationSelector:) 
                            withObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                        postNotificationName, @"postNotificationName", 
@@ -419,13 +506,21 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     return YES;
 }
 
--(BOOL)synchronizeGamesWithAccount:(XboxLiveAccount*)account
-               withRetrievedObject:(NSDictionary*)dict
-                             error:(NSError**)error
+-(void)writeGameData:(NSDictionary*)args
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
+    NSDictionary *data = [args objectForKey:@"data"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    
     NSManagedObject *profile = [self profileForAccount:account];
+    if (!profile)
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorProfileNotFound"];
+        
+        return;
+    }
     
     NSDate *lastUpdated = [NSDate date];
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
@@ -435,16 +530,16 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     int existingItems = 0;
     int listOrder = 0;
     
-    NSArray *gameDicts = [dict objectForKey:@"games"];
+    NSArray *inGames = [data objectForKey:@"games"];
     
-    for (NSDictionary *gameDict in gameDicts)
+    for (NSDictionary *inGame in inGames)
     {
         listOrder++;
         
         // Fetch game, or create a new one
         NSManagedObject *game;
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
-                                  [gameDict objectForKey:@"uid"], profile];
+                                  [inGame objectForKey:@"uid"], profile];
         
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         
@@ -464,20 +559,20 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
             
             // These will not change, so just set them up the first time
             
-            [game setValue:[gameDict objectForKey:@"uid"] forKey:@"uid"];
+            [game setValue:[inGame objectForKey:@"uid"] forKey:@"uid"];
             [game setValue:profile forKey:@"profile"];
-            [game setValue:[gameDict objectForKey:@"gameUrl"] forKey:@"gameUrl"];
-            [game setValue:[gameDict objectForKey:@"title"] forKey:@"title"];
-            [game setValue:[gameDict objectForKey:@"boxArtUrl"] forKey:@"boxArtUrl"];
+            [game setValue:[inGame objectForKey:@"gameUrl"] forKey:@"gameUrl"];
+            [game setValue:[inGame objectForKey:@"title"] forKey:@"title"];
+            [game setValue:[inGame objectForKey:@"boxArtUrl"] forKey:@"boxArtUrl"];
             [game setValue:[NSNumber numberWithBool:YES] forKey:@"achievesDirty"];
         }
         else
         {
             existingItems++;
-            if (![[game valueForKey:@"achievesUnlocked"] isEqualToNumber:[gameDict objectForKey:@"achievesUnlocked"]] ||
-                ![[game valueForKey:@"achievesTotal"] isEqualToNumber:[gameDict objectForKey:@"achievesTotal"]] ||
-                ![[game valueForKey:@"gamerScoreEarned"] isEqualToNumber:[gameDict objectForKey:@"gamerScoreEarned"]] ||
-                ![[game valueForKey:@"gamerScoreTotal"] isEqualToNumber:[gameDict objectForKey:@"gamerScoreTotal"]])
+            if (![[game valueForKey:@"achievesUnlocked"] isEqualToNumber:[inGame objectForKey:@"achievesUnlocked"]] ||
+                ![[game valueForKey:@"achievesTotal"] isEqualToNumber:[inGame objectForKey:@"achievesTotal"]] ||
+                ![[game valueForKey:@"gamerScoreEarned"] isEqualToNumber:[inGame objectForKey:@"gamerScoreEarned"]] ||
+                ![[game valueForKey:@"gamerScoreTotal"] isEqualToNumber:[inGame objectForKey:@"gamerScoreTotal"]])
             {
                 [game setValue:[NSNumber numberWithBool:YES] forKey:@"achievesDirty"];
             }
@@ -488,19 +583,19 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
         
         // Game achievements
         
-        [game setValue:[gameDict objectForKey:@"achievesUnlocked"] forKey:@"achievesUnlocked"];
-        [game setValue:[gameDict objectForKey:@"achievesTotal"] forKey:@"achievesTotal"];
+        [game setValue:[inGame objectForKey:@"achievesUnlocked"] forKey:@"achievesUnlocked"];
+        [game setValue:[inGame objectForKey:@"achievesTotal"] forKey:@"achievesTotal"];
         
         // Game score
         
-        [game setValue:[gameDict objectForKey:@"gamerScoreEarned"] forKey:@"gamerScoreEarned"];
-        [game setValue:[gameDict objectForKey:@"gamerScoreTotal"] forKey:@"gamerScoreTotal"];
+        [game setValue:[inGame objectForKey:@"gamerScoreEarned"] forKey:@"gamerScoreEarned"];
+        [game setValue:[inGame objectForKey:@"gamerScoreTotal"] forKey:@"gamerScoreTotal"];
         
         // Last played
         
         NSDate *lastPlayed = nil;
-        if ([gameDict objectForKey:@"lastPlayed"] != [NSDate distantPast])
-            lastPlayed = [gameDict objectForKey:@"lastPlayed"];
+        if ([inGame objectForKey:@"lastPlayed"] != [NSDate distantPast])
+            lastPlayed = [inGame objectForKey:@"lastPlayed"];
         
         [game setValue:lastPlayed forKey:@"lastPlayed"];
         [game setValue:lastUpdated forKey:@"lastUpdated"];
@@ -529,13 +624,10 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     
     if (![self.context save:NULL])
     {
-        if (error)
-        {
-            *error = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                   localizationKey:@"ErrorCouldNotSaveGameList"];
-        }
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorCouldNotSaveGameList"];
         
-        return NO;
+        return;
     }
     
     account.lastGamesUpdate = [NSDate date];
@@ -543,8 +635,6 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     
     NSLog(@"synchronizeGamesWithAccount: (%i new, %i existing) %.04fs", 
           newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
-    
-    return YES;
 }
 
 -(void)writeAchievementData:(NSDictionary*)args

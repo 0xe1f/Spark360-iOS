@@ -11,18 +11,12 @@
 #import "XboxLiveParser.h"
 #import "TaskController.h"
 
-NSString* const BACHGamesSynced = @"GamesSynced";
-
 @interface XboxLiveAccount (Private)
 
 -(NSString*)keyForPreference:(NSString*)preference;
 -(void)resetDirtyFlags;
 
--(void)syncCompleted;
--(void)retrieveGamesInBackground:(NSManagedObjectContext*)managedObjectContext;
--(void)retrieveAchievementsInBackground:(NSDictionary*)arguments;
--(void)retrievedGamesWithObjects:(NSDictionary*)objects;
--(void)retrieveFailedWithError:(NSError*)error;
+-(BOOL)isDataStale:(NSDate*)lastRefreshed;
 
 @end
 
@@ -31,6 +25,8 @@ NSString* const BACHGamesSynced = @"GamesSynced";
     NSString *_uuid;
     NSDate *_lastGamesUpdate;
     BOOL _lastGamesUpdateDirty;
+    NSDate *_lastMessagesUpdate;
+    BOOL _lastMessagesUpdateDirty;
     NSNumber *_stalePeriodInSeconds;
     BOOL _browseRefreshPeriodInSecondsDirty;
     NSString *_emailAddress;
@@ -41,13 +37,12 @@ NSString* const BACHGamesSynced = @"GamesSynced";
     BOOL _screenNameDirty;
 }
 
-@synthesize isSyncingGames;
-
 NSString * const KeychainPassword = @"com.akop.bach";
 
 NSString * const StalePeriodKey = @"StalePeriod";
 NSString * const ScreenNameKey = @"ScreenName";
 NSString * const GameLastUpdatedKey = @"GamesLastUpdated";
+NSString * const MessagesLastUpdatedKey = @"MessagesLastUpdated";
 NSString * const CookiesKey = @"Cookies";
 
 #define DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS (60*5)
@@ -65,6 +60,7 @@ NSString * const CookiesKey = @"Cookies";
         
         // Load pref-based properties
         self.lastGamesUpdate = [prefs objectForKey:[self keyForPreference:GameLastUpdatedKey]];
+        self.lastMessagesUpdate = [prefs objectForKey:[self keyForPreference:MessagesLastUpdatedKey]];
         self.stalePeriodInSeconds = [prefs objectForKey:[self keyForPreference:StalePeriodKey]];
         self.screenName = [prefs objectForKey:[self keyForPreference:ScreenNameKey]];
         
@@ -84,6 +80,8 @@ NSString * const CookiesKey = @"Cookies";
             self.stalePeriodInSeconds = [NSNumber numberWithInt:DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS];
         if (!self.lastGamesUpdate)
             self.lastGamesUpdate = [NSDate distantPast];
+        if (!self.lastMessagesUpdate)
+            self.lastMessagesUpdate = [NSDate distantPast];
     }
 }
 
@@ -92,6 +90,7 @@ NSString * const CookiesKey = @"Cookies";
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
     [prefs removeObjectForKey:[self keyForPreference:GameLastUpdatedKey]];
+    [prefs removeObjectForKey:[self keyForPreference:MessagesLastUpdatedKey]];
     [prefs removeObjectForKey:[self keyForPreference:StalePeriodKey]];
     [prefs removeObjectForKey:[self keyForPreference:ScreenNameKey]];
     
@@ -112,6 +111,12 @@ NSString * const CookiesKey = @"Cookies";
         {
             [prefs setObject:self.lastGamesUpdate 
                       forKey:[self keyForPreference:GameLastUpdatedKey]];
+        }
+        
+        if (_lastMessagesUpdateDirty)
+        {
+            [prefs setObject:self.lastMessagesUpdate 
+                      forKey:[self keyForPreference:MessagesLastUpdatedKey]];
         }
         
         if (_browseRefreshPeriodInSecondsDirty)
@@ -143,6 +148,7 @@ NSString * const CookiesKey = @"Cookies";
 -(void)resetDirtyFlags
 {
     _lastGamesUpdateDirty = NO;
+    _lastMessagesUpdateDirty = NO;
     _browseRefreshPeriodInSecondsDirty = NO;
     _emailAddressDirty = NO;
     _passwordDirty = NO;
@@ -161,6 +167,20 @@ NSString * const CookiesKey = @"Cookies";
     
     _lastGamesUpdate = lastGamesUpdate;
     _lastGamesUpdateDirty = YES;
+}
+
+-(NSDate*)lastMessagesUpdate
+{
+    return _lastMessagesUpdate;
+}
+
+-(void)setLastMessagesUpdate:(NSDate *)lastUpdate
+{
+    [lastUpdate retain];
+    [_lastMessagesUpdate release];
+    
+    _lastMessagesUpdate = lastUpdate;
+    _lastMessagesUpdateDirty = YES;
 }
 
 -(NSString*)screenName
@@ -219,7 +239,7 @@ NSString * const CookiesKey = @"Cookies";
     _passwordDirty = YES;
 }
 
--(BOOL)areGamesStale
+-(BOOL)isDataStale:(NSDate*)lastRefreshed
 {
     NSDateComponents *comps = [[NSDateComponents alloc] init];
     [comps setSecond:-[self.stalePeriodInSeconds intValue]];
@@ -229,7 +249,7 @@ NSString * const CookiesKey = @"Cookies";
                                                      toDate:[NSDate date] 
                                                     options:0];
     
-    BOOL stale = ([self.lastGamesUpdate compare:refreshDate] == NSOrderedAscending);
+    BOOL stale = ([lastRefreshed compare:refreshDate] == NSOrderedAscending);
     
     [comps release];
     [gregorian release];
@@ -237,87 +257,14 @@ NSString * const CookiesKey = @"Cookies";
     return stale;
 }
 
--(void)syncGamesInManagedObjectContext:(NSManagedObjectContext*)managedObjectContext
+-(BOOL)areGamesStale
 {
-    if (self.isSyncingGames)
-    {
-        NSLog(@"Ignoring game sync request; already syncing");
-        return;
-    }
-    
-    self.isSyncingGames = YES;
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    
-    [self performSelectorInBackground:@selector(retrieveGamesInBackground:) 
-                           withObject:managedObjectContext];
+    return [self isDataStale:self.lastGamesUpdate];
 }
 
--(void)syncCompleted
+-(BOOL)areMessagesStale
 {
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-}
-
--(void)retrieveGamesInBackground:(NSManagedObjectContext*)managedObjectContext
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    XboxLiveParser *parser = [[[XboxLiveParser alloc] init] autorelease];
-    
-    NSError *error = nil;
-    NSDictionary *data = [parser retrieveGamesWithAccount:self
-                                                    error:&error];
-    
-    if (data)
-    {
-        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                              managedObjectContext, @"context", 
-                              data, @"data", nil];
-        
-        [self performSelectorOnMainThread:@selector(retrievedGamesWithObjects:) 
-                               withObject:dict
-                            waitUntilDone:YES];
-    }
-    else
-    {
-        [self performSelectorOnMainThread:@selector(retrieveFailedWithError:) 
-                               withObject:error
-                            waitUntilDone:YES];
-    }
-    
-    [self performSelectorOnMainThread:@selector(syncCompleted) 
-                           withObject:nil
-                        waitUntilDone:YES];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:BACHGamesSynced 
-                                                        object:self
-                                                      userInfo:nil];
-    
-    [pool release];
-    
-    self.isSyncingGames = NO;
-}
-
--(void)retrievedGamesWithObjects:(NSDictionary*)objects
-{
-    NSManagedObjectContext *context = [objects objectForKey:@"context"];
-    NSDictionary *data = [objects objectForKey:@"data"];
-    
-    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];
-    [parser synchronizeGamesWithAccount:self
-                    withRetrievedObject:data
-                                  error:nil]; // TODO: error?
-    [parser release];
-}
-
--(void)retrieveFailedWithError:(NSError*)error
-{
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"DataError", @"") 
-                                                        message:[error localizedDescription]
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-    
-    [alertView show];
-    [alertView release];
+    return [self isDataStale:self.lastMessagesUpdate];
 }
 
 -(BOOL)isEqual:(id)object
@@ -359,8 +306,6 @@ NSString * const CookiesKey = @"Cookies";
     {
         _uuid = [uuid copy];
         [self reload];
-        
-        self.isSyncingGames = NO;
     }
     
     return self;
@@ -383,6 +328,7 @@ NSString * const CookiesKey = @"Cookies";
     _uuid = nil;
     
     self.lastGamesUpdate = nil;
+    self.lastMessagesUpdate = nil;
     self.stalePeriodInSeconds = nil;
     self.emailAddress = nil;
     self.password = nil;

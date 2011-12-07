@@ -25,13 +25,16 @@
 	"ErrorCannotObtainToken" = "Could not initialize request";
 	"ErrorJSONDidNotSucceed" = "Request was unsuccessful - please try again shortly";
 	DataError = Error;
+    Error = "Error";
 	ErrorCouldNotSave = "Could not save the data";
 	"ErrorCouldNotSaveProfile" = "Could not save profile information";
 	"ErrorCouldNotSaveGameList" = "Could not save game list";
 	"ErrorCouldNotCreateAccount" = "Could not create a new account";
 	"ErrorCouldNotEditAccount" = "Could not edit account";
 	"ErrorCouldNotDeleteAccount" = "Could not delete account";
+    "ErrorProfileNotFound" = "Profile could not be found";
 	MyPlayedGames = "My Games";
+	MyMessages = "My Messages";
 	MyProfile = "My Profile";
 	Achievements_f = "%@";
     ErrorAchievementsNotFound = "Unable to load list of achievements. Please try again shortly";

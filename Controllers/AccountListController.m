@@ -12,7 +12,6 @@
 #import "AccountAddController.h"
 #import "AccountEditController.h"
 #import "GameListController.h"
-#import "ProfileContainerController.h"
 #import "ProfileOverviewController.h"
 
 #import "CFImageCache.h"

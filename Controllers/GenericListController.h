@@ -24,5 +24,6 @@
 
 -(void)refreshUsingRefreshHeaderTableView;
 -(void)hideRefreshHeaderTableView;
+-(void)onSyncError:(NSNotification *)notification;
 
 @end

@@ -9,6 +9,7 @@
 #import "ProfileOverviewController.h"
 
 #import "GameListController.h"
+#import "MessageListController.h"
 
 @implementation ProfileOverviewController
 
@@ -42,11 +43,15 @@
 
 -(void)viewGames:(id)sender
 {
-    GameListController *ctlr = [[GameListController alloc] initWithNibName:@"GameList"
-                                                                    bundle:nil];
+    GameListController *ctlr = [[GameListController alloc] initWithAccount:account];
     
-    ctlr.account = account;
-    ctlr.managedObjectContext = self.managedObjectContext;
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
+}
+
+-(void)viewMessages:(id)sender
+{
+    MessageListController *ctlr = [[MessageListController alloc] initWithAccount:account];
     
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];

@@ -11,6 +11,15 @@
 #import "XboxLiveAccount.h"
 #import "XboxLiveParser.h"
 
+NSString* const BACHGamesSynced = @"BachGamesSynced";
+NSString* const BACHAchievementsSynced = @"BachAchievementsSynced";
+NSString* const BACHMessagesSynced = @"BachMessagesSynced";
+NSString* const BACHError = @"BachError";
+
+NSString* const BACHNotificationGameTitleId = @"BachNotifGameTitleId";
+NSString* const BACHNotificationAccount = @"BachNotifAccount";
+NSString* const BACHNotificationNSError = @"BachNotifNSError";
+
 @implementation TaskController
 
 static TaskController *sharedInstance = nil;
@@ -37,7 +46,7 @@ static TaskController *sharedInstance = nil;
     return self;
 }
 
-#pragma mark Controller
+#pragma mark - Controller Generics
 
 -(void)addOperation:(TaskControllerOperation*)op
 {
@@ -61,7 +70,35 @@ static TaskController *sharedInstance = nil;
     return NO;
 }
 
-#pragma mark Specifics
+#pragma mark - Specifics
+
+-(void)synchronizeGamesForAccount:(XboxLiveAccount*)account
+             managedObjectContext:(NSManagedObjectContext*)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Games",
+                            account.uuid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(synchronizeGames:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+}
+
+-(BOOL)isSynchronizingGamesForAccount:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Games", 
+                            account.uuid];
+    return [self isOperationQueuedWithId:identifier];
+}
 
 -(void)synchronizeAchievementsForGame:(NSString*)gameUid
                               account:(XboxLiveAccount*)account
@@ -90,6 +127,34 @@ static TaskController *sharedInstance = nil;
 {
     NSString *identifier = [NSString stringWithFormat:@"%@.Achievements:%@", 
                             account.uuid, gameUid];
+    return [self isOperationQueuedWithId:identifier];
+}
+
+-(void)synchronizeMessagesForAccount:(XboxLiveAccount*)account
+                managedObjectContext:(NSManagedObjectContext*)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Messages",
+                            account.uuid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(synchronizeMessages:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+}
+
+-(BOOL)isSynchronizingMessagesForAccount:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Messages", 
+                            account.uuid];
     return [self isOperationQueuedWithId:identifier];
 }
 

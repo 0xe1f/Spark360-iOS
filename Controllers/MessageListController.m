@@ -1,51 +1,32 @@
 //
-//  RootViewController.m
-//  ListTest
+//  MessageListController.m
+//  BachZero
 //
-//  Created by Akop Karapetyan on 7/31/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Created by Akop Karapetyan on 12/7/11.
+//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "AchievementListController.h"
+#import "MessageListController.h"
 
-#import "CFImageCache.h"
 #import "TaskController.h"
 
-#import "XboxLiveParser.h"
+@interface MessageListController (Private)
 
-@interface AchievementListController (Private)
-
--(void)updateGameStats;
 -(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
-@implementation AchievementListController
+@implementation MessageListController
 
 @synthesize tvCell;
 @synthesize fetchedResultsController = __fetchedResultsController;
 
-@synthesize gameUid;
-@synthesize gameTitle;
-@synthesize isGameDirty;
-@synthesize gameLastUpdated;
-
--(void)syncCompleted:(NSNotification *)notification
-{
-    NSLog(@"Got sync completed notification");
-    
-    [self updateGameStats];
-    [self hideRefreshHeaderTableView];
-}
-
 -(id)initWithAccount:(XboxLiveAccount*)account
-         gameTitleId:(NSString*)gameTitleId
 {
-    if (self = [super initWithNibName:@"AchievementList" 
+    if (self = [super initWithNibName:@"GameList" 
                                bundle:nil])
     {
         self.account = account;
-        self.gameUid = gameTitleId;
     }
     
     return self;
@@ -55,109 +36,83 @@
 {
     [__fetchedResultsController release];
     
-    gameTitle = nil;
-    gameUid = nil;
-    gameLastUpdated = nil;
-    
     [super dealloc];
 }
 
--(void)updateGameStats
+-(void)syncCompleted:(NSNotification *)notification
 {
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
-                                                         inManagedObjectContext:managedObjectContext];
+    NSLog(@"Got sync completed notification");
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@", 
-                              self.gameUid];
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    
-    [request setEntity:entityDescription];
-    [request setPredicate:predicate];
-    
-    NSArray *array = [managedObjectContext executeFetchRequest:request 
-                                                         error:nil];
-    
-    NSManagedObject *game = [array lastObject];
-    
-    [request release];
-    
-    if (game)
-    {
-        self.gameTitle = [game valueForKey:@"title"];
-        self.isGameDirty = [[game valueForKey:@"achievesDirty"] boolValue];
-        self.gameLastUpdated = [game valueForKey:@"lastUpdated"];
-    }
+    [self hideRefreshHeaderTableView];
 }
 
--(void)viewDidLoad
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
 {
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(syncCompleted:)
-                                                 name:BACHAchievementsSynced 
+                                                 name:BACHMessagesSynced
                                                object:nil];
     
-    [self updateGameStats];
-    
-    self.title = [NSString localizedStringWithFormat:NSLocalizedString(@"Achievements_f", nil),
-                  gameTitle];
+    self.title = NSLocalizedString(@"MyMessages", nil);
     
 	[_refreshHeaderView refreshLastUpdatedDate];
     
-    if (self.isGameDirty)
+    if ([self.account areMessagesStale])
         [self refreshUsingRefreshHeaderTableView];
 }
 
--(void)viewDidUnload
+- (void)viewDidUnload
 {
     [super viewDidUnload];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:BACHAchievementsSynced
+                                                    name:BACHMessagesSynced
                                                   object:nil];
 }
 
-#pragma mark -
-#pragma mark EGORefreshTableHeaderDelegate Methods
+#pragma mark - EGORefreshTableHeaderDelegate Methods
 
 -(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
 {
-    [[TaskController sharedInstance] synchronizeAchievementsForGame:self.gameUid
-                                                            account:self.account
-                                               managedObjectContext:managedObjectContext];
+    [[TaskController sharedInstance] synchronizeMessagesForAccount:self.account
+                                           managedObjectContext:managedObjectContext];
 }
 
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
-    return [[TaskController sharedInstance] isSynchronizingAchievementsForGame:self.gameUid
-                                                                       account:self.account];
+	return [[TaskController sharedInstance] isSynchronizingMessagesForAccount:self.account];
 }
 
 -(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
 {
-	return self.gameLastUpdated;
+	return self.account.lastMessagesUpdate;
 }
 
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+// Customize the number of sections in the table view.
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [[self.fetchedResultsController sections] count];
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView 
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView 
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     
     if (!cell)
     {
-        [[NSBundle mainBundle] loadNibNamed:@"AchievementCell"
+        [[NSBundle mainBundle] loadNibNamed:@"MessageCell"
                                       owner:self
                                     options:nil];
         cell = [self tvCell];
@@ -169,71 +124,89 @@
     return cell;
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Achievement selected
+    // Message selected
+    
+    /* TODO
+    NSManagedObject *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString *uid = [game valueForKey:@"uid"];
+    
+    AchievementListController *ctlr = [[AchievementListController alloc] initWithAccount:self.account
+                                                                             gameTitleId:uid];
+    
+    [self.navigationController pushViewController:ctlr
+                                         animated:YES];
+    
+    [ctlr release];
+     */
 }
 
--(void)configureCell:(UITableViewCell *)cell 
+- (void)configureCell:(UITableViewCell *)cell 
           atIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    //NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
+    /* TODO
     // Title
     
     UILabel *label = (UILabel*)[cell viewWithTag:2];
     [label setText:[managedObject valueForKey:@"title"]];
     
-    // Description
+    // Last played
     
-    label = (UILabel*)[cell viewWithTag:6];
-    [label setText:[managedObject valueForKey:@"achDescription"]];
-    
-    // Acquired
-    
-    NSString *unlockedText;
-    if ([[managedObject valueForKey:@"isLocked"] boolValue])
-    {
-        unlockedText = NSLocalizedString(@"AchieveLocked", nil);
-    }
-    else
-    {
-        NSDate *acquired = [managedObject valueForKey:@"acquired"];
-        NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
-        
-        [formatter setDateStyle:NSDateFormatterMediumStyle];
-        unlockedText = [NSString localizedStringWithFormat:NSLocalizedString(@"AchieveUnlocked_f", nil), 
-                        [formatter stringFromDate:acquired]];
-    }
+    NSDate *lastPlayed = [managedObject valueForKey:@"lastPlayed"];
+    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
     
     label = (UILabel*)[cell viewWithTag:3];
-    [label setText:unlockedText];
+    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameLastPlayed", nil), 
+                    [formatter stringFromDate:lastPlayed]]];
     
-    // Gamescore
+    // Achievement stats
+    
+    label = (UILabel*)[cell viewWithTag:4];
+    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameAchievementStats", nil), 
+                    [managedObject valueForKey:@"achievesUnlocked"],
+                    [managedObject valueForKey:@"achievesTotal"]]];
+    
+    // Gamescore stats
     
     label = (UILabel*)[cell viewWithTag:5];
-    [label setText:[[managedObject valueForKey:@"points"] stringValue]];
+    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameScoreStats", nil), 
+                    [self.numberFormatter stringFromNumber:[managedObject valueForKey:@"gamerScoreEarned"]],
+                    [self.numberFormatter stringFromNumber:[managedObject valueForKey:@"gamerScoreTotal"]]]];
     
     // Icon
-
-    UIImageView *view = (UIImageView*)[cell viewWithTag:7];
-    UIImage *icon = [[CFImageCache sharedInstance] getCachedFile:[managedObject valueForKey:@"iconUrl"]
-                                                    notifyObject:self
-                                                  notifySelector:@selector(imageLoaded:)];
     
-    [view setImage:icon];
+    UIImageView *view = (UIImageView*)[cell viewWithTag:6];
+    UIImage *boxArt = [[CFImageCache sharedInstance]
+                       getCachedFile:[managedObject valueForKey:@"boxArtUrl"]
+                       notifyObject:self
+                       notifySelector:@selector(imageLoaded:)];
+    
+    CGImageRef imageRef = CGImageCreateWithImageInRect([boxArt CGImage], 
+                                                       CGRectMake(0, 16, 85, 85));
+    UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
+    
+    [view setImage:thumbnail];
     [view setClipsToBounds:YES];
+    
+    CGImageRelease(imageRef);
+     */
 }
 
--(void)imageLoaded:(NSString*)url
+/* TODO
+- (void)imageLoaded:(NSString*)url
 {
     // TODO: this causes a full data reload; not a good idea
     [self.tableView reloadData];
 }
+ */
 
 #pragma mark - Fetched results controller
 
--(NSFetchedResultsController *)fetchedResultsController
+- (NSFetchedResultsController *)fetchedResultsController
 {
     if (__fetchedResultsController != nil)
     {
@@ -242,13 +215,12 @@
     
     // Create the fetch request for the entity.
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"game.uid == %@ AND game.profile.uuid == %@", 
-                              gameUid, self.account.uuid];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"profile.uuid == %@", 
+                              self.account.uuid];
     
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxAchievement" 
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxMessage" 
                                               inManagedObjectContext:managedObjectContext];
-    
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predicate];
     
@@ -256,8 +228,8 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sortIndex" 
-                                                                   ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sent" 
+                                                                   ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -278,17 +250,21 @@
     
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])
+    {
 	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	}
     
     return __fetchedResultsController;
 }    
 
--(void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+#pragma mark - Fetched results controller delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
 }
 
--(void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
 {
     switch(type)
@@ -303,7 +279,7 @@
     }
 }
 
--(void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
@@ -331,7 +307,7 @@
     }
 }
 
--(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
 }

@@ -12,6 +12,7 @@
 @property (nonatomic, retain) NSDictionary *arguments;
 @property (nonatomic, retain) id selectorOwner;
 @property (nonatomic, assign) SEL backgroundSelector;
+@property (nonatomic, assign) BOOL isNetworked;
 
 - (id)initWithIdentifier:(NSString*)identifier
            selectorOwner:(id)selectorOwner
