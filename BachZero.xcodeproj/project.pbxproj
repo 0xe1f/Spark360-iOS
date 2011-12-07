@@ -121,24 +121,24 @@
 		FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BachZero-Prefix.pch"; sourceTree = "<group>"; };
 		FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BachAppDelegate.h; sourceTree = "<group>"; };
 		FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BachAppDelegate.m; sourceTree = "<group>"; };
-		FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XboxLiveAccount.h; path = Classes/XboxLiveAccount.h; sourceTree = "<group>"; };
-		FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XboxLiveAccount.m; path = Classes/XboxLiveAccount.m; sourceTree = "<group>"; };
+		FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveAccount.h; sourceTree = "<group>"; };
+		FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveAccount.m; sourceTree = "<group>"; };
 		FE8CA91A1474586000A5C9EA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		FE8CA91E147459C200A5C9EA /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
-		FE8CA92114745AED00A5C9EA /* AppPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppPreferences.h; path = Classes/AppPreferences.h; sourceTree = "<group>"; };
-		FE8CA92214745AED00A5C9EA /* AppPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppPreferences.m; path = Classes/AppPreferences.m; sourceTree = "<group>"; };
+		FE8CA92114745AED00A5C9EA /* AppPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppPreferences.h; sourceTree = "<group>"; };
+		FE8CA92214745AED00A5C9EA /* AppPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppPreferences.m; sourceTree = "<group>"; };
 		FE8EA2B81468EE02009E26F0 /* GTMNSString+URLArguments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+URLArguments.h"; sourceTree = "<group>"; };
 		FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+URLArguments.m"; sourceTree = "<group>"; };
 		FE8EA2BC1468EE2E009E26F0 /* GTMGarbageCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMGarbageCollection.h; sourceTree = "<group>"; };
 		FE9015DE148E0A5D003004E7 /* GenericListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericListController.h; sourceTree = "<group>"; };
 		FE9015E0148E0A6B003004E7 /* GenericListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericListController.m; sourceTree = "<group>"; };
 		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
-		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewTextFieldCell.h; sourceTree = "<group>"; };
-		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewTextFieldCell.m; sourceTree = "<group>"; };
+		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITableViewTextFieldCell.h; path = ../UITableViewTextFieldCell.h; sourceTree = "<group>"; };
+		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UITableViewTextFieldCell.m; path = ../UITableViewTextFieldCell.m; sourceTree = "<group>"; };
 		FEA47124144FED35009F0CB4 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
-		FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveParser.m; sourceTree = "<group>"; };
+		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; path = XboxLiveParser.h; sourceTree = "<group>"; };
+		FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */ = {isa = PBXFileReference; fileEncoding = 4; path = XboxLiveParser.m; sourceTree = "<group>"; };
 		FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameCell.xib; sourceTree = "<group>"; };
 		FEAC6F2613EA8E8A000D86D1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FEB3E13E13E6404900095480 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
@@ -172,10 +172,10 @@
 		FEC8401E148A2ACA005BC782 /* AchievementListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AchievementListController.h; sourceTree = "<group>"; };
 		FEC8401F148A2EC9005BC782 /* AchievementListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AchievementListController.m; sourceTree = "<group>"; };
 		FEC84021148A3AC1005BC782 /* AchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementCell.xib; sourceTree = "<group>"; };
-		FEC84023148C2F2C005BC782 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskController.h; sourceTree = "<group>"; };
-		FEC84024148C2F37005BC782 /* TaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskController.m; sourceTree = "<group>"; };
+		FEC84023148C2F2C005BC782 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = TaskController.h; sourceTree = "<group>"; };
+		FEC84024148C2F37005BC782 /* TaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; path = TaskController.m; sourceTree = "<group>"; };
 		FEC84026148C3678005BC782 /* TaskControllerOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskControllerOperation.h; sourceTree = "<group>"; };
-		FEC84028148C3693005BC782 /* TaskControllerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskControllerOperation.m; sourceTree = "<group>"; };
+		FEC84028148C3693005BC782 /* TaskControllerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; path = TaskControllerOperation.m; sourceTree = "<group>"; };
 		FEEB8FE81477A3FB00C00CF2 /* ProfileContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileContainer.xib; sourceTree = "<group>"; };
 		FEEB8FEB1477A54000C00CF2 /* ProfileContainerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileContainerController.h; sourceTree = "<group>"; };
 		FEEB8FEC1477A54000C00CF2 /* ProfileContainerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileContainerController.m; sourceTree = "<group>"; };
@@ -246,17 +246,18 @@
 		FE5CAE1613F72980004BC903 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
-				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
 				FE8CA92114745AED00A5C9EA /* AppPreferences.h */,
 				FE8CA92214745AED00A5C9EA /* AppPreferences.m */,
 				FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */,
 				FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */,
-				FE726B471461120100534279 /* Models */,
-				FE610D3713EE938400420372 /* Controllers */,
-				FE9E371413F8EA2300A6EE36 /* UI */,
+				FEC84026148C3678005BC782 /* TaskControllerOperation.h */,
+				FEC84028148C3693005BC782 /* TaskControllerOperation.m */,
+				FEC84023148C2F2C005BC782 /* TaskController.h */,
+				FEC84024148C2F37005BC782 /* TaskController.m */,
+				FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */,
+				FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */,
 			);
-			name = Classes;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		FE610D3713EE938400420372 /* Controllers */ = {
@@ -287,6 +288,7 @@
 			children = (
 			);
 			name = Models;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		FE726B4814611E9C00534279 /* JSON */ = {
@@ -326,11 +328,16 @@
 			children = (
 				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
 				FE5CAE1613F72980004BC903 /* Classes */,
+				FE610D3713EE938400420372 /* Controllers */,
+				FE726B471461120100534279 /* Models */,
+				FE9E371413F8EA2300A6EE36 /* UI */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
 				FEAC6F1113E925A2000D86D1 /* Bach */,
 				FEB3E13B13E6402900095480 /* Caffeine */,
 				FE76A93813E636A9006D6AFC /* Frameworks */,
 				FE76A93613E636A9006D6AFC /* Products */,
+				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
+				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
 				FE76A94713E636A9006D6AFC /* main.m */,
 				FE726B7F1463CD7600534279 /* TODO */,
 			);
@@ -384,17 +391,12 @@
 				FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */,
 			);
 			name = UI;
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		FEAC6F1113E925A2000D86D1 /* Bach */ = {
 			isa = PBXGroup;
 			children = (
-				FEC84026148C3678005BC782 /* TaskControllerOperation.h */,
-				FEC84028148C3693005BC782 /* TaskControllerOperation.m */,
-				FEC84023148C2F2C005BC782 /* TaskController.h */,
-				FEC84024148C2F37005BC782 /* TaskController.m */,
-				FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */,
-				FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */,
 			);
 			name = Bach;
 			sourceTree = "<group>";
