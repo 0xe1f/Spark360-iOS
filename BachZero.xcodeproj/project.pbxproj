@@ -251,12 +251,12 @@
 			children = (
 				FE8CA92114745AED00A5C9EA /* AppPreferences.h */,
 				FE8CA92214745AED00A5C9EA /* AppPreferences.m */,
-				FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */,
-				FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */,
-				FEC84026148C3678005BC782 /* TaskControllerOperation.h */,
-				FEC84028148C3693005BC782 /* TaskControllerOperation.m */,
 				FEC84023148C2F2C005BC782 /* TaskController.h */,
 				FEC84024148C2F37005BC782 /* TaskController.m */,
+				FEC84026148C3678005BC782 /* TaskControllerOperation.h */,
+				FEC84028148C3693005BC782 /* TaskControllerOperation.m */,
+				FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */,
+				FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */,
 				FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */,
 				FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */,
 			);
@@ -268,20 +268,20 @@
 			children = (
 				FEC26EA4146BB25400D31608 /* AccountAddController.h */,
 				FEC26EA5146BB25400D31608 /* AccountAddController.m */,
+				FE726B7C1463CAD200534279 /* AccountEditController.h */,
+				FE726B7D1463CAD200534279 /* AccountEditController.m */,
 				FEC26EA6146BB25400D31608 /* AccountListController.h */,
 				FEC26EA7146BB25400D31608 /* AccountListController.m */,
-				FE9015DE148E0A5D003004E7 /* GenericListController.h */,
-				FE9015E0148E0A6B003004E7 /* GenericListController.m */,
 				FEC8401E148A2ACA005BC782 /* AchievementListController.h */,
 				FEC8401F148A2EC9005BC782 /* AchievementListController.m */,
 				FEC26EA8146BB25400D31608 /* GameListController.h */,
 				FEC26EA9146BB25400D31608 /* GameListController.m */,
-				FE726B7C1463CAD200534279 /* AccountEditController.h */,
-				FE726B7D1463CAD200534279 /* AccountEditController.m */,
-				FEC8400F148A1F6A005BC782 /* ProfileOverviewController.h */,
-				FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */,
+				FE9015DE148E0A5D003004E7 /* GenericListController.h */,
+				FE9015E0148E0A6B003004E7 /* GenericListController.m */,
 				FEA247FB148F5F90003D87C5 /* MessageListController.h */,
 				FEA247FC148F5F90003D87C5 /* MessageListController.m */,
+				FEC8400F148A1F6A005BC782 /* ProfileOverviewController.h */,
+				FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -290,8 +290,7 @@
 			isa = PBXGroup;
 			children = (
 			);
-			name = Models;
-			path = Classes;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		FE726B4814611E9C00534279 /* JSON */ = {
@@ -335,7 +334,6 @@
 				FE726B471461120100534279 /* Models */,
 				FE9E371413F8EA2300A6EE36 /* UI */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
-				FEAC6F1113E925A2000D86D1 /* Bach */,
 				FEB3E13B13E6402900095480 /* Caffeine */,
 				FE76A93813E636A9006D6AFC /* Frameworks */,
 				FE76A93613E636A9006D6AFC /* Products */,
@@ -395,13 +393,6 @@
 			);
 			name = UI;
 			path = Classes;
-			sourceTree = "<group>";
-		};
-		FEAC6F1113E925A2000D86D1 /* Bach */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Bach;
 			sourceTree = "<group>";
 		};
 		FEB3E13B13E6402900095480 /* Caffeine */ = {

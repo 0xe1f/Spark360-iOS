@@ -8,11 +8,13 @@
 
 #import "MessageListController.h"
 
+#import "CFImageCache.h"
 #import "TaskController.h"
 
 @interface MessageListController (Private)
 
 -(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+-(void)imageLoaded:(NSString*)url;
 
 @end
 
@@ -145,24 +147,37 @@
 - (void)configureCell:(UITableViewCell *)cell 
           atIndexPath:(NSIndexPath *)indexPath
 {
-    //NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
-    /* TODO
-    // Title
-    
+    // Excerpt
     UILabel *label = (UILabel*)[cell viewWithTag:2];
-    [label setText:[managedObject valueForKey:@"title"]];
+    [label setText:[managedObject valueForKey:@"excerpt"]];
     
-    // Last played
+    // Sender
+    label = (UILabel*)[cell viewWithTag:3];
+    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"From_f", nil),
+                    [managedObject valueForKey:@"sender"]]];
     
-    NSDate *lastPlayed = [managedObject valueForKey:@"lastPlayed"];
+    // Sent
+    NSDate *sent = [managedObject valueForKey:@"sent"];
     NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     
-    label = (UILabel*)[cell viewWithTag:3];
-    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameLastPlayed", nil), 
-                    [formatter stringFromDate:lastPlayed]]];
+    label = (UILabel*)[cell viewWithTag:4];
+    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"Sent_f", nil), 
+                    [formatter stringFromDate:sent]]];
     
+    // Icon
+    UIImageView *view = (UIImageView*)[cell viewWithTag:6];
+    UIImage *boxArt = [[CFImageCache sharedInstance]
+                       getCachedFile:[managedObject valueForKey:@"senderIconUrl"]
+                       notifyObject:self
+                       notifySelector:@selector(imageLoaded:)];
+    
+    [view setImage:boxArt];
+    [view setClipsToBounds:YES];
+    
+    /* TODO
     // Achievement stats
     
     label = (UILabel*)[cell viewWithTag:4];
@@ -177,32 +192,17 @@
                     [self.numberFormatter stringFromNumber:[managedObject valueForKey:@"gamerScoreEarned"]],
                     [self.numberFormatter stringFromNumber:[managedObject valueForKey:@"gamerScoreTotal"]]]];
     
-    // Icon
-    
-    UIImageView *view = (UIImageView*)[cell viewWithTag:6];
-    UIImage *boxArt = [[CFImageCache sharedInstance]
-                       getCachedFile:[managedObject valueForKey:@"boxArtUrl"]
-                       notifyObject:self
-                       notifySelector:@selector(imageLoaded:)];
-    
-    CGImageRef imageRef = CGImageCreateWithImageInRect([boxArt CGImage], 
-                                                       CGRectMake(0, 16, 85, 85));
-    UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
-    
-    [view setImage:thumbnail];
-    [view setClipsToBounds:YES];
-    
-    CGImageRelease(imageRef);
      */
 }
 
 /* TODO
-- (void)imageLoaded:(NSString*)url
+ */
+
+-(void)imageLoaded:(NSString*)url
 {
     // TODO: this causes a full data reload; not a good idea
     [self.tableView reloadData];
 }
- */
 
 #pragma mark - Fetched results controller
 

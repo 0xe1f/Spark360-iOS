@@ -29,11 +29,13 @@
         <relationship name="profile" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxProfile" syncable="YES"/>
     </entity>
     <entity name="XboxMessage" syncable="YES">
+        <attribute name="excerpt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hasPicture" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="hasText" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="hasVoice" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isDeletable" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isDirty" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="isPicture" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isRead" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="isText" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="isVoice" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="messageText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sender" optional="YES" attributeType="String" syncable="YES"/>
@@ -61,7 +63,7 @@
     <elements>
         <element name="XboxAchievement" positionX="160" positionY="192" width="128" height="210"/>
         <element name="XboxGame" positionX="-162" positionY="201" width="128" height="240"/>
+        <element name="XboxMessage" positionX="160" positionY="192" width="128" height="255"/>
         <element name="XboxProfile" positionX="160" positionY="192" width="128" height="255"/>
-        <element name="XboxMessage" positionX="160" positionY="192" width="128" height="225"/>
     </elements>
 </model>
