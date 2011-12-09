@@ -30,6 +30,7 @@
 	"ErrorCouldNotSaveProfile" = "Could not save profile information";
 	"ErrorCouldNotSaveGameList" = "Could not save game list";
 	"ErrorCouldNotSaveMessageList" = "Could not save message list";
+	"ErrorCouldNotSaveChanges" = "Could not save changes";
 	"ErrorCouldNotCreateAccount" = "Could not create a new account";
 	"ErrorCouldNotEditAccount" = "Could not edit account";
 	"ErrorCouldNotDeleteAccount" = "Could not delete account";
@@ -47,4 +48,5 @@
 	AchieveLocked = "Locked";
 	Sent_f = "Sent %@";
     From_f = "From %@";
+    OnlyGoldCanSendMessages = "Message sending is only available on Gold accounts";
 }

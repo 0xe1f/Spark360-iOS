@@ -19,6 +19,9 @@
 
 -(NSString*)uuid;
 
+-(BOOL)canSendMessages;
+-(void)setCanSendMessages:(BOOL*)canSendMessages;
+
 -(NSString*)screenName;
 -(void)setScreenName:(NSString*)screenName;
 

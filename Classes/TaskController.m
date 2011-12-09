@@ -14,10 +14,13 @@
 NSString* const BACHGamesSynced = @"BachGamesSynced";
 NSString* const BACHAchievementsSynced = @"BachAchievementsSynced";
 NSString* const BACHMessagesSynced = @"BachMessagesSynced";
+NSString* const BACHMessageDeleted = @"BachMessageDeleted";
+NSString* const BACHMessageSent = @"BachMessageSent";
 NSString* const BACHError = @"BachError";
 
 NSString* const BACHNotificationGameTitleId = @"BachNotifGameTitleId";
 NSString* const BACHNotificationAccount = @"BachNotifAccount";
+NSString* const BACHNotificationMessageUid = @"BachNotifMessageUid";
 NSString* const BACHNotificationNSError = @"BachNotifNSError";
 
 @implementation TaskController
@@ -156,6 +159,53 @@ static TaskController *sharedInstance = nil;
     NSString *identifier = [NSString stringWithFormat:@"%@.Messages", 
                             account.uuid];
     return [self isOperationQueuedWithId:identifier];
+}
+
+-(void)deleteMessageWithUid:(NSString*)uid
+                    account:(XboxLiveAccount*)account
+       managedObjectContext:(NSManagedObjectContext*)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.DeleteMessage:%@",
+                            account.uuid, uid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               uid, @"uid",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(deleteMessage:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+}
+
+-(void)sendMessageToRecipients:(NSArray*)recipients
+                          body:(NSString*)body
+                       account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.SendMessage:%@",
+                            account.uuid, [body hash]];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               recipients, @"recipients",
+                               body, @"body",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(sendMessage:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
 }
 
 #pragma mark Singleton stuff

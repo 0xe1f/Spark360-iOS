@@ -48,5 +48,7 @@ typedef enum _XboxLiveParserErrorType
 -(void)synchronizeAchievements:(NSDictionary*)arguments;
 -(void)synchronizeGames:(NSDictionary*)arguments;
 -(void)synchronizeMessages:(NSDictionary*)arguments;
+-(void)deleteMessage:(NSDictionary*)arguments;
+-(void)sendMessage:(NSDictionary*)arguments;
 
 @end

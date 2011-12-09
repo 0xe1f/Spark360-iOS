@@ -69,6 +69,13 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(BOOL)parseMessages:(NSMutableDictionary*)messages
           forAccount:(XboxLiveAccount*)account
                error:(NSError**)error;
+-(BOOL)parseDeleteMessageWithUid:(NSString*)uid
+                      forAccount:(XboxLiveAccount*)account
+                           error:(NSString**)error;
+-(BOOL)parseSendMessageToRecipients:(NSArray*)recipients
+                               body:(NSString*)body
+                         forAccount:(XboxLiveAccount*)account
+                              error:(NSError*)error;
 
 +(NSError*)errorWithCode:(NSInteger)code
                  message:(NSString*)message;
@@ -90,10 +97,18 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                           error:(NSError**)error;
 -(NSDictionary*)retrieveMessagesWithAccount:(XboxLiveAccount*)account
                                       error:(NSError**)error;
+-(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
+                            account:(XboxLiveAccount*)account
+                              error:(NSError**)error;
+-(BOOL)retrieveSendMessageToRecipients:(NSArray*)recipients
+                                  body:(NSString*)body
+                               account:(XboxLiveAccount*)account
+                              error:(NSError**)error;
 
 -(void)writeGames:(NSDictionary*)args;
 -(void)writeAchievements:(NSDictionary*)data;
 -(void)writeMessages:(NSDictionary*)args;
+-(void)writeDeleteMessage:(NSDictionary*)args;
 
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
                            userInfo:(NSDictionary*)userInfo;
@@ -122,6 +137,9 @@ NSString* const URL_GAMERCARD = @"http://gamercard.xbox.com/%@/%@.card";
 NSString* const URL_JSON_PROFILE = @"http://live.xbox.com/Handlers/ShellData.ashx?culture=%@&XBXMChg=%i&XBXNChg=%i&XBXSPChg=%i&XBXChg=%i&leetcallback=jsonp1287728723001";
 NSString* const URL_JSON_GAME_LIST = @"http://live.xbox.com/%@/Activity/Summary";
 NSString* const URL_JSON_MESSAGE_LIST = @"http://live.xbox.com/%@/Messages/GetMessages";
+NSString* const URL_JSON_SEND_MESSAGE = @"https://live.xbox.com/%@/Messages/SendMessage";
+
+NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Delete";
 
 NSString* const REFERER_JSON_PROFILE = @"http://live.xbox.com/%@/MyXbox";
 
@@ -297,6 +315,83 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     [pool release];
 }
 
+-(void)deleteMessage:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *uid = [arguments objectForKey:@"uid"];
+    
+    NSError *error = nil;
+    BOOL deleted = [self retrieveDeleteMessageWithUid:uid
+                                              account:account
+                                                error:&error];
+    
+    self.lastError = error;
+    
+    if (data)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              uid, @"uid",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeDeleteMessage:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHMessageDeleted
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            uid, BACHNotificationMessageUid,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)sendMessage:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSArray *recipients = [arguments objectForKey:@"recipients"];
+    NSString *body = [arguments objectForKey:@"body"];
+    
+    NSError *error = nil;
+    BOOL sent = [self retrieveSendMessageToRecipients:recipients
+                                                 body:body
+                                              account:account
+                                                error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHMessageSent
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
                            userInfo:(NSDictionary*)userInfo
 {
@@ -448,6 +543,93 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     [self saveSessionForAccount:account];
     
     return dict;
+}
+
+-(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
+                            account:(XboxLiveAccount*)account
+                              error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return NO;
+        }
+    }
+    
+    if (![self parseDeleteMessageWithUid:uid
+                              forAccount:account
+                                   error:NULL])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return NO;
+        }
+        
+        if (![self parseDeleteMessageWithUid:uid
+                                  forAccount:account
+                                       error:error])
+        {
+            return NO;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return YES;
+}
+
+-(BOOL)retrieveSendMessageToRecipients:(NSArray*)recipients
+                                  body:(NSString*)body
+                               account:(XboxLiveAccount*)account
+                              error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return NO;
+        }
+    }
+    
+    if (![self parseSendMessageToRecipient:recipients
+                                      body:body
+                                forAccount:account
+                                     error:NULL])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return NO;
+        }
+        
+        if (![self parseSendMessageToRecipients:recipients
+                                           body:body
+                                     forAccount:account
+                                          error:error])
+        {
+            return NO;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return YES;
 }
 
 -(NSDictionary*)retrieveProfileWithAccount:(XboxLiveAccount*)account
@@ -940,6 +1122,56 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
           newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
 }
 
+-(void)writeDeleteMessage:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *uid = [args objectForKey:@"uid"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    
+    NSManagedObject *profile = [self profileForAccount:account];
+    if (!profile)
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorProfileNotFound"];
+        
+        return;
+    }
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
+                              [inMessage objectForKey:@"uid"], profile];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    NSManagedObject *message = [array lastObject];
+    if (message)
+    {
+        [self.context deleteObject:staleObj];
+        if (![self.context save:NULL])
+        {
+            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                           localizationKey:@"ErrorCouldNotSaveChanges"];
+            
+            return;
+        }
+    }
+    
+    account.lastMessagesUpdate = [NSDate date];
+    [account save];
+    
+    NSLog(@"writeDeleteMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+}
+
 #pragma mark - parse*
 
 -(BOOL)parseGames:(NSMutableDictionary*)games
@@ -1275,10 +1507,104 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
         }
     }
     
-    NSLog(@"parseSynchronizeMessages: %.04f", 
+    NSLog(@"parseMessages: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
+}
+
+-(BOOL)parseDeleteMessageWithUid:(NSString*)uid
+                      forAccount:(XboxLiveAccount*)account
+                           error:(NSString**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_MESSAGES];
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_DELETE_MESSAGE, LOCALE];
+    NSDictionary *inputs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                       vtoken, @"__RequestVerificationToken",
+                                                       uid, @"msgID",
+                                                       nil];
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return NO;
+    
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                          error:error];
+    
+    NSLog(@"parseDeleteMessageWithUid: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return data != nil;
+}
+
+-(BOOL)parseSendMessageToRecipients:(NSArray*)recipients
+                               body:(NSString*)body
+                         forAccount:(XboxLiveAccount*)account
+                              error:(NSError*)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    if (!account.canSendMessages)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPGeneralError
+                                   localizationKey:@"OnlyGoldCanSendMessages"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_MESSAGES];
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_SEND_MESSAGE, LOCALE];
+    NSDictionary *inputs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                       vtoken, @"__RequestVerificationToken",
+                                                       body, @"message",
+                                                       recipients, @"recipients",
+                                                       nil];
+asdkashjd akjshd klasjdh : multiple recipients!!!
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return NO;
+    
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                          error:error];
+    
+    NSLog(@"parseSendMessageToRecipients: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return data != nil;
 }
 
 -(BOOL)parseSynchronizeProfile:(NSMutableDictionary*)profile

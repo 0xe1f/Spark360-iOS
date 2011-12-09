@@ -23,6 +23,8 @@
 @implementation XboxLiveAccount
 {
     NSString *_uuid;
+    BOOL _canSendMessages;
+    BOOL _canSendMessagesDirty;
     NSDate *_lastGamesUpdate;
     BOOL _lastGamesUpdateDirty;
     NSDate *_lastMessagesUpdate;
@@ -41,6 +43,7 @@ NSString * const KeychainPassword = @"com.akop.bach";
 
 NSString * const StalePeriodKey = @"StalePeriod";
 NSString * const ScreenNameKey = @"ScreenName";
+NSString * const CanSendMessagesKey = @"CanSendMessages";
 NSString * const GameLastUpdatedKey = @"GamesLastUpdated";
 NSString * const MessagesLastUpdatedKey = @"MessagesLastUpdated";
 NSString * const CookiesKey = @"Cookies";
@@ -63,6 +66,7 @@ NSString * const CookiesKey = @"Cookies";
         self.lastMessagesUpdate = [prefs objectForKey:[self keyForPreference:MessagesLastUpdatedKey]];
         self.stalePeriodInSeconds = [prefs objectForKey:[self keyForPreference:StalePeriodKey]];
         self.screenName = [prefs objectForKey:[self keyForPreference:ScreenNameKey]];
+        self.canSendMessages = [[prefs objectForKey:[self keyForPreference:CanSendMessagesKey]] boolValue];
         
         // Load Secure properties
         KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
@@ -93,6 +97,7 @@ NSString * const CookiesKey = @"Cookies";
     [prefs removeObjectForKey:[self keyForPreference:MessagesLastUpdatedKey]];
     [prefs removeObjectForKey:[self keyForPreference:StalePeriodKey]];
     [prefs removeObjectForKey:[self keyForPreference:ScreenNameKey]];
+    [prefs removeObjectForKey:[self keyForPreference:CanSendMessagesKey]];
     
     KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
                                                                             serviceName:KeychainPassword
@@ -111,6 +116,12 @@ NSString * const CookiesKey = @"Cookies";
         {
             [prefs setObject:self.lastGamesUpdate 
                       forKey:[self keyForPreference:GameLastUpdatedKey]];
+        }
+        
+        if (_canSendMessagesDirty)
+        {
+            [prefs setObject:[NSNumber numberWithBool:self.canSendMessages]
+                      forKey:[self keyForPreference:CanSendMessagesKey]];
         }
         
         if (_lastMessagesUpdateDirty)
@@ -153,6 +164,18 @@ NSString * const CookiesKey = @"Cookies";
     _emailAddressDirty = NO;
     _passwordDirty = NO;
     _screenNameDirty = NO;
+    _canSendMessagesDirty = NO;
+}
+
+-(BOOL)canSendMessages
+{
+    return _canSendMessages;
+}
+
+-(void)setCanSendMessages:(BOOL*)canSendMessages
+{
+    _canSendMessages = canSendMessages;
+    _canSendMessagesDirty = YES;
 }
 
 -(NSDate*)lastGamesUpdate

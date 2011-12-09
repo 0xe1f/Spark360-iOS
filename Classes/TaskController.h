@@ -12,10 +12,13 @@
 extern NSString* const BACHGamesSynced;
 extern NSString* const BACHAchievementsSynced;
 extern NSString* const BACHMessagesSynced;
+extern NSString* const BACHMessageDeleted;
+extern NSString* const BACHMessageSent;
 extern NSString* const BACHError;
 
 extern NSString* const BACHNotificationGameTitleId;
 extern NSString* const BACHNotificationAccount;
+extern NSString* const BACHNotificationMessageUid;
 extern NSString* const BACHNotificationNSError;
 
 @interface TaskController : NSObject
@@ -41,5 +44,13 @@ extern NSString* const BACHNotificationNSError;
 -(void)synchronizeMessagesForAccount:(XboxLiveAccount*)account
                 managedObjectContext:(NSManagedObjectContext*)moc;
 -(BOOL)isSynchronizingMessagesForAccount:(XboxLiveAccount*)account;
+
+-(void)deleteMessageWithUid:(NSString*)uid
+                    account:(XboxLiveAccount*)account
+       managedObjectContext:(NSManagedObjectContext*)moc;
+
+-(void)sendMessageToRecipients:(NSArray*)recipients
+                          body:(NSString*)body
+                       account:(XboxLiveAccount*)account;
 
 @end
