@@ -30,6 +30,7 @@
 	"ErrorCouldNotSaveProfile" = "Could not save profile information";
 	"ErrorCouldNotSaveGameList" = "Could not save game list";
 	"ErrorCouldNotSaveMessageList" = "Could not save message list";
+	"ErrorCouldNotSaveFriendsList" = "Could not save friends list";
 	"ErrorCouldNotSaveChanges" = "Could not save changes";
 	"ErrorCouldNotCreateAccount" = "Could not create a new account";
 	"ErrorCouldNotEditAccount" = "Could not edit account";

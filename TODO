@@ -1,5 +1,3 @@
 * Add network spinner when TaskControllerOp is in progress
-* Add listeners for NSError's
-* Migrate GameController to GenericListController
-* Stop creation of new Account objects when one is pressed in Accounts list - 
-  reuse existing one
+* Delete database contents when an account is deleted 
+* Sending to multiple recipients is broken

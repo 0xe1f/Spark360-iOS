@@ -14,6 +14,8 @@
 NSString* const BACHGamesSynced = @"BachGamesSynced";
 NSString* const BACHAchievementsSynced = @"BachAchievementsSynced";
 NSString* const BACHMessagesSynced = @"BachMessagesSynced";
+NSString* const BACHFriendsSynced = @"BachFriendsSynced";
+
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
 NSString* const BACHError = @"BachError";
@@ -160,6 +162,35 @@ static TaskController *sharedInstance = nil;
 -(BOOL)isSynchronizingMessagesForAccount:(XboxLiveAccount*)account
 {
     NSString *identifier = [NSString stringWithFormat:@"%@.Messages", 
+                            account.uuid];
+    return [self isOperationQueuedWithId:identifier];
+}
+
+-(void)synchronizeFriendsForAccount:(XboxLiveAccount*)account
+               managedObjectContext:(NSManagedObjectContext*)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Friends",
+                            account.uuid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(synchronizeFriends:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(BOOL)isSynchronizingFriendsForAccount:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Friends", 
                             account.uuid];
     return [self isOperationQueuedWithId:identifier];
 }

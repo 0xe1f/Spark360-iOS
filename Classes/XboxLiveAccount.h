@@ -31,6 +31,9 @@
 -(NSDate*)lastMessagesUpdate;
 -(void)setLastMessagesUpdate:(NSDate*)lastUpdate;
 
+-(NSDate*)lastFriendsUpdate;
+-(void)setLastFriendsUpdate:(NSDate*)lastUpdate;
+
 -(NSNumber*)stalePeriodInSeconds;
 -(void)setStalePeriodInSeconds:(NSNumber*)browseRefreshPeriodInSeconds;
 
@@ -44,5 +47,6 @@
 
 -(BOOL)areGamesStale;
 -(BOOL)areMessagesStale;
+-(BOOL)areFriendsStale;
 
 @end

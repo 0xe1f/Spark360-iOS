@@ -29,6 +29,8 @@
     BOOL _lastGamesUpdateDirty;
     NSDate *_lastMessagesUpdate;
     BOOL _lastMessagesUpdateDirty;
+    NSDate *_lastFriendsUpdate;
+    BOOL _lastFriendsUpdateDirty;
     NSNumber *_stalePeriodInSeconds;
     BOOL _browseRefreshPeriodInSecondsDirty;
     NSString *_emailAddress;
@@ -46,9 +48,10 @@ NSString * const ScreenNameKey = @"ScreenName";
 NSString * const CanSendMessagesKey = @"CanSendMessages";
 NSString * const GameLastUpdatedKey = @"GamesLastUpdated";
 NSString * const MessagesLastUpdatedKey = @"MessagesLastUpdated";
+NSString * const FriendsLastUpdatedKey = @"FriendsLastUpdated";
 NSString * const CookiesKey = @"Cookies";
 
-#define DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS (60*5)
+#define DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS (60*30)
 
 -(NSString*)uuid
 {
@@ -64,6 +67,7 @@ NSString * const CookiesKey = @"Cookies";
         // Load pref-based properties
         self.lastGamesUpdate = [prefs objectForKey:[self keyForPreference:GameLastUpdatedKey]];
         self.lastMessagesUpdate = [prefs objectForKey:[self keyForPreference:MessagesLastUpdatedKey]];
+        self.lastFriendsUpdate = [prefs objectForKey:[self keyForPreference:FriendsLastUpdatedKey]];
         self.stalePeriodInSeconds = [prefs objectForKey:[self keyForPreference:StalePeriodKey]];
         self.screenName = [prefs objectForKey:[self keyForPreference:ScreenNameKey]];
         self.canSendMessages = [[prefs objectForKey:[self keyForPreference:CanSendMessagesKey]] boolValue];
@@ -86,6 +90,8 @@ NSString * const CookiesKey = @"Cookies";
             self.lastGamesUpdate = [NSDate distantPast];
         if (!self.lastMessagesUpdate)
             self.lastMessagesUpdate = [NSDate distantPast];
+        if (!self.lastFriendsUpdate)
+            self.lastFriendsUpdate = [NSDate distantPast];
     }
 }
 
@@ -95,6 +101,7 @@ NSString * const CookiesKey = @"Cookies";
     
     [prefs removeObjectForKey:[self keyForPreference:GameLastUpdatedKey]];
     [prefs removeObjectForKey:[self keyForPreference:MessagesLastUpdatedKey]];
+    [prefs removeObjectForKey:[self keyForPreference:FriendsLastUpdatedKey]];
     [prefs removeObjectForKey:[self keyForPreference:StalePeriodKey]];
     [prefs removeObjectForKey:[self keyForPreference:ScreenNameKey]];
     [prefs removeObjectForKey:[self keyForPreference:CanSendMessagesKey]];
@@ -118,16 +125,22 @@ NSString * const CookiesKey = @"Cookies";
                       forKey:[self keyForPreference:GameLastUpdatedKey]];
         }
         
-        if (_canSendMessagesDirty)
-        {
-            [prefs setObject:[NSNumber numberWithBool:self.canSendMessages]
-                      forKey:[self keyForPreference:CanSendMessagesKey]];
-        }
-        
         if (_lastMessagesUpdateDirty)
         {
             [prefs setObject:self.lastMessagesUpdate 
                       forKey:[self keyForPreference:MessagesLastUpdatedKey]];
+        }
+        
+        if (_lastFriendsUpdateDirty)
+        {
+            [prefs setObject:self.lastFriendsUpdate 
+                      forKey:[self keyForPreference:FriendsLastUpdatedKey]];
+        }
+        
+        if (_canSendMessagesDirty)
+        {
+            [prefs setObject:[NSNumber numberWithBool:self.canSendMessages]
+                      forKey:[self keyForPreference:CanSendMessagesKey]];
         }
         
         if (_browseRefreshPeriodInSecondsDirty)
@@ -160,6 +173,7 @@ NSString * const CookiesKey = @"Cookies";
 {
     _lastGamesUpdateDirty = NO;
     _lastMessagesUpdateDirty = NO;
+    _lastFriendsUpdateDirty = NO;
     _browseRefreshPeriodInSecondsDirty = NO;
     _emailAddressDirty = NO;
     _passwordDirty = NO;
@@ -204,6 +218,20 @@ NSString * const CookiesKey = @"Cookies";
     
     _lastMessagesUpdate = lastUpdate;
     _lastMessagesUpdateDirty = YES;
+}
+
+-(NSDate*)lastFriendsUpdate
+{
+    return _lastFriendsUpdate;
+}
+
+-(void)setLastFriendsUpdate:(NSDate *)lastUpdate
+{
+    [lastUpdate retain];
+    [_lastFriendsUpdate release];
+    
+    _lastFriendsUpdate = lastUpdate;
+    _lastFriendsUpdateDirty = YES;
 }
 
 -(NSString*)screenName
@@ -290,6 +318,11 @@ NSString * const CookiesKey = @"Cookies";
     return [self isDataStale:self.lastMessagesUpdate];
 }
 
+-(BOOL)areFriendsStale
+{
+    return [self isDataStale:self.lastFriendsUpdate];
+}
+
 -(BOOL)isEqual:(id)object
 {
     if (![object isKindOfClass:[XboxLiveAccount class]])
@@ -352,6 +385,7 @@ NSString * const CookiesKey = @"Cookies";
     
     self.lastGamesUpdate = nil;
     self.lastMessagesUpdate = nil;
+    self.lastFriendsUpdate = nil;
     self.stalePeriodInSeconds = nil;
     self.emailAddress = nil;
     self.password = nil;

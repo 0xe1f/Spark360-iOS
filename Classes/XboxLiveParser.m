@@ -23,6 +23,11 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 
 @interface XboxLiveParser (Private)
 
+-(void)parseFriendSection:(NSMutableArray*)friendsList
+          incomingFriends:(NSArray*)inFriends
+               isIncoming:(BOOL)isIncoming
+               isOutgoing:(BOOL)isOutgoing;
+
 - (NSString*)loadWithMethod:(NSString*)method
                         url:(NSString*)url 
                      fields:(NSDictionary*)fields
@@ -48,6 +53,8 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 +(NSDictionary*)jsonObjectFromPage:(NSString*)json
                              error:(NSError**)error;
 +(NSNumber*)getStarRatingFromPage:(NSString*)html;
+-(NSString*)getBoxArtForTitleId:(NSNumber*)titleId
+                    largeBoxArt:(BOOL)largeBoxArt;
 
 -(void)saveSessionForAccount:(XboxLiveAccount*)account;
 -(void)saveSessionForEmailAddress:(NSString*)emailAddress;
@@ -69,6 +76,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(BOOL)parseMessages:(NSMutableDictionary*)messages
           forAccount:(XboxLiveAccount*)account
                error:(NSError**)error;
+-(BOOL)parseFriends:(NSMutableDictionary*)friends
+         forAccount:(XboxLiveAccount*)account
+              error:(NSError**)error;
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
                            error:(NSError**)error;
@@ -97,6 +107,8 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                           error:(NSError**)error;
 -(NSDictionary*)retrieveMessagesWithAccount:(XboxLiveAccount*)account
                                       error:(NSError**)error;
+-(NSDictionary*)retrieveFriendsWithAccount:(XboxLiveAccount*)account
+                                     error:(NSError**)error;
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
                             account:(XboxLiveAccount*)account
                               error:(NSError**)error;
@@ -108,6 +120,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(void)writeGames:(NSDictionary*)args;
 -(void)writeAchievements:(NSDictionary*)data;
 -(void)writeMessages:(NSDictionary*)args;
+-(void)writeFriends:(NSDictionary*)args;
 -(void)writeDeleteMessage:(NSDictionary*)args;
 
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
@@ -131,12 +144,14 @@ NSString* const URL_LOGIN = @"http://login.live.com/login.srf?wa=wsignin1.0&wrep
 NSString* const URL_LOGIN_MSN = @"https://msnia.login.live.com/ppsecure/post.srf?wa=wsignin1.0&wreply=%@";
 NSString* const URL_VTOKEN = @"http://live.xbox.com/%@/Home";
 NSString* const URL_VTOKEN_MESSAGES = @"http://live.xbox.com/%@/Messages?xr=socialtwistnav";
+NSString* const URL_VTOKEN_FRIENDS = @"http://live.xbox.com/%@/Friends?xr=shellnav";
 
 NSString* const URL_GAMERCARD = @"http://gamercard.xbox.com/%@/%@.card";
 
 NSString* const URL_JSON_PROFILE = @"http://live.xbox.com/Handlers/ShellData.ashx?culture=%@&XBXMChg=%i&XBXNChg=%i&XBXSPChg=%i&XBXChg=%i&leetcallback=jsonp1287728723001";
 NSString* const URL_JSON_GAME_LIST = @"http://live.xbox.com/%@/Activity/Summary";
 NSString* const URL_JSON_MESSAGE_LIST = @"http://live.xbox.com/%@/Messages/GetMessages";
+NSString* const URL_JSON_FRIEND_LIST = @"http://live.xbox.com/%@/Friends/List";
 NSString* const URL_JSON_SEND_MESSAGE = @"https://live.xbox.com/%@/Messages/SendMessage";
 
 NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Delete";
@@ -171,6 +186,8 @@ NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*
 NSString* const PATTERN_ACH_JSON = @"loadActivityDetailsView\\((.*)\\);\\s*\\}\\);";
 
 NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/HiddenAchievement.png";
+
+NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@boxart.jpg";
 
 -(id)initWithManagedObjectContext:(NSManagedObjectContext*)context
 {
@@ -301,6 +318,47 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     if (!self.lastError)
     {
         [self postNotificationOnMainThread:BACHMessagesSynced
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)synchronizeFriends:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveFriendsWithAccount:account
+                                                    error:&error];
+    
+    self.lastError = error;
+    
+    if (data)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              data, @"data",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeFriends:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHFriendsSynced
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
                                             nil]];
@@ -535,6 +593,49 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
         if (![self parseMessages:dict
                       forAccount:account
                            error:error])
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return dict;
+}
+
+-(NSDictionary*)retrieveFriendsWithAccount:(XboxLiveAccount*)account
+                                     error:(NSError**)error
+{
+    NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    if (![self parseFriends:dict
+                 forAccount:account
+                      error:NULL])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (![self parseFriends:dict
+                     forAccount:account
+                          error:error])
         {
             return nil;
         }
@@ -1118,7 +1219,108 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     account.lastMessagesUpdate = [NSDate date];
     [account save];
     
-    NSLog(@"writeMessageData: (%i new, %i existing) %.04fs", 
+    NSLog(@"writeMessages: (%i new, %i existing) %.04fs", 
+          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeFriends:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSDictionary *data = [args objectForKey:@"data"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    
+    NSManagedObject *profile = [self profileForAccount:account];
+    if (!profile)
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorProfileNotFound"];
+        
+        return;
+    }
+    
+    NSDate *lastUpdated = [NSDate date];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
+                                                         inManagedObjectContext:self.context];
+    
+    int newItems = 0;
+    int existingItems = 0;
+    
+    NSArray *inFriends = [data objectForKey:@"friends"];
+    
+    for (NSDictionary *inFriend in inFriends)
+    {
+        NSManagedObject *friend;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
+                                  [inFriend objectForKey:@"uid"], profile];
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        
+        [request setEntity:entityDescription];
+        [request setPredicate:predicate];
+        
+        NSArray *array = [self.context executeFetchRequest:request 
+                                                     error:nil];
+        
+        [request release];
+        
+        if (!(friend = [array lastObject]))
+        {
+            newItems++;
+            friend = [NSEntityDescription insertNewObjectForEntityForName:@"XboxFriend"
+                                                   inManagedObjectContext:self.context];
+            
+            // These will not change, so just set them up the first time
+            
+            [friend setValue:profile forKey:@"profile"];
+            [friend setValue:[inFriend objectForKey:@"uid"] forKey:@"uid"];
+            /*
+            [friend setValue:[inMessage objectForKey:@"sender"] forKey:@"sender"];
+            */
+        }
+        else
+        {
+            existingItems++;
+        }
+        
+        // We now have an object (new or existing)
+        // Handle the rest of the data
+        
+        [friend setValue:lastUpdated forKey:@"lastUpdated"];
+    }
+    
+    // Find missing objects
+    
+    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND profile == %@", 
+                                   lastUpdated, profile];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    [request setPredicate:stalePredicate];
+    
+    NSArray *staleObjs = [self.context executeFetchRequest:request 
+                                                     error:NULL];
+    [request release];
+    
+    // Delete missing objects
+    
+    for (NSManagedObject *staleObj in staleObjs)
+        [self.context deleteObject:staleObj];
+    
+    // Save
+    
+    if (![self.context save:NULL])
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorCouldNotSaveFriendsList"];
+        
+        return;
+    }
+    
+    account.lastFriendsUpdate = [NSDate date];
+    [account save];
+    
+    NSLog(@"writeFriends: (%i new, %i existing) %.04fs", 
           newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
 }
 
@@ -1507,6 +1709,109 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     }
     
     NSLog(@"parseMessages: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
+}
+
+-(void)parseFriendSection:(NSMutableArray*)friendsList
+          incomingFriends:(NSArray*)inFriends
+               isIncoming:(BOOL)isIncoming
+               isOutgoing:(BOOL)isOutgoing
+{
+    for (NSDictionary *inFriend in inFriends)
+    {
+        NSMutableDictionary *friend = [[[NSMutableDictionary alloc] init] autorelease];
+        [friendsList addObject:friend];
+        
+        [friend setValue:[inFriend objectForKey:@"GamerTag"] // uid
+                  forKey:@"uid"];
+        [friend setValue:[inFriend objectForKey:@"GamerTag"] // screenName
+                  forKey:@"screenName"];
+        [friend setValue:[inFriend objectForKey:@"IsOnline"] // isOnline
+                  forKey:@"isOnline"];
+        [friend setValue:[inFriend objectForKey:@"LargeGamerTileUrl"] // iconUrl
+                  forKey:@"iconUrl"];
+        [friend setValue:[inFriend objectForKey:@"GamerScore"] // gamerscore
+                  forKey:@"gamerscore"];
+        [friend setValue:[XboxLiveParser ticksFromJSONString:[inFriend objectForKey:@"LastSeen"]] // lastSeen
+                  forKey:@"lastSeen"];
+        [friend setValue:[inFriend objectForKey:@"Presence"] // activityText
+                  forKey:@"activityText"];
+        
+        NSDictionary *titleInfo = [inFriend objectForKey:@"TitleInfo"];
+        if (titleInfo)
+        {
+            [friend setValue:[titleInfo objectForKey:@"Id"] // activityTitleId
+                      forKey:@"activityTitleId"];
+            [friend setValue:[titleInfo objectForKey:@"Name"] // activityTitleName
+                      forKey:@"activityTitleName"];
+            [friend setValue:[self getBoxArtForTitleId:[titleInfo objectForKey:@"Id"]  // activityTitleIconUrl
+                                           largeBoxArt:false]
+                      forKey:@"activityTitleIconUrl"];
+        }
+        
+        [friend setValue:[NSNumber numberWithBool:isIncoming] // isIncoming
+                  forKey:@"isIncoming"];
+        [friend setValue:[NSNumber numberWithBool:isOutgoing] // isOutgoing
+                  forKey:@"isOutgoing"];
+    }
+}
+
+-(BOOL)parseFriends:(NSMutableDictionary *)friends 
+         forAccount:(XboxLiveAccount *)account 
+              error:(NSError **)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_FRIENDS];
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_FRIEND_LIST, LOCALE];
+    NSDictionary *inputs = [NSDictionary dictionaryWithObject:vtoken 
+                                                       forKey:@"__RequestVerificationToken"];
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return NO;
+    
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                          error:error];
+    
+    if (!data)
+        return NO;
+    
+    NSMutableArray *newFriends = [[[NSMutableArray alloc] init] autorelease];
+    [friends setObject:newFriends 
+                forKey:@"friends"];
+    
+    [self parseFriendSection:newFriends
+             incomingFriends:[data objectForKey:@"Friends"]
+                  isIncoming:NO
+                  isOutgoing:NO];
+    [self parseFriendSection:newFriends
+             incomingFriends:[data objectForKey:@"Incoming"]
+                  isIncoming:YES
+                  isOutgoing:NO];
+    [self parseFriendSection:newFriends
+             incomingFriends:[data objectForKey:@"Outgoing"]
+                  isIncoming:NO
+                  isOutgoing:YES];
+    
+    NSLog(@"parseFriends: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
@@ -1924,6 +2229,16 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
 }
 
 #pragma mark Helpers
+
+-(NSString*)getBoxArtForTitleId:(NSNumber*)titleId
+                    largeBoxArt:(BOOL)largeBoxArt
+{
+    if (!titleId)
+        return nil;
+    
+    return [NSString stringWithFormat:BOXART_TEMPLATE, 
+            [titleId intValue], LOCALE, largeBoxArt ? "large" : "small"];
+}
 
 +(NSNumber*)getStarRatingFromPage:(NSString*)html
 {

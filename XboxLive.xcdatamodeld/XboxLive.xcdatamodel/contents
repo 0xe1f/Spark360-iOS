@@ -13,6 +13,28 @@
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="game" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxGame" syncable="YES"/>
     </entity>
+    <entity name="XboxFriend" syncable="YES">
+        <attribute name="activityText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="activityTitleIconUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="activityTitleId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="activityTitleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bio" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gamerscore" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="iconUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isFavorite" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isIncoming" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isOnline" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isOutgoing" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lastSeen" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="motto" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rep" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="screenName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="profile" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxProfile" syncable="YES"/>
+    </entity>
     <entity name="XboxGame" syncable="YES">
         <attribute name="achievesDirty" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="achievesTotal" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -65,5 +87,6 @@
         <element name="XboxGame" positionX="-162" positionY="201" width="128" height="240"/>
         <element name="XboxMessage" positionX="160" positionY="192" width="128" height="255"/>
         <element name="XboxProfile" positionX="160" positionY="192" width="128" height="255"/>
+        <element name="XboxFriend" positionX="160" positionY="192" width="128" height="345"/>
     </elements>
 </model>
