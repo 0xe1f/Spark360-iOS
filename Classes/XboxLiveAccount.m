@@ -172,7 +172,7 @@ NSString * const CookiesKey = @"Cookies";
     return _canSendMessages;
 }
 
--(void)setCanSendMessages:(BOOL*)canSendMessages
+-(void)setCanSendMessages:(BOOL)canSendMessages
 {
     _canSendMessages = canSendMessages;
     _canSendMessagesDirty = YES;

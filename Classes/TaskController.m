@@ -94,6 +94,7 @@ static TaskController *sharedInstance = nil;
     [parser release];
     
     [self addOperation:op];
+    [op release];
 }
 
 -(BOOL)isSynchronizingGamesForAccount:(XboxLiveAccount*)account
@@ -123,6 +124,7 @@ static TaskController *sharedInstance = nil;
     [parser release];
     
     [self addOperation:op];
+    [op release];
 }
 
 -(BOOL)isSynchronizingAchievementsForGame:(NSString*)gameUid
@@ -152,6 +154,7 @@ static TaskController *sharedInstance = nil;
     [parser release];
     
     [self addOperation:op];
+    [op release];
 }
 
 -(BOOL)isSynchronizingMessagesForAccount:(XboxLiveAccount*)account
@@ -182,6 +185,7 @@ static TaskController *sharedInstance = nil;
     [parser release];
     
     [self addOperation:op];
+    [op release];
 }
 
 -(void)sendMessageToRecipients:(NSArray*)recipients
@@ -206,6 +210,7 @@ static TaskController *sharedInstance = nil;
     [parser release];
     
     [self addOperation:op];
+    [op release];
 }
 
 #pragma mark Singleton stuff

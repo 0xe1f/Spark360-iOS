@@ -71,11 +71,11 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                error:(NSError**)error;
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
-                           error:(NSString**)error;
+                           error:(NSError**)error;
 -(BOOL)parseSendMessageToRecipients:(NSArray*)recipients
                                body:(NSString*)body
                          forAccount:(XboxLiveAccount*)account
-                              error:(NSError*)error;
+                              error:(NSError**)error;
 
 +(NSError*)errorWithCode:(NSInteger)code
                  message:(NSString*)message;
@@ -207,7 +207,7 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
         NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
                               account, @"account",
                               data, @"data",
-                              nil];
+                               nil];
         
         [self performSelectorOnMainThread:@selector(writeGames:) 
                                withObject:args
@@ -329,7 +329,7 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     
     self.lastError = error;
     
-    if (data)
+    if (deleted)
     {
         NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
                               account, @"account",
@@ -368,10 +368,10 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     NSString *body = [arguments objectForKey:@"body"];
     
     NSError *error = nil;
-    BOOL sent = [self retrieveSendMessageToRecipients:recipients
-                                                 body:body
-                                              account:account
-                                                error:&error];
+    [self retrieveSendMessageToRecipients:recipients
+                                     body:body
+                                  account:account
+                                    error:&error];
     
     self.lastError = error;
     
@@ -605,10 +605,10 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
         }
     }
     
-    if (![self parseSendMessageToRecipient:recipients
-                                      body:body
-                                forAccount:account
-                                     error:NULL])
+    if (![self parseSendMessageToRecipients:recipients
+                                       body:body
+                                 forAccount:account
+                                      error:NULL])
     {
         // Account parsing failed. Try re-authenticating
         
@@ -1141,7 +1141,7 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
                                                          inManagedObjectContext:self.context];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
-                              [inMessage objectForKey:@"uid"], profile];
+                              uid, profile];
     
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     
@@ -1156,7 +1156,7 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
     NSManagedObject *message = [array lastObject];
     if (message)
     {
-        [self.context deleteObject:staleObj];
+        [self.context deleteObject:message];
         if (![self.context save:NULL])
         {
             self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
@@ -1166,7 +1166,6 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
         }
     }
     
-    account.lastMessagesUpdate = [NSDate date];
     [account save];
     
     NSLog(@"writeDeleteMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
@@ -1515,7 +1514,7 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
-                           error:(NSString**)error
+                           error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -1557,7 +1556,7 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
 -(BOOL)parseSendMessageToRecipients:(NSArray*)recipients
                                body:(NSString*)body
                          forAccount:(XboxLiveAccount*)account
-                              error:(NSError*)error
+                              error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -1590,7 +1589,7 @@ NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/
                                                        body, @"message",
                                                        recipients, @"recipients",
                                                        nil];
-asdkashjd akjshd klasjdh : multiple recipients!!!
+//TODO asdkashjd akjshd klasjdh : multiple recipients!!!
     NSString *page = [self loadWithPOST:url
                                  fields:inputs
                                  useXhr:YES
@@ -1601,6 +1600,15 @@ asdkashjd akjshd klasjdh : multiple recipients!!!
     
     NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
                                                           error:error];
+    
+    if (!data)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"MessageCouldNotBeSent"];
+        }
+    }
     
     NSLog(@"parseSendMessageToRecipients: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
@@ -1944,10 +1952,7 @@ asdkashjd akjshd klasjdh : multiple recipients!!!
 +(NSDictionary*)jsonObjectFromPage:(NSString*)json
                              error:(NSError**)error
 {
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
-    NSDictionary *dict = [parser objectWithString:json 
-                                            error:nil];
-    [parser release];
+    NSDictionary *dict = [json JSONValue];
     
     if (!dict)
     {
@@ -2062,7 +2067,7 @@ asdkashjd akjshd klasjdh : multiple recipients!!!
 +(NSMutableDictionary*)getInputs:(NSString*)response
                      namePattern:(NSRegularExpression*)namePattern
 {
-    NSMutableDictionary *inputs = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *inputs = [[[NSMutableDictionary alloc] init] autorelease];
     
     NSError *error = nil;
     NSRegularExpression *allAttrs = [NSRegularExpression regularExpressionWithPattern:PATTERN_LOGIN_ATTR_LIST
@@ -2129,7 +2134,7 @@ asdkashjd akjshd klasjdh : multiple recipients!!!
          }
      }];
     
-    return [inputs autorelease];
+    return inputs;
 }
 
 -(NSString*)obtainTokenFrom:(NSString*)url

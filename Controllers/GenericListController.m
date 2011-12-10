@@ -14,7 +14,7 @@
 
 @implementation GenericListController
 
-@synthesize numberFormatter = __numberFormatter;
+@synthesize numberFormatter;
 @synthesize account;
 
 -(id)initWithNibName:(NSString *)nibNameOrNil 
@@ -26,7 +26,7 @@
         BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
         managedObjectContext = bachApp.managedObjectContext;
         
-        self.numberFormatter = [[NSNumberFormatter alloc] init];
+        self->numberFormatter = [[NSNumberFormatter alloc] init];
         [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     }
     
