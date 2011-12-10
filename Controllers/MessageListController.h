@@ -8,14 +8,23 @@
 
 #import <UIKit/UIKit.h>
 
-#import "GenericListController.h"
+#import "GenericController.h"
 
-@interface MessageListController : GenericListController <NSFetchedResultsControllerDelegate>
+@interface MessageListController : GenericController <UITableViewDataSource, NSFetchedResultsControllerDelegate, UITableViewDataSource, EGORefreshTableHeaderDelegate>
+{
+    EGORefreshTableHeaderView *_refreshHeaderView;
+    IBOutlet UITableView *myTableView;
+    IBOutlet UIToolbar *toolbar;
+    IBOutlet UIBarButtonItem *refreshButton;
+}
 
 @property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 -(id)initWithAccount:(XboxLiveAccount*)account;
+
+-(IBAction)refresh:(id)sender;
+-(IBAction)compose:(id)sender;
 
 @end

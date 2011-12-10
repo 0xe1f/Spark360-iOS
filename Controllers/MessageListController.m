@@ -15,6 +15,7 @@
 
 -(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 -(void)imageLoaded:(NSString*)url;
+-(void)refreshUsingTableViewHeader;
 
 @end
 
@@ -25,7 +26,7 @@
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
-    if (self = [super initWithNibName:@"GameList" 
+    if (self = [super initWithNibName:@"MessageList" 
                                bundle:nil])
     {
         self.account = account;
@@ -45,7 +46,7 @@
 {
     NSLog(@"Got sync completed notification");
     
-    [self hideRefreshHeaderTableView];
+    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:myTableView];
 }
 
 #pragma mark - View lifecycle
@@ -61,19 +62,41 @@
     
     self.title = NSLocalizedString(@"MyMessages", nil);
     
+	if (_refreshHeaderView == nil) 
+    {
+		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - myTableView.bounds.size.height, self.view.frame.size.width, myTableView.bounds.size.height)];
+		view.delegate = self;
+		[myTableView addSubview:view];
+		_refreshHeaderView = view;
+		[view release];
+	}
+    
 	[_refreshHeaderView refreshLastUpdatedDate];
     
     if ([self.account areMessagesStale])
-        [self refreshUsingRefreshHeaderTableView];
+        [self refreshUsingTableViewHeader];
 }
 
-- (void)viewDidUnload
+-(void)viewDidUnload
 {
     [super viewDidUnload];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:BACHMessagesSynced
                                                   object:nil];
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+	[_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+}
+
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
 }
 
 #pragma mark - EGORefreshTableHeaderDelegate Methods
@@ -104,6 +127,17 @@
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        NSManagedObject *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [[TaskController sharedInstance] deleteMessageWithUid:[message valueForKey:@"uid"]
+                                                      account:self.account
+                                         managedObjectContext:managedObjectContext];
+    }
 }
 
 // Customize the appearance of table view cells.
@@ -201,7 +235,7 @@
 -(void)imageLoaded:(NSString*)url
 {
     // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
+    [myTableView reloadData];
 }
 
 #pragma mark - Fetched results controller
@@ -261,7 +295,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    [self.tableView beginUpdates];
+    [myTableView beginUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -270,11 +304,11 @@
     switch(type)
     {
         case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [myTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [myTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
@@ -283,33 +317,53 @@
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
-    UITableView *tableView = self.tableView;
-    
     switch(type)
     {
             
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:[myTableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+            [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    [self.tableView endUpdates];
+    [myTableView endUpdates];
+}
+
+#pragma mark - Actions
+
+-(IBAction)refresh:(id)sender
+{
+    [self refreshUsingTableViewHeader];
+}
+
+-(IBAction)compose:(id)sender
+{
+    // TODO
+}
+
+#pragma mark - Helpers
+
+-(void)refreshUsingTableViewHeader
+{
+    CGPoint offset = myTableView.contentOffset;
+    offset.y = - 65.0f;
+    myTableView.contentOffset = offset;
+    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:myTableView];
 }
 
 @end
