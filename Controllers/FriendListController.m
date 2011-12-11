@@ -8,6 +8,7 @@
 
 #import "FriendListController.h"
 
+#import "XboxLive.h"
 #import "TaskController.h"
 #import "CFImageCache.h"
 
@@ -24,7 +25,7 @@
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
     if (self = [super initWithAccount:account
-                              nibName:@"FriendList"])
+                              nibName:@"FriendListController"])
     {
     }
     
@@ -103,6 +104,12 @@
     return [sectionInfo numberOfObjects];
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section 
+{
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
+    return [XboxLive descriptionFromFriendStatus:[[sectionInfo name] intValue]];
+}
+
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView 
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -134,7 +141,10 @@
 {
     NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
-    UILabel *label = (UILabel*)[cell viewWithTag:2];
+    UILabel *label;
+    UIImageView *icon;
+    
+    label = (UILabel*)[cell viewWithTag:2];
     [label setText:[obj valueForKey:@"screenName"]];
     
     label = (UILabel*)[cell viewWithTag:3];
@@ -143,13 +153,31 @@
     label = (UILabel*)[cell viewWithTag:5];
     [label setText:[NSString localizedStringWithFormat:[self.numberFormatter stringFromNumber:[obj valueForKey:@"gamerscore"]]]];
     
-    UIImage *boxArt = [[CFImageCache sharedInstance]
-                       getCachedFile:[obj valueForKey:@"iconUrl"]
-                       notifyObject:self
-                       notifySelector:@selector(imageLoaded:)];
+    // Gamerpic
     
-    UIImageView *view = (UIImageView*)[cell viewWithTag:6];
-    [view setImage:boxArt];
+    UIImage *gamerpic = [[CFImageCache sharedInstance] getCachedFile:[obj valueForKey:@"iconUrl"]
+                                                        notifyObject:self
+                                                      notifySelector:@selector(imageLoaded:)];
+    
+    icon = (UIImageView*)[cell viewWithTag:6];
+    [icon setImage:gamerpic];
+    
+    // Box art
+    
+    UIImage *boxArt = [[CFImageCache sharedInstance] getCachedFile:[obj valueForKey:@"activityTitleIconUrl"]
+                                                      notifyObject:self
+                                                    notifySelector:@selector(imageLoaded:)];
+    
+    // TODO: Inefficient, pre-scale
+    CGImageRef imageRef = CGImageCreateWithImageInRect([boxArt CGImage], 
+                                                       CGRectMake(0, 16, 85, 85));
+    UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
+    
+    icon = (UIImageView*)[cell viewWithTag:7];
+    [icon setImage:thumbnail];
+    [icon setClipsToBounds:YES];
+    
+    CGImageRelease(imageRef);
 }
 
 - (void)imageLoaded:(NSString*)url
@@ -182,9 +210,11 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"screenName" 
-                                                                   ascending:YES];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
+    NSSortDescriptor *sortByStatus = [[NSSortDescriptor alloc] initWithKey:@"statusCode" 
+                                                                 ascending:YES];
+    NSSortDescriptor *sortByScreenName = [[NSSortDescriptor alloc] initWithKey:@"screenName" 
+                                                                     ascending:YES];
+    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortByStatus, sortByScreenName, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
     
@@ -192,14 +222,15 @@
     // nil for section name key path means "no sections".
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest 
                                                                                                 managedObjectContext:managedObjectContext 
-                                                                                                  sectionNameKeyPath:nil 
+                                                                                                  sectionNameKeyPath:@"statusCode" 
                                                                                                            cacheName:nil]; // AK: cacheName was 'Root'
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
     [aFetchedResultsController release];
     [fetchRequest release];
-    [sortDescriptor release];
+    [sortByStatus release];
+    [sortByScreenName release];
     [sortDescriptors release];
     
 	NSError *error = nil;

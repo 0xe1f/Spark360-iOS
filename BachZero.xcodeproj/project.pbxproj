@@ -32,6 +32,7 @@
 		FE76A94013E636A9006D6AFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93F13E636A9006D6AFC /* CoreData.framework */; };
 		FE76A94813E636A9006D6AFC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94713E636A9006D6AFC /* main.m */; };
 		FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */; };
+		FE80A8441495496500040D79 /* XboxLive.m in Sources */ = {isa = PBXBuildFile; fileRef = FE80A8431495496500040D79 /* XboxLive.m */; };
 		FE8CA9191474212800A5C9EA /* XboxLiveAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */; };
 		FE8CA91B1474586000A5C9EA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8CA91A1474586000A5C9EA /* Security.framework */; };
 		FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */; };
@@ -41,7 +42,7 @@
 		FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */; };
 		FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */; };
 		FEA247FE148F5F91003D87C5 /* MessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA247FC148F5F90003D87C5 /* MessageListController.m */; };
-		FEA24801148F6019003D87C5 /* MessageList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24800148F6019003D87C5 /* MessageList.xib */; };
+		FEA24801148F6019003D87C5 /* MessageListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24800148F6019003D87C5 /* MessageListController.xib */; };
 		FEA24803148F62B6003D87C5 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24802148F62B6003D87C5 /* MessageCell.xib */; };
 		FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FEA47124144FED35009F0CB4 /* Settings.bundle */; };
 		FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */; };
@@ -54,11 +55,11 @@
 		FEC602A31494921B00DD3849 /* FriendListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC602A11494921B00DD3849 /* FriendListController.m */; };
 		FEC602A71494996300DD3849 /* FriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC602A61494996300DD3849 /* FriendCell.xib */; };
 		FEC602AB14949D3B00DD3849 /* GenericTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC602A914949D3B00DD3849 /* GenericTableViewController.m */; };
-		FEC602AE1494A75F00DD3849 /* FriendList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC602AD1494A75F00DD3849 /* FriendList.xib */; };
+		FEC602AE1494A75F00DD3849 /* FriendListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC602AD1494A75F00DD3849 /* FriendListController.xib */; };
 		FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D114782EF000537213 /* gamesTab@2x.png */; };
 		FEC7F9D414782EF000537213 /* gamesTab.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D214782EF000537213 /* gamesTab.png */; };
 		FEC7F9D61478323600537213 /* gamerScoreInverse.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D51478323600537213 /* gamerScoreInverse.png */; };
-		FEC7F9DA1478653600537213 /* GameList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9DB1478653600537213 /* GameList.xib */; };
+		FEC7F9DA1478653600537213 /* GameListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9DB1478653600537213 /* GameListController.xib */; };
 		FEC7F9F61479070F00537213 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC7F9EC1479070F00537213 /* EGORefreshTableHeaderView.m */; };
 		FEC7F9F71479070F00537213 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9EE1479070F00537213 /* blackArrow.png */; };
 		FEC7F9F81479070F00537213 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9EF1479070F00537213 /* blackArrow@2x.png */; };
@@ -71,7 +72,7 @@
 		FEC7FA00147908A300537213 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEC7F9FF147908A300537213 /* QuartzCore.framework */; };
 		FEC8400E148A1F37005BC782 /* ProfileOverview.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC8400D148A1F37005BC782 /* ProfileOverview.xib */; };
 		FEC84012148A1F6A005BC782 /* ProfileOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */; };
-		FEC84019148A29F6005BC782 /* AchievementList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84018148A29F6005BC782 /* AchievementList.xib */; };
+		FEC84019148A29F6005BC782 /* AchievementListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84018148A29F6005BC782 /* AchievementListController.xib */; };
 		FEC84020148A2EC9005BC782 /* AchievementListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC8401F148A2EC9005BC782 /* AchievementListController.m */; };
 		FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84021148A3AC1005BC782 /* AchievementCell.xib */; };
 		FEC84025148C2F37005BC782 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84024148C2F37005BC782 /* TaskController.m */; };
@@ -131,6 +132,8 @@
 		FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BachZero-Prefix.pch"; sourceTree = "<group>"; };
 		FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BachAppDelegate.h; sourceTree = "<group>"; };
 		FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BachAppDelegate.m; sourceTree = "<group>"; };
+		FE80A8421495496500040D79 /* XboxLive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLive.h; sourceTree = "<group>"; };
+		FE80A8431495496500040D79 /* XboxLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLive.m; sourceTree = "<group>"; };
 		FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveAccount.h; sourceTree = "<group>"; };
 		FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveAccount.m; sourceTree = "<group>"; };
 		FE8CA91A1474586000A5C9EA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -148,7 +151,7 @@
 		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UITableViewTextFieldCell.m; path = ../UITableViewTextFieldCell.m; sourceTree = "<group>"; };
 		FEA247FB148F5F90003D87C5 /* MessageListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListController.h; sourceTree = "<group>"; };
 		FEA247FC148F5F90003D87C5 /* MessageListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListController.m; sourceTree = "<group>"; };
-		FEA24800148F6019003D87C5 /* MessageList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageList.xib; sourceTree = "<group>"; };
+		FEA24800148F6019003D87C5 /* MessageListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageListController.xib; sourceTree = "<group>"; };
 		FEA24802148F62B6003D87C5 /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		FEA47124144FED35009F0CB4 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
@@ -169,11 +172,11 @@
 		FEC602A61494996300DD3849 /* FriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendCell.xib; sourceTree = "<group>"; };
 		FEC602A814949D3B00DD3849 /* GenericTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericTableViewController.h; sourceTree = "<group>"; };
 		FEC602A914949D3B00DD3849 /* GenericTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericTableViewController.m; sourceTree = "<group>"; };
-		FEC602AD1494A75F00DD3849 /* FriendList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendList.xib; sourceTree = "<group>"; };
+		FEC602AD1494A75F00DD3849 /* FriendListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendListController.xib; sourceTree = "<group>"; };
 		FEC7F9D114782EF000537213 /* gamesTab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamesTab@2x.png"; sourceTree = "<group>"; };
 		FEC7F9D214782EF000537213 /* gamesTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamesTab.png; sourceTree = "<group>"; };
 		FEC7F9D51478323600537213 /* gamerScoreInverse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScoreInverse.png; sourceTree = "<group>"; };
-		FEC7F9DB1478653600537213 /* GameList.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GameList.xib; sourceTree = "<group>"; };
+		FEC7F9DB1478653600537213 /* GameListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GameListController.xib; sourceTree = "<group>"; };
 		FEC7F9EB1479070F00537213 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
 		FEC7F9EC1479070F00537213 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
 		FEC7F9EE1479070F00537213 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
@@ -188,7 +191,7 @@
 		FEC8400D148A1F37005BC782 /* ProfileOverview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileOverview.xib; sourceTree = "<group>"; };
 		FEC8400F148A1F6A005BC782 /* ProfileOverviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileOverviewController.h; sourceTree = "<group>"; };
 		FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileOverviewController.m; sourceTree = "<group>"; };
-		FEC84018148A29F6005BC782 /* AchievementList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementList.xib; sourceTree = "<group>"; };
+		FEC84018148A29F6005BC782 /* AchievementListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementListController.xib; sourceTree = "<group>"; };
 		FEC8401E148A2ACA005BC782 /* AchievementListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AchievementListController.h; sourceTree = "<group>"; };
 		FEC8401F148A2EC9005BC782 /* AchievementListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AchievementListController.m; sourceTree = "<group>"; };
 		FEC84021148A3AC1005BC782 /* AchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementCell.xib; sourceTree = "<group>"; };
@@ -253,14 +256,14 @@
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
 				FEC602A61494996300DD3849 /* FriendCell.xib */,
 				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
-				FEC84018148A29F6005BC782 /* AchievementList.xib */,
+				FEC84018148A29F6005BC782 /* AchievementListController.xib */,
 				FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */,
 				FEC84021148A3AC1005BC782 /* AchievementCell.xib */,
-				FEC7F9DB1478653600537213 /* GameList.xib */,
-				FEC602AD1494A75F00DD3849 /* FriendList.xib */,
+				FEC7F9DB1478653600537213 /* GameListController.xib */,
+				FEC602AD1494A75F00DD3849 /* FriendListController.xib */,
 				FEEE7CF21493CAF8009F475C /* MessageCompose.xib */,
 				FEA24802148F62B6003D87C5 /* MessageCell.xib */,
-				FEA24800148F6019003D87C5 /* MessageList.xib */,
+				FEA24800148F6019003D87C5 /* MessageListController.xib */,
 				FEC8400D148A1F37005BC782 /* ProfileOverview.xib */,
 				FEFE0E6114774554009C7084 /* MainWindow.xib */,
 			);
@@ -276,6 +279,8 @@
 				FEC84024148C2F37005BC782 /* TaskController.m */,
 				FEC84026148C3678005BC782 /* TaskControllerOperation.h */,
 				FEC84028148C3693005BC782 /* TaskControllerOperation.m */,
+				FE80A8421495496500040D79 /* XboxLive.h */,
+				FE80A8431495496500040D79 /* XboxLive.m */,
 				FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */,
 				FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */,
 				FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */,
@@ -547,7 +552,7 @@
 				FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */,
 				FE726B801463CD7600534279 /* TODO in Resources */,
 				FEFF552814679ED900190D58 /* AccountCell.xib in Resources */,
-				FEC7F9DA1478653600537213 /* GameList.xib in Resources */,
+				FEC7F9DA1478653600537213 /* GameListController.xib in Resources */,
 				FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */,
 				FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */,
 				FEC7F9D414782EF000537213 /* gamesTab.png in Resources */,
@@ -561,14 +566,14 @@
 				FEC7F9FD1479070F00537213 /* whiteArrow.png in Resources */,
 				FEC7F9FE1479070F00537213 /* whiteArrow@2x.png in Resources */,
 				FEC8400E148A1F37005BC782 /* ProfileOverview.xib in Resources */,
-				FEC84019148A29F6005BC782 /* AchievementList.xib in Resources */,
+				FEC84019148A29F6005BC782 /* AchievementListController.xib in Resources */,
 				FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */,
 				FEC84027148C3678005BC782 /* TaskControllerOperation.h in Resources */,
-				FEA24801148F6019003D87C5 /* MessageList.xib in Resources */,
+				FEA24801148F6019003D87C5 /* MessageListController.xib in Resources */,
 				FEA24803148F62B6003D87C5 /* MessageCell.xib in Resources */,
 				FEEE7CF41493CAF8009F475C /* MessageCompose.xib in Resources */,
 				FEC602A71494996300DD3849 /* FriendCell.xib in Resources */,
-				FEC602AE1494A75F00DD3849 /* FriendList.xib in Resources */,
+				FEC602AE1494A75F00DD3849 /* FriendListController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -618,6 +623,7 @@
 				FEEE7CF31493CAF8009F475C /* MessageComposeController.m in Sources */,
 				FEC602A31494921B00DD3849 /* FriendListController.m in Sources */,
 				FEC602AB14949D3B00DD3849 /* GenericTableViewController.m in Sources */,
+				FE80A8441495496500040D79 /* XboxLive.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -689,6 +695,7 @@
 				GCC_PREFIX_HEADER = "BachZero-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "BachZero-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = BachZero;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -706,6 +713,7 @@
 				GCC_PREFIX_HEADER = "BachZero-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "BachZero-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = BachZero;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";

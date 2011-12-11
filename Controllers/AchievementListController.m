@@ -41,7 +41,7 @@
 -(id)initWithAccount:(XboxLiveAccount*)account
          gameTitleId:(NSString*)gameTitleId
 {
-    if (self = [super initWithNibName:@"AchievementList" 
+    if (self = [super initWithNibName:@"AchievementListController" 
                                bundle:nil])
     {
         self.account = account;

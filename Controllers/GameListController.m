@@ -27,7 +27,7 @@
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
-    if (self = [super initWithNibName:@"GameList" 
+    if (self = [super initWithNibName:@"GameListController" 
                                bundle:nil])
     {
         self.account = account;
@@ -184,6 +184,7 @@
                        notifyObject:self
                        notifySelector:@selector(imageLoaded:)];
     
+    // TODO: Inefficient, pre-scale
     CGImageRef imageRef = CGImageCreateWithImageInRect([boxArt CGImage], 
                                                        CGRectMake(0, 16, 85, 85));
     UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];

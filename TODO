@@ -1,6 +1,11 @@
 * Add network spinner when TaskControllerOp is in progress
+* When a message contains no text, add placeholder text
+* Add icons denoting the type of content in the message
 * Delete database contents when an account is deleted 
 * Sending to multiple recipients is broken
 * When uninstalling app without account deletion, keychain items stay behind 
   and crash on add 
 * When images are downloaded, update single icon, not all (see imageSynced)
+* Figure out a better way to do boxart, without having to rescale images each 
+  time (Games, Friends)
+* Investigate the effects of commenting out the assertion in KeyChainWrapper:315!

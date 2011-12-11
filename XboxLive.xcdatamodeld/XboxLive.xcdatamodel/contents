@@ -32,6 +32,7 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="rep" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="screenName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="statusCode" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="profile" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxProfile" syncable="YES"/>
     </entity>
@@ -84,9 +85,9 @@
     </entity>
     <elements>
         <element name="XboxAchievement" positionX="160" positionY="192" width="128" height="210"/>
+        <element name="XboxFriend" positionX="160" positionY="192" width="128" height="360"/>
         <element name="XboxGame" positionX="-162" positionY="201" width="128" height="240"/>
         <element name="XboxMessage" positionX="160" positionY="192" width="128" height="255"/>
         <element name="XboxProfile" positionX="160" positionY="192" width="128" height="255"/>
-        <element name="XboxFriend" positionX="160" positionY="192" width="128" height="345"/>
     </elements>
 </model>

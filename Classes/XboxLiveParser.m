@@ -8,6 +8,7 @@
 
 #import "XboxLiveParser.h"
 
+#include "XboxLive.h"
 #import "GTMNSString+HTML.h"
 #import "GTMNSString+URLArguments.h"
 #import "SBJson.h"
@@ -1301,6 +1302,20 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         [friend setValue:[inFriend objectForKey:@"activityText"] forKey:@"activityText"];
         [friend setValue:[inFriend objectForKey:@"isIncoming"] forKey:@"isIncoming"];
         [friend setValue:[inFriend objectForKey:@"isOutgoing"] forKey:@"isOutgoing"];
+        
+        if ([[inFriend objectForKey:@"isIncoming"] boolValue] ||
+            [[inFriend objectForKey:@"isOutgoing"] boolValue])
+        {
+            [friend setValue:[NSNumber numberWithInt:XBLFriendPending] forKey:@"statusCode"];
+        }
+        else if ([[inFriend objectForKey:@"isOnline"] boolValue])
+        {
+            [friend setValue:[NSNumber numberWithInt:XBLFriendOnline] forKey:@"statusCode"];
+        }
+        else
+        {
+            [friend setValue:[NSNumber numberWithInt:XBLFriendOffline] forKey:@"statusCode"];
+        }
         
         id titleObj;
         if ((titleObj = [inFriend objectForKey:@"activityTitleId"]))

@@ -52,4 +52,7 @@
     From_f = "From %@";
     OnlyGoldCanSendMessages = "Message sending is only available on Gold accounts";
     MessageCouldNotBeSent = "Message could not be sent";
+    FriendOnline = "Online";
+    FriendPending = "Pending";
+    FriendOffline = "Offline";
 }

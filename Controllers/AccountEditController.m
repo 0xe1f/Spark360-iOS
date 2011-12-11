@@ -111,6 +111,7 @@
                 usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
                 usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
                 usernameTextField.delegate = self;
+                [usernameTextField becomeFirstResponder];
                 
                 usernameTextField.text = self.emailAddress;
 			}

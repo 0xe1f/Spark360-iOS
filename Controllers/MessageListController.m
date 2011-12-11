@@ -26,7 +26,7 @@
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
-    if (self = [super initWithNibName:@"MessageList" 
+    if (self = [super initWithNibName:@"MessageListController" 
                                bundle:nil])
     {
         self.account = account;
