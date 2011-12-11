@@ -35,6 +35,11 @@
     return self;
 }
 
+-(void)didReceiveMemoryWarning
+{
+    [[CFImageCache sharedInstance] purgeInMemCache];
+}
+
 -(void)dealloc
 {
     [__fetchedResultsController release];

@@ -1,3 +1,6 @@
 * Add network spinner when TaskControllerOp is in progress
 * Delete database contents when an account is deleted 
 * Sending to multiple recipients is broken
+* When uninstalling app without account deletion, keychain items stay behind 
+  and crash on add 
+* When images are downloaded, update single icon, not all (see imageSynced)

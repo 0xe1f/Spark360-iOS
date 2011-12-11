@@ -51,6 +51,10 @@
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
 		FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA7146BB25400D31608 /* AccountListController.m */; };
 		FEC26EAC146BB25400D31608 /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA9146BB25400D31608 /* GameListController.m */; };
+		FEC602A31494921B00DD3849 /* FriendListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC602A11494921B00DD3849 /* FriendListController.m */; };
+		FEC602A71494996300DD3849 /* FriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC602A61494996300DD3849 /* FriendCell.xib */; };
+		FEC602AB14949D3B00DD3849 /* GenericTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC602A914949D3B00DD3849 /* GenericTableViewController.m */; };
+		FEC602AE1494A75F00DD3849 /* FriendList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC602AD1494A75F00DD3849 /* FriendList.xib */; };
 		FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D114782EF000537213 /* gamesTab@2x.png */; };
 		FEC7F9D414782EF000537213 /* gamesTab.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D214782EF000537213 /* gamesTab.png */; };
 		FEC7F9D61478323600537213 /* gamerScoreInverse.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D51478323600537213 /* gamerScoreInverse.png */; };
@@ -160,6 +164,12 @@
 		FEC26EA7146BB25400D31608 /* AccountListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountListController.m; sourceTree = "<group>"; };
 		FEC26EA8146BB25400D31608 /* GameListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameListController.h; sourceTree = "<group>"; };
 		FEC26EA9146BB25400D31608 /* GameListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameListController.m; sourceTree = "<group>"; };
+		FEC602A01494921B00DD3849 /* FriendListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendListController.h; sourceTree = "<group>"; };
+		FEC602A11494921B00DD3849 /* FriendListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendListController.m; sourceTree = "<group>"; };
+		FEC602A61494996300DD3849 /* FriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendCell.xib; sourceTree = "<group>"; };
+		FEC602A814949D3B00DD3849 /* GenericTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericTableViewController.h; sourceTree = "<group>"; };
+		FEC602A914949D3B00DD3849 /* GenericTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericTableViewController.m; sourceTree = "<group>"; };
+		FEC602AD1494A75F00DD3849 /* FriendList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendList.xib; sourceTree = "<group>"; };
 		FEC7F9D114782EF000537213 /* gamesTab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamesTab@2x.png"; sourceTree = "<group>"; };
 		FEC7F9D214782EF000537213 /* gamesTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamesTab.png; sourceTree = "<group>"; };
 		FEC7F9D51478323600537213 /* gamerScoreInverse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScoreInverse.png; sourceTree = "<group>"; };
@@ -241,11 +251,13 @@
 			children = (
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
+				FEC602A61494996300DD3849 /* FriendCell.xib */,
 				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
 				FEC84018148A29F6005BC782 /* AchievementList.xib */,
 				FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */,
 				FEC84021148A3AC1005BC782 /* AchievementCell.xib */,
 				FEC7F9DB1478653600537213 /* GameList.xib */,
+				FEC602AD1494A75F00DD3849 /* FriendList.xib */,
 				FEEE7CF21493CAF8009F475C /* MessageCompose.xib */,
 				FEA24802148F62B6003D87C5 /* MessageCell.xib */,
 				FEA24800148F6019003D87C5 /* MessageList.xib */,
@@ -287,6 +299,8 @@
 				FEC26EA9146BB25400D31608 /* GameListController.m */,
 				FE041176149362F80010C898 /* GenericController.h */,
 				FE041177149363040010C898 /* GenericController.m */,
+				FEC602A814949D3B00DD3849 /* GenericTableViewController.h */,
+				FEC602A914949D3B00DD3849 /* GenericTableViewController.m */,
 				FE9015DE148E0A5D003004E7 /* GenericListController.h */,
 				FE9015E0148E0A6B003004E7 /* GenericListController.m */,
 				FEA247FB148F5F90003D87C5 /* MessageListController.h */,
@@ -295,6 +309,8 @@
 				FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */,
 				FEEE7CF01493CAF8009F475C /* MessageComposeController.h */,
 				FEEE7CF11493CAF8009F475C /* MessageComposeController.m */,
+				FEC602A01494921B00DD3849 /* FriendListController.h */,
+				FEC602A11494921B00DD3849 /* FriendListController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -551,6 +567,8 @@
 				FEA24801148F6019003D87C5 /* MessageList.xib in Resources */,
 				FEA24803148F62B6003D87C5 /* MessageCell.xib in Resources */,
 				FEEE7CF41493CAF8009F475C /* MessageCompose.xib in Resources */,
+				FEC602A71494996300DD3849 /* FriendCell.xib in Resources */,
+				FEC602AE1494A75F00DD3849 /* FriendList.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,6 +616,8 @@
 				FEA247FE148F5F91003D87C5 /* MessageListController.m in Sources */,
 				FE041178149363040010C898 /* GenericController.m in Sources */,
 				FEEE7CF31493CAF8009F475C /* MessageComposeController.m in Sources */,
+				FEC602A31494921B00DD3849 /* FriendListController.m in Sources */,
+				FEC602AB14949D3B00DD3849 /* GenericTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

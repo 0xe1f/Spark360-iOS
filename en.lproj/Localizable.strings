@@ -39,6 +39,7 @@
 	MyPlayedGames = "My Games";
 	MyMessages = "My Messages";
 	MyProfile = "My Profile";
+	MyFriends = "My Friends";
 	Achievements_f = "%@";
     ErrorAchievementsNotFound = "Unable to load list of achievements. Please try again shortly";
     ErrorGameNotFound = "Game not found in your list of played games. Please refresh your games list";

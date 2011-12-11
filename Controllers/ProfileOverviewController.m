@@ -10,6 +10,7 @@
 
 #import "GameListController.h"
 #import "MessageListController.h"
+#import "FriendListController.h"
 
 @implementation ProfileOverviewController
 
@@ -53,6 +54,13 @@
 {
     MessageListController *ctlr = [[MessageListController alloc] initWithAccount:account];
     
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
+}
+
+-(void)viewFriends:(id)sender
+{
+    FriendListController *ctlr = [[FriendListController alloc] initWithAccount:account];
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
 }

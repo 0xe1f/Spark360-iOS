@@ -10,7 +10,7 @@
 
 #import "GenericController.h"
 
-@interface MessageListController : GenericController <UITableViewDataSource, NSFetchedResultsControllerDelegate, UITableViewDataSource, EGORefreshTableHeaderDelegate>
+@interface MessageListController : GenericController <NSFetchedResultsControllerDelegate, UITableViewDataSource, EGORefreshTableHeaderDelegate>
 {
     EGORefreshTableHeaderView *_refreshHeaderView;
     IBOutlet UITableView *myTableView;

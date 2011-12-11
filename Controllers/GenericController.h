@@ -21,6 +21,9 @@
 @property (nonatomic, retain) NSNumberFormatter *numberFormatter;
 @property (nonatomic, retain) XboxLiveAccount *account;
 
+-(id)initWithAccount:(XboxLiveAccount*)account
+             nibName:(NSString*)nibName;
+
 -(void)onSyncError:(NSNotification *)notification;
 
 @end

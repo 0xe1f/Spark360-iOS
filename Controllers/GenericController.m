@@ -14,19 +14,28 @@
 
 @implementation GenericController
 
-@synthesize numberFormatter;
-@synthesize account;
+@synthesize numberFormatter = _numberFormatter;
+@synthesize account = _account;
 
 -(id)initWithNibName:(NSString *)nibNameOrNil 
               bundle:(NSBundle *)nibBundleOrNil
 {
-    if (self = [super initWithNibName:nibNameOrNil 
-                                 bundle:nibBundleOrNil])
+    return [self initWithAccount:nil
+                         nibName:nibNameOrNil];
+}
+
+-(id)initWithAccount:(XboxLiveAccount*)account
+             nibName:(NSString*)nibName
+{
+    if (self = [super initWithNibName:nibName 
+                               bundle:nil])
     {
+        self.account = account;
+        
         BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
         managedObjectContext = bachApp.managedObjectContext;
         
-        self->numberFormatter = [[NSNumberFormatter alloc] init];
+        _numberFormatter = [[NSNumberFormatter alloc] init];
         [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
     }
     

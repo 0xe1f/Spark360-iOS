@@ -14,6 +14,7 @@
 {
     IBOutlet UIButton *gamesButton;
     IBOutlet UIButton *messagesButton;
+    IBOutlet UIButton *friendsButton;
 }
 
 @property (nonatomic, retain) XboxLiveAccount *account;
@@ -21,5 +22,6 @@
 
 - (IBAction)viewGames:(id)sender;
 - (IBAction)viewMessages:(id)sender;
+- (IBAction)viewFriends:(id)sender;
 
 @end

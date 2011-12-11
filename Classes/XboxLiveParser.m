@@ -1274,9 +1274,15 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
             
             [friend setValue:profile forKey:@"profile"];
             [friend setValue:[inFriend objectForKey:@"uid"] forKey:@"uid"];
-            /*
-            [friend setValue:[inMessage objectForKey:@"sender"] forKey:@"sender"];
-            */
+            
+            // These will be updated later by other parsers
+            
+            [friend setValue:[NSNumber numberWithBool:NO] forKey:@"isFavorite"];
+            [friend setValue:nil forKey:@"bio"];
+            [friend setValue:nil forKey:@"location"];
+            [friend setValue:nil forKey:@"motto"];
+            [friend setValue:nil forKey:@"name"];
+            [friend setValue:[NSNumber numberWithInt:0] forKey:@"rep"];
         }
         else
         {
@@ -1287,6 +1293,22 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         // Handle the rest of the data
         
         [friend setValue:lastUpdated forKey:@"lastUpdated"];
+        [friend setValue:[inFriend objectForKey:@"screenName"] forKey:@"screenName"];
+        [friend setValue:[inFriend objectForKey:@"isOnline"] forKey:@"isOnline"];
+        [friend setValue:[inFriend objectForKey:@"iconUrl"] forKey:@"iconUrl"];
+        [friend setValue:[inFriend objectForKey:@"gamerscore"] forKey:@"gamerscore"];
+        [friend setValue:[inFriend objectForKey:@"lastSeen"] forKey:@"lastSeen"];
+        [friend setValue:[inFriend objectForKey:@"activityText"] forKey:@"activityText"];
+        [friend setValue:[inFriend objectForKey:@"isIncoming"] forKey:@"isIncoming"];
+        [friend setValue:[inFriend objectForKey:@"isOutgoing"] forKey:@"isOutgoing"];
+        
+        id titleObj;
+        if ((titleObj = [inFriend objectForKey:@"activityTitleId"]))
+            [friend setValue:titleObj forKey:@"activityTitleId"];
+        if ((titleObj = [inFriend objectForKey:@"activityTitleName"]))
+            [friend setValue:titleObj forKey:@"activityTitleName"];
+        if ((titleObj = [inFriend objectForKey:@"activityTitleIconUrl"]))
+            [friend setValue:titleObj forKey:@"activityTitleIconUrl"];
     }
     
     // Find missing objects
@@ -1742,7 +1764,7 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         NSDictionary *titleInfo = [inFriend objectForKey:@"TitleInfo"];
         if (titleInfo)
         {
-            [friend setValue:[titleInfo objectForKey:@"Id"] // activityTitleId
+            [friend setValue:[[titleInfo objectForKey:@"Id"] stringValue] // activityTitleId
                       forKey:@"activityTitleId"];
             [friend setValue:[titleInfo objectForKey:@"Name"] // activityTitleName
                       forKey:@"activityTitleName"];
@@ -2237,7 +2259,7 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         return nil;
     
     return [NSString stringWithFormat:BOXART_TEMPLATE, 
-            [titleId intValue], LOCALE, largeBoxArt ? "large" : "small"];
+            [titleId intValue], LOCALE, largeBoxArt ? @"large" : @"small"];
 }
 
 +(NSNumber*)getStarRatingFromPage:(NSString*)html
