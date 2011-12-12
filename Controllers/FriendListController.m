@@ -139,7 +139,16 @@
 - (void)configureCell:(UITableViewCell *)cell 
           atIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSManagedObject *obj;
+    
+    @try 
+    {
+        obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    }
+    @catch (NSException *exception) 
+    {
+        return; //TODO?
+    }
     
     UILabel *label;
     UIImageView *icon;

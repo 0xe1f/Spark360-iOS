@@ -33,6 +33,8 @@
 		FE76A94813E636A9006D6AFC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94713E636A9006D6AFC /* main.m */; };
 		FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */; };
 		FE80A8441495496500040D79 /* XboxLive.m in Sources */ = {isa = PBXBuildFile; fileRef = FE80A8431495496500040D79 /* XboxLive.m */; };
+		FE80A8461495A39300040D79 /* iphone_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8451495A39300040D79 /* iphone_normal.png */; };
+		FE80A8481495A39A00040D79 /* iphone_hires.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8471495A39900040D79 /* iphone_hires.png */; };
 		FE8CA9191474212800A5C9EA /* XboxLiveAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */; };
 		FE8CA91B1474586000A5C9EA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8CA91A1474586000A5C9EA /* Security.framework */; };
 		FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */; };
@@ -122,7 +124,7 @@
 		FE726B7C1463CAD200534279 /* AccountEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountEditController.h; sourceTree = "<group>"; };
 		FE726B7D1463CAD200534279 /* AccountEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountEditController.m; sourceTree = "<group>"; };
 		FE726B7F1463CD7600534279 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
-		FE76A93513E636A9006D6AFC /* BachZero.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BachZero.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE76A93513E636A9006D6AFC /* Spark 360.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spark 360.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE76A93913E636A9006D6AFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FE76A93B13E636A9006D6AFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -134,6 +136,8 @@
 		FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BachAppDelegate.m; sourceTree = "<group>"; };
 		FE80A8421495496500040D79 /* XboxLive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLive.h; sourceTree = "<group>"; };
 		FE80A8431495496500040D79 /* XboxLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLive.m; sourceTree = "<group>"; };
+		FE80A8451495A39300040D79 /* iphone_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone_normal.png; sourceTree = "<group>"; };
+		FE80A8471495A39900040D79 /* iphone_hires.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone_hires.png; sourceTree = "<group>"; };
 		FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveAccount.h; sourceTree = "<group>"; };
 		FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveAccount.m; sourceTree = "<group>"; };
 		FE8CA91A1474586000A5C9EA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -362,6 +366,8 @@
 		FE76A92A13E636A9006D6AFC = {
 			isa = PBXGroup;
 			children = (
+				FE80A8471495A39900040D79 /* iphone_hires.png */,
+				FE80A8451495A39300040D79 /* iphone_normal.png */,
 				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
 				FE5CAE1613F72980004BC903 /* Classes */,
 				FE610D3713EE938400420372 /* Controllers */,
@@ -381,7 +387,7 @@
 		FE76A93613E636A9006D6AFC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FE76A93513E636A9006D6AFC /* BachZero.app */,
+				FE76A93513E636A9006D6AFC /* Spark 360.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -511,7 +517,7 @@
 			);
 			name = BachZero;
 			productName = ListTest;
-			productReference = FE76A93513E636A9006D6AFC /* BachZero.app */;
+			productReference = FE76A93513E636A9006D6AFC /* Spark 360.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -574,6 +580,8 @@
 				FEEE7CF41493CAF8009F475C /* MessageCompose.xib in Resources */,
 				FEC602A71494996300DD3849 /* FriendCell.xib in Resources */,
 				FEC602AE1494A75F00DD3849 /* FriendListController.xib in Resources */,
+				FE80A8461495A39300040D79 /* iphone_normal.png in Resources */,
+				FE80A8481495A39A00040D79 /* iphone_hires.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,7 +669,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = Classes;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				PRODUCT_NAME = "Spark 360";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -679,8 +688,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = Classes;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRODUCT_NAME = "Spark 360";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -696,7 +706,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "BachZero-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = BachZero;
+				PRODUCT_NAME = "Spark 360";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
@@ -714,7 +724,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "BachZero-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = BachZero;
+				PRODUCT_NAME = "Spark 360";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				TARGETED_DEVICE_FAMILY = 1;

@@ -80,6 +80,10 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(BOOL)parseFriends:(NSMutableDictionary*)friends
          forAccount:(XboxLiveAccount*)account
               error:(NSError**)error;
+-(BOOL)parseFriendProfile:(NSMutableDictionary*)friends
+               forAccount:(XboxLiveAccount*)account
+                friendUid:(NSString*)uid
+              error:(NSError**)error;
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
                            error:(NSError**)error;
@@ -110,6 +114,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                       error:(NSError**)error;
 -(NSDictionary*)retrieveFriendsWithAccount:(XboxLiveAccount*)account
                                      error:(NSError**)error;
+-(NSDictionary*)retrieveFriendProfileWithUid:(NSString*)uid
+                                     account:(XboxLiveAccount*)account
+                                       error:(NSError**)error;
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
                             account:(XboxLiveAccount*)account
                               error:(NSError**)error;
@@ -122,6 +129,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(void)writeAchievements:(NSDictionary*)data;
 -(void)writeMessages:(NSDictionary*)args;
 -(void)writeFriends:(NSDictionary*)args;
+-(void)writeFriendProfile:(NSDictionary*)args;
 -(void)writeDeleteMessage:(NSDictionary*)args;
 
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
@@ -279,7 +287,7 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         [self postNotificationOnMainThread:BACHAchievementsSynced
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
-                                            gameTitleId, BACHNotificationGameTitleId, 
+                                            gameTitleId, BACHNotificationUid, 
                                             nil]];
     }
     else
@@ -374,6 +382,51 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     [pool release];
 }
 
+-(void)synchronizeFriendProfile:(NSDictionary *)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *uid = [arguments objectForKey:@"uid"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveFriendProfileWithUid:uid
+                                                    account:account
+                                                      error:&error];
+    
+    self.lastError = error;
+    
+    if (data)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              uid, @"uid",
+                              data, @"data",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeFriendProfile:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHFriendProfileSynced
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            uid, BACHNotificationUid,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
 -(void)deleteMessage:(NSDictionary*)arguments
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -405,7 +458,7 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         [self postNotificationOnMainThread:BACHMessageDeleted
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
-                                            uid, BACHNotificationMessageUid,
+                                            uid, BACHNotificationUid,
                                             nil]];
     }
     else
@@ -637,6 +690,52 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         if (![self parseFriends:dict
                      forAccount:account
                           error:error])
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return dict;
+}
+
+-(NSDictionary*)retrieveFriendProfileWithUid:(NSString*)uid 
+                                     account:(XboxLiveAccount*)account 
+                                       error:(NSError**)error
+{
+    NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    if (![self parseFriendProfile:dict
+                       forAccount:account
+                        friendUid:uid
+                            error:NULL])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (![self parseFriendProfile:dict
+                           forAccount:account
+                            friendUid:uid
+                                error:error])
         {
             return nil;
         }
@@ -1849,6 +1948,21 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
                   isOutgoing:YES];
     
     NSLog(@"parseFriends: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
+}
+
+-(BOOL)parseFriendProfile:(NSMutableDictionary *)friends 
+               forAccount:(XboxLiveAccount *)account 
+                friendUid:(NSString *)uid 
+                    error:(NSError **)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    // TODO: Stopped here
+    
+    NSLog(@"parseFriendProfile: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;

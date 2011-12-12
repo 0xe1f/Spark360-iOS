@@ -47,7 +47,7 @@
     self.numberFormatter = nil;
     self.account = nil;
     
-    [managedObjectContext release];
+    //[managedObjectContext release];
     managedObjectContext = nil;
     
     [super dealloc];

@@ -15,14 +15,14 @@ NSString* const BACHGamesSynced = @"BachGamesSynced";
 NSString* const BACHAchievementsSynced = @"BachAchievementsSynced";
 NSString* const BACHMessagesSynced = @"BachMessagesSynced";
 NSString* const BACHFriendsSynced = @"BachFriendsSynced";
+NSString* const BACHFriendProfileSynced = @"BachFriendProfileSynced";
 
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
 NSString* const BACHError = @"BachError";
 
-NSString* const BACHNotificationGameTitleId = @"BachNotifGameTitleId";
 NSString* const BACHNotificationAccount = @"BachNotifAccount";
-NSString* const BACHNotificationMessageUid = @"BachNotifMessageUid";
+NSString* const BACHNotificationUid = @"BachNotifUid";
 NSString* const BACHNotificationNSError = @"BachNotifNSError";
 
 @implementation TaskController
@@ -192,6 +192,38 @@ static TaskController *sharedInstance = nil;
 {
     NSString *identifier = [NSString stringWithFormat:@"%@.Friends", 
                             account.uuid];
+    return [self isOperationQueuedWithId:identifier];
+}
+
+-(void)synchronizeFriendProfileForUid:(NSString*)uid
+                              account:(XboxLiveAccount*)account
+                 managedObjectContext:(NSManagedObjectContext*)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Friend:%@",
+                            account.uuid, uid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               uid, @"uid",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(synchronizeFriendProfile:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(BOOL)isSynchronizingFriendProfileForUid:(NSString*)uid
+                                  account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Friend:%@",
+                            account.uuid, uid];
     return [self isOperationQueuedWithId:identifier];
 }
 

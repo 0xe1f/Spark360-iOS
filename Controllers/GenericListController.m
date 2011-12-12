@@ -38,8 +38,7 @@
     self.numberFormatter = nil;
     self.account = nil;
     
-    [managedObjectContext release];
-    managedObjectContext = nil;
+    managedObjectContext = nil; // We don't release this!
     
     _refreshHeaderView = nil;
     
