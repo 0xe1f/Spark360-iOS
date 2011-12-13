@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		FE041178149363040010C898 /* GenericController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE041177149363040010C898 /* GenericController.m */; };
 		FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE20CD3613F7B86B0060D902 /* AccountList.xib */; };
+		FE3AB9C914973D790056E87F /* FriendProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3AB9C714973D790056E87F /* FriendProfileController.m */; };
+		FE3AB9CA14973D790056E87F /* FriendProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3AB9C814973D790056E87F /* FriendProfileController.xib */; };
 		FE3FE14D13F72F7E009467EF /* gamerScore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3FE14C13F72F7E009467EF /* gamerScore.png */; };
 		FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3013EDD8A700420372 /* CFImageCache.m */; };
 		FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3413EE125700420372 /* CFImageCacheOperation.m */; };
@@ -91,6 +93,9 @@
 		FE041176149362F80010C898 /* GenericController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericController.h; sourceTree = "<group>"; };
 		FE041177149363040010C898 /* GenericController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericController.m; sourceTree = "<group>"; };
 		FE20CD3613F7B86B0060D902 /* AccountList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountList.xib; sourceTree = "<group>"; };
+		FE3AB9C614973D790056E87F /* FriendProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendProfileController.h; sourceTree = "<group>"; };
+		FE3AB9C714973D790056E87F /* FriendProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendProfileController.m; sourceTree = "<group>"; };
+		FE3AB9C814973D790056E87F /* FriendProfileController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendProfileController.xib; sourceTree = "<group>"; };
 		FE3FE14C13F72F7E009467EF /* gamerScore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScore.png; sourceTree = "<group>"; };
 		FE610D2F13EDD8A700420372 /* CFImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCache.h; sourceTree = "<group>"; };
 		FE610D3013EDD8A700420372 /* CFImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCache.m; sourceTree = "<group>"; };
@@ -256,6 +261,7 @@
 		FE5CAE1413F728E5004BC903 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FE3AB9C814973D790056E87F /* FriendProfileController.xib */,
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
 				FEC602A61494996300DD3849 /* FriendCell.xib */,
@@ -320,6 +326,8 @@
 				FEEE7CF11493CAF8009F475C /* MessageComposeController.m */,
 				FEC602A01494921B00DD3849 /* FriendListController.h */,
 				FEC602A11494921B00DD3849 /* FriendListController.m */,
+				FE3AB9C614973D790056E87F /* FriendProfileController.h */,
+				FE3AB9C714973D790056E87F /* FriendProfileController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -582,6 +590,7 @@
 				FEC602AE1494A75F00DD3849 /* FriendListController.xib in Resources */,
 				FE80A8461495A39300040D79 /* iphone_normal.png in Resources */,
 				FE80A8481495A39A00040D79 /* iphone_hires.png in Resources */,
+				FE3AB9CA14973D790056E87F /* FriendProfileController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -632,6 +641,7 @@
 				FEC602A31494921B00DD3849 /* FriendListController.m in Sources */,
 				FEC602AB14949D3B00DD3849 /* GenericTableViewController.m in Sources */,
 				FE80A8441495496500040D79 /* XboxLive.m in Sources */,
+				FE3AB9C914973D790056E87F /* FriendProfileController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,6 +11,7 @@
 #import "XboxLive.h"
 #import "TaskController.h"
 #import "CFImageCache.h"
+#import "FriendProfileController.h"
 
 @interface FriendListController (Private)
 
@@ -132,8 +133,22 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Friend selected
+    NSManagedObject *friend;
     
+    @try
+    {
+        friend = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    }
+    @catch (NSException *exception)
+    {
+        return;
+    }
+    
+    FriendProfileController *ctlr = [[FriendProfileController alloc] initWithFriendUid:[friend valueForKey:@"uid"]
+                                                                               account:self.account];
+    
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
 - (void)configureCell:(UITableViewCell *)cell 

@@ -16,8 +16,6 @@
 -(NSString*)keyForPreference:(NSString*)preference;
 -(void)resetDirtyFlags;
 
--(BOOL)isDataStale:(NSDate*)lastRefreshed;
-
 @end
 
 @implementation XboxLiveAccount

@@ -48,5 +48,6 @@
 -(BOOL)areGamesStale;
 -(BOOL)areMessagesStale;
 -(BOOL)areFriendsStale;
+-(BOOL)isDataStale:(NSDate*)lastRefreshed;
 
 @end

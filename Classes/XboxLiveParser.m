@@ -80,10 +80,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(BOOL)parseFriends:(NSMutableDictionary*)friends
          forAccount:(XboxLiveAccount*)account
               error:(NSError**)error;
--(BOOL)parseFriendProfile:(NSMutableDictionary*)friends
-               forAccount:(XboxLiveAccount*)account
-                friendUid:(NSString*)uid
-              error:(NSError**)error;
+-(NSDictionary*)parseFriendProfileWithUid:(NSString*)uid 
+                               forAccount:(XboxLiveAccount *)account 
+                                    error:(NSError **)error;
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
                            error:(NSError**)error;
@@ -100,10 +99,14 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSString*)obtainTokenFrom:(NSString*)url;
 -(NSString*)parseObtainNewToken;
 +(NSDate*)ticksFromJSONString:(NSString*)jsonTicks;
+-(NSString*)largeGamerpicFromIconUrl:(NSString*)url;
+-(NSString*)gamerpicUrlForGamertag:(NSString*)gamertag;
 
 -(NSManagedObject*)profileForAccount:(XboxLiveAccount*)account;
 -(NSManagedObject*)getGameWithTitleId:(NSString*)titleId
                               account:(XboxLiveAccount*)account;
+-(NSManagedObject*)friendWithUid:(NSString*)uid
+                         account:(XboxLiveAccount*)account;
 
 -(NSDictionary*)retrieveGamesWithAccount:(XboxLiveAccount*)account
                                    error:(NSError**)error;
@@ -168,6 +171,7 @@ NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Del
 NSString* const REFERER_JSON_PROFILE = @"http://live.xbox.com/%@/MyXbox";
 
 NSString* const URL_ACHIEVEMENTS = @"http://live.xbox.com/%@/Activity/Details?titleId=%@";
+NSString* const URL_FRIEND_PROFILE = @"http://live.xbox.com/%@/Profile?gamertag=%@";
 
 NSString* const URL_REPLY_TO = @"https://live.xbox.com/xweb/live/passport/setCookies.ashx";
 
@@ -192,9 +196,23 @@ NSString* const PATTERN_GAME_ACHIEVEMENT_URL = @"href=\"([^\"]*Achievements\\?ti
 NSString* const PATTERN_GAME_BOXART_URL = @"src=\"([^\"]*)\" class=\"BoxShot\"";
 NSString* const PATTERN_GAME_LAST_PLAYED = @"class=\"lastPlayed\">\\s*(\\S+)\\s*<";
 
+NSString* const PATTERN_SUMMARY_NAME = @"<div class=\"name\" title=\"[^\"]*\">.*?<div class=\"value\">([^<]*)</div>"; // DOTALL
+NSString* const PATTERN_SUMMARY_LOCATION = @"<div class=\"location\">.*?<div class=\"value\">([^<]*)</div>"; // DOTALL
+NSString* const PATTERN_SUMMARY_BIO = @"<div class=\"bio\">.*?<div class=\"value\" title=\"[^\"]*\">([^<]*)</div>"; // DOTALL
+NSString* const PATTERN_SUMMARY_POINTS = @"<div class=\"gamerscore\">(\\d+)</div>";
+NSString* const PATTERN_SUMMARY_GAMERPIC = @"<img class=\"gamerpic\" src=\"([^\"]+)\"";
+NSString* const PATTERN_SUMMARY_MOTTO = @"<div class=\"motto\">([^<]*)<";
+NSString* const PATTERN_SUMMARY_ACTIVITY = @"<div class=\"presence\">([^>]*)</div>";
+NSString* const PATTERN_SUMMARY_REP = @"<div class=\"reputation\">(.*?)<div class=\"clearfix\""; // DOTALL
+NSString* const PATTERN_SUMMARY_GAMERTAG = @"<article class=\"profile you\" data-gamertag=\"([^\"]*)\">";
+
+NSString* const PATTERN_GAMERPIC_CLASSIC = @"/(1)(\\d+)$";
+NSString* const PATTERN_GAMERPIC_AVATAR = @"/avatarpic-(s)(.png)$"; //CASE_INSENSITIVE
+
 NSString* const PATTERN_ACH_JSON = @"loadActivityDetailsView\\((.*)\\);\\s*\\}\\);";
 
 NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/HiddenAchievement.png";
+NSString* const URL_GAMERPIC = @"http://avatar.xboxlive.com/avatar/%@/avatarpic-l.png";
 
 NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@boxart.jpg";
 
@@ -704,8 +722,6 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
                                      account:(XboxLiveAccount*)account 
                                        error:(NSError**)error
 {
-    NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
-    
     // Try restoring the session
     
     if (![self restoreSessionForAccount:account])
@@ -719,10 +735,10 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         }
     }
     
-    if (![self parseFriendProfile:dict
-                       forAccount:account
-                        friendUid:uid
-                            error:NULL])
+    NSDictionary *friendData;
+    if (!(friendData = [self parseFriendProfileWithUid:uid
+                                            forAccount:account
+                                                 error:NULL]))
     {
         // Account parsing failed. Try re-authenticating
         
@@ -732,10 +748,9 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
             return nil;
         }
         
-        if (![self parseFriendProfile:dict
-                           forAccount:account
-                            friendUid:uid
-                                error:error])
+        if (!(friendData = [self parseFriendProfileWithUid:uid
+                                                forAccount:account
+                                                     error:error]))
         {
             return nil;
         }
@@ -743,7 +758,7 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     
     [self saveSessionForAccount:account];
     
-    return dict;
+    return friendData;
 }
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
@@ -1377,6 +1392,7 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
             
             // These will be updated later by other parsers
             
+            [friend setValue:[NSDate distantPast] forKey:@"profileLastUpdated"];
             [friend setValue:[NSNumber numberWithBool:NO] forKey:@"isFavorite"];
             [friend setValue:nil forKey:@"bio"];
             [friend setValue:nil forKey:@"location"];
@@ -1458,6 +1474,59 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     
     NSLog(@"writeFriends: (%i new, %i existing) %.04fs", 
           newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeFriendProfile:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSDictionary *data = [args objectForKey:@"data"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    NSString *uid = [args objectForKey:@"uid"];
+    
+    NSManagedObject *friend = [self friendWithUid:uid
+                                          account:account];
+    
+    // No need to throw an error if friend is not found
+    
+    if (friend)
+    {
+        NSArray *keys = [NSArray arrayWithObjects:
+                         @"gamerscore",
+                         @"bio", 
+                         @"location", 
+                         @"motto",
+                         @"name",
+                         @"rep",
+                         nil];
+        
+        for (NSString *key in keys) 
+        {
+            id info = [data objectForKey:key];
+            if (info)
+                [friend setValue:info forKey:key];
+        }
+        
+        [friend setValue:[NSDate date] forKey:@"lastUpdated"];
+        [friend setValue:[NSDate date] forKey:@"profileLastUpdated"];
+        
+        if (![self.context save:NULL])
+        {
+            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                           localizationKey:@"ErrorCouldNotSaveFriendsProfile"];
+            
+            return;
+        }
+    }
+    else
+    {
+        NSLog(@"Friend not found");
+    }
+    
+    [account save];
+    
+    NSLog(@"writeFriendProfile: %.04fs", 
+          CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeDeleteMessage:(NSDictionary *)args
@@ -1953,19 +2022,165 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     return YES;
 }
 
--(BOOL)parseFriendProfile:(NSMutableDictionary *)friends 
-               forAccount:(XboxLiveAccount *)account 
-                friendUid:(NSString *)uid 
-                    error:(NSError **)error
+-(NSDictionary*)parseFriendProfileWithUid:(NSString*)uid 
+                               forAccount:(XboxLiveAccount *)account 
+                                    error:(NSError **)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
-    // TODO: Stopped here
+    NSString *url = [NSString stringWithFormat:URL_FRIEND_PROFILE, 
+                     LOCALE, [uid gtm_stringByEscapingForURLArgument]];
+    
+    NSString *friendProfilePage = [self loadWithGET:url
+                                             fields:nil
+                                             useXhr:NO
+                                              error:error];
+    
+    if (!friendProfilePage)
+        return nil;
+    
+    NSMutableDictionary *friend = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    NSRegularExpression *regex = nil;
+    NSTextCheckingResult *match = nil;
+    NSString *text = nil;
+    
+    // Activity (just text)
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_ACTIVITY
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+        [friend setObject:text forKey:@"activityText"];
+    }
+    
+    // Gamerscore
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_POINTS
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [friendProfilePage substringWithRange:[match rangeAtIndex:1]];
+        [friend setObject:[NSNumber numberWithInt:[text intValue]] forKey:@"gamerscore"];
+    }
+    
+    // Bio
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_BIO
+                                                      options:NSRegularExpressionDotMatchesLineSeparators
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+        [friend setObject:text forKey:@"bio"];
+    }
+    
+    // Name
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_NAME
+                                                      options:NSRegularExpressionDotMatchesLineSeparators
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+        [friend setObject:text forKey:@"name"];
+    }
+    
+    // Location
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_LOCATION
+                                                      options:NSRegularExpressionDotMatchesLineSeparators
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+        [friend setObject:text forKey:@"location"];
+    }
+    
+    // Motto
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_MOTTO
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+        [friend setObject:text forKey:@"motto"];
+    }
+    
+    // Icon URL
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_GAMERPIC
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [friendProfilePage substringWithRange:[match rangeAtIndex:1]];
+        [friend setObject:[self largeGamerpicFromIconUrl:text] forKey:@"iconUrl"];
+    }
+    else
+    {
+        [friend setObject:[self gamerpicUrlForGamertag:uid] forKey:@"iconUrl"];
+    }
+    
+    // Rep
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_REP
+                                                      options:NSRegularExpressionDotMatchesLineSeparators
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [friendProfilePage substringWithRange:[match rangeAtIndex:1]];
+        [friend setObject:[XboxLiveParser getStarRatingFromPage:text] forKey:@"rep"];
+    }
     
     NSLog(@"parseFriendProfile: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
-    return YES;
+    return friend;
 }
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
@@ -2140,6 +2355,27 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
                                                          inManagedObjectContext:self.context];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", account.uuid];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    return [array lastObject];
+}
+
+-(NSManagedObject*)friendWithUid:(NSString*)uid
+                         account:(XboxLiveAccount*)account
+{
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
+                                                         inManagedObjectContext:self.context];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile.uuid == %@", 
+                              uid, account.uuid];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     
     [request setEntity:entityDescription];
@@ -2625,6 +2861,59 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
 -(NSString*)parseObtainNewToken
 {
     return [self obtainTokenFrom:URL_VTOKEN];
+}
+
+-(NSString*)largeGamerpicFromIconUrl:(NSString*)url
+{
+    NSRegularExpression *regex = nil;
+    NSTextCheckingResult *match = nil;
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAMERPIC_CLASSIC
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:url
+                              options:0
+                                range:NSMakeRange(0, [url length])];
+    
+    // Classic (non-avatar) gamerpic
+    
+    if (match)
+    {
+        return [NSString stringWithFormat:@"%@2%@", 
+                [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location - 1)],
+                [url substringWithRange:[match rangeAtIndex:2]]];
+    }
+    
+    // Avatar (NXE) gamerpic
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAMERPIC_AVATAR
+                                                      options:NSRegularExpressionCaseInsensitive
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:url
+                              options:0
+                                range:NSMakeRange(0, [url length])];
+    
+    if (match)
+    {
+        return [NSString stringWithFormat:@"%@l%@", 
+                [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location - 1)],
+                [url substringWithRange:[match rangeAtIndex:2]]];
+    }
+    
+    NSLog(@"%@ has an unrecognized format; returning original", url);
+    
+    return url;
+}
+
+-(NSString*)gamerpicUrlForGamertag:(NSString*)gamertag
+{
+    if (!gamertag)
+        return nil;
+    
+    return [NSString stringWithFormat:URL_GAMERPIC,
+            [gamertag gtm_stringByEscapingForURLArgument]];
 }
 
 #pragma mark Core stuff

@@ -67,8 +67,8 @@
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
                                                          inManagedObjectContext:managedObjectContext];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@", 
-                              self.gameUid];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile.uuid == %@", 
+                              self.gameUid, self.account.uuid];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     
     [request setEntity:entityDescription];
