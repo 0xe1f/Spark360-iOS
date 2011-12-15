@@ -2058,7 +2058,8 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     if (match)
     {
         text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
-        [friend setObject:text forKey:@"activityText"];
+        [friend setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                   forKey:@"activityText"];
     }
     
     // Gamerscore
@@ -2090,7 +2091,8 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     if (match)
     {
         text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
-        [friend setObject:text forKey:@"bio"];
+        [friend setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                   forKey:@"bio"];
     }
     
     // Name
@@ -2106,7 +2108,8 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     if (match)
     {
         text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
-        [friend setObject:text forKey:@"name"];
+        [friend setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                   forKey:@"name"];
     }
     
     // Location
@@ -2122,7 +2125,8 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     if (match)
     {
         text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
-        [friend setObject:text forKey:@"location"];
+        [friend setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
+                   forKey:@"location"];
     }
     
     // Motto
@@ -2138,7 +2142,8 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     if (match)
     {
         text = [[friendProfilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
-        [friend setObject:text forKey:@"motto"];
+        [friend setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                   forKey:@"motto"];
     }
     
     // Icon URL

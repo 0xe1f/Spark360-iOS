@@ -56,4 +56,10 @@
     FriendOnline = "Online";
     FriendPending = "Pending";
     FriendOffline = "Offline";
+    InfoGamerscore = "Gamerscore";
+    InfoRep = "Rep";
+    InfoName = "Name";
+    InfoLocation = "Location";
+    InfoMotto = "Motto";
+    InfoBio = "Bio";
 }

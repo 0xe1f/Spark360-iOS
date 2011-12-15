@@ -43,6 +43,24 @@
 		FE8CA92314745AED00A5C9EA /* AppPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA92214745AED00A5C9EA /* AppPreferences.m */; };
 		FE8EA2BA1468EE02009E26F0 /* GTMNSString+URLArguments.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */; };
 		FE9015E1148E0A6B003004E7 /* GenericListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9015E0148E0A6B003004E7 /* GenericListController.m */; };
+		FE993D53149881B00075882C /* ProfileInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE993D52149881B00075882C /* ProfileInfoCell.m */; };
+		FE993D5A149898DA0075882C /* ProfileInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE993D59149898DA0075882C /* ProfileInfoCell.xib */; };
+		FE993D5C1498A4330075882C /* ProfileGamerscoreCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE993D5B1498A4330075882C /* ProfileGamerscoreCell.xib */; };
+		FE993D5F1498A4EF0075882C /* ProfileGamerscoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE993D5E1498A4EF0075882C /* ProfileGamerscoreCell.m */; };
+		FE993D661499E6E90075882C /* ProfileRatingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE993D651499E6E90075882C /* ProfileRatingCell.m */; };
+		FE993D681499E77C0075882C /* ProfileRatingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE993D671499E77C0075882C /* ProfileRatingCell.xib */; };
+		FE993D7D1499EB3F0075882C /* xboxStar0.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D731499EB3D0075882C /* xboxStar0.png */; };
+		FE993D7E1499EB3F0075882C /* xboxStar0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D741499EB3D0075882C /* xboxStar0@2x.png */; };
+		FE993D7F1499EB3F0075882C /* xboxStar1.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D751499EB3D0075882C /* xboxStar1.png */; };
+		FE993D801499EB3F0075882C /* xboxStar1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D761499EB3E0075882C /* xboxStar1@2x.png */; };
+		FE993D811499EB3F0075882C /* xboxStar2.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D771499EB3E0075882C /* xboxStar2.png */; };
+		FE993D821499EB3F0075882C /* xboxStar2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D781499EB3E0075882C /* xboxStar2@2x.png */; };
+		FE993D831499EB3F0075882C /* xboxStar3.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D791499EB3E0075882C /* xboxStar3.png */; };
+		FE993D841499EB3F0075882C /* xboxStar3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D7A1499EB3E0075882C /* xboxStar3@2x.png */; };
+		FE993D851499EB3F0075882C /* xboxStar4.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D7B1499EB3E0075882C /* xboxStar4.png */; };
+		FE993D861499EB3F0075882C /* xboxStar4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE993D7C1499EB3E0075882C /* xboxStar4@2x.png */; };
+		FE993D881499F60D0075882C /* ProfileLargeTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE993D871499F60D0075882C /* ProfileLargeTextCell.xib */; };
+		FE993D8B1499F6B20075882C /* ProfileLargeTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */; };
 		FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */; };
 		FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */; };
 		FEA247FE148F5F91003D87C5 /* MessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA247FC148F5F90003D87C5 /* MessageListController.m */; };
@@ -60,8 +78,6 @@
 		FEC602A71494996300DD3849 /* FriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC602A61494996300DD3849 /* FriendCell.xib */; };
 		FEC602AB14949D3B00DD3849 /* GenericTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC602A914949D3B00DD3849 /* GenericTableViewController.m */; };
 		FEC602AE1494A75F00DD3849 /* FriendListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC602AD1494A75F00DD3849 /* FriendListController.xib */; };
-		FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D114782EF000537213 /* gamesTab@2x.png */; };
-		FEC7F9D414782EF000537213 /* gamesTab.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D214782EF000537213 /* gamesTab.png */; };
 		FEC7F9D61478323600537213 /* gamerScoreInverse.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9D51478323600537213 /* gamerScoreInverse.png */; };
 		FEC7F9DA1478653600537213 /* GameListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9DB1478653600537213 /* GameListController.xib */; };
 		FEC7F9F61479070F00537213 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC7F9EC1479070F00537213 /* EGORefreshTableHeaderView.m */; };
@@ -155,6 +171,28 @@
 		FE8EA2BC1468EE2E009E26F0 /* GTMGarbageCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMGarbageCollection.h; sourceTree = "<group>"; };
 		FE9015DE148E0A5D003004E7 /* GenericListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericListController.h; sourceTree = "<group>"; };
 		FE9015E0148E0A6B003004E7 /* GenericListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericListController.m; sourceTree = "<group>"; };
+		FE993D51149881B00075882C /* ProfileInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileInfoCell.h; sourceTree = "<group>"; };
+		FE993D52149881B00075882C /* ProfileInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileInfoCell.m; sourceTree = "<group>"; };
+		FE993D59149898DA0075882C /* ProfileInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileInfoCell.xib; sourceTree = "<group>"; };
+		FE993D5B1498A4330075882C /* ProfileGamerscoreCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileGamerscoreCell.xib; sourceTree = "<group>"; };
+		FE993D5D1498A4EF0075882C /* ProfileGamerscoreCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileGamerscoreCell.h; sourceTree = "<group>"; };
+		FE993D5E1498A4EF0075882C /* ProfileGamerscoreCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileGamerscoreCell.m; sourceTree = "<group>"; };
+		FE993D641499E6E80075882C /* ProfileRatingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileRatingCell.h; sourceTree = "<group>"; };
+		FE993D651499E6E90075882C /* ProfileRatingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileRatingCell.m; sourceTree = "<group>"; };
+		FE993D671499E77C0075882C /* ProfileRatingCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileRatingCell.xib; sourceTree = "<group>"; };
+		FE993D731499EB3D0075882C /* xboxStar0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxStar0.png; sourceTree = "<group>"; };
+		FE993D741499EB3D0075882C /* xboxStar0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStar0@2x.png"; sourceTree = "<group>"; };
+		FE993D751499EB3D0075882C /* xboxStar1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxStar1.png; sourceTree = "<group>"; };
+		FE993D761499EB3E0075882C /* xboxStar1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStar1@2x.png"; sourceTree = "<group>"; };
+		FE993D771499EB3E0075882C /* xboxStar2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxStar2.png; sourceTree = "<group>"; };
+		FE993D781499EB3E0075882C /* xboxStar2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStar2@2x.png"; sourceTree = "<group>"; };
+		FE993D791499EB3E0075882C /* xboxStar3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxStar3.png; sourceTree = "<group>"; };
+		FE993D7A1499EB3E0075882C /* xboxStar3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStar3@2x.png"; sourceTree = "<group>"; };
+		FE993D7B1499EB3E0075882C /* xboxStar4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxStar4.png; sourceTree = "<group>"; };
+		FE993D7C1499EB3E0075882C /* xboxStar4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStar4@2x.png"; sourceTree = "<group>"; };
+		FE993D871499F60D0075882C /* ProfileLargeTextCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileLargeTextCell.xib; sourceTree = "<group>"; };
+		FE993D891499F6B10075882C /* ProfileLargeTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileLargeTextCell.h; sourceTree = "<group>"; };
+		FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileLargeTextCell.m; sourceTree = "<group>"; };
 		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
 		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITableViewTextFieldCell.h; path = ../UITableViewTextFieldCell.h; sourceTree = "<group>"; };
 		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UITableViewTextFieldCell.m; path = ../UITableViewTextFieldCell.m; sourceTree = "<group>"; };
@@ -182,8 +220,6 @@
 		FEC602A814949D3B00DD3849 /* GenericTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericTableViewController.h; sourceTree = "<group>"; };
 		FEC602A914949D3B00DD3849 /* GenericTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericTableViewController.m; sourceTree = "<group>"; };
 		FEC602AD1494A75F00DD3849 /* FriendListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendListController.xib; sourceTree = "<group>"; };
-		FEC7F9D114782EF000537213 /* gamesTab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamesTab@2x.png"; sourceTree = "<group>"; };
-		FEC7F9D214782EF000537213 /* gamesTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamesTab.png; sourceTree = "<group>"; };
 		FEC7F9D51478323600537213 /* gamerScoreInverse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScoreInverse.png; sourceTree = "<group>"; };
 		FEC7F9DB1478653600537213 /* GameListController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GameListController.xib; sourceTree = "<group>"; };
 		FEC7F9EB1479070F00537213 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
@@ -236,9 +272,17 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE993D731499EB3D0075882C /* xboxStar0.png */,
+				FE993D741499EB3D0075882C /* xboxStar0@2x.png */,
+				FE993D751499EB3D0075882C /* xboxStar1.png */,
+				FE993D761499EB3E0075882C /* xboxStar1@2x.png */,
+				FE993D771499EB3E0075882C /* xboxStar2.png */,
+				FE993D781499EB3E0075882C /* xboxStar2@2x.png */,
+				FE993D791499EB3E0075882C /* xboxStar3.png */,
+				FE993D7A1499EB3E0075882C /* xboxStar3@2x.png */,
+				FE993D7B1499EB3E0075882C /* xboxStar4.png */,
+				FE993D7C1499EB3E0075882C /* xboxStar4@2x.png */,
 				FEC7F9D51478323600537213 /* gamerScoreInverse.png */,
-				FEC7F9D114782EF000537213 /* gamesTab@2x.png */,
-				FEC7F9D214782EF000537213 /* gamesTab.png */,
 				FE3FE14C13F72F7E009467EF /* gamerScore.png */,
 			);
 			path = Images;
@@ -261,6 +305,7 @@
 		FE5CAE1413F728E5004BC903 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FE993D54149891E20075882C /* Cells */,
 				FE3AB9C814973D790056E87F /* FriendProfileController.xib */,
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
@@ -283,6 +328,7 @@
 		FE5CAE1613F72980004BC903 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				FE993D50149881880075882C /* UI */,
 				FE8CA92114745AED00A5C9EA /* AppPreferences.h */,
 				FE8CA92214745AED00A5C9EA /* AppPreferences.m */,
 				FEC84023148C2F2C005BC782 /* TaskController.h */,
@@ -433,6 +479,32 @@
 			path = GenericKeychain;
 			sourceTree = "<group>";
 		};
+		FE993D50149881880075882C /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				FE993D51149881B00075882C /* ProfileInfoCell.h */,
+				FE993D52149881B00075882C /* ProfileInfoCell.m */,
+				FE993D5D1498A4EF0075882C /* ProfileGamerscoreCell.h */,
+				FE993D5E1498A4EF0075882C /* ProfileGamerscoreCell.m */,
+				FE993D641499E6E80075882C /* ProfileRatingCell.h */,
+				FE993D651499E6E90075882C /* ProfileRatingCell.m */,
+				FE993D891499F6B10075882C /* ProfileLargeTextCell.h */,
+				FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		FE993D54149891E20075882C /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				FE993D59149898DA0075882C /* ProfileInfoCell.xib */,
+				FE993D5B1498A4330075882C /* ProfileGamerscoreCell.xib */,
+				FE993D671499E77C0075882C /* ProfileRatingCell.xib */,
+				FE993D871499F60D0075882C /* ProfileLargeTextCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		FE9E371413F8EA2300A6EE36 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -568,8 +640,6 @@
 				FEFF552814679ED900190D58 /* AccountCell.xib in Resources */,
 				FEC7F9DA1478653600537213 /* GameListController.xib in Resources */,
 				FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */,
-				FEC7F9D314782EF000537213 /* gamesTab@2x.png in Resources */,
-				FEC7F9D414782EF000537213 /* gamesTab.png in Resources */,
 				FEC7F9D61478323600537213 /* gamerScoreInverse.png in Resources */,
 				FEC7F9F71479070F00537213 /* blackArrow.png in Resources */,
 				FEC7F9F81479070F00537213 /* blackArrow@2x.png in Resources */,
@@ -591,6 +661,20 @@
 				FE80A8461495A39300040D79 /* iphone_normal.png in Resources */,
 				FE80A8481495A39A00040D79 /* iphone_hires.png in Resources */,
 				FE3AB9CA14973D790056E87F /* FriendProfileController.xib in Resources */,
+				FE993D5A149898DA0075882C /* ProfileInfoCell.xib in Resources */,
+				FE993D5C1498A4330075882C /* ProfileGamerscoreCell.xib in Resources */,
+				FE993D681499E77C0075882C /* ProfileRatingCell.xib in Resources */,
+				FE993D7D1499EB3F0075882C /* xboxStar0.png in Resources */,
+				FE993D7E1499EB3F0075882C /* xboxStar0@2x.png in Resources */,
+				FE993D7F1499EB3F0075882C /* xboxStar1.png in Resources */,
+				FE993D801499EB3F0075882C /* xboxStar1@2x.png in Resources */,
+				FE993D811499EB3F0075882C /* xboxStar2.png in Resources */,
+				FE993D821499EB3F0075882C /* xboxStar2@2x.png in Resources */,
+				FE993D831499EB3F0075882C /* xboxStar3.png in Resources */,
+				FE993D841499EB3F0075882C /* xboxStar3@2x.png in Resources */,
+				FE993D851499EB3F0075882C /* xboxStar4.png in Resources */,
+				FE993D861499EB3F0075882C /* xboxStar4@2x.png in Resources */,
+				FE993D881499F60D0075882C /* ProfileLargeTextCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -642,6 +726,10 @@
 				FEC602AB14949D3B00DD3849 /* GenericTableViewController.m in Sources */,
 				FE80A8441495496500040D79 /* XboxLive.m in Sources */,
 				FE3AB9C914973D790056E87F /* FriendProfileController.m in Sources */,
+				FE993D53149881B00075882C /* ProfileInfoCell.m in Sources */,
+				FE993D5F1498A4EF0075882C /* ProfileGamerscoreCell.m in Sources */,
+				FE993D661499E6E90075882C /* ProfileRatingCell.m in Sources */,
+				FE993D8B1499F6B20075882C /* ProfileLargeTextCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

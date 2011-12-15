@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "GenericController.h"
+#import "ProfileInfoCell.h"
 
 @interface FriendProfileController : GenericController
 
@@ -18,6 +19,10 @@
 @property (nonatomic, retain) NSString *friendUid;
 @property (nonatomic, retain) NSString *friendScreenName;
 @property (nonatomic, assign) BOOL isStale;
+
+@property (nonatomic, retain) NSMutableDictionary *properties;
+@property (nonatomic, retain) NSArray *propertyKeys;
+@property (nonatomic, retain) NSDictionary *propertyTitles;
 
 -(id)initWithFriendUid:(NSString*)uid
                account:(XboxLiveAccount*)account;

@@ -102,10 +102,8 @@
 								<int key="IBUIBaselineAdjustment">1</int>
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">10</float>
-								<object class="IBUIFontDescription" key="IBUIFontDescription" id="1020213296">
-									<string key="name">Helvetica</string>
-									<string key="family">Helvetica</string>
-									<int key="traits">0</int>
+								<object class="IBUIFontDescription" key="IBUIFontDescription" id="541307962">
+									<int key="type">1</int>
 									<double key="pointSize">11</double>
 								</object>
 								<object class="NSFont" key="IBUIFont" id="524663198">
@@ -136,10 +134,7 @@
 								<int key="IBUIBaselineAdjustment">1</int>
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">10</float>
-								<object class="IBUIFontDescription" key="IBUIFontDescription">
-									<int key="type">1</int>
-									<double key="pointSize">11</double>
-								</object>
+								<reference key="IBUIFontDescription" ref="541307962"/>
 								<reference key="IBUIFont" ref="524663198"/>
 							</object>
 							<object class="IBUILabel" id="1020157203">
@@ -165,7 +160,7 @@
 								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">10</float>
 								<int key="IBUITextAlignment">2</int>
-								<reference key="IBUIFontDescription" ref="1020213296"/>
+								<reference key="IBUIFontDescription" ref="541307962"/>
 								<reference key="IBUIFont" ref="524663198"/>
 							</object>
 							<object class="IBUIImageView" id="125735340">
@@ -185,7 +180,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{300, 36}, {12, 12}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:541</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
