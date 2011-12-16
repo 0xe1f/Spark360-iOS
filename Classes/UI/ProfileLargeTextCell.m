@@ -10,6 +10,21 @@
 
 @implementation ProfileLargeTextCell
 
+-(void)setText:(NSString*)text
+{
+    UILabel *label = self.value;
+    label.text = text;
+    
+    CGSize maximumLabelSize = CGSizeMake(label.frame.size.width, 9999);
+    CGSize expectedLabelSize = [text sizeWithFont:label.font
+                                constrainedToSize:maximumLabelSize
+                                    lineBreakMode:label.lineBreakMode];
+    
+    CGRect newFrame = label.frame;
+    newFrame.size.height = expectedLabelSize.height;
+    label.frame = newFrame;
+}
+
 -(NSString*)reuseIdentifier
 {
     return @"largeTextCell";

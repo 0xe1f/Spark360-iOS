@@ -8,11 +8,14 @@
 
 #import "FriendProfileController.h"
 
+#import "XboxLive.h"
+#import "CFImageCache.h"
 #import "TaskController.h"
 #import "ProfileInfoCell.h"
 #import "ProfileGamerscoreCell.h"
 #import "ProfileRatingCell.h"
 #import "ProfileLargeTextCell.h"
+#import "ProfileStatusCell.h"
 
 @interface FriendProfileController (Private) 
 
@@ -54,6 +57,7 @@
                              @"bio",
                              nil];
         self.propertyTitles = [NSDictionary dictionaryWithObjectsAndKeys:
+                               @"InfoStatus", @"statusCode",
                                @"InfoGamerscore", @"gamerscore",
                                @"InfoRep", @"rep",
                                @"InfoMotto", @"motto",
@@ -108,16 +112,119 @@
 
 #pragma mark Table view data source
 
-- (NSInteger)tableView:(UITableView *)tv 
+- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
+{
+    return 2;
+}
+
+- (NSString*)tableView:(UITableView *)tableView 
+ titleForHeaderInSection:(NSInteger)section
+{
+    if (section == 0)
+    {
+        return NSLocalizedString(@"CurrentStatus", nil);
+    }
+    else if (section == 1)
+    {
+        return NSLocalizedString(@"Statistics", nil);
+    }
+    
+    return nil;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView 
  numberOfRowsInSection:(NSInteger)section 
 {
-    return [self.propertyKeys count];
+    if (section == 0)
+    {
+        return 1;
+    }
+    else if (section == 1)
+    {
+        return [self.propertyKeys count];
+    }
+    
+    return 0;
+}
+
+- (CGFloat)tableView:tableView 
+heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0)
+    {
+        return 68;
+    }
+    else if (indexPath.section == 1)
+    {
+        NSString *infoKey = [self.propertyKeys objectAtIndex:indexPath.row];
+        if ([infoKey isEqualToString:@"bio"])
+        {
+            NSString *text = [self.properties objectForKey:infoKey];
+            
+            CGSize s = [text sizeWithFont:[UIFont systemFontOfSize:12] 
+                        constrainedToSize:CGSizeMake(280, 500)];
+            
+            return s.height + 24;
+        }
+        
+        return 24;
+    }
+    
+    return 0;
+}
+
+- (void)imageLoaded:(NSString*)url
+{
+    // TODO: this causes a full data reload; not a good idea
+    [self.tableView reloadData];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv 
          cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     if (indexPath.section == 0)
+    {
+        ProfileStatusCell *statusCell = (ProfileStatusCell*)[self.tableView dequeueReusableCellWithIdentifier:@"statusCell"];
+        
+        if (!statusCell)
+        {
+            UINib *cellNib = [UINib nibWithNibName:@"ProfileStatusCell" 
+                                            bundle:nil];
+            
+            NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil options:nil];
+            
+            for (id object in topLevelObjects)
+            {
+                if ([object isKindOfClass:[UITableViewCell class]])
+                {
+                    statusCell = (ProfileStatusCell *)object;
+                    break;
+                }
+            }
+        }
+        
+        int statusCode = [[self.properties objectForKey:@"statusCode"] intValue];
+        
+        statusCell.status.text = [XboxLive descriptionFromFriendStatus:statusCode];
+        statusCell.activity.text = [self.properties objectForKey:@"activityText"];
+        
+        UIImage *boxArt = [[CFImageCache sharedInstance]
+                           getCachedFile:[self.properties objectForKey:@"activityTitleIconUrl"]
+                           notifyObject:self
+                           notifySelector:@selector(imageLoaded:)];
+        
+        [statusCell.titleIcon setImage:boxArt];
+        
+        UIImage *gamerpic = [[CFImageCache sharedInstance]
+                  getCachedFile:[self.properties objectForKey:@"iconUrl"]
+                             notifyObject:self
+                             notifySelector:@selector(imageLoaded:)];
+        
+        [statusCell.gamerpic setImage:gamerpic];
+        
+        return statusCell;
+    }
+    else if (indexPath.section == 1)
     {
         NSString *infoKey = [self.propertyKeys objectAtIndex:indexPath.row];
         
@@ -147,7 +254,7 @@
             }
             
             largeTextCell.name.text = name;
-            largeTextCell.value.text = value;
+            [largeTextCell setText:value];
             
             return largeTextCell;
         }
@@ -235,109 +342,7 @@
     }
     
     return nil;
-    /*
-    if (!cell)
-    {
-        cell = [[[ProfileInfoCell alloc] initWithStyle:UITableViewCellStyleDefault 
-                                       reuseIdentifier:@"NoCell"] autorelease];
-    }
-    */
-    /*
-     if ([indexPath section] == 0) 
-     {
-     if(indexPath.row == 0) 
-     {
-     self.usernameCell = (UITableViewTextFieldCell *)[self.tableView dequeueReusableCellWithIdentifier:@"UsernameCell"];
-     
-     if (self.usernameCell == nil) 
-     {
-     self.usernameCell = [[[UITableViewTextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault 
-     reuseIdentifier:@"UsernameCell"] autorelease];
-     self.usernameCell.textLabel.text = NSLocalizedString(@"Username", @"");
-     
-     usernameTextField = [self.usernameCell.textField retain];
-     usernameTextField.placeholder = NSLocalizedString(@"XboxLiveUsername", @"");
-     usernameTextField.keyboardType = UIKeyboardTypeDefault;
-     usernameTextField.returnKeyType = UIReturnKeyNext;
-     usernameTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-     usernameTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-     usernameTextField.delegate = self;
-     [usernameTextField becomeFirstResponder];
-     
-     usernameTextField.text = self.emailAddress;
-     }
-     
-     return self.usernameCell;
-     }
-     else if(indexPath.row == 1) 
-     {
-     self.passwordCell = (UITableViewTextFieldCell *)[self.tableView dequeueReusableCellWithIdentifier:@"PasswordCell"];
-     if (self.passwordCell == nil) 
-     {
-     self.passwordCell = [[[UITableViewTextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault 
-     reuseIdentifier:@"PasswordCell"] autorelease];
-     self.passwordCell.textLabel.text = NSLocalizedString(@"Password", @"");
-     
-     passwordTextField = [self.passwordCell.textField retain];
-     passwordTextField.placeholder = NSLocalizedString(@"XboxLivePassword", @"");
-     passwordTextField.keyboardType = UIKeyboardTypeDefault;
-     passwordTextField.secureTextEntry = YES;
-     passwordTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-     passwordTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-     passwordTextField.delegate = self;
-     
-     passwordTextField.text = self.password;
-     }
-     return self.passwordCell;
-     }
-     }
-     
-     // We shouldn't reach this point, but return an empty cell just in case
-     return [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"NoCell"] autorelease];
-     */
-    /*
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    if (!cell)
-    {
-        UINib *cellNib = [UINib nibWithNibName:@"FriendProfileInfoCell" bundle:nil];
-        [cellNib instantiateWithOwner:self options:nil];
-        
-        cell = self.tvCell;
-        //[[NSBundle mainBundle] loadNibNamed:@"ProfileInfoCell" owner:self options:nil];
-    }
-    
-    ProfileInfoCell *infoCell = (ProfileInfoCell*)cell;
-    
-    NSString *infoKey = [self.propertyKeys objectAtIndex:indexPath.row];
-    id value = [self.properties objectForKey:infoKey];
-    
-    if (value)
-    {
-        
-        infoCell.name.text = NSLocalizedString([self.propertyTitles objectForKey:infoKey], nil);
-        if ([value isKindOfClass:[NSString class]])
-        {
-            infoCell.value.text = value;
-        }
-    }
-    
-    return cell;
-     */
 }
-
-/*
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section 
-{
-	switch (section) 
-    {
-        case 0:
-            return NSLocalizedString(@"LoginInfo", nil);
-		default:
-            return nil;
-	}
-    return nil;
-}
-*/
 
 #pragma mark - Misc
 
@@ -374,7 +379,21 @@
         
         [self.properties removeAllObjects];
         
-        for (NSString *key in self.propertyKeys) 
+        NSArray *loadKeys = [NSArray arrayWithObjects:
+                             @"screenName",
+                             @"activityText",
+                             @"activityTitleIconUrl",
+                             @"iconUrl",
+                             @"statusCode",
+                             @"gamerscore",
+                             @"rep",
+                             @"name",
+                             @"location",
+                             @"motto",
+                             @"bio",
+                             nil];
+        
+        for (NSString *key in loadKeys) 
         {
             id value = [friend valueForKey:key];
             if (value)

@@ -12,4 +12,6 @@
 
 @interface ProfileLargeTextCell : ProfileInfoCell
 
+-(void)setText:(NSString*)text;
+
 @end

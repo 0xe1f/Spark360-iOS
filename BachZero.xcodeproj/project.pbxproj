@@ -71,6 +71,8 @@
 		FEAC6F1B13EA7F73000D86D1 /* GameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */; };
 		FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */; };
 		FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14013E6404900095480 /* GTMNSString+HTML.m */; };
+		FEC24B76149B31F3008058BF /* ProfileStatusCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */; };
+		FEC24B79149B3400008058BF /* ProfileStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC24B78149B3400008058BF /* ProfileStatusCell.m */; };
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
 		FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA7146BB25400D31608 /* AccountListController.m */; };
 		FEC26EAC146BB25400D31608 /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA9146BB25400D31608 /* GameListController.m */; };
@@ -208,6 +210,9 @@
 		FEB3E13E13E6404900095480 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		FEB3E13F13E6404900095480 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		FEB3E14013E6404900095480 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileStatusCell.xib; sourceTree = "<group>"; };
+		FEC24B77149B3400008058BF /* ProfileStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileStatusCell.h; sourceTree = "<group>"; };
+		FEC24B78149B3400008058BF /* ProfileStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileStatusCell.m; sourceTree = "<group>"; };
 		FEC26EA4146BB25400D31608 /* AccountAddController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountAddController.h; sourceTree = "<group>"; };
 		FEC26EA5146BB25400D31608 /* AccountAddController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountAddController.m; sourceTree = "<group>"; };
 		FEC26EA6146BB25400D31608 /* AccountListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountListController.h; sourceTree = "<group>"; };
@@ -490,6 +495,8 @@
 				FE993D651499E6E90075882C /* ProfileRatingCell.m */,
 				FE993D891499F6B10075882C /* ProfileLargeTextCell.h */,
 				FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */,
+				FEC24B77149B3400008058BF /* ProfileStatusCell.h */,
+				FEC24B78149B3400008058BF /* ProfileStatusCell.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -501,6 +508,7 @@
 				FE993D5B1498A4330075882C /* ProfileGamerscoreCell.xib */,
 				FE993D671499E77C0075882C /* ProfileRatingCell.xib */,
 				FE993D871499F60D0075882C /* ProfileLargeTextCell.xib */,
+				FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -675,6 +683,7 @@
 				FE993D851499EB3F0075882C /* xboxStar4.png in Resources */,
 				FE993D861499EB3F0075882C /* xboxStar4@2x.png in Resources */,
 				FE993D881499F60D0075882C /* ProfileLargeTextCell.xib in Resources */,
+				FEC24B76149B31F3008058BF /* ProfileStatusCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -730,6 +739,7 @@
 				FE993D5F1498A4EF0075882C /* ProfileGamerscoreCell.m in Sources */,
 				FE993D661499E6E90075882C /* ProfileRatingCell.m in Sources */,
 				FE993D8B1499F6B20075882C /* ProfileLargeTextCell.m in Sources */,
+				FEC24B79149B3400008058BF /* ProfileStatusCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

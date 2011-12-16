@@ -62,4 +62,7 @@
     InfoLocation = "Location";
     InfoMotto = "Motto";
     InfoBio = "Bio";
+    InfoStatus = "Status";
+    CurrentStatus = "Current Status";
+    Statistics = "Statistics";
 }
