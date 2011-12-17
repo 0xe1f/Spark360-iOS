@@ -11,6 +11,7 @@
 #import "XboxLive.h"
 #import "CFImageCache.h"
 #import "TaskController.h"
+
 #import "ProfileInfoCell.h"
 #import "ProfileGamerscoreCell.h"
 #import "ProfileRatingCell.h"
@@ -114,17 +115,17 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
 {
-    return 2;
+    return 3;
 }
 
 - (NSString*)tableView:(UITableView *)tableView 
  titleForHeaderInSection:(NSInteger)section
 {
-    if (section == 0)
+    if (section == 1)
     {
         return NSLocalizedString(@"CurrentStatus", nil);
     }
-    else if (section == 1)
+    else if (section == 2)
     {
         return NSLocalizedString(@"Statistics", nil);
     }
@@ -137,14 +138,14 @@
 {
     if (section == 0)
     {
-        return 1;
+        return 0;
     }
-    else if (section == 1)
+    else if (section == 2)
     {
         return [self.propertyKeys count];
     }
     
-    return 0;
+    return 1;
 }
 
 - (CGFloat)tableView:tableView 
@@ -152,9 +153,13 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0)
     {
-        return 68;
+        return 0;
     }
     else if (indexPath.section == 1)
+    {
+        return 68;
+    }
+    else if (indexPath.section == 2)
     {
         NSString *infoKey = [self.propertyKeys objectAtIndex:indexPath.row];
         if ([infoKey isEqualToString:@"bio"])
@@ -173,16 +178,13 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     return 0;
 }
 
-- (void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tv 
          cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     if (indexPath.section == 0)
+    {
+    }
+    else if (indexPath.section == 1)
     {
         ProfileStatusCell *statusCell = (ProfileStatusCell*)[self.tableView dequeueReusableCellWithIdentifier:@"statusCell"];
         
@@ -224,7 +226,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         
         return statusCell;
     }
-    else if (indexPath.section == 1)
+    else if (indexPath.section == 2)
     {
         NSString *infoKey = [self.propertyKeys objectAtIndex:indexPath.row];
         
@@ -346,6 +348,12 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Misc
 
+- (void)imageLoaded:(NSString*)url
+{
+    // TODO: this causes a full data reload; not a good idea
+    [self.tableView reloadData];
+}
+
 -(void)syncCompleted:(NSNotification *)notification
 {
     NSLog(@"Got sync completed notification");
@@ -381,6 +389,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         
         NSArray *loadKeys = [NSArray arrayWithObjects:
                              @"screenName",
+                             @"avatarUrl",
                              @"activityText",
                              @"activityTitleIconUrl",
                              @"iconUrl",

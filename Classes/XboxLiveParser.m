@@ -101,6 +101,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 +(NSDate*)ticksFromJSONString:(NSString*)jsonTicks;
 -(NSString*)largeGamerpicFromIconUrl:(NSString*)url;
 -(NSString*)gamerpicUrlForGamertag:(NSString*)gamertag;
+-(NSString*)avatarUrlForGamertag:(NSString*)gamertag;
 
 -(NSManagedObject*)profileForAccount:(XboxLiveAccount*)account;
 -(NSManagedObject*)getGameWithTitleId:(NSString*)titleId
@@ -213,6 +214,7 @@ NSString* const PATTERN_ACH_JSON = @"loadActivityDetailsView\\((.*)\\);\\s*\\}\\
 
 NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/HiddenAchievement.png";
 NSString* const URL_GAMERPIC = @"http://avatar.xboxlive.com/avatar/%@/avatarpic-l.png";
+NSString* const URL_AVATAR_BODY = @"http://avatar.xboxlive.com/avatar/%@/avatar-body.png";
 
 NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@boxart.jpg";
 
@@ -935,7 +937,11 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         [profile setValue:account.uuid forKey:@"uuid"];
     }
     
-    [profile setValue:[dict objectForKey:@"screenName"] forKey:@"screenName"];
+    NSString *gamertag = [dict objectForKey:@"screenName"];
+    
+    [profile setValue:gamertag forKey:@"screenName"];
+    [profile setValue:[self avatarUrlForGamertag:gamertag] forKey:@"avatarUrl"];
+    
     [profile setValue:[dict objectForKey:@"iconUrl"] forKey:@"iconUrl"];
     [profile setValue:[dict objectForKey:@"tier"] forKey:@"tier"];
     [profile setValue:[dict objectForKey:@"pointsBalance"] forKey:@"pointsBalance"];
@@ -1408,8 +1414,11 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         // We now have an object (new or existing)
         // Handle the rest of the data
         
+        NSString *gamertag = [inFriend objectForKey:@"screenName"];
+        
+        [friend setValue:gamertag forKey:@"screenName"];
+        [friend setValue:[self avatarUrlForGamertag:gamertag] forKey:@"avatarUrl"];
         [friend setValue:lastUpdated forKey:@"lastUpdated"];
-        [friend setValue:[inFriend objectForKey:@"screenName"] forKey:@"screenName"];
         [friend setValue:[inFriend objectForKey:@"isOnline"] forKey:@"isOnline"];
         [friend setValue:[inFriend objectForKey:@"iconUrl"] forKey:@"iconUrl"];
         [friend setValue:[inFriend objectForKey:@"gamerscore"] forKey:@"gamerscore"];
@@ -2918,6 +2927,15 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
         return nil;
     
     return [NSString stringWithFormat:URL_GAMERPIC,
+            [gamertag gtm_stringByEscapingForURLArgument]];
+}
+
+-(NSString*)avatarUrlForGamertag:(NSString *)gamertag
+{
+    if (!gamertag)
+        return nil;
+    
+    return [NSString stringWithFormat:URL_AVATAR_BODY,
             [gamertag gtm_stringByEscapingForURLArgument]];
 }
 

@@ -18,6 +18,7 @@
         <attribute name="activityTitleIconUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="activityTitleId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="activityTitleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="avatarUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="bio" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gamerscore" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="iconUrl" optional="YES" attributeType="String" syncable="YES"/>
@@ -69,6 +70,7 @@
         <relationship name="profile" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxProfile" syncable="YES"/>
     </entity>
     <entity name="XboxProfile" representedClassName="" syncable="YES">
+        <attribute name="avatarUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gamerscore" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="iconUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isGold" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -86,9 +88,9 @@
     </entity>
     <elements>
         <element name="XboxAchievement" positionX="160" positionY="192" width="128" height="210"/>
-        <element name="XboxFriend" positionX="160" positionY="192" width="128" height="375"/>
+        <element name="XboxFriend" positionX="160" positionY="192" width="128" height="390"/>
         <element name="XboxGame" positionX="-162" positionY="201" width="128" height="240"/>
         <element name="XboxMessage" positionX="160" positionY="192" width="128" height="255"/>
-        <element name="XboxProfile" positionX="160" positionY="192" width="128" height="255"/>
+        <element name="XboxProfile" positionX="160" positionY="192" width="128" height="270"/>
     </elements>
 </model>

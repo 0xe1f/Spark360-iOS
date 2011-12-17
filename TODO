@@ -11,3 +11,4 @@
 * Investigate the effects of commenting out the assertion in KeyChainWrapper:315!
 * Add 'default' game icon 
 * App seems to be logging in excessively - investigate cookie saves
+* Add avatars to profiles

@@ -183,25 +183,44 @@
                                                         notifyObject:self
                                                       notifySelector:@selector(imageLoaded:)];
     
+    
+    if (!gamerpic)
+    {
+        NSString *imageName = [[NSBundle mainBundle] pathForResource:@"xboxDefaultGamerpic"
+                                                              ofType:@"png"];
+        gamerpic = [[[UIImage alloc] initWithContentsOfFile:imageName] autorelease];
+    }
+    
     icon = (UIImageView*)[cell viewWithTag:6];
     [icon setImage:gamerpic];
     
     // Box art
     
-    UIImage *boxArt = [[CFImageCache sharedInstance] getCachedFile:[obj valueForKey:@"activityTitleIconUrl"]
+    NSString *boxArtUrl = [obj valueForKey:@"activityTitleIconUrl"];
+    UIImage *boxArt = [[CFImageCache sharedInstance] getCachedFile:boxArtUrl
                                                       notifyObject:self
                                                     notifySelector:@selector(imageLoaded:)];
+    UIImage *thumbnail;
     
-    // TODO: Inefficient, pre-scale
-    CGImageRef imageRef = CGImageCreateWithImageInRect([boxArt CGImage], 
-                                                       CGRectMake(0, 16, 85, 85));
-    UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
+    if (!boxArtUrl)
+    {
+        NSString *imageName = [[NSBundle mainBundle] pathForResource:@"xboxDefaultCroppedBoxart"
+                                                              ofType:@"png"];
+        thumbnail = [[[UIImage alloc] initWithContentsOfFile:imageName] autorelease];
+    }
+    else
+    {
+        // TODO: Inefficient, pre-scale
+        CGImageRef imageRef = CGImageCreateWithImageInRect([boxArt CGImage], 
+                                                           CGRectMake(0, 16, 85, 85));
+        thumbnail = [UIImage imageWithCGImage:imageRef];
+        icon = (UIImageView*)[cell viewWithTag:7];
+        
+        CGImageRelease(imageRef);
+    }
     
-    icon = (UIImageView*)[cell viewWithTag:7];
     [icon setImage:thumbnail];
     [icon setClipsToBounds:YES];
-    
-    CGImageRelease(imageRef);
 }
 
 - (void)imageLoaded:(NSString*)url
