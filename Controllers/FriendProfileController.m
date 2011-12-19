@@ -18,6 +18,12 @@
 #import "ProfileLargeTextCell.h"
 #import "ProfileStatusCell.h"
 
+#define OK_BUTTON_INDEX 1
+
+#define STATUS_FRIEND      1000
+#define STATUS_INVITE_SENT 1001
+#define STATUS_INVITE_RCVD 1002
+
 @interface FriendProfileController (Private) 
 
 -(void)updateFriendStats;
@@ -33,6 +39,7 @@
 @synthesize friendUid;
 @synthesize friendScreenName;
 @synthesize isStale;
+@synthesize friendStatus;
 
 @synthesize properties = _properties;
 @synthesize propertyKeys = _propertyKeys;
@@ -346,7 +353,55 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     return nil;
 }
 
-#pragma mark - Misc
+#pragma mark - UIActionSheetDelegate
+
+-(void)actionSheet:(UIActionSheet *)actionSheet 
+didDismissWithButtonIndex:(NSInteger)buttonIndex 
+{
+    if (actionSheet.tag == STATUS_FRIEND)
+    {
+        if (buttonIndex == 0) // Delete friend
+        {
+            [[TaskController sharedInstance] removeFromFriendsScreenName:self.friendScreenName
+                                                                 account:self.account
+                                                    managedObjectContext:managedObjectContext];
+            
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
+    else if (actionSheet.tag == STATUS_INVITE_RCVD)
+    {
+        if (buttonIndex == 0) // Approve request
+        {
+            [[TaskController sharedInstance] approveFriendRequestScreenName:self.friendScreenName
+                                                                    account:self.account
+                                                       managedObjectContext:managedObjectContext];
+            
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+        else if (buttonIndex == 1) // Reject request
+        {
+            [[TaskController sharedInstance] rejectFriendRequestScreenName:self.friendScreenName
+                                                                   account:self.account
+                                                      managedObjectContext:managedObjectContext];
+            
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
+    else if (actionSheet.tag == STATUS_INVITE_SENT)
+    {
+        if (buttonIndex == 0) // Cancel request
+        {
+            [[TaskController sharedInstance] cancelFriendRequestScreenName:self.friendScreenName
+                                                                   account:self.account
+                                                      managedObjectContext:managedObjectContext];
+            
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
+}
+
+#pragma mark - Notifications
 
 - (void)imageLoaded:(NSString*)url
 {
@@ -359,6 +414,24 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     NSLog(@"Got sync completed notification");
     
     [self updateFriendStats];
+}
+
+#pragma mark - Misc
+
+-(void)removeFriend
+{
+    NSString *title = NSLocalizedString(@"AreYouSure", nil);
+    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"RemoveFromFriends_f", nil),
+                         self.friendScreenName];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title 
+                                                        message:message
+                                                       delegate:self 
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel",nil) 
+                                              otherButtonTitles:NSLocalizedString(@"OK",nil), nil];
+    
+    [alertView show];
+    [alertView release];
 }
 
 -(void)updateFriendStats
@@ -384,6 +457,19 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     {
         self.friendScreenName = [friend valueForKey:@"screenName"];
         self.isStale = [self.account isDataStale:[friend valueForKey:@"profileLastUpdated"]];
+        
+        if ([[friend valueForKey:@"isIncoming"] boolValue])
+        {
+            self.friendStatus = STATUS_INVITE_RCVD;
+        }
+        else if ([[friend valueForKey:@"isOutgoing"] boolValue])
+        {
+            self.friendStatus = STATUS_INVITE_SENT;
+        }
+        else
+        {
+            self.friendStatus = STATUS_FRIEND;
+        }
         
         [self.properties removeAllObjects];
         
@@ -413,11 +499,73 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
+#pragma mark - Actions
+
 -(void)refresh:(id)sender
 {
     [[TaskController sharedInstance] synchronizeFriendProfileForUid:self.friendUid
                                                             account:self.account
                                                managedObjectContext:managedObjectContext];
+}
+
+-(void)compareGames:(id)sender
+{
+    // TODO
+}
+
+-(void)compose:(id)sender
+{
+    // TODO
+}
+
+-(void)showActionMenu:(id)sender
+{
+    UIActionSheet *actionSheet = nil;
+    if (self.friendStatus == STATUS_FRIEND)
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self 
+                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil) 
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:
+                       NSLocalizedString(@"RemoveFriend", nil), 
+                       nil];
+    }
+    else if (self.friendStatus == STATUS_INVITE_RCVD)
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self 
+                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil) 
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:
+                       NSLocalizedString(@"ApproveRequest", nil),
+                       NSLocalizedString(@"RejectRequest", nil),
+                       nil];
+    }
+    else if (self.friendStatus == STATUS_INVITE_SENT)
+    {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self 
+                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil) 
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:
+                       NSLocalizedString(@"CancelRequest", nil),
+                       nil];
+    }
+    
+    if (actionSheet)
+    {
+        actionSheet.tag = self.friendStatus;
+        actionSheet.actionSheetStyle = UIActionSheetStyleAutomatic;
+        
+        [actionSheet showInView:self.view];
+        [actionSheet release];	
+    }
+}
+
+-(void)viewFriends:(id)sender
+{
+    // TODO
 }
 
 @end

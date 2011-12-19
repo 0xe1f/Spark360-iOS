@@ -152,6 +152,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(void)writeFriends:(NSDictionary*)args;
 -(void)writeFriendProfile:(NSDictionary*)args;
 -(void)writeDeleteMessage:(NSDictionary*)args;
+-(void)writeRemoveFromFriends:(NSDictionary*)args;
 
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
                            userInfo:(NSDictionary*)userInfo;
@@ -520,6 +521,180 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                       error:&error];
     
     self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        account.lastFriendsUpdate = [NSDate distantPast];
+        [account save];
+        
+        [self postNotificationOnMainThread:BACHFriendsChanged
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)removeFromFriends:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    
+    NSError *error = nil;
+    
+    [self retrieveFriendRequestToScreenName:screenName
+                                    account:account
+                               actionToTake:FRIEND_ACTION_REMOVE
+                                      error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              screenName, @"screenName",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeRemoveFromFriends:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHFriendsChanged
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)approveFriendRequest:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    
+    NSError *error = nil;
+    
+    [self retrieveFriendRequestToScreenName:screenName
+                                    account:account
+                               actionToTake:FRIEND_ACTION_ACCEPT
+                                      error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHFriendsChanged
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    account.lastFriendsUpdate = [NSDate distantPast];
+    [account save];
+    
+    [pool release];
+}
+
+-(void)rejectFriendRequest:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    
+    NSError *error = nil;
+    
+    [self retrieveFriendRequestToScreenName:screenName
+                                    account:account
+                               actionToTake:FRIEND_ACTION_REJECT
+                                      error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              screenName, @"screenName",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeRemoveFromFriends:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHFriendsChanged
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)cancelFriendRequest:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    
+    NSError *error = nil;
+    
+    [self retrieveFriendRequestToScreenName:screenName
+                                    account:account
+                               actionToTake:FRIEND_ACTION_CANCEL
+                                      error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              screenName, @"screenName",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeRemoveFromFriends:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
     
     if (!self.lastError)
     {
@@ -1715,6 +1890,42 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [account save];
     
     NSLog(@"writeFriendProfile: %.04fs", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeRemoveFromFriends:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    NSString *screenName = [args objectForKey:@"screenName"];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"screenName == %@ AND profile.uuid == %@", 
+                              screenName, account.uuid];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    NSManagedObject *obj = [array lastObject];
+    if (obj)
+    {
+        [self.context deleteObject:obj];
+        [self.context save:NULL]; // Suppress any errors
+    }
+    
+    account.lastFriendsUpdate = [NSDate distantPast];
+    [account save];
+    
+    NSLog(@"writeRemoveFromFriends: %.04fs", 
           CFAbsoluteTimeGetCurrent() - startTime);
 }
 

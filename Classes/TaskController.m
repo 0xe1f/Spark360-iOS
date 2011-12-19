@@ -277,6 +277,102 @@ static TaskController *sharedInstance = nil;
     [op release];
 }
 
+-(void)removeFromFriendsScreenName:(NSString*)screenName
+                           account:(XboxLiveAccount*)account
+              managedObjectContext:(NSManagedObjectContext*)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.RemoveFriend:%@",
+                            account.uuid, screenName];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(removeFromFriends:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(void)approveFriendRequestScreenName:(NSString *)screenName 
+                              account:(XboxLiveAccount *)account 
+                 managedObjectContext:(NSManagedObjectContext *)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.ApproveFriendRequest:%@",
+                            account.uuid, screenName];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(approveFriendRequest:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(void)rejectFriendRequestScreenName:(NSString *)screenName 
+                             account:(XboxLiveAccount *)account
+                managedObjectContext:(NSManagedObjectContext *)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.RejectFriendRequest:%@",
+                            account.uuid, screenName];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(rejectFriendRequest:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(void)cancelFriendRequestScreenName:(NSString *)screenName
+                             account:(XboxLiveAccount *)account 
+                managedObjectContext:(NSManagedObjectContext *)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.CancelFriendRequest:%@",
+                            account.uuid, screenName];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(cancelFriendRequest:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
 -(void)deleteMessageWithUid:(NSString*)uid
                     account:(XboxLiveAccount*)account
        managedObjectContext:(NSManagedObjectContext*)moc

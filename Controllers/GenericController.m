@@ -118,7 +118,7 @@
                                                   otherButtonTitles:NSLocalizedString(@"OK",nil), nil];
     
     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(16,83,252,25)];
-    textField.borderStyle = UITextBorderStyleLine;
+    textField.borderStyle = UITextBorderStyleNone;
     textField.tag = 0xDEADBEEF;
     textField.font = [UIFont systemFontOfSize:18];
     textField.backgroundColor = [UIColor whiteColor];
@@ -126,6 +126,12 @@
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.autocorrectionType = UITextAutocorrectionTypeNo;
     textField.placeholder = placeholder;
+    
+    UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"textFieldBackground" 
+                                                                                                                                       ofType:@"png"]]];
+    backgroundImage.frame = CGRectMake(11,79,262,31);
+    [alertView addSubview:backgroundImage];
+    [backgroundImage release];
     
     [textField becomeFirstResponder];
     [alertView addSubview:textField];

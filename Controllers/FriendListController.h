@@ -22,5 +22,6 @@
 
 -(IBAction)refresh:(id)sender;
 -(IBAction)findGamertag:(id)sender;
+-(IBAction)viewRecentPlayers:(id)sender;
 
 @end

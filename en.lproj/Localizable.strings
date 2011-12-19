@@ -72,4 +72,11 @@
     AreYouSure = "Are you sure?";
     SendFriendRequestTo_f = "Send a friend request to %@?";
     FriendRequestUnsuccessful = "Friend request did not succeed - please try again shortly";
+    RemoveFromFriends_f = "Remove %@ from friends?";
+    CompareGames = "Compare Games";
+    ViewFriends = "View Friends";
+    RemoveFriend = "Remove Friend";
+    ApproveRequest = "Approve Request";
+    RejectRequest = "Reject Request";
+    CancelRequest = "Undo Request";
 }

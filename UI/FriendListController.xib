@@ -87,9 +87,10 @@
 								<int key="IBUISystemItemIdentifier">4</int>
 							</object>
 							<object class="IBUIBarButtonItem" id="152139526">
+								<string key="IBUITitle">Recent</string>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="865266878"/>
-								<int key="IBUISystemItemIdentifier">10</int>
 							</object>
 						</array>
 					</object>
@@ -175,6 +176,14 @@
 					</object>
 					<int key="connectionID">18</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">viewRecentPlayers:</string>
+						<reference key="source" ref="152139526"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">19</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -259,7 +268,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">18</int>
+			<int key="maxID">19</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -269,6 +278,7 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="findGamertag:">id</string>
 						<string key="refresh:">id</string>
+						<string key="viewRecentPlayers:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="findGamertag:">
@@ -277,6 +287,10 @@
 						</object>
 						<object class="IBActionInfo" key="refresh:">
 							<string key="name">refresh:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="viewRecentPlayers:">
+							<string key="name">viewRecentPlayers:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>

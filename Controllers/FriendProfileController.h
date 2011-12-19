@@ -11,7 +11,7 @@
 #import "GenericController.h"
 #import "ProfileInfoCell.h"
 
-@interface FriendProfileController : GenericController
+@interface FriendProfileController : GenericController<UIActionSheetDelegate>
 
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
@@ -19,6 +19,7 @@
 @property (nonatomic, retain) NSString *friendUid;
 @property (nonatomic, retain) NSString *friendScreenName;
 @property (nonatomic, assign) BOOL isStale;
+@property (nonatomic, assign) NSInteger friendStatus;
 
 @property (nonatomic, retain) NSMutableDictionary *properties;
 @property (nonatomic, retain) NSArray *propertyKeys;
@@ -28,5 +29,9 @@
                account:(XboxLiveAccount*)account;
 
 -(IBAction)refresh:(id)sender;
+-(IBAction)compareGames:(id)sender;
+-(IBAction)compose:(id)sender;
+-(IBAction)showActionMenu:(id)sender;
+-(IBAction)viewFriends:(id)sender;
 
 @end

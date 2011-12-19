@@ -1,3 +1,7 @@
+* Suppressed exceptions in FriendListController/configureCell cause rendering
+  problems when friends list changes. Figure out a way to properly handle errors,
+  and possibly redraw
+* [Account save] should be thread-safe!
 * Add network spinner when TaskControllerOp is in progress
 * When a message contains no text, add placeholder text
 * Add icons denoting the type of content in the message

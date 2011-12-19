@@ -120,7 +120,6 @@ AAgACAAIAAEAAQABAAE</bytes>
 						<int key="NSvFlags">266</int>
 						<string key="NSFrame">{{0, 416}, {320, 44}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:371</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
@@ -137,10 +136,11 @@ AAgACAAIAAEAAQABAAE</bytes>
 								<reference key="IBUIToolbar" ref="746705041"/>
 								<int key="IBUISystemItemIdentifier">5</int>
 							</object>
-							<object class="IBUIBarButtonItem" id="812707938">
+							<object class="IBUIBarButtonItem" id="187614496">
+								<string key="IBUITitle">Compare</string>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="746705041"/>
-								<int key="IBUISystemItemIdentifier">4</int>
 							</object>
 							<object class="IBUIBarButtonItem" id="437209272">
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -157,11 +157,10 @@ AAgACAAIAAEAAQABAAE</bytes>
 								<reference key="IBUIToolbar" ref="746705041"/>
 								<int key="IBUISystemItemIdentifier">5</int>
 							</object>
-							<object class="IBUIBarButtonItem" id="187614496">
-								<string key="IBUITitle">Compare</string>
+							<object class="IBUIBarButtonItem" id="812707938">
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
-								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="746705041"/>
+								<int key="IBUISystemItemIdentifier">4</int>
 							</object>
 						</array>
 					</object>
@@ -275,8 +274,8 @@ AAgACAAIAAEAAQABAAE</bytes>
 						<int key="objectID">1</int>
 						<reference key="object" ref="191373211"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="746705041"/>
 							<reference ref="36191553"/>
+							<reference ref="746705041"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -297,10 +296,10 @@ AAgACAAIAAEAAQABAAE</bytes>
 						<array class="NSMutableArray" key="children">
 							<reference ref="511605642"/>
 							<reference ref="777496598"/>
-							<reference ref="812707938"/>
 							<reference ref="613438582"/>
 							<reference ref="437209272"/>
 							<reference ref="187614496"/>
+							<reference ref="812707938"/>
 							<reference ref="842074965"/>
 						</array>
 						<reference key="parent" ref="191373211"/>

@@ -54,6 +54,10 @@ typedef enum _XboxLiveParserErrorType
 -(void)loadProfile:(NSDictionary*)arguments;
 
 -(void)sendAddFriendRequest:(NSDictionary*)arguments;
+-(void)removeFromFriends:(NSDictionary*)arguments;
+-(void)approveFriendRequest:(NSDictionary*)arguments;
+-(void)rejectFriendRequest:(NSDictionary*)arguments;
+-(void)cancelFriendRequest:(NSDictionary*)arguments;
 
 -(void)deleteMessage:(NSDictionary*)arguments;
 -(void)sendMessage:(NSDictionary*)arguments;

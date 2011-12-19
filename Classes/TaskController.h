@@ -66,6 +66,22 @@ extern NSString* const BACHNotificationNSError;
 -(void)sendAddFriendRequestToScreenName:(NSString*)screenName
                                 account:(XboxLiveAccount*)account;
 
+-(void)removeFromFriendsScreenName:(NSString*)screenName
+                           account:(XboxLiveAccount*)account
+              managedObjectContext:(NSManagedObjectContext*)moc;
+
+-(void)approveFriendRequestScreenName:(NSString*)screenName
+                       account:(XboxLiveAccount*)account
+          managedObjectContext:(NSManagedObjectContext*)moc;
+
+-(void)rejectFriendRequestScreenName:(NSString*)screenName
+                             account:(XboxLiveAccount*)account
+                managedObjectContext:(NSManagedObjectContext*)moc;
+
+-(void)cancelFriendRequestScreenName:(NSString*)screenName
+                             account:(XboxLiveAccount*)account
+                managedObjectContext:(NSManagedObjectContext*)moc;
+
 -(void)deleteMessageWithUid:(NSString*)uid
                     account:(XboxLiveAccount*)account
        managedObjectContext:(NSManagedObjectContext*)moc;

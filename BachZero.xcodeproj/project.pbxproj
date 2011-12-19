@@ -51,6 +51,7 @@
 		FE92D6D7149CA39300A7D6A5 /* xboxDefaultCroppedBoxart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6D1149CA39300A7D6A5 /* xboxDefaultCroppedBoxart@2x.png */; };
 		FE92D6D8149CA39300A7D6A5 /* xboxDefaultGamerpic.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6D2149CA39300A7D6A5 /* xboxDefaultGamerpic.png */; };
 		FE92D6D9149CA39300A7D6A5 /* xboxDefaultGamerpic@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6D3149CA39300A7D6A5 /* xboxDefaultGamerpic@2x.png */; };
+		FE98ADCD149F3CA300967286 /* textFieldBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = FE98ADCC149F3CA300967286 /* textFieldBackground.png */; };
 		FE993D53149881B00075882C /* ProfileInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE993D52149881B00075882C /* ProfileInfoCell.m */; };
 		FE993D5A149898DA0075882C /* ProfileInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE993D59149898DA0075882C /* ProfileInfoCell.xib */; };
 		FE993D5C1498A4330075882C /* ProfileGamerscoreCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE993D5B1498A4330075882C /* ProfileGamerscoreCell.xib */; };
@@ -190,6 +191,7 @@
 		FE92D6D1149CA39300A7D6A5 /* xboxDefaultCroppedBoxart@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxDefaultCroppedBoxart@2x.png"; sourceTree = "<group>"; };
 		FE92D6D2149CA39300A7D6A5 /* xboxDefaultGamerpic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxDefaultGamerpic.png; sourceTree = "<group>"; };
 		FE92D6D3149CA39300A7D6A5 /* xboxDefaultGamerpic@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxDefaultGamerpic@2x.png"; sourceTree = "<group>"; };
+		FE98ADCC149F3CA300967286 /* textFieldBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = textFieldBackground.png; sourceTree = "<group>"; };
 		FE993D51149881B00075882C /* ProfileInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileInfoCell.h; sourceTree = "<group>"; };
 		FE993D52149881B00075882C /* ProfileInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileInfoCell.m; sourceTree = "<group>"; };
 		FE993D59149898DA0075882C /* ProfileInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileInfoCell.xib; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE98ADCC149F3CA300967286 /* textFieldBackground.png */,
 				FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */,
 				FE92D6CF149CA39300A7D6A5 /* xboxDefaultBoxart@2x.png */,
 				FE92D6D0149CA39300A7D6A5 /* xboxDefaultCroppedBoxart.png */,
@@ -717,6 +720,7 @@
 				FE92D6D8149CA39300A7D6A5 /* xboxDefaultGamerpic.png in Resources */,
 				FE92D6D9149CA39300A7D6A5 /* xboxDefaultGamerpic@2x.png in Resources */,
 				FE8B882C149EA85300F7F92C /* FriendProfileController.xib in Resources */,
+				FE98ADCD149F3CA300967286 /* textFieldBackground.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -370,19 +370,6 @@
     [self.tableView endUpdates];
 }
 
--(void)refresh:(id)sender
-{
-    [self refreshUsingRefreshHeaderTableView];
-}
-
--(void)findGamertag:(id)sender
-{
-    UIAlertView *inputDialog = [self inputDialogWithTitle:NSLocalizedString(@"MembersGamertag", nil)
-                                              placeholder:nil];
-    
-    [inputDialog show];
-}
-
 -(void)alertView:(UIAlertView *)alertView 
 clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
@@ -399,6 +386,26 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             [ctlr release];
         }
     }
+}
+
+#pragma mark - Actions
+
+-(void)refresh:(id)sender
+{
+    [self refreshUsingRefreshHeaderTableView];
+}
+
+-(void)findGamertag:(id)sender
+{
+    UIAlertView *inputDialog = [self inputDialogWithTitle:NSLocalizedString(@"MembersGamertag", nil)
+                                              placeholder:nil];
+    
+    [inputDialog show];
+}
+
+-(void)viewRecentPlayers:(id)sender
+{
+    // TODO
 }
 
 @end
