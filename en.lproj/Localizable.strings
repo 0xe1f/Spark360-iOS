@@ -65,4 +65,11 @@
     InfoStatus = "Status";
     CurrentStatus = "Current Status";
     Statistics = "Statistics";
+    Cancel = "Cancel";
+    MembersGamertag = "Member's Gamertag";
+    Unknown = "Unknown";
+    XboxLiveProfileNotFound = "Xbox Live Profile not found";
+    AreYouSure = "Are you sure?";
+    SendFriendRequestTo_f = "Send a friend request to %@?";
+    FriendRequestUnsuccessful = "Friend request did not succeed - please try again shortly";
 }

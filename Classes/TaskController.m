@@ -17,12 +17,16 @@ NSString* const BACHMessagesSynced = @"BachMessagesSynced";
 NSString* const BACHFriendsSynced = @"BachFriendsSynced";
 NSString* const BACHFriendProfileSynced = @"BachFriendProfileSynced";
 
+NSString* const BACHProfileLoaded = @"BachProfileLoaded";
+NSString* const BACHFriendsChanged = @"BachFriendsChanged";
+
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
 NSString* const BACHError = @"BachError";
 
 NSString* const BACHNotificationAccount = @"BachNotifAccount";
 NSString* const BACHNotificationUid = @"BachNotifUid";
+NSString* const BACHNotificationData = @"BachNotifData";
 NSString* const BACHNotificationNSError = @"BachNotifNSError";
 
 @implementation TaskController
@@ -225,6 +229,52 @@ static TaskController *sharedInstance = nil;
     NSString *identifier = [NSString stringWithFormat:@"%@.Friend:%@",
                             account.uuid, uid];
     return [self isOperationQueuedWithId:identifier];
+}
+
+-(void)loadProfileForScreenName:(NSString*)screenName
+                        account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Profile:%@",
+                            account.uuid, screenName];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(loadProfile:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(void)sendAddFriendRequestToScreenName:(NSString*)screenName
+                                account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.AddFriend:%@",
+                            account.uuid, screenName];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(sendAddFriendRequest:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
 }
 
 -(void)deleteMessageWithUid:(NSString*)uid

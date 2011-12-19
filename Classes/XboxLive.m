@@ -16,8 +16,10 @@
         return NSLocalizedString(@"FriendOnline", nil);
     else if (status == XBLFriendPending)
         return NSLocalizedString(@"FriendPending", nil);
-    else
+    else if (status == XBLFriendOffline)
         return NSLocalizedString(@"FriendOffline", nil);
+    
+    return NSLocalizedString(@"Unknown", nil);
 }
 
 @end

@@ -50,6 +50,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{68, 0}, {206, 19}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="140157948"/>
 								<string key="NSReuseIdentifierKey">_NS:311</string>
 								<bool key="IBUIOpaque">NO</bool>
@@ -85,6 +86,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{68, 32}, {157, 21}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1020157203"/>
 								<string key="NSReuseIdentifierKey">_NS:311</string>
 								<bool key="IBUIOpaque">NO</bool>
@@ -117,6 +119,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{68, 18}, {184, 21}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="14850859"/>
 								<string key="NSReuseIdentifierKey">_NS:311</string>
 								<bool key="IBUIOpaque">NO</bool>
@@ -142,6 +145,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{222, 31}, {73, 21}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="985468771"/>
 								<string key="NSReuseIdentifierKey">_NS:311</string>
 								<bool key="IBUIOpaque">NO</bool>
@@ -168,18 +172,24 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{8, 0}, {52, 52}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="915294365"/>
 								<string key="NSReuseIdentifierKey">_NS:541</string>
 								<int key="IBUIContentMode">2</int>
 								<int key="IBUITag">6</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">xboxDefaultCroppedBoxart.png</string>
+								</object>
 							</object>
 							<object class="IBUIImageView" id="985468771">
 								<reference key="NSNextResponder" ref="981767642"/>
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{300, 36}, {12, 12}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<string key="NSReuseIdentifierKey">_NS:541</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -195,6 +205,7 @@
 						</object>
 						<string key="NSFrameSize">{320, 51}</string>
 						<reference key="NSSuperview" ref="346047580"/>
+						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="125735340"/>
 						<string key="NSReuseIdentifierKey">_NS:370</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
@@ -210,6 +221,7 @@
 				</object>
 				<string key="NSFrameSize">{320, 52}</string>
 				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="981767642"/>
 				<string key="NSReuseIdentifierKey">_NS:358</string>
 				<object class="NSColor" key="IBUIBackgroundColor">
@@ -346,7 +358,38 @@
 			<nil key="sourceID"/>
 			<int key="maxID">11</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<object class="IBPartialClassDescription">
+					<string key="className">GameListController</string>
+					<string key="superclassName">GenericListController</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">tvCell</string>
+						<string key="NS.object.0">UITableViewCell</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">tvCell</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">tvCell</string>
+							<string key="candidateClassName">UITableViewCell</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/GameListController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">GenericListController</string>
+					<string key="superclassName">UITableViewController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/GenericListController.h</string>
+					</object>
+				</object>
+			</object>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
@@ -361,11 +404,13 @@
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>gamerScore.png</string>
 				<string>gamerScoreInverse.png</string>
+				<string>xboxDefaultCroppedBoxart.png</string>
 			</object>
 			<object class="NSMutableArray" key="dict.values">
 				<bool key="EncodedWithXMLCoder">YES</bool>
 				<string>{18, 18}</string>
 				<string>{18, 18}</string>
+				<string>{64, 64}</string>
 			</object>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>

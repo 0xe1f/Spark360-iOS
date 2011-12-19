@@ -14,12 +14,16 @@ extern NSString* const BACHAchievementsSynced;
 extern NSString* const BACHMessagesSynced;
 extern NSString* const BACHFriendsSynced;
 extern NSString* const BACHFriendProfileSynced;
+extern NSString* const BACHProfileLoaded;
+extern NSString* const BACHFriendsChanged;
+
 extern NSString* const BACHMessageDeleted;
 extern NSString* const BACHMessageSent;
 extern NSString* const BACHError;
 
 extern NSString* const BACHNotificationAccount;
 extern NSString* const BACHNotificationUid;
+extern NSString* const BACHNotificationData;
 extern NSString* const BACHNotificationNSError;
 
 @interface TaskController : NSObject
@@ -50,12 +54,17 @@ extern NSString* const BACHNotificationNSError;
                managedObjectContext:(NSManagedObjectContext*)moc;
 -(BOOL)isSynchronizingFriendsForAccount:(XboxLiveAccount*)account;
 
-
 -(void)synchronizeFriendProfileForUid:(NSString*)uid
                               account:(XboxLiveAccount*)account
                  managedObjectContext:(NSManagedObjectContext*)moc;
 -(BOOL)isSynchronizingFriendProfileForUid:(NSString*)uid
                                   account:(XboxLiveAccount*)account;
+
+-(void)loadProfileForScreenName:(NSString*)screenName
+                        account:(XboxLiveAccount*)account;
+
+-(void)sendAddFriendRequestToScreenName:(NSString*)screenName
+                                account:(XboxLiveAccount*)account;
 
 -(void)deleteMessageWithUid:(NSString*)uid
                     account:(XboxLiveAccount*)account

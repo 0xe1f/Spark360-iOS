@@ -11,7 +11,11 @@
 #import "XboxLive.h"
 #import "TaskController.h"
 #import "CFImageCache.h"
+
 #import "FriendProfileController.h"
+#import "ProfileController.h"
+
+#define OK_BUTTON_INDEX 1
 
 @interface FriendListController (Private)
 
@@ -42,9 +46,27 @@
 
 -(void)syncCompleted:(NSNotification *)notification
 {
-    NSLog(@"Got sync completed notification");
+    NSLog(@"Got syncCompleted notification");
     
-    [self hideRefreshHeaderTableView];
+    XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
+    
+    if ([account isEqualToAccount:self.account])
+    {
+        [self hideRefreshHeaderTableView];
+    }
+}
+
+-(void)friendsChanged:(NSNotification *)notification
+{
+    NSLog(@"Got friendsChanged notification");
+    
+    XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
+    
+    if ([account isEqualToAccount:self.account])
+    {
+        [[TaskController sharedInstance] synchronizeFriendsForAccount:self.account
+                                                 managedObjectContext:managedObjectContext];
+    }
 }
 
 - (void)viewDidLoad
@@ -54,6 +76,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(syncCompleted:)
                                                  name:BACHFriendsSynced
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(friendsChanged:)
+                                                 name:BACHFriendsChanged
                                                object:nil];
     
     self.title = NSLocalizedString(@"MyFriends", nil);
@@ -70,6 +97,9 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:BACHFriendsSynced
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:BACHFriendsChanged
                                                   object:nil];
 }
 
@@ -343,6 +373,32 @@
 -(void)refresh:(id)sender
 {
     [self refreshUsingRefreshHeaderTableView];
+}
+
+-(void)findGamertag:(id)sender
+{
+    UIAlertView *inputDialog = [self inputDialogWithTitle:NSLocalizedString(@"MembersGamertag", nil)
+                                              placeholder:nil];
+    
+    [inputDialog show];
+}
+
+-(void)alertView:(UIAlertView *)alertView 
+clickedButtonAtIndex:(NSInteger)buttonIndex 
+{
+    if (buttonIndex == OK_BUTTON_INDEX)
+    {
+        NSString *gamertag = [self inputDialogText:alertView];
+        
+        if (gamertag)
+        {
+            ProfileController *ctlr = [[ProfileController alloc] initWithScreenName:gamertag
+                                                                           account:self.account];
+            
+            [self.navigationController pushViewController:ctlr animated:YES];
+            [ctlr release];
+        }
+    }
 }
 
 @end

@@ -37,6 +37,8 @@
 		FE80A8441495496500040D79 /* XboxLive.m in Sources */ = {isa = PBXBuildFile; fileRef = FE80A8431495496500040D79 /* XboxLive.m */; };
 		FE80A8461495A39300040D79 /* iphone_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8451495A39300040D79 /* iphone_normal.png */; };
 		FE80A8481495A39A00040D79 /* iphone_hires.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8471495A39900040D79 /* iphone_hires.png */; };
+		FE8B882C149EA85300F7F92C /* FriendProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8B882B149EA85300F7F92C /* FriendProfileController.xib */; };
+		FE8BF2C6149E8B9F00FC8485 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */; };
 		FE8CA9191474212800A5C9EA /* XboxLiveAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */; };
 		FE8CA91B1474586000A5C9EA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8CA91A1474586000A5C9EA /* Security.framework */; };
 		FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */; };
@@ -167,6 +169,9 @@
 		FE80A8431495496500040D79 /* XboxLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLive.m; sourceTree = "<group>"; };
 		FE80A8451495A39300040D79 /* iphone_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone_normal.png; sourceTree = "<group>"; };
 		FE80A8471495A39900040D79 /* iphone_hires.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iphone_hires.png; sourceTree = "<group>"; };
+		FE8B882B149EA85300F7F92C /* FriendProfileController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendProfileController.xib; sourceTree = "<group>"; };
+		FE8BF2C4149E8B9F00FC8485 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
+		FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
 		FE8CA9171474212800A5C9EA /* XboxLiveAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveAccount.h; sourceTree = "<group>"; };
 		FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveAccount.m; sourceTree = "<group>"; };
 		FE8CA91A1474586000A5C9EA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -330,6 +335,7 @@
 			children = (
 				FE993D54149891E20075882C /* Cells */,
 				FE3AB9C814973D790056E87F /* ProfileController.xib */,
+				FE8B882B149EA85300F7F92C /* FriendProfileController.xib */,
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
 				FEC602A61494996300DD3849 /* FriendCell.xib */,
@@ -397,6 +403,8 @@
 				FEC602A11494921B00DD3849 /* FriendListController.m */,
 				FE3AB9C614973D790056E87F /* FriendProfileController.h */,
 				FE3AB9C714973D790056E87F /* FriendProfileController.m */,
+				FE8BF2C4149E8B9F00FC8485 /* ProfileController.h */,
+				FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -708,6 +716,7 @@
 				FE92D6D7149CA39300A7D6A5 /* xboxDefaultCroppedBoxart@2x.png in Resources */,
 				FE92D6D8149CA39300A7D6A5 /* xboxDefaultGamerpic.png in Resources */,
 				FE92D6D9149CA39300A7D6A5 /* xboxDefaultGamerpic@2x.png in Resources */,
+				FE8B882C149EA85300F7F92C /* FriendProfileController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -764,6 +773,7 @@
 				FE993D661499E6E90075882C /* ProfileRatingCell.m in Sources */,
 				FE993D8B1499F6B20075882C /* ProfileLargeTextCell.m in Sources */,
 				FEC24B79149B3400008058BF /* ProfileStatusCell.m in Sources */,
+				FE8BF2C6149E8B9F00FC8485 /* ProfileController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

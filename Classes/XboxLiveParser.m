@@ -83,6 +83,14 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSDictionary*)parseFriendProfileWithUid:(NSString*)uid 
                                forAccount:(XboxLiveAccount *)account 
                                     error:(NSError **)error;
+-(NSDictionary*)parseProfileWithScreenName:(NSString*)screenName
+                               withAccount:(XboxLiveAccount*)account
+                                     error:(NSError**)error;
+-(BOOL)parseFriendRequestToScreenName:(NSString*)screenName
+                          withAccount:(XboxLiveAccount*)account
+                         actionToTake:(NSString*)action
+                                error:(NSError**)error;
+
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
                            error:(NSError**)error;
@@ -116,11 +124,20 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                           error:(NSError**)error;
 -(NSDictionary*)retrieveMessagesWithAccount:(XboxLiveAccount*)account
                                       error:(NSError**)error;
+
 -(NSDictionary*)retrieveFriendsWithAccount:(XboxLiveAccount*)account
                                      error:(NSError**)error;
 -(NSDictionary*)retrieveFriendProfileWithUid:(NSString*)uid
                                      account:(XboxLiveAccount*)account
                                        error:(NSError**)error;
+-(NSDictionary*)retrieveProfileWithScreenName:(NSString*)screenName
+                                      account:(XboxLiveAccount*)account
+                                        error:(NSError**)error;
+-(BOOL)retrieveFriendRequestToScreenName:(NSString*)screenName
+                                 account:(XboxLiveAccount*)account
+                            actionToTake:(NSString*)action
+                                   error:(NSError**)error;
+
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
                             account:(XboxLiveAccount*)account
                               error:(NSError**)error;
@@ -166,6 +183,7 @@ NSString* const URL_JSON_GAME_LIST = @"http://live.xbox.com/%@/Activity/Summary"
 NSString* const URL_JSON_MESSAGE_LIST = @"http://live.xbox.com/%@/Messages/GetMessages";
 NSString* const URL_JSON_FRIEND_LIST = @"http://live.xbox.com/%@/Friends/List";
 NSString* const URL_JSON_SEND_MESSAGE = @"https://live.xbox.com/%@/Messages/SendMessage";
+NSString* const URL_JSON_FRIEND_REQUEST = @"http://live.xbox.com/%@/Friends/%@";
 
 NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Delete";
 
@@ -218,6 +236,12 @@ NSString* const URL_AVATAR_BODY = @"http://avatar.xboxlive.com/avatar/%@/avatar-
 
 NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@boxart.jpg";
 
+NSString* const FRIEND_ACTION_ADD = @"Add";
+NSString* const FRIEND_ACTION_REMOVE = @"Remove";
+NSString* const FRIEND_ACTION_ACCEPT = @"Accept";
+NSString* const FRIEND_ACTION_REJECT = @"Decline";
+NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
+
 -(id)initWithManagedObjectContext:(NSManagedObjectContext*)context
 {
     if (!(self = [super init]))
@@ -235,6 +259,8 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     
     [super dealloc];
 }
+
+#pragma mark - Externals
 
 -(void)synchronizeGames:(NSDictionary*)arguments
 {
@@ -435,6 +461,71 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
                                             uid, BACHNotificationUid,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)loadProfile:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveProfileWithScreenName:screenName
+                                                     account:account
+                                                       error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHProfileLoaded
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            data, BACHNotificationData,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)sendAddFriendRequest:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    
+    NSError *error = nil;
+    
+    [self retrieveFriendRequestToScreenName:screenName
+                                    account:account
+                               actionToTake:FRIEND_ACTION_ADD
+                                      error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHFriendsChanged
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
                                             nil]];
     }
     else
@@ -761,6 +852,95 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     [self saveSessionForAccount:account];
     
     return friendData;
+}
+
+-(NSDictionary*)retrieveProfileWithScreenName:(NSString*)screenName
+                                      account:(XboxLiveAccount*)account
+                                        error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    NSDictionary *profileData;
+    if (!(profileData = [self parseProfileWithScreenName:screenName
+                                             withAccount:account
+                                                   error:NULL]))
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (!(profileData = [self parseProfileWithScreenName:screenName
+                                                 withAccount:account
+                                                       error:error]))
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return profileData;
+}
+
+-(BOOL)retrieveFriendRequestToScreenName:(NSString*)screenName
+                                 account:(XboxLiveAccount*)account
+                            actionToTake:(NSString *)action
+                                   error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return NO;
+        }
+    }
+    
+    BOOL requestSent;
+    if (!(requestSent = [self parseFriendRequestToScreenName:screenName
+                                                 withAccount:account
+                                                actionToTake:action
+                                                       error:NULL]))
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return NO;
+        }
+        
+        if (!(requestSent = [self parseFriendRequestToScreenName:screenName
+                                                     withAccount:account
+                                                    actionToTake:action
+                                                           error:error]))
+        {
+            return NO;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return requestSent;
 }
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
@@ -2048,11 +2228,44 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     if (!friendProfilePage)
         return nil;
     
+    NSString *screenName = nil;
+    
     NSMutableDictionary *friend = [[[NSMutableDictionary alloc] init] autorelease];
     
     NSRegularExpression *regex = nil;
     NSTextCheckingResult *match = nil;
     NSString *text = nil;
+    
+    // Gamertag
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_GAMERTAG
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:friendProfilePage
+                              options:0
+                                range:NSMakeRange(0, [friendProfilePage length])];
+    
+    if (match)
+    {
+        text = [friendProfilePage substringWithRange:[match rangeAtIndex:1]];
+        
+        screenName = [[text gtm_stringByUnescapingFromHTML] 
+                      stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        [friend setObject:screenName
+                   forKey:@"screenName"];
+    }
+    else
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPGeneralError
+                                   localizationKey:@"XboxLiveProfileNotFound"];
+        }
+        
+        return nil;
+    }
     
     // Activity (just text)
     
@@ -2169,10 +2382,12 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     {
         text = [friendProfilePage substringWithRange:[match rangeAtIndex:1]];
         [friend setObject:[self largeGamerpicFromIconUrl:text] forKey:@"iconUrl"];
+        
+        NSLog(@"text: %@", [self largeGamerpicFromIconUrl:text]);
     }
     else
     {
-        [friend setObject:[self gamerpicUrlForGamertag:uid] forKey:@"iconUrl"];
+        [friend setObject:[self gamerpicUrlForGamertag:screenName] forKey:@"iconUrl"];
     }
     
     // Rep
@@ -2195,6 +2410,69 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return friend;
+}
+
+-(NSDictionary*)parseProfileWithScreenName:(NSString*)screenName
+                               withAccount:(XboxLiveAccount*)account
+                                     error:(NSError**)error
+{
+    return [self parseFriendProfileWithUid:screenName
+                                forAccount:account
+                                     error:error];
+}
+
+-(BOOL)parseFriendRequestToScreenName:(NSString*)screenName
+                          withAccount:(XboxLiveAccount*)account
+                         actionToTake:(NSString*)action
+                                error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_FRIENDS];
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_FRIEND_REQUEST, 
+                     LOCALE, action];
+    NSDictionary *inputs = [NSDictionary dictionaryWithObjectsAndKeys:
+                            vtoken, @"__RequestVerificationToken",
+                            screenName, @"gamertag",
+                            nil];
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return NO;
+    
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                          error:error];
+    
+    if (!data)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"FriendRequestUnsuccessful"];
+        }
+        
+        return NO;
+    }
+    
+    NSLog(@"parseFriendRequestToScreenName: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
 }
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
@@ -2911,8 +3189,11 @@ NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@
     
     if (match)
     {
+        NSLog(@"hey1: %@", [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location)]);
+        NSLog(@"hey2: %@", [url substringWithRange:[match rangeAtIndex:2]]);
+        
         return [NSString stringWithFormat:@"%@l%@", 
-                [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location - 1)],
+                [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location)],
                 [url substringWithRange:[match rangeAtIndex:2]]];
     }
     

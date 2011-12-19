@@ -52,6 +52,10 @@
 								<int key="IBUITag">6</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">xboxDefaultGamerpic.png</string>
+								</object>
 							</object>
 							<object class="IBUIImageView" id="807976840">
 								<reference key="NSNextResponder" ref="388167779"/>
@@ -65,6 +69,10 @@
 								<int key="IBUITag">7</int>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">xboxDefaultCroppedBoxart.png</string>
+								</object>
 							</object>
 							<object class="IBUILabel" id="1000370698">
 								<reference key="NSNextResponder" ref="388167779"/>
@@ -142,7 +150,6 @@
 								<string key="NSFrame">{{296, 6}, {12, 12}}</string>
 								<reference key="NSSuperview" ref="388167779"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:541</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -387,6 +394,8 @@
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="gamerScore.png">{18, 18}</string>
 			<string key="gamerScoreInverse.png">{18, 18}</string>
+			<string key="xboxDefaultCroppedBoxart.png">{64, 64}</string>
+			<string key="xboxDefaultGamerpic.png">{64, 64}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>

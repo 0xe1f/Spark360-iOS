@@ -47,7 +47,6 @@
     self.numberFormatter = nil;
     self.account = nil;
     
-    //[managedObjectContext release];
     managedObjectContext = nil;
     
     [super dealloc];
@@ -63,7 +62,7 @@
     {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"")
                                                             message:[error localizedDescription]
-                                                           delegate:self
+                                                           delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
         
@@ -72,8 +71,7 @@
     }
 }
 
-#pragma mark -
-#pragma mark UIViewController
+#pragma mark - UIViewController
 
 -(void)viewDidLoad
 {
@@ -106,6 +104,43 @@
     [super didReceiveMemoryWarning];
     
     [[CFImageCache sharedInstance] purgeInMemCache];
+}
+
+#pragma mark - Etc
+
+-(UIAlertView*)inputDialogWithTitle:(NSString*)title
+                        placeholder:(NSString*)placeholder
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title 
+                                                            message:@"\n\n\n"
+                                                           delegate:self 
+                                                  cancelButtonTitle:NSLocalizedString(@"Cancel",nil) 
+                                                  otherButtonTitles:NSLocalizedString(@"OK",nil), nil];
+    
+    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(16,83,252,25)];
+    textField.borderStyle = UITextBorderStyleLine;
+    textField.tag = 0xDEADBEEF;
+    textField.font = [UIFont systemFontOfSize:18];
+    textField.backgroundColor = [UIColor whiteColor];
+    textField.keyboardAppearance = UIKeyboardAppearanceAlert;
+    textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    textField.placeholder = placeholder;
+    
+    [textField becomeFirstResponder];
+    [alertView addSubview:textField];
+    [textField release];
+    
+    return [alertView autorelease];
+}
+
+-(NSString*)inputDialogText:(UIAlertView*)alertView
+{
+    id textView = [alertView viewWithTag:0xDEADBEEF];
+    if ([textView isKindOfClass:[UITextField class]])
+        return [(UITextField*)textView text];
+    
+    return nil;
 }
 
 @end

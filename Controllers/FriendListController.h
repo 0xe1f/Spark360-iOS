@@ -21,5 +21,6 @@
 -(id)initWithAccount:(XboxLiveAccount*)account;
 
 -(IBAction)refresh:(id)sender;
+-(IBAction)findGamertag:(id)sender;
 
 @end

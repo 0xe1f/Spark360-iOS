@@ -24,6 +24,11 @@
 -(id)initWithAccount:(XboxLiveAccount*)account
              nibName:(NSString*)nibName;
 
+-(UIAlertView*)inputDialogWithTitle:(NSString*)title
+                        placeholder:(NSString*)placeholder;
+
+-(NSString*)inputDialogText:(UIAlertView*)alertView;
+
 -(void)onSyncError:(NSNotification *)notification;
 
 @end

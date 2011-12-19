@@ -12,9 +12,10 @@
 
 typedef enum _XBLFriendStatus
 {
-    XBLFriendPending = 0,
-    XBLFriendOnline = 1,
-    XBLFriendOffline = 2,
+    XBLFriendUnknown = 0,
+    XBLFriendPending = 1,
+    XBLFriendOnline = 2,
+    XBLFriendOffline = 3,
 } XBLFriendStatus;
 
 +(NSString*)descriptionFromFriendStatus:(XBLFriendStatus)status;
