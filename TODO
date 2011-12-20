@@ -1,3 +1,5 @@
+* In ProfileController, check to see if user is Friend, and if so, redirect to
+  FriendProfileController
 * Suppressed exceptions in FriendListController/configureCell cause rendering
   problems when friends list changes. Figure out a way to properly handle errors,
   and possibly redraw
