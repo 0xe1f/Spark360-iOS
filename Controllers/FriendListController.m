@@ -228,29 +228,12 @@
     
     NSString *boxArtUrl = [obj valueForKey:@"activityTitleIconUrl"];
     UIImage *boxArt = [[CFImageCache sharedInstance] getCachedFile:boxArtUrl
+                                                          cropRect:CGRectMake(0,16,85,85)
                                                       notifyObject:self
                                                     notifySelector:@selector(imageLoaded:)];
-    UIImage *thumbnail;
     
-    if (!boxArtUrl)
-    {
-        NSString *imageName = [[NSBundle mainBundle] pathForResource:@"xboxDefaultCroppedBoxart"
-                                                              ofType:@"png"];
-        thumbnail = [[[UIImage alloc] initWithContentsOfFile:imageName] autorelease];
-    }
-    else
-    {
-        // TODO: Inefficient, pre-scale
-        CGImageRef imageRef = CGImageCreateWithImageInRect([boxArt CGImage], 
-                                                           CGRectMake(0, 16, 85, 85));
-        thumbnail = [UIImage imageWithCGImage:imageRef];
-        icon = (UIImageView*)[cell viewWithTag:7];
-        
-        CGImageRelease(imageRef);
-    }
-    
-    [icon setImage:thumbnail];
-    [icon setClipsToBounds:YES];
+    icon = (UIImageView*)[cell viewWithTag:7];
+    [icon setImage:boxArt];
 }
 
 - (void)imageLoaded:(NSString*)url

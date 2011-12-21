@@ -11,15 +11,18 @@
 @interface CFImageCacheOperation : NSOperation
 {
     NSString *url;
-    NSString *outputFile;
     id notifyObj;
     SEL notifySel;
+    CGRect cropRect;
 }
+
+@property (nonatomic, retain) NSString *outputFile;
 
 - (id)initWithURL:(NSString*)imageUrl
        outputFile:(NSString*)writeTo
      notifyObject:(id)notifyObject
-   notifySelector:(SEL)notifySelector;
+   notifySelector:(SEL)notifySelector
+         cropRect:(CGRect)rect;
 
 - (void)notifyDone;
 

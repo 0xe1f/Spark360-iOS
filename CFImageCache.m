@@ -12,6 +12,8 @@
 
 @implementation CFImageCache
 
+@synthesize filenameSanitizer;
+
 static CFImageCache *sharedInstance = nil;
 
 // Get the shared instance and create it if necessary.
@@ -35,6 +37,10 @@ static CFImageCache *sharedInstance = nil;
         self->cacheDirectory = [[paths objectAtIndex:0] retain];
         self->opQueue = [[NSOperationQueue alloc] init];
         self->inMemCache = [[NSMutableDictionary alloc] init];
+        
+        self.filenameSanitizer = [NSRegularExpression regularExpressionWithPattern:@"\\W" 
+                                                                           options:0
+                                                                             error:nil];
     }
     
     return self;
@@ -47,6 +53,8 @@ static CFImageCache *sharedInstance = nil;
     [self->opQueue release];
     [self->inMemCache release];
     [self->cacheDirectory release];
+    
+    self.filenameSanitizer = nil;
     
     // I'm never called!
     [super dealloc];
@@ -91,21 +99,22 @@ static CFImageCache *sharedInstance = nil;
 #pragma mark Caching
 
 - (NSString*)cacheFilenameForUrl:(NSString*)url
+                        cropRect:(CGRect)cropRect
 {
     if (url == nil)
         return nil;
     
-    NSError *error = NULL;
+    NSString *cacheFile = [self.filenameSanitizer stringByReplacingMatchesInString:url
+                                                                           options:0
+                                                                             range:NSMakeRange(0, [url length])
+                                                                      withTemplate:@"_"];
     
-	NSRegularExpression *regex = 
-    [NSRegularExpression regularExpressionWithPattern:@"\\W" 
-                                              options:NSRegularExpressionCaseInsensitive 
-                                                error:&error];
-    
-    NSString *cacheFile = [regex stringByReplacingMatchesInString:url
-                                                          options:0
-                                                            range:NSMakeRange(0, [url length])
-                                                     withTemplate:@"_"];
+    if (!CGRectIsNull(cropRect))
+    {
+        cacheFile = [cacheFile stringByAppendingFormat:@"@%i,%i-%ix%i", 
+                     (int)cropRect.origin.x, (int)cropRect.origin.y, 
+                     (int)cropRect.size.width, (int)cropRect.size.height];
+    }
     
     return [cacheDirectory stringByAppendingPathComponent:cacheFile];
 }
@@ -114,44 +123,63 @@ static CFImageCache *sharedInstance = nil;
              notifyObject:(id)notifyObject
            notifySelector:(SEL)notifySelector;
 {
-    // TODO: what if files are already in queue?
+    return [self getCachedFile:url
+                      cropRect:CGRectNull
+                  notifyObject:notifyObject
+                notifySelector:notifySelector];
+}
+
+- (UIImage*)getCachedFile:(NSString*)url
+                 cropRect:(CGRect)rect
+             notifyObject:(id)notifyObject
+           notifySelector:(SEL)notifySelector;
+{
+    NSString *cacheFile = [self cacheFilenameForUrl:url
+                                           cropRect:rect];
     
+    // Try the in-memory cache
     UIImage *image;
-    if ((image = [inMemCache valueForKey:url]) != nil)
+    if ((image = [inMemCache valueForKey:cacheFile]))
         return image;
     
-    NSString *cacheFile = [self cacheFilenameForUrl:url];
-    image = [UIImage imageWithData:[NSData dataWithContentsOfFile:cacheFile]];
-    
-    if (image == nil)
-    {
-#ifdef CF_LOGV
-        NSLog(@"Added %@ to fetch queue", url);
-#endif
-        NSOperation *op = [[CFImageCacheOperation alloc] initWithURL:url
-                                                          outputFile:cacheFile
-                                                        notifyObject:notifyObject
-                                                      notifySelector:notifySelector];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(operationFinished:) 
-                                                     name:@"ImageLoadedFromWeb"
-                                                   object:op];
-        
-        [self->opQueue addOperation:op];
-        [op release];
-    }
-    else
+    // Try loading from storage
+    if ((image = [UIImage imageWithData:[NSData dataWithContentsOfFile:cacheFile]]))
     {
         [inMemCache setValue:image
-                      forKey:url];
+                      forKey:cacheFile];
         
-#ifdef CF_LOGV
-        NSLog(@"Returning %@ from cache (%d in memory)", url, [inMemCache count]);
-#endif
+        return image;
     }
     
-    return image;
+    // Load from network
+    
+    // Make sure we're not already queued
+    NSArray *operations = [self->opQueue operations];
+    for (CFImageCacheOperation *op in operations) 
+    {
+        if ([op.outputFile isEqualToString:cacheFile])
+        {
+            NSLog(@"Will not add %@ to queue - already queued", cacheFile);
+            return nil;
+        }
+    }
+    
+    // Create a caching op and add it to queue
+    NSOperation *op = [[CFImageCacheOperation alloc] initWithURL:url
+                                                      outputFile:cacheFile
+                                                    notifyObject:notifyObject
+                                                  notifySelector:notifySelector
+                                                        cropRect:rect];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(operationFinished:) 
+                                                 name:@"ImageLoadedFromWeb"
+                                               object:op];
+    
+    [self->opQueue addOperation:op];
+    [op release];
+    
+    return nil;
 }
 
 - (void)operationFinished:(NSNotification*)n
@@ -163,10 +191,9 @@ static CFImageCache *sharedInstance = nil;
 
 - (void)imageLoaded:(CFImageCacheOperation*)op
 {
-    [[NSNotificationCenter defaultCenter]
-     removeObserver:self
-     name:@"ImageLoadedFromWeb"
-     object:op];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"ImageLoadedFromWeb"
+                                                  object:op];
     
     [op notifyDone];
 }

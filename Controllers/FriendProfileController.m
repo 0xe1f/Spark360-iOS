@@ -11,6 +11,7 @@
 #import "XboxLive.h"
 #import "CFImageCache.h"
 #import "TaskController.h"
+#import "CompareGamesController.h"
 
 #import "ProfileInfoCell.h"
 #import "ProfileGamerscoreCell.h"
@@ -510,7 +511,11 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 -(void)compareGames:(id)sender
 {
-    // TODO
+    CompareGamesController *ctlr = [[CompareGamesController alloc] initWithScreenName:self.friendScreenName
+                                                                              account:self.account];
+    
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
 -(void)compose:(id)sender

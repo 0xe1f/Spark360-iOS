@@ -182,18 +182,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     UIImageView *view = (UIImageView*)[cell viewWithTag:6];
     UIImage *boxArt = [[CFImageCache sharedInstance]
                        getCachedFile:[managedObject valueForKey:@"boxArtUrl"]
+                       cropRect:CGRectMake(0, 16, 85, 85)
                        notifyObject:self
                        notifySelector:@selector(imageLoaded:)];
     
-    // TODO: Inefficient, pre-scale
-    CGImageRef imageRef = CGImageCreateWithImageInRect([boxArt CGImage], 
-                                                       CGRectMake(0, 16, 85, 85));
-    UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
-    
-    [view setImage:thumbnail];
-    [view setClipsToBounds:YES];
-    
-    CGImageRelease(imageRef);
+    [view setImage:boxArt];
 }
 
 - (void)imageLoaded:(NSString*)url

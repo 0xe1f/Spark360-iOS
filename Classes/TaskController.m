@@ -386,7 +386,7 @@ static TaskController *sharedInstance = nil;
                                screenName, @"screenName",
                                nil];
     
-    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
     TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
                                                                         selectorOwner:parser
                                                                    backgroundSelector:@selector(compareGames:)

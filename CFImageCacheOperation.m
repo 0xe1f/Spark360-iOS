@@ -10,17 +10,21 @@
 
 @implementation CFImageCacheOperation
 
+@synthesize outputFile;
+
 - (id)initWithURL:(NSString*)imageUrl
        outputFile:(NSString*)writeTo
      notifyObject:(id)notifyObject
    notifySelector:(SEL)notifySelector
+         cropRect:(CGRect)rect
 {
     if (self = [super init]) 
     {
         self->url = [imageUrl copy];
-        self->outputFile = [writeTo copy];
+        self.outputFile = writeTo;
         self->notifyObj = [notifyObject retain];
         self->notifySel = notifySelector;
+        self->cropRect = rect;
     }
     
     return self;
@@ -29,8 +33,9 @@
 - (void)dealloc
 {
     [self->url release];
-    [self->outputFile release];
     [self->notifyObj release];
+    
+    self.outputFile = nil;
     
     [super dealloc];
 }
@@ -42,7 +47,18 @@
     
     NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self->url]];
     
-    [data writeToFile:self->outputFile 
+    if (!CGRectIsNull(self->cropRect))
+    {
+        UIImage *image = [UIImage imageWithData:data];
+        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], self->cropRect);
+        UIImage *cropped = [UIImage imageWithCGImage:imageRef];
+        
+        CGImageRelease(imageRef);
+        
+        data = UIImagePNGRepresentation(cropped);
+    }
+    
+    [data writeToFile:self.outputFile 
            atomically:YES];
     
 #ifdef CF_LOGV
@@ -64,4 +80,5 @@
                               withObject:self->url];
     }
 }
+
 @end

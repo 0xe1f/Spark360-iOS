@@ -1,3 +1,7 @@
+* Change how ImageCache's notifications work - ImageCache shouldn't be setting 
+  them - each controller should
+* ImageCache now unstable - make sure existing ones aren't being added;
+  also, fix duplicate images in Image Queue
 * In ProfileController, check to see if user is Friend, and if so, redirect to
   FriendProfileController
 * Suppressed exceptions in FriendListController/configureCell cause rendering

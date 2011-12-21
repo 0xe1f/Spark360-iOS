@@ -733,9 +733,9 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     NSError *error = nil;
     
-    NSDictionary *games = [self retrieveCompareGamesWithScreenName:screenName
-                                                           account:account
-                                                             error:&error];
+    NSDictionary *data = [self retrieveCompareGamesWithScreenName:screenName
+                                                          account:account
+                                                            error:&error];
     
     self.lastError = error;
     
@@ -745,7 +745,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
                                             screenName, BACHNotificationUid,
-                                            games, BACHNotificationData,
+                                            data, BACHNotificationData,
                                             nil]];
     }
     else
@@ -2834,10 +2834,10 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     [payload setObject:overview forKey:@"overview"];
     
-    NSMutableDictionary *games = [[[NSMutableDictionary alloc] init] autorelease];
+    NSMutableArray *games = [[[NSMutableArray alloc] init] autorelease];
     [payload setObject:games forKey:@"games"];
     
-    NSArray *inGames = [data objectForKey:@"games"];
+    NSArray *inGames = [data objectForKey:@"Games"];
     for (NSDictionary *inGame in inGames)
     {
         NSString *uid = [[inGame objectForKey:@"Id"] stringValue];
@@ -2861,6 +2861,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                               [inGame objectForKey:@"PossibleScore"], @"gamerScoreTotal",
                               [myProgress objectForKey:@"Achievements"], @"myAchievesUnlocked",
                               [myProgress objectForKey:@"Score"], @"myGamerScoreEarned",
+                              [yourProgress objectForKey:@"Achievements"], @"yourAchievesUnlocked",
+                              [yourProgress objectForKey:@"Score"], @"yourGamerScoreEarned",
                               nil];
         
         [games addObject:game];
