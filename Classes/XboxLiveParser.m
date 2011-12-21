@@ -90,6 +90,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                           withAccount:(XboxLiveAccount*)account
                          actionToTake:(NSString*)action
                                 error:(NSError**)error;
+-(NSDictionary*)parseCompareGamesWithScreenName:(NSString*)screenName
+                                    withAccount:(XboxLiveAccount*)account
+                                          error:(NSError**)error;
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
@@ -105,6 +108,8 @@ NSString* const BachErrorDomain = @"com.akop.bach";
          localizationKey:(NSString*)key;
 
 -(NSString*)obtainTokenFrom:(NSString*)url;
+-(NSString*)obtainTokenFrom:(NSString*)url
+                  parameter:(NSString*)param;
 -(NSString*)parseObtainNewToken;
 +(NSDate*)ticksFromJSONString:(NSString*)jsonTicks;
 -(NSString*)largeGamerpicFromIconUrl:(NSString*)url;
@@ -137,6 +142,10 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                  account:(XboxLiveAccount*)account
                             actionToTake:(NSString*)action
                                    error:(NSError**)error;
+
+-(NSDictionary*)retrieveCompareGamesWithScreenName:(NSString*)screenName
+                                           account:(XboxLiveAccount*)account
+                                             error:(NSError**)error;
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
                             account:(XboxLiveAccount*)account
@@ -176,6 +185,7 @@ NSString* const URL_LOGIN_MSN = @"https://msnia.login.live.com/ppsecure/post.srf
 NSString* const URL_VTOKEN = @"http://live.xbox.com/%@/Home";
 NSString* const URL_VTOKEN_MESSAGES = @"http://live.xbox.com/%@/Messages?xr=socialtwistnav";
 NSString* const URL_VTOKEN_FRIENDS = @"http://live.xbox.com/%@/Friends?xr=shellnav";
+NSString* const URL_VTOKEN_COMPARE_GAMES = @"http://live.xbox.com/%@/Activity?compareTo=%@";
 
 NSString* const URL_GAMERCARD = @"http://gamercard.xbox.com/%@/%@.card";
 
@@ -185,6 +195,7 @@ NSString* const URL_JSON_MESSAGE_LIST = @"http://live.xbox.com/%@/Messages/GetMe
 NSString* const URL_JSON_FRIEND_LIST = @"http://live.xbox.com/%@/Friends/List";
 NSString* const URL_JSON_SEND_MESSAGE = @"https://live.xbox.com/%@/Messages/SendMessage";
 NSString* const URL_JSON_FRIEND_REQUEST = @"http://live.xbox.com/%@/Friends/%@";
+NSString* const URL_JSON_COMPARE_GAMES = @"http://live.xbox.com/%@/Activity/Summary?CompareTo=%@";
 
 NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Delete";
 
@@ -713,6 +724,40 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [pool release];
 }
 
+-(void)compareGames:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    
+    NSError *error = nil;
+    
+    NSDictionary *games = [self retrieveCompareGamesWithScreenName:screenName
+                                                           account:account
+                                                             error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHGamesCompared
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            screenName, BACHNotificationUid,
+                                            games, BACHNotificationData,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
 -(void)deleteMessage:(NSDictionary*)arguments
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -1116,6 +1161,49 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [self saveSessionForAccount:account];
     
     return requestSent;
+}
+
+-(NSDictionary*)retrieveCompareGamesWithScreenName:(NSString*)screenName
+                                           account:(XboxLiveAccount*)account
+                                             error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    NSDictionary *games;
+    if (!(games = [self parseCompareGamesWithScreenName:screenName
+                                            withAccount:account
+                                                  error:NULL]))
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (!(games = [self parseCompareGamesWithScreenName:screenName
+                                                withAccount:account
+                                                      error:error]))
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return games;
 }
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
@@ -2686,6 +2774,104 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return YES;
 }
 
+-(NSDictionary*)parseCompareGamesWithScreenName:(NSString*)screenName
+                                    withAccount:(XboxLiveAccount*)account
+                                          error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_COMPARE_GAMES
+                                   parameter:screenName];
+    
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return nil;
+    }
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_COMPARE_GAMES, 
+                     LOCALE, [screenName gtm_stringByEscapingForURLArgument]];
+    NSDictionary *inputs = [NSDictionary dictionaryWithObject:vtoken 
+                                                       forKey:@"__RequestVerificationToken"];
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return nil;
+    
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                      error:error];
+    
+    if (!data)
+        return nil;
+    
+    NSMutableDictionary *payload = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    NSArray *players = [data objectForKey:@"Players"];
+    if ([players count] < 2)
+        return payload;
+    
+    NSDictionary *you = [players objectAtIndex:0];
+    NSDictionary *me = [players objectAtIndex:1];
+    
+    NSString *yourScreenName = [you objectForKey:@"Gamertag"];
+    NSString *myScreenName = [me objectForKey:@"Gamertag"];
+    
+    NSDictionary *overview = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [you objectForKey:@"Gamerpic"], @"youIconUrl",
+                              [me objectForKey:@"Gamerpic"], @"meIconUrl",
+                              [you objectForKey:@"Gamerscore"], @"youGamerscore",
+                              [me objectForKey:@"Gamerscore"], @"meGamerscore",
+                              nil];
+    
+    [payload setObject:overview forKey:@"overview"];
+    
+    NSMutableDictionary *games = [[[NSMutableDictionary alloc] init] autorelease];
+    [payload setObject:games forKey:@"games"];
+    
+    NSArray *inGames = [data objectForKey:@"games"];
+    for (NSDictionary *inGame in inGames)
+    {
+        NSString *uid = [[inGame objectForKey:@"Id"] stringValue];
+        NSDictionary *progRoot = [inGame objectForKey:@"Progress"];
+        
+        if (!progRoot)
+            continue;
+        
+        NSDictionary *myProgress = [progRoot objectForKey:myScreenName];
+        NSDictionary *yourProgress = [progRoot objectForKey:yourScreenName];
+        
+        if (!myProgress || !yourProgress)
+            continue;
+        
+        NSDictionary *game = [NSDictionary dictionaryWithObjectsAndKeys:
+                              uid, @"uid",
+                              [inGame objectForKey:@"BoxArt"], @"boxArtUrl",
+                              [inGame objectForKey:@"Url"], @"url",
+                              [inGame objectForKey:@"Name"], @"title",
+                              [inGame objectForKey:@"PossibleAchievements"], @"achievesTotal",
+                              [inGame objectForKey:@"PossibleScore"], @"gamerScoreTotal",
+                              [myProgress objectForKey:@"Achievements"], @"myAchievesUnlocked",
+                              [myProgress objectForKey:@"Score"], @"myGamerScoreEarned",
+                              nil];
+        
+        [games addObject:game];
+    }
+    
+    NSLog(@"parseCompareGamesWithScreenName: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return payload;
+}
+
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
                            error:(NSError**)error
@@ -3340,6 +3526,27 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
      }];
     
     return inputs;
+}
+
+-(NSString*)obtainTokenFrom:(NSString*)url
+                  parameter:(NSString*)param
+{
+    NSString *page = [self loadWithGET:[NSString stringWithFormat:url, 
+                                        LOCALE, [param gtm_stringByEscapingForURLArgument]]
+                                fields:nil
+                                useXhr:NO
+                                 error:NULL];
+    
+    if (!page)
+        return nil;
+    
+    NSMutableDictionary *inputs = [XboxLiveParser getInputs:page
+                                                namePattern:nil];
+    
+    if (!inputs)
+        return nil;
+    
+    return [inputs objectForKey:@"__RequestVerificationToken"];
 }
 
 -(NSString*)obtainTokenFrom:(NSString*)url

@@ -20,6 +20,8 @@ NSString* const BACHFriendProfileSynced = @"BachFriendProfileSynced";
 NSString* const BACHProfileLoaded = @"BachProfileLoaded";
 NSString* const BACHFriendsChanged = @"BachFriendsChanged";
 
+NSString* const BACHGamesCompared = @"BachGamesCompared";
+
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
 NSString* const BACHError = @"BachError";
@@ -371,6 +373,37 @@ static TaskController *sharedInstance = nil;
     
     [self addOperation:op];
     [op release];
+}
+
+-(void)compareGamesWithScreenName:(NSString*)screenName
+                          account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.CompareGames:%@",
+                            account.uuid, screenName];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(compareGames:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(BOOL)isComparingGamesWithScreenName:(NSString*)screenName
+                              account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.CompareGames:%@",
+                            account.uuid, screenName];
+    return [self isOperationQueuedWithId:identifier];
 }
 
 -(void)deleteMessageWithUid:(NSString*)uid
