@@ -14,7 +14,7 @@
 #import "GameListController.h"
 #import "ProfileOverviewController.h"
 
-#import "CFImageCache.h"
+#import "ImageCache.h"
 
 @interface AccountListController ()
 
@@ -38,7 +38,7 @@
                                                                                target:self 
                                                                                action:@selector(insertNewObject)];
     
-    [[CFImageCache sharedInstance] purgeInMemCache];
+    [[ImageCache sharedInstance] purgeInMemCache];
     
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     self.navigationItem.title = NSLocalizedString(@"Accounts", nil);
@@ -210,7 +210,7 @@
     label = (UILabel*)[cell viewWithTag:3];
     [label setText:NSLocalizedString(@"XboxLiveAccount", @"")];
     
-    UIImage *boxArt = [[CFImageCache sharedInstance]
+    UIImage *boxArt = [[ImageCache sharedInstance]
                        getCachedFile:[profile valueForKey:@"iconUrl"]
                        notifyObject:self
                        notifySelector:@selector(imageLoaded:)];

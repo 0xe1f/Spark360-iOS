@@ -9,7 +9,7 @@
 #import "GenericTableViewController.h"
 
 #import "BachAppDelegate.h"
-#import "CFImageCache.h"
+#import "ImageCache.h"
 #import "TaskController.h"
 
 @implementation GenericTableViewController

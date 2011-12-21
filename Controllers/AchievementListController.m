@@ -8,7 +8,7 @@
 
 #import "AchievementListController.h"
 
-#import "CFImageCache.h"
+#import "ImageCache.h"
 #import "TaskController.h"
 
 #import "XboxLiveParser.h"
@@ -217,9 +217,9 @@
     // Icon
 
     UIImageView *view = (UIImageView*)[cell viewWithTag:7];
-    UIImage *icon = [[CFImageCache sharedInstance] getCachedFile:[managedObject valueForKey:@"iconUrl"]
-                                                    notifyObject:self
-                                                  notifySelector:@selector(imageLoaded:)];
+    UIImage *icon = [[ImageCache sharedInstance] getCachedFile:[managedObject valueForKey:@"iconUrl"]
+                                                  notifyObject:self
+                                                notifySelector:@selector(imageLoaded:)];
     
     [view setImage:icon];
     [view setClipsToBounds:YES];

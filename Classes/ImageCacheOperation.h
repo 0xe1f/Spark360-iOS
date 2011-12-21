@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CFImageCacheOperation : NSOperation
+@interface ImageCacheOperation : NSOperation
 {
     NSString *url;
     id notifyObj;

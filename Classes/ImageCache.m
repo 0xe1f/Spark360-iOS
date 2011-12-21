@@ -6,18 +6,18 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "CFImageCache.h"
+#import "ImageCache.h"
 
-#import "CFImageCacheOperation.h"
+#import "ImageCacheOperation.h"
 
-@implementation CFImageCache
+@implementation ImageCache
 
 @synthesize filenameSanitizer;
 
-static CFImageCache *sharedInstance = nil;
+static ImageCache *sharedInstance = nil;
 
 // Get the shared instance and create it if necessary.
-+ (CFImageCache*)sharedInstance 
++ (ImageCache*)sharedInstance 
 {
     if (sharedInstance == nil) 
     {
@@ -155,7 +155,7 @@ static CFImageCache *sharedInstance = nil;
     
     // Make sure we're not already queued
     NSArray *operations = [self->opQueue operations];
-    for (CFImageCacheOperation *op in operations) 
+    for (ImageCacheOperation *op in operations) 
     {
         if ([op.outputFile isEqualToString:cacheFile])
         {
@@ -165,11 +165,11 @@ static CFImageCache *sharedInstance = nil;
     }
     
     // Create a caching op and add it to queue
-    NSOperation *op = [[CFImageCacheOperation alloc] initWithURL:url
-                                                      outputFile:cacheFile
-                                                    notifyObject:notifyObject
-                                                  notifySelector:notifySelector
-                                                        cropRect:rect];
+    NSOperation *op = [[ImageCacheOperation alloc] initWithURL:url
+                                                    outputFile:cacheFile
+                                                  notifyObject:notifyObject
+                                                notifySelector:notifySelector
+                                                      cropRect:rect];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(operationFinished:) 
@@ -189,7 +189,7 @@ static CFImageCache *sharedInstance = nil;
                         waitUntilDone:NO];
 }
 
-- (void)imageLoaded:(CFImageCacheOperation*)op
+- (void)imageLoaded:(ImageCacheOperation*)op
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:@"ImageLoadedFromWeb"

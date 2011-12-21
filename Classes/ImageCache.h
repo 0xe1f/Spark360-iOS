@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CFImageCache : NSObject
+@interface ImageCache : NSObject
 {
     NSString *cacheDirectory;
     NSOperationQueue *opQueue;

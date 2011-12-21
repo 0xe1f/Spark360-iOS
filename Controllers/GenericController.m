@@ -9,7 +9,7 @@
 #import "GenericController.h"
 
 #import "BachAppDelegate.h"
-#import "CFImageCache.h"
+#import "ImageCache.h"
 #import "TaskController.h"
 
 @implementation GenericController
@@ -77,7 +77,7 @@
 {
     [super viewDidLoad];
     
-    [[CFImageCache sharedInstance] purgeInMemCache];
+    [[ImageCache sharedInstance] purgeInMemCache];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -103,7 +103,7 @@
 {
     [super didReceiveMemoryWarning];
     
-    [[CFImageCache sharedInstance] purgeInMemCache];
+    [[ImageCache sharedInstance] purgeInMemCache];
 }
 
 #pragma mark - Etc

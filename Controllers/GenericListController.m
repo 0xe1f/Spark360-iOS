@@ -9,7 +9,7 @@
 #import "GenericListController.h"
 
 #import "BachAppDelegate.h"
-#import "CFImageCache.h"
+#import "ImageCache.h"
 #import "TaskController.h"
 
 @implementation GenericListController
@@ -73,7 +73,7 @@
 {
     [super viewDidLoad];
     
-    [[CFImageCache sharedInstance] purgeInMemCache];
+    [[ImageCache sharedInstance] purgeInMemCache];
     
     // EGORefreshHeaderTableView
 	if (_refreshHeaderView == nil) 
@@ -114,7 +114,7 @@
 {
     [super didReceiveMemoryWarning];
     
-    [[CFImageCache sharedInstance] purgeInMemCache];
+    [[ImageCache sharedInstance] purgeInMemCache];
 }
 
 #pragma mark -

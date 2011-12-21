@@ -9,7 +9,7 @@
 #import "FriendProfileController.h"
 
 #import "XboxLive.h"
-#import "CFImageCache.h"
+#import "ImageCache.h"
 #import "TaskController.h"
 #import "CompareGamesController.h"
 
@@ -218,17 +218,15 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         statusCell.status.text = [XboxLive descriptionFromFriendStatus:statusCode];
         statusCell.activity.text = [self.properties objectForKey:@"activityText"];
         
-        UIImage *boxArt = [[CFImageCache sharedInstance]
-                           getCachedFile:[self.properties objectForKey:@"activityTitleIconUrl"]
-                           notifyObject:self
-                           notifySelector:@selector(imageLoaded:)];
+        UIImage *boxArt = [[ImageCache sharedInstance] getCachedFile:[self.properties objectForKey:@"activityTitleIconUrl"]
+                                                        notifyObject:self
+                                                      notifySelector:@selector(imageLoaded:)];
         
         [statusCell.titleIcon setImage:boxArt];
         
-        UIImage *gamerpic = [[CFImageCache sharedInstance]
-                  getCachedFile:[self.properties objectForKey:@"iconUrl"]
-                             notifyObject:self
-                             notifySelector:@selector(imageLoaded:)];
+        UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[self.properties objectForKey:@"iconUrl"]
+                                                          notifyObject:self
+                                                        notifySelector:@selector(imageLoaded:)];
         
         [statusCell.gamerpic setImage:gamerpic];
         

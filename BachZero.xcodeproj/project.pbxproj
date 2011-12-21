@@ -12,8 +12,8 @@
 		FE3AB9C914973D790056E87F /* FriendProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3AB9C714973D790056E87F /* FriendProfileController.m */; };
 		FE3AB9CA14973D790056E87F /* ProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3AB9C814973D790056E87F /* ProfileController.xib */; };
 		FE3FE14D13F72F7E009467EF /* gamerScore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3FE14C13F72F7E009467EF /* gamerScore.png */; };
-		FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3013EDD8A700420372 /* CFImageCache.m */; };
-		FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3413EE125700420372 /* CFImageCacheOperation.m */; };
+		FE610D3113EDD8A700420372 /* ImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3013EDD8A700420372 /* ImageCache.m */; };
+		FE610D3513EE125700420372 /* ImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3413EE125700420372 /* ImageCacheOperation.m */; };
 		FE726B6214611E9C00534279 /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B4A14611E9C00534279 /* NSObject+SBJson.m */; };
 		FE726B6314611E9C00534279 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B4D14611E9C00534279 /* SBJsonParser.m */; };
 		FE726B6414611E9C00534279 /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B4F14611E9C00534279 /* SBJsonStreamParser.m */; };
@@ -134,10 +134,10 @@
 		FE3AB9C714973D790056E87F /* FriendProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendProfileController.m; sourceTree = "<group>"; };
 		FE3AB9C814973D790056E87F /* ProfileController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileController.xib; sourceTree = "<group>"; };
 		FE3FE14C13F72F7E009467EF /* gamerScore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScore.png; sourceTree = "<group>"; };
-		FE610D2F13EDD8A700420372 /* CFImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCache.h; sourceTree = "<group>"; };
-		FE610D3013EDD8A700420372 /* CFImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCache.m; sourceTree = "<group>"; };
-		FE610D3313EE125700420372 /* CFImageCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFImageCacheOperation.h; sourceTree = "<group>"; };
-		FE610D3413EE125700420372 /* CFImageCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFImageCacheOperation.m; sourceTree = "<group>"; };
+		FE610D2F13EDD8A700420372 /* ImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCache.h; sourceTree = "<group>"; };
+		FE610D3013EDD8A700420372 /* ImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCache.m; sourceTree = "<group>"; };
+		FE610D3313EE125700420372 /* ImageCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCacheOperation.h; sourceTree = "<group>"; };
+		FE610D3413EE125700420372 /* ImageCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCacheOperation.m; sourceTree = "<group>"; };
 		FE726B4914611E9C00534279 /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		FE726B4A14611E9C00534279 /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
 		FE726B4B14611E9C00534279 /* SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJson.h; sourceTree = "<group>"; };
@@ -231,8 +231,8 @@
 		FE993D891499F6B10075882C /* ProfileLargeTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileLargeTextCell.h; sourceTree = "<group>"; };
 		FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileLargeTextCell.m; sourceTree = "<group>"; };
 		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
-		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UITableViewTextFieldCell.h; path = ../UITableViewTextFieldCell.h; sourceTree = "<group>"; };
-		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UITableViewTextFieldCell.m; path = ../UITableViewTextFieldCell.m; sourceTree = "<group>"; };
+		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewTextFieldCell.h; sourceTree = "<group>"; };
+		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewTextFieldCell.m; sourceTree = "<group>"; };
 		FEA247FB148F5F90003D87C5 /* MessageListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListController.h; sourceTree = "<group>"; };
 		FEA247FC148F5F90003D87C5 /* MessageListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListController.m; sourceTree = "<group>"; };
 		FEA24800148F6019003D87C5 /* MessageListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageListController.xib; sourceTree = "<group>"; };
@@ -392,6 +392,10 @@
 				FE993D50149881880075882C /* UI */,
 				FE8CA92114745AED00A5C9EA /* AppPreferences.h */,
 				FE8CA92214745AED00A5C9EA /* AppPreferences.m */,
+				FE610D2F13EDD8A700420372 /* ImageCache.h */,
+				FE610D3013EDD8A700420372 /* ImageCache.m */,
+				FE610D3313EE125700420372 /* ImageCacheOperation.h */,
+				FE610D3413EE125700420372 /* ImageCacheOperation.m */,
 				FEC84023148C2F2C005BC782 /* TaskController.h */,
 				FEC84024148C2F37005BC782 /* TaskController.m */,
 				FEC84026148C3678005BC782 /* TaskControllerOperation.h */,
@@ -547,6 +551,8 @@
 		FE993D50149881880075882C /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FE8BA7FA14A1BB710020D389 /* CompareGameCell.h */,
+				FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */,
 				FE993D51149881B00075882C /* ProfileInfoCell.h */,
 				FE993D52149881B00075882C /* ProfileInfoCell.m */,
 				FE993D5D1498A4EF0075882C /* ProfileGamerscoreCell.h */,
@@ -557,8 +563,8 @@
 				FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */,
 				FEC24B77149B3400008058BF /* ProfileStatusCell.h */,
 				FEC24B78149B3400008058BF /* ProfileStatusCell.m */,
-				FE8BA7FA14A1BB710020D389 /* CompareGameCell.h */,
-				FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */,
+				FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */,
+				FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -579,8 +585,6 @@
 		FE9E371413F8EA2300A6EE36 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */,
-				FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */,
 			);
 			name = UI;
 			path = Classes;
@@ -589,10 +593,6 @@
 		FEB3E13B13E6402900095480 /* Caffeine */ = {
 			isa = PBXGroup;
 			children = (
-				FE610D2F13EDD8A700420372 /* CFImageCache.h */,
-				FE610D3013EDD8A700420372 /* CFImageCache.m */,
-				FE610D3313EE125700420372 /* CFImageCacheOperation.h */,
-				FE610D3413EE125700420372 /* CFImageCacheOperation.m */,
 			);
 			name = Caffeine;
 			sourceTree = "<group>";
@@ -777,8 +777,8 @@
 				FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */,
 				FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */,
 				FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */,
-				FE610D3113EDD8A700420372 /* CFImageCache.m in Sources */,
-				FE610D3513EE125700420372 /* CFImageCacheOperation.m in Sources */,
+				FE610D3113EDD8A700420372 /* ImageCache.m in Sources */,
+				FE610D3513EE125700420372 /* ImageCacheOperation.m in Sources */,
 				FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */,
 				FE726B6214611E9C00534279 /* NSObject+SBJson.m in Sources */,
 				FE726B6314611E9C00534279 /* SBJsonParser.m in Sources */,

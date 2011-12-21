@@ -10,7 +10,7 @@
 
 #import "XboxLive.h"
 #import "TaskController.h"
-#import "CFImageCache.h"
+#import "ImageCache.h"
 
 #import "FriendProfileController.h"
 #import "ProfileController.h"
@@ -209,7 +209,7 @@
     
     // Gamerpic
     
-    UIImage *gamerpic = [[CFImageCache sharedInstance] getCachedFile:[obj valueForKey:@"iconUrl"]
+    UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[obj valueForKey:@"iconUrl"]
                                                         notifyObject:self
                                                       notifySelector:@selector(imageLoaded:)];
     
@@ -227,7 +227,7 @@
     // Box art
     
     NSString *boxArtUrl = [obj valueForKey:@"activityTitleIconUrl"];
-    UIImage *boxArt = [[CFImageCache sharedInstance] getCachedFile:boxArtUrl
+    UIImage *boxArt = [[ImageCache sharedInstance] getCachedFile:boxArtUrl
                                                           cropRect:CGRectMake(0,16,85,85)
                                                       notifyObject:self
                                                     notifySelector:@selector(imageLoaded:)];

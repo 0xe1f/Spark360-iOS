@@ -9,7 +9,7 @@
 #import "GameListController.h"
 
 #import "TaskController.h"
-#import "CFImageCache.h"
+#import "ImageCache.h"
 #import "XboxLiveParser.h"
 
 #import "AchievementListController.h"
@@ -180,7 +180,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     // Icon
     
     UIImageView *view = (UIImageView*)[cell viewWithTag:6];
-    UIImage *boxArt = [[CFImageCache sharedInstance]
+    UIImage *boxArt = [[ImageCache sharedInstance]
                        getCachedFile:[managedObject valueForKey:@"boxArtUrl"]
                        cropRect:CGRectMake(0, 16, 85, 85)
                        notifyObject:self

@@ -9,7 +9,7 @@
 #import "CompareGamesController.h"
 
 #import "TaskController.h"
-#import "CFImageCache.h"
+#import "ImageCache.h"
 #import "CompareGameCell.h"
 
 @implementation CompareGamesController
@@ -131,11 +131,10 @@
                                     [self.numberFormatter stringFromNumber:[game objectForKey:@"gamerScoreTotal"]]];
         
         // Boxart
-        UIImage *boxArt = [[CFImageCache sharedInstance]
-                           getCachedFile:[game objectForKey:@"boxArtUrl"]
-                           cropRect:CGRectMake(0, 16, 85, 85)
-                           notifyObject:self
-                           notifySelector:@selector(imageLoaded:)];
+        UIImage *boxArt = [[ImageCache sharedInstance] getCachedFile:[game objectForKey:@"boxArtUrl"]
+                                                            cropRect:CGRectMake(0, 16, 85, 85)
+                                                        notifyObject:self
+                                                      notifySelector:@selector(imageLoaded:)];
         
         cell.boxArt.image = boxArt;
     }

@@ -8,7 +8,7 @@
 
 #import "MessageListController.h"
 
-#import "CFImageCache.h"
+#import "ImageCache.h"
 #import "TaskController.h"
 
 @interface MessageListController (Private)
@@ -37,7 +37,7 @@
 
 -(void)didReceiveMemoryWarning
 {
-    [[CFImageCache sharedInstance] purgeInMemCache];
+    [[ImageCache sharedInstance] purgeInMemCache];
 }
 
 -(void)dealloc
@@ -208,7 +208,7 @@
     
     // Icon
     UIImageView *view = (UIImageView*)[cell viewWithTag:6];
-    UIImage *boxArt = [[CFImageCache sharedInstance]
+    UIImage *boxArt = [[ImageCache sharedInstance]
                        getCachedFile:[managedObject valueForKey:@"senderIconUrl"]
                        notifyObject:self
                        notifySelector:@selector(imageLoaded:)];

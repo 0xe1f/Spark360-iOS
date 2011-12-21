@@ -6,9 +6,9 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "CFImageCacheOperation.h"
+#import "ImageCacheOperation.h"
 
-@implementation CFImageCacheOperation
+@implementation ImageCacheOperation
 
 @synthesize outputFile;
 
