@@ -12,7 +12,7 @@
 
 @synthesize screenName;
 @synthesize activity;
-@synthesize gamerscore;
+@synthesize gamerScore;
 @synthesize gamerpic;
 @synthesize titleIcon;
 

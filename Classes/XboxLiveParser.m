@@ -2034,7 +2034,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         [friend setValue:lastUpdated forKey:@"lastUpdated"];
         [friend setValue:[inFriend objectForKey:@"isOnline"] forKey:@"isOnline"];
         [friend setValue:[inFriend objectForKey:@"iconUrl"] forKey:@"iconUrl"];
-        [friend setValue:[inFriend objectForKey:@"gamerscore"] forKey:@"gamerscore"];
+        [friend setValue:[inFriend objectForKey:@"gamerScore"] forKey:@"gamerScore"];
         [friend setValue:[inFriend objectForKey:@"lastSeen"] forKey:@"lastSeen"];
         [friend setValue:[inFriend objectForKey:@"activityText"] forKey:@"activityText"];
         [friend setValue:[inFriend objectForKey:@"isIncoming"] forKey:@"isIncoming"];
@@ -2596,7 +2596,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         [friend setValue:[inFriend objectForKey:@"LargeGamerTileUrl"] // iconUrl
                   forKey:@"iconUrl"];
         [friend setValue:[inFriend objectForKey:@"GamerScore"] // gamerscore
-                  forKey:@"gamerscore"];
+                  forKey:@"gamerScore"];
         [friend setValue:[XboxLiveParser ticksFromJSONString:[inFriend objectForKey:@"LastSeen"]] // lastSeen
                   forKey:@"lastSeen"];
         [friend setValue:[inFriend objectForKey:@"Presence"] // activityText
@@ -2893,6 +2893,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 -(NSArray*)parseRecentPlayersForAccount:(XboxLiveAccount*)account
                                   error:(NSError**)error
 {
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
     NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_FRIENDS];
     if (!vtoken)
     {
@@ -4028,7 +4030,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
             else
             {
                 [urlBuilder addObject:[NSString stringWithFormat:@"%@=%@", 
-                                       ueKey, [value gtm_stringByEscapingForURLArgument]]];
+                                       ueKey, [field gtm_stringByEscapingForURLArgument]]];
             }
         }
         

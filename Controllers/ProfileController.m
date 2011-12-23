@@ -11,6 +11,7 @@
 #import "XboxLive.h"
 #import "ImageCache.h"
 #import "TaskController.h"
+#import "FriendProfileController.h"
 
 #import "ProfileInfoCell.h"
 #import "ProfileGamerscoreCell.h"
@@ -98,8 +99,8 @@
     [request setEntity:entityDescription];
     [request setPredicate:predicate];
     
-    NSManagedObject *friend = [[self.context executeFetchRequest:request 
-                                                           error:nil] lastObject];
+    NSManagedObject *friend = [[moc executeFetchRequest:request 
+                                                  error:nil] lastObject];
     
     [request release];
     
@@ -113,7 +114,7 @@
     else
     {
         ctlr = [[ProfileController alloc] initWithScreenName:screenName
-                                                     account:self.account];
+                                                     account:account];
     }
     
     [nc pushViewController:ctlr animated:YES];

@@ -123,6 +123,10 @@
 		FEC84025148C2F37005BC782 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84024148C2F37005BC782 /* TaskController.m */; };
 		FEC84027148C3678005BC782 /* TaskControllerOperation.h in Resources */ = {isa = PBXBuildFile; fileRef = FEC84026148C3678005BC782 /* TaskControllerOperation.h */; };
 		FEC84029148C3693005BC782 /* TaskControllerOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84028148C3693005BC782 /* TaskControllerOperation.m */; };
+		FEE0282F14A52558003B3DBF /* PlayerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0282E14A52558003B3DBF /* PlayerCell.m */; };
+		FEE0283314A52594003B3DBF /* RecentPlayersController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0283214A52594003B3DBF /* RecentPlayersController.m */; };
+		FEE0283514A52623003B3DBF /* RecentPlayersController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEE0283414A52623003B3DBF /* RecentPlayersController.xib */; };
+		FEE0283714A526A3003B3DBF /* PlayerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEE0283614A526A3003B3DBF /* PlayerCell.xib */; };
 		FEEE7CF31493CAF8009F475C /* MessageComposeController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEE7CF11493CAF8009F475C /* MessageComposeController.m */; };
 		FEEE7CF41493CAF8009F475C /* MessageCompose.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEE7CF21493CAF8009F475C /* MessageCompose.xib */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
@@ -300,6 +304,12 @@
 		FEC84024148C2F37005BC782 /* TaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskController.m; sourceTree = "<group>"; };
 		FEC84026148C3678005BC782 /* TaskControllerOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskControllerOperation.h; sourceTree = "<group>"; };
 		FEC84028148C3693005BC782 /* TaskControllerOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskControllerOperation.m; sourceTree = "<group>"; };
+		FEE0282D14A52558003B3DBF /* PlayerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerCell.h; sourceTree = "<group>"; };
+		FEE0282E14A52558003B3DBF /* PlayerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerCell.m; sourceTree = "<group>"; };
+		FEE0283114A52594003B3DBF /* RecentPlayersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentPlayersController.h; sourceTree = "<group>"; };
+		FEE0283214A52594003B3DBF /* RecentPlayersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentPlayersController.m; sourceTree = "<group>"; };
+		FEE0283414A52623003B3DBF /* RecentPlayersController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecentPlayersController.xib; sourceTree = "<group>"; };
+		FEE0283614A526A3003B3DBF /* PlayerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerCell.xib; sourceTree = "<group>"; };
 		FEEE7CF01493CAF8009F475C /* MessageComposeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposeController.h; sourceTree = "<group>"; };
 		FEEE7CF11493CAF8009F475C /* MessageComposeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposeController.m; sourceTree = "<group>"; };
 		FEEE7CF21493CAF8009F475C /* MessageCompose.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MessageCompose.xib; path = ../Controllers/MessageCompose.xib; sourceTree = "<group>"; };
@@ -393,6 +403,7 @@
 				FEC8400D148A1F37005BC782 /* ProfileOverview.xib */,
 				FEFE0E6114774554009C7084 /* MainWindow.xib */,
 				FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */,
+				FEE0283414A52623003B3DBF /* RecentPlayersController.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -424,6 +435,8 @@
 		FE610D3713EE938400420372 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FEE0283114A52594003B3DBF /* RecentPlayersController.h */,
+				FEE0283214A52594003B3DBF /* RecentPlayersController.m */,
 				FEC26EA4146BB25400D31608 /* AccountAddController.h */,
 				FEC26EA5146BB25400D31608 /* AccountAddController.m */,
 				FE726B7C1463CAD200534279 /* AccountEditController.h */,
@@ -563,6 +576,8 @@
 		FE993D50149881880075882C /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FEE0282D14A52558003B3DBF /* PlayerCell.h */,
+				FEE0282E14A52558003B3DBF /* PlayerCell.m */,
 				FE8BA7FA14A1BB710020D389 /* CompareGameCell.h */,
 				FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */,
 				FE993D51149881B00075882C /* ProfileInfoCell.h */,
@@ -593,6 +608,7 @@
 				FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */,
 				FE8BA7F814A1B9880020D389 /* CompareGameCell.xib */,
 				FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */,
+				FEE0283614A526A3003B3DBF /* PlayerCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -772,6 +788,8 @@
 				FE8BA7F914A1B9880020D389 /* CompareGameCell.xib in Resources */,
 				FE8ECB6A14A4892F00A6E2D2 /* CompareAchievementCell.xib in Resources */,
 				FE8ECB6C14A48EDC00A6E2D2 /* CompareAchievementsController.xib in Resources */,
+				FEE0283514A52623003B3DBF /* RecentPlayersController.xib in Resources */,
+				FEE0283714A526A3003B3DBF /* PlayerCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -833,6 +851,8 @@
 				FE8BA7FC14A1BB710020D389 /* CompareGameCell.m in Sources */,
 				FE8ECB6214A4825C00A6E2D2 /* CompareAchievementsController.m in Sources */,
 				FE8ECB6614A4884700A6E2D2 /* CompareAchievementCell.m in Sources */,
+				FEE0282F14A52558003B3DBF /* PlayerCell.m in Sources */,
+				FEE0283314A52594003B3DBF /* RecentPlayersController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

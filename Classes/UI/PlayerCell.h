@@ -12,7 +12,7 @@
 
 @property (nonatomic, assign) IBOutlet UILabel *screenName;
 @property (nonatomic, assign) IBOutlet UILabel *activity;
-@property (nonatomic, assign) IBOutlet UILabel *gamerscore;
+@property (nonatomic, assign) IBOutlet UILabel *gamerScore;
 @property (nonatomic, assign) IBOutlet UIImageView *gamerpic;
 @property (nonatomic, assign) IBOutlet UIImageView *titleIcon;
 

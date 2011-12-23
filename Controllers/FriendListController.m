@@ -206,7 +206,7 @@
     [label setText:[obj valueForKey:@"activityText"]];
     
     label = (UILabel*)[cell viewWithTag:5];
-    [label setText:[NSString localizedStringWithFormat:[self.numberFormatter stringFromNumber:[obj valueForKey:@"gamerscore"]]]];
+    [label setText:[NSString localizedStringWithFormat:[self.numberFormatter stringFromNumber:[obj valueForKey:@"gamerScore"]]]];
     
     // Gamerpic
     

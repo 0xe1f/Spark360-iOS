@@ -12,6 +12,8 @@
 #import "ImageCache.h"
 #import "PlayerCell.h"
 
+#import "ProfileController.h"
+
 @implementation RecentPlayersController
 
 @synthesize players = _players;
@@ -116,7 +118,21 @@
         
         NSDictionary *player = [self.players objectAtIndex:indexPath.row];
         
-        // TODO: 
+        playerCell.screenName.text = [player objectForKey:@"screenName"];
+        playerCell.activity.text = [player objectForKey:@"activityText"];
+        playerCell.gamerScore.text = [NSString localizedStringWithFormat:[self.numberFormatter stringFromNumber:[player objectForKey:@"gamerScore"]]];
+        
+        UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[player objectForKey:@"iconUrl"]
+                                                          notifyObject:self
+                                                        notifySelector:@selector(imageLoaded:)];
+        
+        UIImage *boxArt = [[ImageCache sharedInstance] getCachedFile:[player objectForKey:@"activityTitleIconUrl"]
+                                                            cropRect:CGRectMake(0,16,85,85)
+                                                        notifyObject:self
+                                                      notifySelector:@selector(imageLoaded:)];
+        
+        playerCell.gamerpic.image = gamerpic;
+        playerCell.titleIcon.image = boxArt;
     }
     
     return playerCell;
