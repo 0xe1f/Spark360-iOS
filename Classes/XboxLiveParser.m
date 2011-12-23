@@ -93,6 +93,10 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSDictionary*)parseCompareGamesWithScreenName:(NSString*)screenName
                                     withAccount:(XboxLiveAccount*)account
                                           error:(NSError**)error;
+-(NSDictionary*)parseCompareAchievementsWithUid:(NSString*)uid
+                                     screenName:(NSString*)screenName
+                                    withAccount:(XboxLiveAccount*)account
+                                          error:(NSError**)error;
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
@@ -146,6 +150,10 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSDictionary*)retrieveCompareGamesWithScreenName:(NSString*)screenName
                                            account:(XboxLiveAccount*)account
                                              error:(NSError**)error;
+-(NSDictionary*)retrieveCompareAchievementsForUid:(NSString*)uid
+                                       screenName:(NSString*)screenName
+                                          account:(XboxLiveAccount*)account
+                                            error:(NSError**)error;
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
                             account:(XboxLiveAccount*)account
@@ -203,6 +211,7 @@ NSString* const REFERER_JSON_PROFILE = @"http://live.xbox.com/%@/MyXbox";
 
 NSString* const URL_ACHIEVEMENTS = @"http://live.xbox.com/%@/Activity/Details?titleId=%@";
 NSString* const URL_FRIEND_PROFILE = @"http://live.xbox.com/%@/Profile?gamertag=%@";
+NSString* const URL_COMPARE_ACHIEVEMENTS = @"http://live.xbox.com/%@/Activity/Details?compareTo=%@&titleId=%@";
 
 NSString* const URL_REPLY_TO = @"https://live.xbox.com/xweb/live/passport/setCookies.ashx";
 
@@ -744,7 +753,44 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         [self postNotificationOnMainThread:BACHGamesCompared
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
-                                            screenName, BACHNotificationUid,
+                                            screenName, BACHNotificationScreenName,
+                                            data, BACHNotificationData,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)compareAchievements:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    NSString *uid = [arguments objectForKey:@"uid"];
+    
+    NSError *error = nil;
+    
+    NSDictionary *data = [self retrieveCompareAchievementsForUid:uid
+                                                      screenName:screenName
+                                                         account:account
+                                                           error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHAchievementsCompared
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            screenName, BACHNotificationScreenName,
+                                            uid, BACHNotificationUid,
                                             data, BACHNotificationData,
                                             nil]];
     }
@@ -1204,6 +1250,52 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [self saveSessionForAccount:account];
     
     return games;
+}
+
+-(NSDictionary*)retrieveCompareAchievementsForUid:(NSString*)uid
+                                       screenName:(NSString*)screenName
+                                          account:(XboxLiveAccount*)account
+                                            error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    NSDictionary *achievements;
+    if (!(achievements = [self parseCompareAchievementsWithUid:uid
+                                                    screenName:screenName
+                                                   withAccount:account
+                                                         error:NULL]))
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (!(achievements = [self parseCompareAchievementsWithUid:uid
+                                                        screenName:screenName
+                                                       withAccount:account
+                                                             error:error]))
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return achievements;
 }
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
@@ -2869,6 +2961,148 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     }
     
     NSLog(@"parseCompareGamesWithScreenName: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return payload;
+}
+
+-(NSDictionary*)parseCompareAchievementsWithUid:(NSString*)uid
+                                     screenName:(NSString*)screenName
+                                    withAccount:(XboxLiveAccount*)account
+                                          error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *url = [NSString stringWithFormat:URL_COMPARE_ACHIEVEMENTS, 
+                     LOCALE, uid, [screenName gtm_stringByEscapingForURLArgument]];
+    
+    NSString *achievementPage = [self loadWithGET:url
+                                           fields:nil
+                                           useXhr:NO
+                                            error:error];
+    
+    if (!achievementPage)
+        return NO;
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_ACH_JSON
+                                                                           options:0
+                                                                             error:NULL];
+    
+    NSTextCheckingResult *match = [regex firstMatchInString:achievementPage
+                                                    options:0
+                                                      range:NSMakeRange(0, [achievementPage length])];
+    
+    if (!match)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorAchievementsNotFound"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *jsonScript = [achievementPage substringWithRange:[match rangeAtIndex:1]];
+    NSDictionary *data = [XboxLiveParser jsonObjectFromPage:jsonScript
+                                                      error:error];
+    
+    if (!data)
+        return NO;
+    
+    NSArray *jsonAchieves = [data objectForKey:@"Achievements"];
+    NSArray *jsonPlayers = [data objectForKey:@"Players"];
+    
+    /*
+    		JSONArray players = data.optJSONArray("Players");
+		
+		if (players.length() < 2)
+			throw new ParserException(mContext, R.string.error_achieves_retrieval);
+		
+		JSONObject you = players.optJSONObject(0);
+		JSONObject me = players.optJSONObject(1);
+		
+		String yourGamertag = you.optString("Gamertag");
+		String myGamertag = me.optString("Gamertag");
+		
+    	ComparedAchievementInfo comparedAchieves = new ComparedAchievementInfo();
+    	
+    	comparedAchieves.yourAvatarIconUrl = you.optString("Gamerpic");
+    	comparedAchieves.myAvatarIconUrl = me.optString("Gamerpic");
+		
+		JSONArray achieves = data.optJSONArray("Achievements");
+*/
+    /*
+    NSDictionary *inputs = [NSDictionary dictionaryWithObject:vtoken 
+                                                       forKey:@"__RequestVerificationToken"];
+    
+    
+    if (!page)
+        return nil;
+    
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                      error:error];
+    
+    if (!data)
+        return nil;
+    
+    NSMutableDictionary *payload = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    NSArray *players = [data objectForKey:@"Players"];
+    if ([players count] < 2)
+        return payload;
+    
+    NSDictionary *you = [players objectAtIndex:0];
+    NSDictionary *me = [players objectAtIndex:1];
+    
+    NSString *yourScreenName = [you objectForKey:@"Gamertag"];
+    NSString *myScreenName = [me objectForKey:@"Gamertag"];
+    
+    NSDictionary *overview = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [you objectForKey:@"Gamerpic"], @"youIconUrl",
+                              [me objectForKey:@"Gamerpic"], @"meIconUrl",
+                              [you objectForKey:@"Gamerscore"], @"youGamerscore",
+                              [me objectForKey:@"Gamerscore"], @"meGamerscore",
+                              nil];
+    
+    [payload setObject:overview forKey:@"overview"];
+    
+    NSMutableArray *games = [[[NSMutableArray alloc] init] autorelease];
+    [payload setObject:games forKey:@"games"];
+    
+    NSArray *inGames = [data objectForKey:@"Games"];
+    for (NSDictionary *inGame in inGames)
+    {
+        NSString *uid = [[inGame objectForKey:@"Id"] stringValue];
+        NSDictionary *progRoot = [inGame objectForKey:@"Progress"];
+        
+        if (!progRoot)
+            continue;
+        
+        NSDictionary *myProgress = [progRoot objectForKey:myScreenName];
+        NSDictionary *yourProgress = [progRoot objectForKey:yourScreenName];
+        
+        if (!myProgress || !yourProgress)
+            continue;
+        
+        NSDictionary *game = [NSDictionary dictionaryWithObjectsAndKeys:
+                              uid, @"uid",
+                              [inGame objectForKey:@"BoxArt"], @"boxArtUrl",
+                              [inGame objectForKey:@"Url"], @"url",
+                              [inGame objectForKey:@"Name"], @"title",
+                              [inGame objectForKey:@"PossibleAchievements"], @"achievesTotal",
+                              [inGame objectForKey:@"PossibleScore"], @"gamerScoreTotal",
+                              [myProgress objectForKey:@"Achievements"], @"myAchievesUnlocked",
+                              [myProgress objectForKey:@"Score"], @"myGamerScoreEarned",
+                              [yourProgress objectForKey:@"Achievements"], @"yourAchievesUnlocked",
+                              [yourProgress objectForKey:@"Score"], @"yourGamerScoreEarned",
+                              nil];
+        
+        [games addObject:game];
+    }
+    */
+    
+    NSLog(@"parseCompareAchievementsWithScreenName: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return payload;

@@ -17,6 +17,7 @@ extern NSString* const BACHFriendProfileSynced;
 extern NSString* const BACHProfileLoaded;
 extern NSString* const BACHFriendsChanged;
 extern NSString* const BACHGamesCompared;
+extern NSString* const BACHAchievementsCompared;
 
 extern NSString* const BACHMessageDeleted;
 extern NSString* const BACHMessageSent;
@@ -24,6 +25,7 @@ extern NSString* const BACHError;
 
 extern NSString* const BACHNotificationAccount;
 extern NSString* const BACHNotificationUid;
+extern NSString* const BACHNotificationScreenName;
 extern NSString* const BACHNotificationData;
 extern NSString* const BACHNotificationNSError;
 
@@ -87,6 +89,13 @@ extern NSString* const BACHNotificationNSError;
                           account:(XboxLiveAccount*)account;
 -(BOOL)isComparingGamesWithScreenName:(NSString*)screenName
                               account:(XboxLiveAccount*)account;
+
+-(void)compareAchievementsForGameUid:(NSString*)uid
+                          screenName:(NSString*)screenName
+                             account:(XboxLiveAccount*)account;
+-(BOOL)isComparingAchievementsForGameUid:(NSString*)uid
+                              screenName:(NSString*)screenName
+                                 account:(XboxLiveAccount*)account;
 
 -(void)deleteMessageWithUid:(NSString*)uid
                     account:(XboxLiveAccount*)account

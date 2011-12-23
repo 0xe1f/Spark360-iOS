@@ -21,6 +21,7 @@ NSString* const BACHProfileLoaded = @"BachProfileLoaded";
 NSString* const BACHFriendsChanged = @"BachFriendsChanged";
 
 NSString* const BACHGamesCompared = @"BachGamesCompared";
+NSString* const BACHAchievementsCompared = @"BachAchievementsCompared";
 
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
@@ -28,6 +29,7 @@ NSString* const BACHError = @"BachError";
 
 NSString* const BACHNotificationAccount = @"BachNotifAccount";
 NSString* const BACHNotificationUid = @"BachNotifUid";
+NSString* const BACHNotificationScreenName = @"BachNotifScreenName";
 NSString* const BACHNotificationData = @"BachNotifData";
 NSString* const BACHNotificationNSError = @"BachNotifNSError";
 
@@ -406,6 +408,40 @@ static TaskController *sharedInstance = nil;
     return [self isOperationQueuedWithId:identifier];
 }
 
+-(void)compareAchievementsForGameUid:(NSString*)uid
+                          screenName:(NSString*)screenName
+                             account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.CompareAch:%@/%@",
+                            account.uuid, screenName, uid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               uid, @"uid",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(compareAchievements:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(BOOL)isComparingAchievementsForGameUid:(NSString*)uid
+                              screenName:(NSString*)screenName
+                                 account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.CompareAch:%@/%@",
+                            account.uuid, screenName, uid];
+    return [self isOperationQueuedWithId:identifier];
+}
+                                 
 -(void)deleteMessageWithUid:(NSString*)uid
                     account:(XboxLiveAccount*)account
        managedObjectContext:(NSManagedObjectContext*)moc

@@ -60,6 +60,7 @@ typedef enum _XboxLiveParserErrorType
 -(void)cancelFriendRequest:(NSDictionary*)arguments;
 
 -(void)compareGames:(NSDictionary*)arguments;
+-(void)compareAchievements:(NSDictionary*)arguments;
 
 -(void)deleteMessage:(NSDictionary*)arguments;
 -(void)sendMessage:(NSDictionary*)arguments;

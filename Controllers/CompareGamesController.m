@@ -230,7 +230,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     NSLog(@"Got games compared notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
-    NSString *screenName = [notification.userInfo objectForKey:BACHNotificationUid];
+    NSString *screenName = [notification.userInfo objectForKey:BACHNotificationScreenName];
     
     if ([self.account isEqualToAccount:account] && [self.screenName isEqualToString:screenName])
     {
