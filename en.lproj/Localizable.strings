@@ -82,4 +82,9 @@
     RejectRequest = "Reject Request";
     CancelRequest = "Undo Request";
     CompareAchievements = "Compare Achievements";
+    "Last Updated: %@" = "Last Updated: %@";
+    "Last Updated: (Never)" = "Last Updated: (Never)";
+    "Release to refresh..." = "Release to refresh...";
+    "Pull down to refresh..." = "Pull down to refresh...";
+    "Loading..." = "Loading...";
 }

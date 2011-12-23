@@ -221,6 +221,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         self.lastUpdated = [NSDate date];
         [self.tableView reloadData];
+        
+        [_refreshHeaderView refreshLastUpdatedDate];
     }
 }
 
