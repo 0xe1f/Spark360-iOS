@@ -3,11 +3,11 @@
     <entity name="XboxAchievement" syncable="YES">
         <attribute name="achDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="acquired" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="gamerScore" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="iconUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isLocked" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isSecret" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="points" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="sortIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>

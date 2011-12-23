@@ -171,7 +171,16 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Achievement selected
+    NSManagedObject *achievement = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[achievement valueForKey:@"title"] 
+                                                        message:[achievement valueForKey:@"achDescription"]
+                                                       delegate:self 
+                                              cancelButtonTitle:NSLocalizedString(@"OK",nil) 
+                                              otherButtonTitles:nil];
+    
+    [alertView show];
+    [alertView release];
 }
 
 -(void)configureCell:(UITableViewCell *)cell 
@@ -199,11 +208,15 @@
     else
     {
         NSDate *acquired = [managedObject valueForKey:@"acquired"];
-        NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
-        
-        [formatter setDateStyle:NSDateFormatterMediumStyle];
-        unlockedText = [NSString localizedStringWithFormat:NSLocalizedString(@"AchieveUnlocked_f", nil), 
-                        [formatter stringFromDate:acquired]];
+        if ([acquired isEqualToDate:[NSDate distantPast]])
+        {
+            unlockedText = NSLocalizedString(@"AchieveUnlockedOffline", nil);
+        }
+        else
+        {
+            unlockedText = [NSString localizedStringWithFormat:NSLocalizedString(@"AchieveUnlocked_f", nil), 
+                            [self.dateFormatter stringFromDate:acquired]];
+        }
     }
     
     label = (UILabel*)[cell viewWithTag:3];
@@ -212,7 +225,7 @@
     // Gamescore
     
     label = (UILabel*)[cell viewWithTag:5];
-    [label setText:[[managedObject valueForKey:@"points"] stringValue]];
+    [label setText:[[managedObject valueForKey:@"gamerScore"] stringValue]];
     
     // Icon
 

@@ -15,6 +15,8 @@
 @implementation GenericController
 
 @synthesize numberFormatter = _numberFormatter;
+@synthesize dateFormatter = _dateFormatter;
+
 @synthesize account = _account;
 
 -(id)initWithNibName:(NSString *)nibNameOrNil 
@@ -37,6 +39,9 @@
         
         _numberFormatter = [[NSNumberFormatter alloc] init];
         [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     }
     
     return self;
@@ -45,6 +50,7 @@
 -(void)dealloc
 {
     self.numberFormatter = nil;
+    self.dateFormatter = nil;
     self.account = nil;
     
     managedObjectContext = nil;

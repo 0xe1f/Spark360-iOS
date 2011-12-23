@@ -250,6 +250,7 @@ NSString* const PATTERN_GAMERPIC_CLASSIC = @"/(1)(\\d+)$";
 NSString* const PATTERN_GAMERPIC_AVATAR = @"/avatarpic-(s)(.png)$"; //CASE_INSENSITIVE
 
 NSString* const PATTERN_ACH_JSON = @"loadActivityDetailsView\\((.*)\\);\\s*\\}\\);";
+NSString* const PATTERN_COMPARE_ACH_JSON = @"loadCompareView\\((.*)\\);\\s*\\}\\);";
 
 NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/HiddenAchievement.png";
 NSString* const URL_GAMERPIC = @"http://avatar.xboxlive.com/avatar/%@/avatarpic-l.png";
@@ -1685,7 +1686,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
             
             [achieve setValue:game forKey:@"game"];
             [achieve setValue:[inAchieve objectForKey:@"uid"] forKey:@"uid"];
-            [achieve setValue:[inAchieve objectForKey:@"points"] forKey:@"points"];
+            [achieve setValue:[inAchieve objectForKey:@"gamerScore"] forKey:@"gamerScore"];
             
             newItems++;
             update = YES;
@@ -2366,7 +2367,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                          @"isLocked",
                          @"acquired",
                          @"uid",
-                         @"points",
+                         @"gamerScore",
                          @"sortIndex", 
                          nil];
         
@@ -2974,7 +2975,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
     NSString *url = [NSString stringWithFormat:URL_COMPARE_ACHIEVEMENTS, 
-                     LOCALE, uid, [screenName gtm_stringByEscapingForURLArgument]];
+                     LOCALE, [screenName gtm_stringByEscapingForURLArgument], uid];
     
     NSString *achievementPage = [self loadWithGET:url
                                            fields:nil
@@ -2984,7 +2985,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (!achievementPage)
         return NO;
     
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_ACH_JSON
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_COMPARE_ACH_JSON
                                                                            options:0
                                                                              error:NULL];
     
@@ -3010,42 +3011,6 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (!data)
         return NO;
     
-    NSArray *jsonAchieves = [data objectForKey:@"Achievements"];
-    NSArray *jsonPlayers = [data objectForKey:@"Players"];
-    
-    /*
-    		JSONArray players = data.optJSONArray("Players");
-		
-		if (players.length() < 2)
-			throw new ParserException(mContext, R.string.error_achieves_retrieval);
-		
-		JSONObject you = players.optJSONObject(0);
-		JSONObject me = players.optJSONObject(1);
-		
-		String yourGamertag = you.optString("Gamertag");
-		String myGamertag = me.optString("Gamertag");
-		
-    	ComparedAchievementInfo comparedAchieves = new ComparedAchievementInfo();
-    	
-    	comparedAchieves.yourAvatarIconUrl = you.optString("Gamerpic");
-    	comparedAchieves.myAvatarIconUrl = me.optString("Gamerpic");
-		
-		JSONArray achieves = data.optJSONArray("Achievements");
-*/
-    /*
-    NSDictionary *inputs = [NSDictionary dictionaryWithObject:vtoken 
-                                                       forKey:@"__RequestVerificationToken"];
-    
-    
-    if (!page)
-        return nil;
-    
-    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
-                                                      error:error];
-    
-    if (!data)
-        return nil;
-    
     NSMutableDictionary *payload = [[[NSMutableDictionary alloc] init] autorelease];
     
     NSArray *players = [data objectForKey:@"Players"];
@@ -3058,23 +3023,18 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     NSString *yourScreenName = [you objectForKey:@"Gamertag"];
     NSString *myScreenName = [me objectForKey:@"Gamertag"];
     
-    NSDictionary *overview = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [you objectForKey:@"Gamerpic"], @"youIconUrl",
-                              [me objectForKey:@"Gamerpic"], @"meIconUrl",
-                              [you objectForKey:@"Gamerscore"], @"youGamerscore",
-                              [me objectForKey:@"Gamerscore"], @"meGamerscore",
-                              nil];
+    [payload setObject:[you objectForKey:@"Gamerpic"] forKey:@"yourIconUrl"];
+    [payload setObject:[me objectForKey:@"Gamerpic"] forKey:@"myIconUrl"];
+    [payload setObject:[you objectForKey:@"Gamerscore"] forKey:@"yourGamerScore"];
+    [payload setObject:[me objectForKey:@"Gamerscore"] forKey:@"myGamerscore"];
     
-    [payload setObject:overview forKey:@"overview"];
+    NSMutableArray *achievements = [[[NSMutableArray alloc] init] autorelease];
+    [payload setObject:achievements forKey:@"achievements"];
     
-    NSMutableArray *games = [[[NSMutableArray alloc] init] autorelease];
-    [payload setObject:games forKey:@"games"];
-    
-    NSArray *inGames = [data objectForKey:@"Games"];
-    for (NSDictionary *inGame in inGames)
+    NSArray *inAchieves = [data objectForKey:@"Achievements"];
+    for (NSDictionary *inAchieve in inAchieves)
     {
-        NSString *uid = [[inGame objectForKey:@"Id"] stringValue];
-        NSDictionary *progRoot = [inGame objectForKey:@"Progress"];
+        NSDictionary *progRoot = [inAchieve objectForKey:@"EarnDates"];
         
         if (!progRoot)
             continue;
@@ -3082,25 +3042,66 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         NSDictionary *myProgress = [progRoot objectForKey:myScreenName];
         NSDictionary *yourProgress = [progRoot objectForKey:yourScreenName];
         
-        if (!myProgress || !yourProgress)
-            continue;
+        NSMutableDictionary *achieve = [[[NSMutableDictionary alloc] init] autorelease];
         
-        NSDictionary *game = [NSDictionary dictionaryWithObjectsAndKeys:
-                              uid, @"uid",
-                              [inGame objectForKey:@"BoxArt"], @"boxArtUrl",
-                              [inGame objectForKey:@"Url"], @"url",
-                              [inGame objectForKey:@"Name"], @"title",
-                              [inGame objectForKey:@"PossibleAchievements"], @"achievesTotal",
-                              [inGame objectForKey:@"PossibleScore"], @"gamerScoreTotal",
-                              [myProgress objectForKey:@"Achievements"], @"myAchievesUnlocked",
-                              [myProgress objectForKey:@"Score"], @"myGamerScoreEarned",
-                              [yourProgress objectForKey:@"Achievements"], @"yourAchievesUnlocked",
-                              [yourProgress objectForKey:@"Score"], @"yourGamerScoreEarned",
-                              nil];
+        [achieve setObject:[inAchieve objectForKey:@"Score"] forKey:@"gamerScore"];
+        [achieve setObject:[inAchieve objectForKey:@"Id"] forKey:@"uid"];
         
-        [games addObject:game];
+        if ([[inAchieve objectForKey:@"IsHidden"] boolValue])
+        {
+            [achieve setObject:NSLocalizedString(@"SecretAchieveTitle", nil) forKey:@"title"];
+            [achieve setObject:NSLocalizedString(@"SecretAchieveDesc", nil) forKey:@"achDescription"];
+            [achieve setObject:URL_SECRET_ACHIEVE_TILE forKey:@"iconUrl"];
+            [achieve setObject:[NSNumber numberWithBool:YES] forKey:@"isSecret"]; // isSecret
+        }
+        else
+        {
+            [achieve setObject:[inAchieve objectForKey:@"Name"] forKey:@"title"];
+            [achieve setObject:[inAchieve objectForKey:@"Description"] forKey:@"achDescription"];
+            [achieve setObject:[inAchieve objectForKey:@"TileUrl"] forKey:@"iconUrl"];
+            [achieve setObject:[NSNumber numberWithBool:NO] forKey:@"isSecret"]; // isSecret
+        }
+        
+        if (myProgress)
+        {
+            [achieve setObject:[NSNumber numberWithBool:NO] forKey:@"myIsLocked"];
+            
+            if ([[myProgress objectForKey:@"IsOffline"] boolValue])
+            {
+                [achieve setObject:[NSDate distantPast] forKey:@"myAcquired"];
+            }
+            else
+            {
+                NSDate *dateEarned = [XboxLiveParser ticksFromJSONString:[myProgress objectForKey:@"EarnedOn"]];
+                [achieve setObject:dateEarned forKey:@"myAcquired"];
+            }
+        }
+        else
+        {
+            [achieve setObject:[NSNumber numberWithBool:YES] forKey:@"myIsLocked"];
+        }
+        
+        if (yourProgress)
+        {
+            [achieve setObject:[NSNumber numberWithBool:NO] forKey:@"yourIsLocked"];
+            
+            if ([[yourProgress objectForKey:@"IsOffline"] boolValue])
+            {
+                [achieve setObject:[NSDate distantPast] forKey:@"yourAcquired"];
+            }
+            else
+            {
+                NSDate *dateEarned = [XboxLiveParser ticksFromJSONString:[yourProgress objectForKey:@"EarnedOn"]];
+                [achieve setObject:dateEarned forKey:@"yourAcquired"];
+            }
+        }
+        else
+        {
+            [achieve setObject:[NSNumber numberWithBool:YES] forKey:@"yourIsLocked"];
+        }
+        
+        [achievements addObject:achieve];
     }
-    */
     
     NSLog(@"parseCompareAchievementsWithScreenName: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
@@ -3843,9 +3844,6 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     if (match)
     {
-        NSLog(@"hey1: %@", [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location)]);
-        NSLog(@"hey2: %@", [url substringWithRange:[match rangeAtIndex:2]]);
-        
         return [NSString stringWithFormat:@"%@l%@", 
                 [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location)],
                 [url substringWithRange:[match rangeAtIndex:2]]];

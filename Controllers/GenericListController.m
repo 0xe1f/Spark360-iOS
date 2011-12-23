@@ -15,6 +15,8 @@
 @implementation GenericListController
 
 @synthesize numberFormatter;
+@synthesize dateFormatter;
+
 @synthesize account;
 
 -(id)initWithNibName:(NSString *)nibNameOrNil 
@@ -28,6 +30,9 @@
         
         self->numberFormatter = [[NSNumberFormatter alloc] init];
         [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        
+        self->dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     }
     
     return self;
@@ -36,6 +41,8 @@
 -(void)dealloc
 {
     self.numberFormatter = nil;
+    self.dateFormatter = nil;
+    
     self.account = nil;
     
     managedObjectContext = nil; // We don't release this!

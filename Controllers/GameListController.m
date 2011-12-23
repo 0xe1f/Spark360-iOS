@@ -155,13 +155,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     
     // Last played
     
-    NSDate *lastPlayed = [managedObject valueForKey:@"lastPlayed"];
-    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    
     label = (UILabel*)[cell viewWithTag:3];
+    
+    NSDate *lastPlayed = [managedObject valueForKey:@"lastPlayed"];
     [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameLastPlayed", nil), 
-                    [formatter stringFromDate:lastPlayed]]];
+                    [self.dateFormatter stringFromDate:lastPlayed]]];
     
     // Achievement stats
     

@@ -13,6 +13,7 @@
 @interface CompareGamesController : GenericTableViewController <UITableViewDataSource>
 
 @property (nonatomic, retain) NSString *screenName;
+@property (nonatomic, retain) NSDate *lastUpdated;
 
 @property (nonatomic, retain) NSMutableArray *games;
 

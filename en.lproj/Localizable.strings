@@ -1,6 +1,7 @@
 {
 	GameLastPlayed = "Last played %@";
 	GameAchievementStats = "%@/%@ achievements";
+	ComparedAchievementStats = "%@/%@";
 	GameScoreStats = "%@/%@";
 	Accounts = Accounts;
 	LoginInfo = "Login Settings";
@@ -47,7 +48,8 @@
     ErrorMissingGamertagInAchieves = "Missing gamertag in achievement data. Please try again shortly";
     SecretAchieveTitle = "Secret Achievement";
     SecretAchieveDesc = "Continue playing to unlock this secret achievement.";
-	AchieveUnlocked_f = "Unlocked on %@";
+	AchieveUnlocked_f = "Unlocked %@";
+	AchieveUnlockedOffline = "Unlocked";
 	AchieveLocked = "Locked";
 	Sent_f = "Sent %@";
     From_f = "From %@";
@@ -79,4 +81,5 @@
     ApproveRequest = "Approve Request";
     RejectRequest = "Reject Request";
     CancelRequest = "Undo Request";
+    CompareAchievements = "Compare Achievements";
 }

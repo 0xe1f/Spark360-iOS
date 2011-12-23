@@ -8,6 +8,7 @@
 
 #import "CompareGamesController.h"
 
+#import "CompareAchievementsController.h"
 #import "TaskController.h"
 #import "ImageCache.h"
 #import "CompareGameCell.h"
@@ -16,6 +17,7 @@
 
 @synthesize games = _games;
 @synthesize screenName = _screenName;
+@synthesize lastUpdated = _lastUpdated;
 
 -(id)initWithScreenName:(NSString *)screenName 
                 account:(XboxLiveAccount *)account
@@ -24,6 +26,7 @@
                               nibName:@"CompareGamesController"])
     {
         self.screenName = screenName;
+        self.lastUpdated = nil;
         
         _games = [[NSMutableArray alloc] init];
     }
@@ -35,6 +38,7 @@
 {
     self.screenName = nil;
     self.games = nil;
+    self.lastUpdated = nil;
     
     [super dealloc];
 }
@@ -82,7 +86,7 @@
 
 -(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
 {
-	return [NSDate distantPast];
+	return self.lastUpdated;
 }
 
 #pragma mark - UITableViewDataSource
@@ -115,10 +119,10 @@
         cell.title.text = [game objectForKey:@"title"];
         
         // Achievement stats
-        cell.myAchievements.text = [NSString localizedStringWithFormat:NSLocalizedString(@"GameAchievementStats", nil),
+        cell.myAchievements.text = [NSString localizedStringWithFormat:NSLocalizedString(@"ComparedAchievementStats", nil),
                                     [game objectForKey:@"myAchievesUnlocked"],
                                     [game objectForKey:@"achievesTotal"]];
-        cell.yourAchievements.text = [NSString localizedStringWithFormat:NSLocalizedString(@"GameAchievementStats", nil),
+        cell.yourAchievements.text = [NSString localizedStringWithFormat:NSLocalizedString(@"ComparedAchievementStats", nil),
                                       [game objectForKey:@"yourAchievesUnlocked"],
                                       [game objectForKey:@"achievesTotal"]];
         
@@ -140,81 +144,19 @@
     }
     
     return cell;
-    /*
-    CompareGameCell *cell = (CompareGameCell*)[self.tableView dequeueReusableCellWithIdentifier:@"compareGameCell"];
-    
-    if (!cell)
-    {
-        UINib *cellNib = [UINib nibWithNibName:@"CompareGameCell"
-                                        bundle:nil];
-        
-        NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil
-                                                         options:nil];
-        
-        for (id object in topLevelObjects)
-        {
-            if ([object isKindOfClass:[UITableViewCell class]])
-            {
-                cell = (CompareGameCell*)cell
-            }
-        }
-    }
-     */
-    /*
-    ProfileStatusCell *statusCell = (ProfileStatusCell*)[self.tableView dequeueReusableCellWithIdentifier:@"statusCell"];
-    
-    if (!statusCell)
-    {
-        UINib *cellNib = [UINib nibWithNibName:@"ProfileStatusCell" 
-                                        bundle:nil];
-        
-        NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil options:nil];
-        
-        for (id object in topLevelObjects)
-        {
-            if ([object isKindOfClass:[UITableViewCell class]])
-            {
-                statusCell = (ProfileStatusCell *)object;
-                break;
-            }
-        }
-    }
-    
-    int statusCode = [[self.properties objectForKey:@"statusCode"] intValue];
-    
-    statusCell.status.text = [XboxLive descriptionFromFriendStatus:statusCode];
-    statusCell.activity.text = [self.properties objectForKey:@"activityText"];
-    
-    UIImage *boxArt = [[CFImageCache sharedInstance]
-                       getCachedFile:[self.properties objectForKey:@"activityTitleIconUrl"]
-                       notifyObject:self
-                       notifySelector:@selector(imageLoaded:)];
-    
-    [statusCell.titleIcon setImage:boxArt];
-    
-    UIImage *gamerpic = [[CFImageCache sharedInstance]
-                         getCachedFile:[self.properties objectForKey:@"iconUrl"]
-                         notifyObject:self
-                         notifySelector:@selector(imageLoaded:)];
-    
-    [statusCell.gamerpic setImage:gamerpic];
-    
-    return statusCell;
-     */
 }
 
 - (void)tableView:(UITableView *)tableView 
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //NSManagedObject *obj = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSDictionary *game = [self.games objectAtIndex:indexPath.row];
     
-    /* TODO
-    FriendProfileController *ctlr = [[FriendProfileController alloc] initWithFriendUid:[friend valueForKey:@"uid"]
-                                                                               account:self.account];
+    CompareAchievementsController *ctlr = [[CompareAchievementsController alloc] initWithGameUid:[game objectForKey:@"uid"]
+                                                                                      screenName:self.screenName
+                                                                                         account:self.account];
     
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
-     */
 }
 
 #pragma mark - Notifications
@@ -242,6 +184,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         [self.games removeAllObjects];
         [self.games addObjectsFromArray:games];
         
+        self.lastUpdated = [NSDate date];
         [self.tableView reloadData];
     }
 }

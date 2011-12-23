@@ -19,6 +19,7 @@
 };
 
 @property (nonatomic, retain) NSNumberFormatter *numberFormatter;
+@property (nonatomic, retain) NSDateFormatter *dateFormatter;
 @property (nonatomic, retain) XboxLiveAccount *account;
 
 -(id)initWithAccount:(XboxLiveAccount*)account

@@ -48,6 +48,10 @@
 		FE8CA920147459C200A5C9EA /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA91F147459C200A5C9EA /* KeychainItemWrapper.m */; };
 		FE8CA92314745AED00A5C9EA /* AppPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA92214745AED00A5C9EA /* AppPreferences.m */; };
 		FE8EA2BA1468EE02009E26F0 /* GTMNSString+URLArguments.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */; };
+		FE8ECB6214A4825C00A6E2D2 /* CompareAchievementsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8ECB6114A4825C00A6E2D2 /* CompareAchievementsController.m */; };
+		FE8ECB6614A4884700A6E2D2 /* CompareAchievementCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */; };
+		FE8ECB6A14A4892F00A6E2D2 /* CompareAchievementCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */; };
+		FE8ECB6C14A48EDC00A6E2D2 /* CompareAchievementsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */; };
 		FE9015E1148E0A6B003004E7 /* GenericListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9015E0148E0A6B003004E7 /* GenericListController.m */; };
 		FE92D6D4149CA39300A7D6A5 /* xboxDefaultBoxart.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */; };
 		FE92D6D5149CA39300A7D6A5 /* xboxDefaultBoxart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6CF149CA39300A7D6A5 /* xboxDefaultBoxart@2x.png */; };
@@ -199,6 +203,12 @@
 		FE8EA2B81468EE02009E26F0 /* GTMNSString+URLArguments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+URLArguments.h"; sourceTree = "<group>"; };
 		FE8EA2B91468EE02009E26F0 /* GTMNSString+URLArguments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+URLArguments.m"; sourceTree = "<group>"; };
 		FE8EA2BC1468EE2E009E26F0 /* GTMGarbageCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMGarbageCollection.h; sourceTree = "<group>"; };
+		FE8ECB6014A4825B00A6E2D2 /* CompareAchievementsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompareAchievementsController.h; sourceTree = "<group>"; };
+		FE8ECB6114A4825C00A6E2D2 /* CompareAchievementsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompareAchievementsController.m; sourceTree = "<group>"; };
+		FE8ECB6414A4884700A6E2D2 /* CompareAchievementCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompareAchievementCell.h; sourceTree = "<group>"; };
+		FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompareAchievementCell.m; sourceTree = "<group>"; };
+		FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CompareAchievementCell.xib; sourceTree = "<group>"; };
+		FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CompareAchievementsController.xib; sourceTree = "<group>"; };
 		FE9015DE148E0A5D003004E7 /* GenericListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericListController.h; sourceTree = "<group>"; };
 		FE9015E0148E0A6B003004E7 /* GenericListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericListController.m; sourceTree = "<group>"; };
 		FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxDefaultBoxart.png; sourceTree = "<group>"; };
@@ -382,6 +392,7 @@
 				FE8BA7F614A1B55A0020D389 /* CompareGamesController.xib */,
 				FEC8400D148A1F37005BC782 /* ProfileOverview.xib */,
 				FEFE0E6114774554009C7084 /* MainWindow.xib */,
+				FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -443,6 +454,8 @@
 				FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */,
 				FE8BA7F214A1B3E90020D389 /* CompareGamesController.h */,
 				FE8BA7F314A1B3E90020D389 /* CompareGamesController.m */,
+				FE8ECB6014A4825B00A6E2D2 /* CompareAchievementsController.h */,
+				FE8ECB6114A4825C00A6E2D2 /* CompareAchievementsController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -495,7 +508,6 @@
 				FE5CAE1613F72980004BC903 /* Classes */,
 				FE610D3713EE938400420372 /* Controllers */,
 				FE726B471461120100534279 /* Models */,
-				FE9E371413F8EA2300A6EE36 /* UI */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
 				FEB3E13B13E6402900095480 /* Caffeine */,
 				FE76A93813E636A9006D6AFC /* Frameworks */,
@@ -565,6 +577,8 @@
 				FEC24B78149B3400008058BF /* ProfileStatusCell.m */,
 				FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */,
 				FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */,
+				FE8ECB6414A4884700A6E2D2 /* CompareAchievementCell.h */,
+				FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -578,16 +592,9 @@
 				FE993D871499F60D0075882C /* ProfileLargeTextCell.xib */,
 				FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */,
 				FE8BA7F814A1B9880020D389 /* CompareGameCell.xib */,
+				FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */,
 			);
 			path = Cells;
-			sourceTree = "<group>";
-		};
-		FE9E371413F8EA2300A6EE36 /* UI */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = UI;
-			path = Classes;
 			sourceTree = "<group>";
 		};
 		FEB3E13B13E6402900095480 /* Caffeine */ = {
@@ -763,6 +770,8 @@
 				FEB204CD14A07E36005EFA25 /* toolbarCompareGames@2x.png in Resources */,
 				FE8BA7F714A1B55A0020D389 /* CompareGamesController.xib in Resources */,
 				FE8BA7F914A1B9880020D389 /* CompareGameCell.xib in Resources */,
+				FE8ECB6A14A4892F00A6E2D2 /* CompareAchievementCell.xib in Resources */,
+				FE8ECB6C14A48EDC00A6E2D2 /* CompareAchievementsController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -822,6 +831,8 @@
 				FE8BF2C6149E8B9F00FC8485 /* ProfileController.m in Sources */,
 				FE8BA7F414A1B3E90020D389 /* CompareGamesController.m in Sources */,
 				FE8BA7FC14A1BB710020D389 /* CompareGameCell.m in Sources */,
+				FE8ECB6214A4825C00A6E2D2 /* CompareAchievementsController.m in Sources */,
+				FE8ECB6614A4884700A6E2D2 /* CompareAchievementCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
