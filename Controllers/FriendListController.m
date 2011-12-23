@@ -13,6 +13,7 @@
 #import "ImageCache.h"
 
 #import "FriendProfileController.h"
+#import "RecentPlayersController.h"
 #import "ProfileController.h"
 
 #define OK_BUTTON_INDEX 1
@@ -358,15 +359,14 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == OK_BUTTON_INDEX)
     {
-        NSString *gamertag = [self inputDialogText:alertView];
+        NSString *screenName = [self inputDialogText:alertView];
         
-        if (gamertag)
+        if (screenName)
         {
-            ProfileController *ctlr = [[ProfileController alloc] initWithScreenName:gamertag
-                                                                           account:self.account];
-            
-            [self.navigationController pushViewController:ctlr animated:YES];
-            [ctlr release];
+            [ProfileController showProfileWithScreenName:screenName
+                                                 account:self.account
+                                    managedObjectContext:managedObjectContext
+                                    navigationController:self.navigationController];
         }
     }
 }
@@ -388,7 +388,9 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
 
 -(void)viewRecentPlayers:(id)sender
 {
-    // TODO
+    RecentPlayersController *ctlr = [[RecentPlayersController alloc] initWithAccount:self.account];
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
 @end

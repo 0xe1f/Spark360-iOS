@@ -7,21 +7,30 @@ Messages:
 
 * When a message contains no text, add placeholder text
 * Add icons denoting the type of content in the message
-* Sending messages to multiple recipients is broken
+* Test sending messages to multiple recipients
 
-* Change how ImageCache's notifications work - ImageCache shouldn't be setting 
-  them - each controller should
+Friends:
+
 * In ProfileController, check to see if user is Friend, and if so, redirect to
   FriendProfileController
 * Suppressed exceptions in FriendListController/configureCell cause rendering
   problems when friends list changes. Figure out a way to properly handle errors,
   and possibly redraw
+* Add avatars to profiles
+
+All:
+
+* ProfileController will close view even if the incoming error has nothing to 
+  do with invalid profile name. Filter notification types
+* Remove XIB files from the Controllers directory
+
+Core:
+
+* Change how ImageCache's notifications work - ImageCache shouldn't be setting 
+  them - each controller should
+* When images are downloaded, update single icon, not all (see imageSynced)
 * [Account save] should be thread-safe!
 * Add network spinner when TaskControllerOp is in progress
 * Delete database contents and keychain items when an account is deleted 
-* When images are downloaded, update single icon, not all (see imageSynced)
 * Investigate the effects of commenting out the assertion in KeyChainWrapper:315!
 * App seems to be logging in excessively - investigate cookie saves
-* Add avatars to profiles
-* ProfileController will close view even if the incoming error has nothing to 
-  do with invalid profile name. Filter notification types

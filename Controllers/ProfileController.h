@@ -24,6 +24,11 @@
 
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *composeButton;
 
++(void)showProfileWithScreenName:(NSString*)screenName
+                         account:(XboxLiveAccount*)account
+            managedObjectContext:(NSManagedObjectContext*)moc
+            navigationController:(UINavigationController*)nc;
+
 -(id)initWithScreenName:(NSString*)screenName
                 account:(XboxLiveAccount*)account;
 

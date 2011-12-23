@@ -49,8 +49,8 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                      namePattern:(NSRegularExpression*)namePattern;
 +(NSDictionary*)jsonObjectFromLive:(NSString*)script
                              error:(NSError**)error;
-+(NSDictionary*)jsonDataObjectFromPage:(NSString*)json
-                                 error:(NSError**)error;
++(id)jsonDataObjectFromPage:(NSString*)json
+                      error:(NSError**)error;
 +(NSDictionary*)jsonObjectFromPage:(NSString*)json
                              error:(NSError**)error;
 +(NSNumber*)getStarRatingFromPage:(NSString*)html;
@@ -97,6 +97,8 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                      screenName:(NSString*)screenName
                                     withAccount:(XboxLiveAccount*)account
                                           error:(NSError**)error;
+-(NSArray*)parseRecentPlayersForAccount:(XboxLiveAccount*)account
+                                  error:(NSError**)error;
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
@@ -139,9 +141,13 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSDictionary*)retrieveFriendProfileWithUid:(NSString*)uid
                                      account:(XboxLiveAccount*)account
                                        error:(NSError**)error;
+
 -(NSDictionary*)retrieveProfileWithScreenName:(NSString*)screenName
                                       account:(XboxLiveAccount*)account
                                         error:(NSError**)error;
+-(NSArray*)retrieveRecentPlayersForAccount:(XboxLiveAccount*)account
+                                     error:(NSError**)error;
+
 -(BOOL)retrieveFriendRequestToScreenName:(NSString*)screenName
                                  account:(XboxLiveAccount*)account
                             actionToTake:(NSString*)action
@@ -204,6 +210,7 @@ NSString* const URL_JSON_FRIEND_LIST = @"http://live.xbox.com/%@/Friends/List";
 NSString* const URL_JSON_SEND_MESSAGE = @"https://live.xbox.com/%@/Messages/SendMessage";
 NSString* const URL_JSON_FRIEND_REQUEST = @"http://live.xbox.com/%@/Friends/%@";
 NSString* const URL_JSON_COMPARE_GAMES = @"http://live.xbox.com/%@/Activity/Summary?CompareTo=%@";
+NSString* const URL_JSON_RECENT_LIST = @"http://live.xbox.com/%@/Friends/Recent";
 
 NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Delete";
 
@@ -512,6 +519,36 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (!self.lastError)
     {
         [self postNotificationOnMainThread:BACHProfileLoaded
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            data, BACHNotificationData,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)loadRecentPlayers:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    
+    NSError *error = nil;
+    NSArray *data = [self retrieveRecentPlayersForAccount:account
+                                                    error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHRecentPlayersLoaded
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
                                             data, BACHNotificationData,
@@ -1162,6 +1199,46 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [self saveSessionForAccount:account];
     
     return profileData;
+}
+
+-(NSArray*)retrieveRecentPlayersForAccount:(XboxLiveAccount*)account
+                                          error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    NSArray *players;
+    if (!(players = [self parseRecentPlayersForAccount:account
+                                                 error:NULL]))
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (!(players = [self parseRecentPlayersForAccount:account
+                                                     error:error]))
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return players;
 }
 
 -(BOOL)retrieveFriendRequestToScreenName:(NSString*)screenName
@@ -2813,6 +2890,51 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                      error:error];
 }
 
+-(NSArray*)parseRecentPlayersForAccount:(XboxLiveAccount*)account
+                                  error:(NSError**)error
+{
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_FRIENDS];
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_RECENT_LIST, LOCALE];
+    NSDictionary *inputs = [NSDictionary dictionaryWithObject:vtoken 
+                                                       forKey:@"__RequestVerificationToken"];
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return NO;
+    
+    NSArray *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                     error:error];
+    
+    if (!data)
+        return NO;
+    
+    NSMutableArray *players = [[[NSMutableArray alloc] init] autorelease];
+    [self parseFriendSection:players
+             incomingFriends:data
+                  isIncoming:NO
+                  isOutgoing:NO];
+    
+    NSLog(@"parseRecentPlayersForAccount: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return players;
+}
+
 -(BOOL)parseFriendRequestToScreenName:(NSString*)screenName
                           withAccount:(XboxLiveAccount*)account
                          actionToTake:(NSString*)action
@@ -3186,7 +3308,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                                        body, @"message",
                                                        recipients, @"recipients",
                                                        nil];
-//TODO asdkashjd akjshd klasjdh : multiple recipients!!!
+    
     NSString *page = [self loadWithPOST:url
                                  fields:inputs
                                  useXhr:YES
@@ -3596,8 +3718,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return dict;
 }
 
-+(NSDictionary*)jsonDataObjectFromPage:(NSString*)json
-                                 error:(NSError**)error
++(id)jsonDataObjectFromPage:(NSString*)json
+                      error:(NSError**)error
 {
     NSDictionary *object = [XboxLiveParser jsonObjectFromPage:json
                                                         error:error];
@@ -3893,9 +4015,21 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         for (NSString *key in fields)
         {
             NSString *ueKey = [key gtm_stringByEscapingForURLArgument];
-            NSString *ueValue = [[fields objectForKey:key] gtm_stringByEscapingForURLArgument];
+            id field = [fields objectForKey:key];
             
-            [urlBuilder addObject:[NSString stringWithFormat:@"%@=%@", ueKey, ueValue]];
+            if ([field isKindOfClass:[NSArray class]])
+            {
+                for (NSString *item in field)
+                {
+                    [urlBuilder addObject:[NSString stringWithFormat:@"%@=%@", 
+                                           ueKey, [item gtm_stringByEscapingForURLArgument]]];
+                }
+            }
+            else
+            {
+                [urlBuilder addObject:[NSString stringWithFormat:@"%@=%@", 
+                                       ueKey, [value gtm_stringByEscapingForURLArgument]]];
+            }
         }
         
         httpBody = [urlBuilder componentsJoinedByString:@"&"];

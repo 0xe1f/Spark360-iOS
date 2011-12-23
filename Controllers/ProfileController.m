@@ -82,6 +82,44 @@
     [super dealloc];
 }
 
++(void)showProfileWithScreenName:(NSString*)screenName
+                         account:(XboxLiveAccount*)account
+            managedObjectContext:(NSManagedObjectContext*)moc
+            navigationController:(UINavigationController*)nc
+{
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
+                                                         inManagedObjectContext:moc];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile.uuid == %@", 
+                              screenName, account.uuid];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSManagedObject *friend = [[self.context executeFetchRequest:request 
+                                                           error:nil] lastObject];
+    
+    [request release];
+    
+    UIViewController *ctlr;
+    
+    if (friend)
+    {
+        ctlr = [[FriendProfileController alloc] initWithFriendUid:[friend valueForKey:@"uid"]
+                                                          account:account];
+    }
+    else
+    {
+        ctlr = [[ProfileController alloc] initWithScreenName:screenName
+                                                     account:self.account];
+    }
+    
+    [nc pushViewController:ctlr animated:YES];
+    [ctlr release];
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad

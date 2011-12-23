@@ -22,6 +22,7 @@ NSString* const BACHFriendsChanged = @"BachFriendsChanged";
 
 NSString* const BACHGamesCompared = @"BachGamesCompared";
 NSString* const BACHAchievementsCompared = @"BachAchievementsCompared";
+NSString* const BACHRecentPlayersLoaded = @"BachRecentPlayersLoaded";
 
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
@@ -194,6 +195,34 @@ static TaskController *sharedInstance = nil;
     
     [self addOperation:op];
     [op release];
+}
+
+-(void)loadRecentPlayersForAccount:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.RecentPlayers",
+                            account.uuid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(loadRecentPlayers:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(BOOL)isLoadingRecentPlayersForAccount:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.RecentPlayers",
+                            account.uuid];
+    return [self isOperationQueuedWithId:identifier];
 }
 
 -(BOOL)isSynchronizingFriendsForAccount:(XboxLiveAccount*)account
