@@ -8,20 +8,21 @@
 
 #import "MessageListController.h"
 
+#import "MessageCell.h"
 #import "ImageCache.h"
 #import "TaskController.h"
 
+#import "MessageComposeController.h"
+
 @interface MessageListController (Private)
 
--(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
--(void)imageLoaded:(NSString*)url;
--(void)refreshUsingTableViewHeader;
+- (void)configureCell:(UITableViewCell *)cell 
+          atIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
 @implementation MessageListController
 
-@synthesize tvCell;
 @synthesize fetchedResultsController = __fetchedResultsController;
 
 -(id)initWithAccount:(XboxLiveAccount*)account
@@ -35,14 +36,9 @@
     return self;
 }
 
--(void)didReceiveMemoryWarning
-{
-    [[ImageCache sharedInstance] purgeInMemCache];
-}
-
 -(void)dealloc
 {
-    [__fetchedResultsController release];
+    self.fetchedResultsController = nil;
     
     [super dealloc];
 }
@@ -51,7 +47,12 @@
 {
     NSLog(@"Got sync completed notification");
     
-    [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:myTableView];
+    XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
+    
+    if ([account isEqualToAccount:self.account])
+    {
+        [self hideRefreshHeaderTableView];
+    }
 }
 
 #pragma mark - View lifecycle
@@ -67,19 +68,10 @@
     
     self.title = NSLocalizedString(@"MyMessages", nil);
     
-	if (_refreshHeaderView == nil) 
-    {
-		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - myTableView.bounds.size.height, self.view.frame.size.width, myTableView.bounds.size.height)];
-		view.delegate = self;
-		[myTableView addSubview:view];
-		_refreshHeaderView = view;
-		[view release];
-	}
-    
 	[_refreshHeaderView refreshLastUpdatedDate];
     
     if ([self.account areMessagesStale])
-        [self refreshUsingTableViewHeader];
+        [self refreshUsingRefreshHeaderTableView];
 }
 
 -(void)viewDidUnload
@@ -89,19 +81,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:BACHMessagesSynced
                                                   object:nil];
-}
-
-#pragma mark -
-#pragma mark UIScrollViewDelegate Methods
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-	[_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
-}
-
--(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-	[_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
 }
 
 #pragma mark - EGORefreshTableHeaderDelegate Methods
@@ -122,7 +101,6 @@
 	return self.account.lastMessagesUpdate;
 }
 
-// Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [[self.fetchedResultsController sections] count];
@@ -156,7 +134,8 @@
         [[NSBundle mainBundle] loadNibNamed:@"MessageCell"
                                       owner:self
                                     options:nil];
-        cell = [self tvCell];
+        
+        cell = self.tableViewCell;
     }
     
     [self configureCell:cell 
@@ -165,12 +144,13 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView 
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Message selected
     
     /* TODO
-    NSManagedObject *game = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    //NSManagedObject *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSString *uid = [game valueForKey:@"uid"];
     
     AchievementListController *ctlr = [[AchievementListController alloc] initWithAccount:self.account
@@ -183,64 +163,10 @@
      */
 }
 
-- (void)configureCell:(UITableViewCell *)cell 
-          atIndexPath:(NSIndexPath *)indexPath
-{
-    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
-    // Excerpt
-    UILabel *label = (UILabel*)[cell viewWithTag:2];
-    [label setText:[managedObject valueForKey:@"excerpt"]];
-    
-    // Sender
-    label = (UILabel*)[cell viewWithTag:3];
-    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"From_f", nil),
-                    [managedObject valueForKey:@"sender"]]];
-    
-    // Sent
-    NSDate *sent = [managedObject valueForKey:@"sent"];
-    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    
-    label = (UILabel*)[cell viewWithTag:4];
-    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"Sent_f", nil), 
-                    [formatter stringFromDate:sent]]];
-    
-    // Icon
-    UIImageView *view = (UIImageView*)[cell viewWithTag:6];
-    UIImage *boxArt = [[ImageCache sharedInstance]
-                       getCachedFile:[managedObject valueForKey:@"senderIconUrl"]
-                       notifyObject:self
-                       notifySelector:@selector(imageLoaded:)];
-    
-    [view setImage:boxArt];
-    [view setClipsToBounds:YES];
-    
-    /* TODO
-    // Achievement stats
-    
-    label = (UILabel*)[cell viewWithTag:4];
-    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameAchievementStats", nil), 
-                    [managedObject valueForKey:@"achievesUnlocked"],
-                    [managedObject valueForKey:@"achievesTotal"]]];
-    
-    // Gamescore stats
-    
-    label = (UILabel*)[cell viewWithTag:5];
-    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameScoreStats", nil), 
-                    [self.numberFormatter stringFromNumber:[managedObject valueForKey:@"gamerScoreEarned"]],
-                    [self.numberFormatter stringFromNumber:[managedObject valueForKey:@"gamerScoreTotal"]]]];
-    
-     */
-}
-
-/* TODO
- */
-
 -(void)imageLoaded:(NSString*)url
 {
     // TODO: this causes a full data reload; not a good idea
-    [myTableView reloadData];
+    [self.tableView reloadData];
 }
 
 #pragma mark - Fetched results controller
@@ -300,7 +226,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    [myTableView beginUpdates];
+    [self.tableView beginUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
@@ -309,11 +235,11 @@
     switch(type)
     {
         case NSFetchedResultsChangeInsert:
-            [myTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [myTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
@@ -326,49 +252,65 @@
     {
             
         case NSFetchedResultsChangeInsert:
-            [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[myTableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] 
+                    atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
-            [myTableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [myTableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    [myTableView endUpdates];
+    [self.tableView endUpdates];
 }
 
 #pragma mark - Actions
 
 -(IBAction)refresh:(id)sender
 {
-    [self refreshUsingTableViewHeader];
+    [self refreshUsingRefreshHeaderTableView];
 }
 
 -(IBAction)compose:(id)sender
 {
-    // TODO
+    MessageComposeController *ctlr = [[MessageComposeController alloc] initWithRecipient:nil
+                                                                                 account:self.account];
+    
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
-#pragma mark - Helpers
+#pragma mark - Misc
 
--(void)refreshUsingTableViewHeader
+- (void)configureCell:(UITableViewCell *)cell 
+          atIndexPath:(NSIndexPath *)indexPath
 {
-    CGPoint offset = myTableView.contentOffset;
-    offset.y = - 65.0f;
-    myTableView.contentOffset = offset;
-    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:myTableView];
+    NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    MessageCell *messageCell = (MessageCell*)cell;
+    
+    messageCell.title.text = [managedObject valueForKey:@"excerpt"];
+    messageCell.sender.text = [NSString localizedStringWithFormat:NSLocalizedString(@"From_f", nil), 
+                        [managedObject valueForKey:@"sender"]];
+    messageCell.sent.text = [NSString localizedStringWithFormat:NSLocalizedString(@"Sent_f", nil), 
+                      [self.dateFormatter stringFromDate:[managedObject valueForKey:@"sent"]]];
+    
+    UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[managedObject valueForKey:@"senderIconUrl"]
+                                                      notifyObject:self
+                                                    notifySelector:@selector(imageLoaded:)];
+    
+    messageCell.gamerpic.image = gamerpic;
 }
 
 @end

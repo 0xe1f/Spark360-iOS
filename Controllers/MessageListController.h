@@ -8,17 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-#import "GenericController.h"
+#import "GenericTableViewController.h"
 
-@interface MessageListController : GenericController <NSFetchedResultsControllerDelegate, UITableViewDataSource, EGORefreshTableHeaderDelegate>
-{
-    EGORefreshTableHeaderView *_refreshHeaderView;
-    IBOutlet UITableView *myTableView;
-    IBOutlet UIToolbar *toolbar;
-    IBOutlet UIBarButtonItem *refreshButton;
-}
-
-@property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
+@interface MessageListController : GenericTableViewController <NSFetchedResultsControllerDelegate, UITableViewDataSource>
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 

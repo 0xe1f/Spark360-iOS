@@ -131,6 +131,7 @@
 		FEE0283A14A577FD003B3DBF /* FriendsOfFriendController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0283914A577FD003B3DBF /* FriendsOfFriendController.m */; };
 		FEEE7CF31493CAF8009F475C /* MessageComposeController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEE7CF11493CAF8009F475C /* MessageComposeController.m */; };
 		FEEE7CF41493CAF8009F475C /* MessageCompose.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEE7CF21493CAF8009F475C /* MessageCompose.xib */; };
+		FEFCD56114A643E00018F05D /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEFCD56014A643E00018F05D /* MessageCell.m */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
 		FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */; };
 		FEFF552814679ED900190D58 /* AccountCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFF552714679ED900190D58 /* AccountCell.xib */; };
@@ -318,6 +319,8 @@
 		FEEE7CF01493CAF8009F475C /* MessageComposeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposeController.h; sourceTree = "<group>"; };
 		FEEE7CF11493CAF8009F475C /* MessageComposeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposeController.m; sourceTree = "<group>"; };
 		FEEE7CF21493CAF8009F475C /* MessageCompose.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MessageCompose.xib; path = ../Controllers/MessageCompose.xib; sourceTree = "<group>"; };
+		FEFCD55F14A643E00018F05D /* MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCell.h; sourceTree = "<group>"; };
+		FEFCD56014A643E00018F05D /* MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageCell.m; sourceTree = "<group>"; };
 		FEFE0E6114774554009C7084 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
 		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountCell.xib; sourceTree = "<group>"; };
@@ -402,7 +405,6 @@
 				FEC7F9DB1478653600537213 /* GameListController.xib */,
 				FEC602AD1494A75F00DD3849 /* FriendListController.xib */,
 				FEEE7CF21493CAF8009F475C /* MessageCompose.xib */,
-				FEA24802148F62B6003D87C5 /* MessageCell.xib */,
 				FEA24800148F6019003D87C5 /* MessageListController.xib */,
 				FE8BA7F614A1B55A0020D389 /* CompareGamesController.xib */,
 				FEC8400D148A1F37005BC782 /* ProfileOverview.xib */,
@@ -601,6 +603,8 @@
 				FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */,
 				FE8ECB6414A4884700A6E2D2 /* CompareAchievementCell.h */,
 				FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */,
+				FEFCD55F14A643E00018F05D /* MessageCell.h */,
+				FEFCD56014A643E00018F05D /* MessageCell.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -608,6 +612,7 @@
 		FE993D54149891E20075882C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				FEA24802148F62B6003D87C5 /* MessageCell.xib */,
 				FE993D59149898DA0075882C /* ProfileInfoCell.xib */,
 				FE993D5B1498A4330075882C /* ProfileGamerscoreCell.xib */,
 				FE993D671499E77C0075882C /* ProfileRatingCell.xib */,
@@ -855,6 +860,7 @@
 				FEE0282F14A52558003B3DBF /* PlayerCell.m in Sources */,
 				FEE0283314A52594003B3DBF /* RecentPlayersController.m in Sources */,
 				FEE0283A14A577FD003B3DBF /* FriendsOfFriendController.m in Sources */,
+				FEFCD56114A643E00018F05D /* MessageCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

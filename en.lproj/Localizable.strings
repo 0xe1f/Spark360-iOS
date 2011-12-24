@@ -51,8 +51,8 @@
 	AchieveUnlocked_f = "Unlocked %@";
 	AchieveUnlockedOffline = "Unlocked";
 	AchieveLocked = "Locked";
-	Sent_f = "Sent %@";
-    From_f = "From %@";
+	Sent_f = "%@";
+    From_f = "%@";
     OnlyGoldCanSendMessages = "Message sending is only available on Gold accounts";
     MessageCouldNotBeSent = "Message could not be sent";
     FriendOnline = "Online";
