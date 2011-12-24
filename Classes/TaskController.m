@@ -23,6 +23,7 @@ NSString* const BACHFriendsChanged = @"BachFriendsChanged";
 NSString* const BACHGamesCompared = @"BachGamesCompared";
 NSString* const BACHAchievementsCompared = @"BachAchievementsCompared";
 NSString* const BACHRecentPlayersLoaded = @"BachRecentPlayersLoaded";
+NSString* const BACHFriendsOfFriendLoaded = @"BachFriendsOfFriendLoaded";
 
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
@@ -222,6 +223,37 @@ static TaskController *sharedInstance = nil;
 {
     NSString *identifier = [NSString stringWithFormat:@"%@.RecentPlayers",
                             account.uuid];
+    return [self isOperationQueuedWithId:identifier];
+}
+
+-(void)loadFriendsOfFriendForScreenName:(NSString*)screenName
+                                 account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.FriendsOfFriends:%@",
+                            account.uuid, screenName];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               screenName, @"screenName",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(loadFriendsOfFriend:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(BOOL)isLoadingFriendsOfFriendForScreenName:(NSString*)screenName
+                                      account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.FriendsOfFriend:%@",
+                            account.uuid, screenName];
     return [self isOperationQueuedWithId:identifier];
 }
 

@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MessageComposeController : UIViewController
+#import "GenericController.h"
+
+@interface MessageComposeController : GenericController
+
+@property (nonatomic, retain) NSMutableArray *recipients;
+
+-(id)initWithRecipient:(id)recipients
+               account:(XboxLiveAccount*)account;
 
 @end

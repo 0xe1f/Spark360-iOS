@@ -47,29 +47,51 @@
     
     NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self->url]];
     
-    if (!CGRectIsNull(self->cropRect))
-    {
-        UIImage *image = [UIImage imageWithData:data];
-        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], self->cropRect);
-        UIImage *cropped = [UIImage imageWithCGImage:imageRef];
-        
-        CGImageRelease(imageRef);
-        
-        data = UIImagePNGRepresentation(cropped);
-    }
+    if ([self isCancelled])
+        return;
     
-    [data writeToFile:self.outputFile 
-           atomically:YES];
+    if (data)
+    {
+        if (!CGRectIsNull(self->cropRect))
+        {
+            UIImage *image = [UIImage imageWithData:data];
+            
+            if (image)
+            {
+                CGRect intersection = CGRectIntersection(self->cropRect, 
+                                                         CGRectMake(0, 0, image.size.width, image.size.height));
+                if (!CGRectIsNull(intersection))
+                {
+                    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], intersection);
+                    UIImage *cropped = [UIImage imageWithCGImage:imageRef];
+                    CGImageRelease(imageRef);
+                    
+                    data = UIImagePNGRepresentation(cropped);
+                }
+            }
+        }
+        
+        NSError *error = NULL;
+        
+        if (![data writeToFile:self.outputFile 
+                       options:NSDataWritingAtomic
+                         error:&error])
+        {
+            NSLog(@"*** Error writing '%@' to '%@' to cache: %@", 
+                  self->url, self.outputFile, error.localizedDescription);
+        }
+    }
+    else
+    {
+        NSLog(@"** %@ is null", self->url);
+    }
     
 #ifdef CF_LOGV
     NSLog(@"Downloaded %@ to %@", self->url, self->outputFile);
 #endif
     
-    if (![self isCancelled])
-    {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ImageLoadedFromWeb"
-                                                            object:self];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ImageLoadedFromWeb"
+                                                        object:self];
 }
 
 - (void)notifyDone

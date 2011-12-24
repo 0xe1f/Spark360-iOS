@@ -115,55 +115,58 @@ NSString * const CookiesKey = @"Cookies";
 {
     if (self.uuid)
     {
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        
-        if (_lastGamesUpdateDirty)
+        @synchronized([self class])
         {
-            [prefs setObject:self.lastGamesUpdate 
-                      forKey:[self keyForPreference:GameLastUpdatedKey]];
+            NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+            
+            if (_lastGamesUpdateDirty)
+            {
+                [prefs setObject:self.lastGamesUpdate 
+                          forKey:[self keyForPreference:GameLastUpdatedKey]];
+            }
+            
+            if (_lastMessagesUpdateDirty)
+            {
+                [prefs setObject:self.lastMessagesUpdate 
+                          forKey:[self keyForPreference:MessagesLastUpdatedKey]];
+            }
+            
+            if (_lastFriendsUpdateDirty)
+            {
+                [prefs setObject:self.lastFriendsUpdate 
+                          forKey:[self keyForPreference:FriendsLastUpdatedKey]];
+            }
+            
+            if (_canSendMessagesDirty)
+            {
+                [prefs setObject:[NSNumber numberWithBool:self.canSendMessages]
+                          forKey:[self keyForPreference:CanSendMessagesKey]];
+            }
+            
+            if (_browseRefreshPeriodInSecondsDirty)
+            {
+                [prefs setObject:self.stalePeriodInSeconds 
+                          forKey:[self keyForPreference:StalePeriodKey]];
+            }
+            
+            if (_screenNameDirty)
+            {
+                [prefs setObject:self.screenName 
+                          forKey:[self keyForPreference:ScreenNameKey]];
+            }
+            
+            if (_emailAddressDirty || _passwordDirty)
+            {
+                KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
+                                                                                        serviceName:KeychainPassword
+                                                                                        accessGroup:nil];
+                [keychainItem setObject:self.password forKey:kSecValueData];
+                [keychainItem setObject:self.emailAddress forKey:kSecAttrAccount];
+                [keychainItem release];
+            }
+            
+            [self resetDirtyFlags];
         }
-        
-        if (_lastMessagesUpdateDirty)
-        {
-            [prefs setObject:self.lastMessagesUpdate 
-                      forKey:[self keyForPreference:MessagesLastUpdatedKey]];
-        }
-        
-        if (_lastFriendsUpdateDirty)
-        {
-            [prefs setObject:self.lastFriendsUpdate 
-                      forKey:[self keyForPreference:FriendsLastUpdatedKey]];
-        }
-        
-        if (_canSendMessagesDirty)
-        {
-            [prefs setObject:[NSNumber numberWithBool:self.canSendMessages]
-                      forKey:[self keyForPreference:CanSendMessagesKey]];
-        }
-        
-        if (_browseRefreshPeriodInSecondsDirty)
-        {
-            [prefs setObject:self.stalePeriodInSeconds 
-                      forKey:[self keyForPreference:StalePeriodKey]];
-        }
-        
-        if (_screenNameDirty)
-        {
-            [prefs setObject:self.screenName 
-                      forKey:[self keyForPreference:ScreenNameKey]];
-        }
-        
-        if (_emailAddressDirty || _passwordDirty)
-        {
-            KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
-                                                                                    serviceName:KeychainPassword
-                                                                                    accessGroup:nil];
-            [keychainItem setObject:self.password forKey:kSecValueData];
-            [keychainItem setObject:self.emailAddress forKey:kSecAttrAccount];
-            [keychainItem release];
-        }
-        
-        [self resetDirtyFlags];
     }
 }
 

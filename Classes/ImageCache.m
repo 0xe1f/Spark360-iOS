@@ -134,6 +134,9 @@ static ImageCache *sharedInstance = nil;
              notifyObject:(id)notifyObject
            notifySelector:(SEL)notifySelector;
 {
+    if (!url)
+        return nil;
+    
     NSString *cacheFile = [self cacheFilenameForUrl:url
                                            cropRect:rect];
     

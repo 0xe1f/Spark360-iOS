@@ -10,42 +10,33 @@
 
 @implementation MessageComposeController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+@synthesize recipients = _recipients;
+
+-(id)initWithRecipient:(id)recipients
+               account:(XboxLiveAccount*)account
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+    if (self = [super initWithAccount:account
+                              nibName:@"MessageCompose"])
+    {
+        _recipients = [[NSMutableArray alloc] init];
+        
+        if (recipients)
+        {
+            if ([recipients isKindOfClass:[NSArray class]])
+                [self.recipients addObjectsFromArray:recipients];
+            else
+                [self.recipients addObject:(NSString*)recipients];
+        }
     }
+    
     return self;
 }
 
-- (void)didReceiveMemoryWarning
+-(void)dealloc
 {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
+    self.recipients = nil;
     
-    // Release any cached data, images, etc that aren't in use.
-}
-
-#pragma mark - View lifecycle
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    [super dealloc];
 }
 
 @end

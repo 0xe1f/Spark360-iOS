@@ -1,3 +1,6 @@
+! Clicking on profiles in Account selection creates new Account instances each
+  time. This causes leaks and can cause data loss!
+
 Compare:
 
 * Add information on which side is whose on Compare Games, Achievements

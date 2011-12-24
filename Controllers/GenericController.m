@@ -83,7 +83,16 @@
 {
     [super viewDidLoad];
     
+    NSLog(@"++ View %@ loaded", [self class]);
+    
     [[ImageCache sharedInstance] purgeInMemCache];
+}
+
+-(void)viewDidUnload
+{
+    NSLog(@"-- View %@ unloaded", [self class]);
+    
+    [super viewDidUnload];
 }
 
 -(void)viewDidAppear:(BOOL)animated

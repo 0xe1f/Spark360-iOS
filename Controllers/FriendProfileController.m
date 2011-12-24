@@ -11,7 +11,10 @@
 #import "XboxLive.h"
 #import "ImageCache.h"
 #import "TaskController.h"
+
+#import "MessageComposeController.h"
 #import "CompareGamesController.h"
+#import "FriendsOfFriendController.h"
 
 #import "ProfileInfoCell.h"
 #import "ProfileGamerscoreCell.h"
@@ -58,7 +61,7 @@
         
         _properties = [[NSMutableDictionary alloc] init];
         self.propertyKeys = [NSArray arrayWithObjects:
-                             @"gamerscore",
+                             @"gamerScore",
                              @"rep",
                              @"name",
                              @"location",
@@ -67,7 +70,7 @@
                              nil];
         self.propertyTitles = [NSDictionary dictionaryWithObjectsAndKeys:
                                @"InfoStatus", @"statusCode",
-                               @"InfoGamerscore", @"gamerscore",
+                               @"InfoGamerscore", @"gamerScore",
                                @"InfoRep", @"rep",
                                @"InfoMotto", @"motto",
                                @"InfoName", @"name",
@@ -267,7 +270,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
             return largeTextCell;
         }
         // Gamerscore
-        else if ([infoKey isEqualToString:@"gamerscore"])
+        else if ([infoKey isEqualToString:@"gamerScore"])
         {
             ProfileGamerscoreCell *gamerscoreCell = (ProfileGamerscoreCell*)[self.tableView dequeueReusableCellWithIdentifier:@"gamerscoreCell"];
             
@@ -479,7 +482,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
                              @"activityTitleIconUrl",
                              @"iconUrl",
                              @"statusCode",
-                             @"gamerscore",
+                             @"gamerScore",
                              @"rep",
                              @"name",
                              @"location",
@@ -518,7 +521,11 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 -(void)compose:(id)sender
 {
-    // TODO
+    MessageComposeController *ctlr = [[MessageComposeController alloc] initWithRecipient:self.friendScreenName
+                                                                                 account:self.account];
+    
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
 -(void)showActionMenu:(id)sender
@@ -568,7 +575,11 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 -(void)viewFriends:(id)sender
 {
-    // TODO
+    FriendsOfFriendController *ctlr = [[FriendsOfFriendController alloc] initWithScreenName:self.friendScreenName
+                                                                                    account:self.account];
+    
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
 @end

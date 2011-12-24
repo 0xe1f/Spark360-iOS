@@ -11,7 +11,10 @@
 #import "XboxLive.h"
 #import "ImageCache.h"
 #import "TaskController.h"
+
 #import "FriendProfileController.h"
+#import "CompareGamesController.h"
+#import "MessageComposeController.h"
 
 #import "ProfileInfoCell.h"
 #import "ProfileGamerscoreCell.h"
@@ -51,7 +54,7 @@
         
         _properties = [[NSMutableDictionary alloc] init];
         self.propertyKeys = [NSArray arrayWithObjects:
-                             @"gamerscore",
+                             @"gamerScore",
                              @"rep",
                              @"name",
                              @"location",
@@ -60,7 +63,7 @@
                              nil];
         self.propertyTitles = [NSDictionary dictionaryWithObjectsAndKeys:
                 //               @"InfoStatus", @"statusCode",
-                               @"InfoGamerscore", @"gamerscore",
+                               @"InfoGamerscore", @"gamerScore",
                                @"InfoRep", @"rep",
                                @"InfoMotto", @"motto",
                                @"InfoName", @"name",
@@ -306,7 +309,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
             return largeTextCell;
         }
         // Gamerscore
-        else if ([infoKey isEqualToString:@"gamerscore"])
+        else if ([infoKey isEqualToString:@"gamerScore"])
         {
             ProfileGamerscoreCell *gamerscoreCell = (ProfileGamerscoreCell*)[self.tableView dequeueReusableCellWithIdentifier:@"gamerscoreCell"];
             
@@ -441,7 +444,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
                              @"activityText",
                              @"iconUrl",
                              @"statusCode",
-                             @"gamerscore",
+                             @"gamerScore",
                              @"rep",
                              @"name",
                              @"location",
@@ -481,12 +484,20 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)compose:(id)sender
 {
-    // TODO
+    MessageComposeController *ctlr = [[MessageComposeController alloc] initWithRecipient:self.screenName
+                                                                                 account:self.account];
+    
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
 -(void)compareGames:(id)sender
 {
-    // TODO
+    CompareGamesController *ctlr = [[CompareGamesController alloc] initWithScreenName:self.screenName
+                                                                              account:self.account];
+    
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
 -(void)addFriend:(id)sender

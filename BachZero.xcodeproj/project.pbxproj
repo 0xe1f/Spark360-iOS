@@ -37,6 +37,7 @@
 		FE80A8441495496500040D79 /* XboxLive.m in Sources */ = {isa = PBXBuildFile; fileRef = FE80A8431495496500040D79 /* XboxLive.m */; };
 		FE80A8461495A39300040D79 /* appIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8451495A39300040D79 /* appIcon.png */; };
 		FE80A8481495A39A00040D79 /* appIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8471495A39900040D79 /* appIcon@2x.png */; };
+		FE8B691314A59D0200275E41 /* FriendsOfFriendController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8B691214A59D0200275E41 /* FriendsOfFriendController.xib */; };
 		FE8B882C149EA85300F7F92C /* FriendProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8B882B149EA85300F7F92C /* FriendProfileController.xib */; };
 		FE8BA7F414A1B3E90020D389 /* CompareGamesController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8BA7F314A1B3E90020D389 /* CompareGamesController.m */; };
 		FE8BA7F714A1B55A0020D389 /* CompareGamesController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8BA7F614A1B55A0020D389 /* CompareGamesController.xib */; };
@@ -127,6 +128,7 @@
 		FEE0283314A52594003B3DBF /* RecentPlayersController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0283214A52594003B3DBF /* RecentPlayersController.m */; };
 		FEE0283514A52623003B3DBF /* RecentPlayersController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEE0283414A52623003B3DBF /* RecentPlayersController.xib */; };
 		FEE0283714A526A3003B3DBF /* PlayerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEE0283614A526A3003B3DBF /* PlayerCell.xib */; };
+		FEE0283A14A577FD003B3DBF /* FriendsOfFriendController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0283914A577FD003B3DBF /* FriendsOfFriendController.m */; };
 		FEEE7CF31493CAF8009F475C /* MessageComposeController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEE7CF11493CAF8009F475C /* MessageComposeController.m */; };
 		FEEE7CF41493CAF8009F475C /* MessageCompose.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEE7CF21493CAF8009F475C /* MessageCompose.xib */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
@@ -188,6 +190,7 @@
 		FE80A8431495496500040D79 /* XboxLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLive.m; sourceTree = "<group>"; };
 		FE80A8451495A39300040D79 /* appIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appIcon.png; sourceTree = "<group>"; };
 		FE80A8471495A39900040D79 /* appIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appIcon@2x.png"; sourceTree = "<group>"; };
+		FE8B691214A59D0200275E41 /* FriendsOfFriendController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendsOfFriendController.xib; sourceTree = "<group>"; };
 		FE8B882B149EA85300F7F92C /* FriendProfileController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendProfileController.xib; sourceTree = "<group>"; };
 		FE8BA7F214A1B3E90020D389 /* CompareGamesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompareGamesController.h; sourceTree = "<group>"; };
 		FE8BA7F314A1B3E90020D389 /* CompareGamesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompareGamesController.m; sourceTree = "<group>"; };
@@ -310,6 +313,8 @@
 		FEE0283214A52594003B3DBF /* RecentPlayersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentPlayersController.m; sourceTree = "<group>"; };
 		FEE0283414A52623003B3DBF /* RecentPlayersController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecentPlayersController.xib; sourceTree = "<group>"; };
 		FEE0283614A526A3003B3DBF /* PlayerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerCell.xib; sourceTree = "<group>"; };
+		FEE0283814A577FD003B3DBF /* FriendsOfFriendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsOfFriendController.h; sourceTree = "<group>"; };
+		FEE0283914A577FD003B3DBF /* FriendsOfFriendController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsOfFriendController.m; sourceTree = "<group>"; };
 		FEEE7CF01493CAF8009F475C /* MessageComposeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposeController.h; sourceTree = "<group>"; };
 		FEEE7CF11493CAF8009F475C /* MessageComposeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposeController.m; sourceTree = "<group>"; };
 		FEEE7CF21493CAF8009F475C /* MessageCompose.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MessageCompose.xib; path = ../Controllers/MessageCompose.xib; sourceTree = "<group>"; };
@@ -404,6 +409,7 @@
 				FEFE0E6114774554009C7084 /* MainWindow.xib */,
 				FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */,
 				FEE0283414A52623003B3DBF /* RecentPlayersController.xib */,
+				FE8B691214A59D0200275E41 /* FriendsOfFriendController.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -469,6 +475,8 @@
 				FE8BA7F314A1B3E90020D389 /* CompareGamesController.m */,
 				FE8ECB6014A4825B00A6E2D2 /* CompareAchievementsController.h */,
 				FE8ECB6114A4825C00A6E2D2 /* CompareAchievementsController.m */,
+				FEE0283814A577FD003B3DBF /* FriendsOfFriendController.h */,
+				FEE0283914A577FD003B3DBF /* FriendsOfFriendController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -521,10 +529,9 @@
 				FE5CAE1613F72980004BC903 /* Classes */,
 				FE610D3713EE938400420372 /* Controllers */,
 				FE726B471461120100534279 /* Models */,
-				FE5CAE1313F728BC004BC903 /* Resources */,
-				FEB3E13B13E6402900095480 /* Caffeine */,
 				FE76A93813E636A9006D6AFC /* Frameworks */,
 				FE76A93613E636A9006D6AFC /* Products */,
+				FE5CAE1313F728BC004BC903 /* Resources */,
 				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
 				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
 				FE76A94713E636A9006D6AFC /* main.m */,
@@ -611,13 +618,6 @@
 				FEE0283614A526A3003B3DBF /* PlayerCell.xib */,
 			);
 			path = Cells;
-			sourceTree = "<group>";
-		};
-		FEB3E13B13E6402900095480 /* Caffeine */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Caffeine;
 			sourceTree = "<group>";
 		};
 		FEB3E13D13E6404900095480 /* GTM */ = {
@@ -790,6 +790,7 @@
 				FE8ECB6C14A48EDC00A6E2D2 /* CompareAchievementsController.xib in Resources */,
 				FEE0283514A52623003B3DBF /* RecentPlayersController.xib in Resources */,
 				FEE0283714A526A3003B3DBF /* PlayerCell.xib in Resources */,
+				FE8B691314A59D0200275E41 /* FriendsOfFriendController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -853,6 +854,7 @@
 				FE8ECB6614A4884700A6E2D2 /* CompareAchievementCell.m in Sources */,
 				FEE0282F14A52558003B3DBF /* PlayerCell.m in Sources */,
 				FEE0283314A52594003B3DBF /* RecentPlayersController.m in Sources */,
+				FEE0283A14A577FD003B3DBF /* FriendsOfFriendController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

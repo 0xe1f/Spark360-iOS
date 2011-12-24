@@ -19,6 +19,7 @@ extern NSString* const BACHFriendsChanged;
 extern NSString* const BACHGamesCompared;
 extern NSString* const BACHAchievementsCompared;
 extern NSString* const BACHRecentPlayersLoaded;
+extern NSString* const BACHFriendsOfFriendLoaded;
 
 extern NSString* const BACHMessageDeleted;
 extern NSString* const BACHMessageSent;
@@ -69,6 +70,11 @@ extern NSString* const BACHNotificationNSError;
 
 -(void)loadRecentPlayersForAccount:(XboxLiveAccount*)account;
 -(BOOL)isLoadingRecentPlayersForAccount:(XboxLiveAccount*)account;
+
+-(void)loadFriendsOfFriendForScreenName:(NSString*)screenName
+                                 account:(XboxLiveAccount*)account;
+-(BOOL)isLoadingFriendsOfFriendForScreenName:(NSString*)screenName
+                                      account:(XboxLiveAccount*)account;
 
 -(void)sendAddFriendRequestToScreenName:(NSString*)screenName
                                 account:(XboxLiveAccount*)account;

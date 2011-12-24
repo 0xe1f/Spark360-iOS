@@ -99,6 +99,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                           error:(NSError**)error;
 -(NSArray*)parseRecentPlayersForAccount:(XboxLiveAccount*)account
                                   error:(NSError**)error;
+-(NSArray*)parseFriendsOfFriendForScreenName:(NSString*)screenName
+                                      account:(XboxLiveAccount*)account
+                                        error:(NSError**)error;
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
                       forAccount:(XboxLiveAccount*)account
@@ -147,6 +150,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                         error:(NSError**)error;
 -(NSArray*)retrieveRecentPlayersForAccount:(XboxLiveAccount*)account
                                      error:(NSError**)error;
+-(NSArray*)retrieveFriendsOfFriendForScreenName:(NSString*)screenName
+                                         account:(XboxLiveAccount*)account
+                                           error:(NSError**)error;
 
 -(BOOL)retrieveFriendRequestToScreenName:(NSString*)screenName
                                  account:(XboxLiveAccount*)account
@@ -211,6 +217,7 @@ NSString* const URL_JSON_SEND_MESSAGE = @"https://live.xbox.com/%@/Messages/Send
 NSString* const URL_JSON_FRIEND_REQUEST = @"http://live.xbox.com/%@/Friends/%@";
 NSString* const URL_JSON_COMPARE_GAMES = @"http://live.xbox.com/%@/Activity/Summary?CompareTo=%@";
 NSString* const URL_JSON_RECENT_LIST = @"http://live.xbox.com/%@/Friends/Recent";
+NSString* const URL_JSON_FOF_LIST = @"http://live.xbox.com/%@/Friends/List";
 
 NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Delete";
 
@@ -253,7 +260,7 @@ NSString* const PATTERN_SUMMARY_ACTIVITY = @"<div class=\"presence\">([^>]*)</di
 NSString* const PATTERN_SUMMARY_REP = @"<div class=\"reputation\">(.*?)<div class=\"clearfix\""; // DOTALL
 NSString* const PATTERN_SUMMARY_GAMERTAG = @"<article class=\"profile you\" data-gamertag=\"([^\"]*)\">";
 
-NSString* const PATTERN_GAMERPIC_CLASSIC = @"/(1)(\\d+)$";
+NSString* const PATTERN_GAMERPIC_CLASSIC = @"/(1)([0-9a-fA-F]+)$";
 NSString* const PATTERN_GAMERPIC_AVATAR = @"/avatarpic-(s)(.png)$"; //CASE_INSENSITIVE
 
 NSString* const PATTERN_ACH_JSON = @"loadActivityDetailsView\\((.*)\\);\\s*\\}\\);";
@@ -551,6 +558,39 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         [self postNotificationOnMainThread:BACHRecentPlayersLoaded
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
+                                            data, BACHNotificationData,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)loadFriendsOfFriend:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *screenName = [arguments objectForKey:@"screenName"];
+    
+    NSError *error = nil;
+    NSArray *data = [self retrieveFriendsOfFriendForScreenName:screenName
+                                                        account:account
+                                                          error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHFriendsOfFriendLoaded
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount,
+                                            screenName, BACHNotificationScreenName,
                                             data, BACHNotificationData,
                                             nil]];
     }
@@ -1239,6 +1279,49 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [self saveSessionForAccount:account];
     
     return players;
+}
+
+-(NSArray*)retrieveFriendsOfFriendForScreenName:(NSString*)screenName
+                                         account:(XboxLiveAccount*)account
+                                           error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    NSArray *friends;
+    if (!(friends = [self parseFriendsOfFriendForScreenName:screenName
+                                                     account:account
+                                                       error:NULL]))
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (!(friends = [self parseFriendsOfFriendForScreenName:screenName
+                                                         account:account
+                                                           error:error]))
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return friends;
 }
 
 -(BOOL)retrieveFriendRequestToScreenName:(NSString*)screenName
@@ -2114,7 +2197,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (friend)
     {
         NSArray *keys = [NSArray arrayWithObjects:
-                         @"gamerscore",
+                         @"gamerScore",
                          @"bio", 
                          @"location", 
                          @"motto",
@@ -2766,7 +2849,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (match)
     {
         text = [friendProfilePage substringWithRange:[match rangeAtIndex:1]];
-        [friend setObject:[NSNumber numberWithInt:[text intValue]] forKey:@"gamerscore"];
+        [friend setObject:[NSNumber numberWithInt:[text intValue]] forKey:@"gamerScore"];
     }
     
     // Bio
@@ -2851,8 +2934,6 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     {
         text = [friendProfilePage substringWithRange:[match rangeAtIndex:1]];
         [friend setObject:[self largeGamerpicFromIconUrl:text] forKey:@"iconUrl"];
-        
-        NSLog(@"text: %@", [self largeGamerpicFromIconUrl:text]);
     }
     else
     {
@@ -2935,6 +3016,56 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return players;
+}
+
+-(NSArray*)parseFriendsOfFriendForScreenName:(NSString*)screenName
+                                      account:(XboxLiveAccount*)account
+                                        error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_FRIENDS];
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_FOF_LIST, LOCALE];
+    NSDictionary *inputs = [NSDictionary dictionaryWithObjectsAndKeys:
+                            vtoken, @"__RequestVerificationToken", 
+                            screenName, @"gamertag", 
+                            nil];
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return NO;
+    
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                     error:error];
+    
+    if (!data)
+        return NO;
+    
+    NSMutableArray *friendsOfFriend = [[[NSMutableArray alloc] init] autorelease];
+    [self parseFriendSection:friendsOfFriend
+             incomingFriends:[data objectForKey:@"Friends"]
+                  isIncoming:NO
+                  isOutgoing:NO];
+    
+    NSLog(@"parseFriendsOfFriendForScreenName: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return friendsOfFriend;
 }
 
 -(BOOL)parseFriendRequestToScreenName:(NSString*)screenName
@@ -3952,7 +4083,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (match)
     {
         return [NSString stringWithFormat:@"%@2%@", 
-                [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location - 1)],
+                [url substringWithRange:NSMakeRange(0, [match rangeAtIndex:1].location)],
                 [url substringWithRange:[match rangeAtIndex:2]]];
     }
     
