@@ -21,6 +21,7 @@ extern NSString* const BACHAchievementsCompared;
 extern NSString* const BACHRecentPlayersLoaded;
 extern NSString* const BACHFriendsOfFriendLoaded;
 
+extern NSString* const BACHMessageSynced;
 extern NSString* const BACHMessageDeleted;
 extern NSString* const BACHMessageSent;
 extern NSString* const BACHError;
@@ -114,5 +115,9 @@ extern NSString* const BACHNotificationNSError;
 -(void)sendMessageToRecipients:(NSArray*)recipients
                           body:(NSString*)body
                        account:(XboxLiveAccount*)account;
+
+-(void)syncMessageWithUid:(NSString*)uid
+                  account:(XboxLiveAccount*)account
+     managedObjectContext:(NSManagedObjectContext*)moc;
 
 @end

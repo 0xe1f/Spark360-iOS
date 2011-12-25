@@ -65,5 +65,6 @@ typedef enum _XboxLiveParserErrorType
 
 -(void)deleteMessage:(NSDictionary*)arguments;
 -(void)sendMessage:(NSDictionary*)arguments;
+-(void)syncMessage:(NSDictionary*)arguments;
 
 @end

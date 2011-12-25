@@ -110,6 +110,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                body:(NSString*)body
                          forAccount:(XboxLiveAccount*)account
                               error:(NSError**)error;
+-(NSDictionary*)parseSyncMessageWithUid:(NSString*)uid
+                             forAccount:(XboxLiveAccount*)account
+                                  error:(NSError**)error;
 
 +(NSError*)errorWithCode:(NSInteger)code
                  message:(NSString*)message;
@@ -174,6 +177,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                   body:(NSString*)body
                                account:(XboxLiveAccount*)account
                               error:(NSError**)error;
+-(NSDictionary*)retrieveSyncMessageWithUid:(NSString*)uid
+                                   account:(XboxLiveAccount*)account
+                                     error:(NSError**)error;
 
 -(void)writeGames:(NSDictionary*)args;
 -(void)writeAchievements:(NSDictionary*)data;
@@ -181,6 +187,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(void)writeFriends:(NSDictionary*)args;
 -(void)writeFriendProfile:(NSDictionary*)args;
 -(void)writeDeleteMessage:(NSDictionary*)args;
+-(void)writeSyncMessage:(NSDictionary*)args;
 -(void)writeRemoveFromFriends:(NSDictionary*)args;
 
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
@@ -214,6 +221,7 @@ NSString* const URL_JSON_GAME_LIST = @"http://live.xbox.com/%@/Activity/Summary"
 NSString* const URL_JSON_MESSAGE_LIST = @"http://live.xbox.com/%@/Messages/GetMessages";
 NSString* const URL_JSON_FRIEND_LIST = @"http://live.xbox.com/%@/Friends/List";
 NSString* const URL_JSON_SEND_MESSAGE = @"https://live.xbox.com/%@/Messages/SendMessage";
+NSString* const URL_JSON_READ_MESSAGE = @"http://live.xbox.com/%@/Messages/Message";
 NSString* const URL_JSON_FRIEND_REQUEST = @"http://live.xbox.com/%@/Friends/%@";
 NSString* const URL_JSON_COMPARE_GAMES = @"http://live.xbox.com/%@/Activity/Summary?CompareTo=%@";
 NSString* const URL_JSON_RECENT_LIST = @"http://live.xbox.com/%@/Friends/Recent";
@@ -959,6 +967,51 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [pool release];
 }
 
+-(void)syncMessage:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *uid = [arguments objectForKey:@"uid"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveSyncMessageWithUid:uid
+                                                  account:account
+                                                    error:&error];
+    
+    self.lastError = error;
+    
+    if (data)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              uid, @"uid",
+                              data, @"data",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeSyncMessage:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHMessageSynced
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            uid, BACHNotificationUid,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
                            userInfo:(NSDictionary*)userInfo
 {
@@ -1544,6 +1597,49 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [self saveSessionForAccount:account];
     
     return YES;
+}
+
+-(NSDictionary*)retrieveSyncMessageWithUid:(NSString*)uid
+                                   account:(XboxLiveAccount*)account
+                                     error:(NSError**)error;
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+    }
+    
+    NSDictionary *data;
+    if (!(data = [self parseSyncMessageWithUid:uid
+                                    forAccount:account
+                                         error:NULL]))
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return nil;
+        }
+        
+        if (!(data = [self parseSyncMessageWithUid:uid
+                                        forAccount:account
+                                             error:error]))
+        {
+            return nil;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return data;
 }
 
 -(NSDictionary*)retrieveProfileWithAccount:(XboxLiveAccount*)account
@@ -2317,6 +2413,55 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [account save];
     
     NSLog(@"writeDeleteMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeSyncMessage:(NSDictionary*)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *uid = [args objectForKey:@"uid"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    NSDictionary *inMessage = [args objectForKey:@"data"];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile.uuid == %@", 
+                              uid, account.uuid];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    NSManagedObject *message = [array lastObject];
+    if (message && inMessage)
+    {
+        [message setValue:[inMessage objectForKey:@"isRead"]
+                   forKey:@"isRead"];
+        [message setValue:[inMessage objectForKey:@"messageText"]
+                   forKey:@"messageText"];
+        [message setValue:[inMessage objectForKey:@"excerpt"]
+                   forKey:@"excerpt"];
+        [message setValue:[NSNumber numberWithBool:NO]
+                   forKey:@"isDirty"];
+        
+        if (![self.context save:NULL])
+        {
+            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                           localizationKey:@"ErrorCouldNotSaveChanges"];
+            
+            return;
+        }
+    }
+    
+    [account save];
+    
+    NSLog(@"writeSyncMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 #pragma mark - parse*
@@ -3465,6 +3610,69 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     NSLog(@"parseSendMessageToRecipients: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
     return data != nil;
+}
+
+-(NSDictionary*)parseSyncMessageWithUid:(NSString*)uid
+                             forAccount:(XboxLiveAccount*)account
+                                  error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_MESSAGES];
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return nil;
+    }
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_READ_MESSAGE, LOCALE];
+    NSDictionary *inputs = [NSDictionary dictionaryWithObjectsAndKeys:
+                            vtoken, @"__RequestVerificationToken", 
+                            uid, @"msgID", nil];
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return nil;
+    
+    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                          error:error];
+    
+    if (!data)
+        return nil;
+    
+    NSMutableDictionary *message = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    /*
+    NSDictionary *dict;
+    if ((dict = [data objectForKey:@"Summary"]))
+    {
+        if ((dict = [dict objectForKey:@"Propeties"]))
+        {
+            [message setObject:[dict objectForKey:@"HasBeenRead"]
+                        forKey:@"isRead"];
+        }
+    }
+    */
+    
+    NSString *messageText = [[data objectForKey:@"Text"] gtm_stringByUnescapingFromHTML];
+    
+    [message setObject:[NSNumber numberWithBool:YES] forKey:@"isRead"];
+    [message setObject:messageText forKey:@"messageText"];
+    [message setObject:messageText forKey:@"excerpt"];
+    
+    NSLog(@"parseMessageWithUid: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return message;
 }
 
 -(BOOL)parseSynchronizeProfile:(NSMutableDictionary*)profile

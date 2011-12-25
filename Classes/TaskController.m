@@ -25,6 +25,7 @@ NSString* const BACHAchievementsCompared = @"BachAchievementsCompared";
 NSString* const BACHRecentPlayersLoaded = @"BachRecentPlayersLoaded";
 NSString* const BACHFriendsOfFriendLoaded = @"BachFriendsOfFriendLoaded";
 
+NSString* const BACHMessageSynced = @"BachMessageSynced";
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
 NSString* const BACHError = @"BachError";
@@ -544,6 +545,30 @@ static TaskController *sharedInstance = nil;
     TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
                                                                         selectorOwner:parser
                                                                    backgroundSelector:@selector(sendMessage:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(void)syncMessageWithUid:(NSString*)uid
+                  account:(XboxLiveAccount*)account
+     managedObjectContext:(NSManagedObjectContext*)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.SyncMessage:%@",
+                            account.uuid, uid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               uid, @"uid",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(syncMessage:)
                                                                             arguments:arguments];
     
     [parser release];

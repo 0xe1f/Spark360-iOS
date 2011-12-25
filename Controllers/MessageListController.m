@@ -13,6 +13,7 @@
 #import "TaskController.h"
 
 #import "MessageComposeController.h"
+#import "ViewMessageController.h"
 
 @interface MessageListController (Private)
 
@@ -148,19 +149,13 @@
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Message selected
+    NSManagedObject *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
-    /* TODO
-    //NSManagedObject *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSString *uid = [game valueForKey:@"uid"];
+    ViewMessageController *ctlr = [[ViewMessageController alloc] initWithUid:[message valueForKey:@"uid"]
+                                                                     account:self.account];
     
-    AchievementListController *ctlr = [[AchievementListController alloc] initWithAccount:self.account
-                                                                             gameTitleId:uid];
-    
-    [self.navigationController pushViewController:ctlr
-                                         animated:YES];
-    
+    [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
-     */
 }
 
 -(void)imageLoaded:(NSString*)url
@@ -300,13 +295,19 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
     MessageCell *messageCell = (MessageCell*)cell;
     
-    messageCell.title.text = [NSString stringWithFormat:NSLocalizedString(@"MessageExcerptTemplate_f", nil),
+    NSString *excerptTemplate;
+    if (![[managedObject valueForKey:@"isDirty"] boolValue])
+        excerptTemplate = NSLocalizedString(@"MessageExcerptTemplate_f", nil);
+    else
+        excerptTemplate = NSLocalizedString(@"MessageDirtyExcerptTemplate_f", nil);
+    
+    messageCell.title.text = [NSString stringWithFormat:excerptTemplate,
                               [managedObject valueForKey:@"excerpt"]];
     messageCell.sender.text = [NSString localizedStringWithFormat:NSLocalizedString(@"From_f", nil), 
                         [managedObject valueForKey:@"sender"]];
     messageCell.sent.text = [NSString localizedStringWithFormat:NSLocalizedString(@"Sent_f", nil), 
                       [self.shortDateFormatter stringFromDate:[managedObject valueForKey:@"sent"]]];
-    messageCell.attachment.hidden = !true || ([[managedObject valueForKey:@"hasPicture"] boolValue] || 
+    messageCell.attachment.hidden = !([[managedObject valueForKey:@"hasPicture"] boolValue] || 
                                       [[managedObject valueForKey:@"hasVoice"] boolValue]);
     messageCell.unreadMarker.hidden = [[managedObject valueForKey:@"isRead"] boolValue];
     

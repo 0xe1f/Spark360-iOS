@@ -89,5 +89,6 @@
     "Loading..." = "Loading...";
     RecentPlayers = "Recent Players";
     FriendsOfFriend = "Friends";
-    MessageExcerptTemplate_f = "%@...\n\n";
+    MessageExcerptTemplate_f = "%@\n\n";
+    MessageDirtyExcerptTemplate_f = "%@...\n\n";
 }
