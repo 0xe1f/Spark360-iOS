@@ -300,11 +300,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
     MessageCell *messageCell = (MessageCell*)cell;
     
-    messageCell.title.text = [managedObject valueForKey:@"excerpt"];
+    messageCell.title.text = [NSString stringWithFormat:NSLocalizedString(@"MessageExcerptTemplate_f", nil),
+                              [managedObject valueForKey:@"excerpt"]];
     messageCell.sender.text = [NSString localizedStringWithFormat:NSLocalizedString(@"From_f", nil), 
                         [managedObject valueForKey:@"sender"]];
     messageCell.sent.text = [NSString localizedStringWithFormat:NSLocalizedString(@"Sent_f", nil), 
-                      [self.dateFormatter stringFromDate:[managedObject valueForKey:@"sent"]]];
+                      [self.shortDateFormatter stringFromDate:[managedObject valueForKey:@"sent"]]];
+    messageCell.attachment.hidden = !true || ([[managedObject valueForKey:@"hasPicture"] boolValue] || 
+                                      [[managedObject valueForKey:@"hasVoice"] boolValue]);
+    messageCell.unreadMarker.hidden = [[managedObject valueForKey:@"isRead"] boolValue];
     
     UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[managedObject valueForKey:@"senderIconUrl"]
                                                       notifyObject:self

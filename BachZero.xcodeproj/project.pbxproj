@@ -132,6 +132,10 @@
 		FEEE7CF31493CAF8009F475C /* MessageComposeController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEE7CF11493CAF8009F475C /* MessageComposeController.m */; };
 		FEEE7CF41493CAF8009F475C /* MessageCompose.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEE7CF21493CAF8009F475C /* MessageCompose.xib */; };
 		FEFCD56114A643E00018F05D /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEFCD56014A643E00018F05D /* MessageCell.m */; };
+		FEFCD57414A716230018F05D /* unreadMarker.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57214A716230018F05D /* unreadMarker.png */; };
+		FEFCD57514A716230018F05D /* unreadMarker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57314A716230018F05D /* unreadMarker@2x.png */; };
+		FEFCD57814A71CCE0018F05D /* paperclip.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57614A71CCE0018F05D /* paperclip.png */; };
+		FEFCD57914A71CCE0018F05D /* paperclip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57714A71CCE0018F05D /* paperclip@2x.png */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
 		FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */; };
 		FEFF552814679ED900190D58 /* AccountCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFF552714679ED900190D58 /* AccountCell.xib */; };
@@ -321,6 +325,10 @@
 		FEEE7CF21493CAF8009F475C /* MessageCompose.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MessageCompose.xib; path = ../Controllers/MessageCompose.xib; sourceTree = "<group>"; };
 		FEFCD55F14A643E00018F05D /* MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCell.h; sourceTree = "<group>"; };
 		FEFCD56014A643E00018F05D /* MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageCell.m; sourceTree = "<group>"; };
+		FEFCD57214A716230018F05D /* unreadMarker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unreadMarker.png; sourceTree = "<group>"; };
+		FEFCD57314A716230018F05D /* unreadMarker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unreadMarker@2x.png"; sourceTree = "<group>"; };
+		FEFCD57614A71CCE0018F05D /* paperclip.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paperclip.png; sourceTree = "<group>"; };
+		FEFCD57714A71CCE0018F05D /* paperclip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paperclip@2x.png"; sourceTree = "<group>"; };
 		FEFE0E6114774554009C7084 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
 		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountCell.xib; sourceTree = "<group>"; };
@@ -346,6 +354,10 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FEFCD57614A71CCE0018F05D /* paperclip.png */,
+				FEFCD57714A71CCE0018F05D /* paperclip@2x.png */,
+				FEFCD57214A716230018F05D /* unreadMarker.png */,
+				FEFCD57314A716230018F05D /* unreadMarker@2x.png */,
 				FEB204CA14A07E35005EFA25 /* toolbarCompareGames.png */,
 				FEB204CB14A07E35005EFA25 /* toolbarCompareGames@2x.png */,
 				FEB204C114A06BFE005EFA25 /* toolbarFriends.png */,
@@ -796,6 +808,10 @@
 				FEE0283514A52623003B3DBF /* RecentPlayersController.xib in Resources */,
 				FEE0283714A526A3003B3DBF /* PlayerCell.xib in Resources */,
 				FE8B691314A59D0200275E41 /* FriendsOfFriendController.xib in Resources */,
+				FEFCD57414A716230018F05D /* unreadMarker.png in Resources */,
+				FEFCD57514A716230018F05D /* unreadMarker@2x.png in Resources */,
+				FEFCD57814A71CCE0018F05D /* paperclip.png in Resources */,
+				FEFCD57914A71CCE0018F05D /* paperclip@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

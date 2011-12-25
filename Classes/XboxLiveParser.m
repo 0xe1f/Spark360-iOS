@@ -2629,7 +2629,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
             [objects addObject:uid]; // remote id
             [objects addObject:[NSNumber numberWithBool:[[jsonMessage objectForKey:@"HasBeenRead"] boolValue]]]; // isRead
             [objects addObject:[XboxLiveParser ticksFromJSONString:[jsonMessage objectForKey:@"SentTime"]]]; // sent
-            [objects addObject:[jsonMessage objectForKey:@"Excerpt"]]; // messageText
+            [objects addObject:[[jsonMessage objectForKey:@"Excerpt"] gtm_stringByUnescapingFromHTML]]; // messageText
             [objects addObject:[jsonMessage objectForKey:@"From"]]; // sender
             [objects addObject:[jsonMessage objectForKey:@"GamerPic"]]; // senderIconUrl
             [objects addObject:[NSNumber numberWithBool:[[jsonMessage objectForKey:@"IsDeletable"] boolValue]]]; // isDeletable

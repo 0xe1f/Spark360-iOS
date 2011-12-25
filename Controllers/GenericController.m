@@ -16,6 +16,7 @@
 
 @synthesize numberFormatter = _numberFormatter;
 @synthesize dateFormatter = _dateFormatter;
+@synthesize shortDateFormatter = _shortDateFormatter;
 
 @synthesize account = _account;
 
@@ -42,6 +43,9 @@
         
         _dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        
+        _shortDateFormatter = [[NSDateFormatter alloc] init];
+        [self.shortDateFormatter setDateStyle:NSDateFormatterShortStyle];
     }
     
     return self;
@@ -51,6 +55,7 @@
 {
     self.numberFormatter = nil;
     self.dateFormatter = nil;
+    self.shortDateFormatter = nil;
     self.account = nil;
     
     managedObjectContext = nil;
@@ -90,9 +95,9 @@
 
 -(void)viewDidUnload
 {
-    NSLog(@"-- View %@ unloaded", [self class]);
-    
     [super viewDidUnload];
+    
+    NSLog(@"-- View %@ unloaded", [self class]);
 }
 
 -(void)viewDidAppear:(BOOL)animated

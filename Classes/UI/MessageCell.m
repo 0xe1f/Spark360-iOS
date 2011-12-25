@@ -14,5 +14,7 @@
 @synthesize sender;
 @synthesize sent;
 @synthesize gamerpic;
+@synthesize attachment;
+@synthesize unreadMarker;
 
 @end

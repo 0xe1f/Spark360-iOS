@@ -14,5 +14,7 @@
 @property (nonatomic, assign) IBOutlet UILabel *sender;
 @property (nonatomic, assign) IBOutlet UILabel *sent;
 @property (nonatomic, assign) IBOutlet UIImageView *gamerpic;
+@property (nonatomic, assign) IBOutlet UIImageView *attachment;
+@property (nonatomic, assign) IBOutlet UIImageView *unreadMarker;
 
 @end
