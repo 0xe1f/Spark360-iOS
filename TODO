@@ -8,8 +8,11 @@ Compare:
 
 Messages:
 
-* When a message contains no text, add placeholder text
-* Add icons denoting the type of content in the message
+* ALL: Disable message composition when user's account is not Gold
+* List: When a message contains no text, add placeholder text
+* List: Add icons denoting the type of content in the message
+* View: When message contains attachments, mention the the attachment types 
+  in the viewer
 * Test sending messages to multiple recipients
 
 Friends:

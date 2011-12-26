@@ -91,4 +91,8 @@
     FriendsOfFriend = "Friends";
     MessageExcerptTemplate_f = "%@\n\n";
     MessageDirtyExcerptTemplate_f = "%@...\n\n";
+    Message = "Message";
+    FromColon = "From:";
+    DeleteMessageFrom_f = "Delete message from %@?";
+    MessageHasNoText = "(This message contains no text)";
 }

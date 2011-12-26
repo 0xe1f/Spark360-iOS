@@ -53,6 +53,7 @@
 		FE8ECB6614A4884700A6E2D2 /* CompareAchievementCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */; };
 		FE8ECB6A14A4892F00A6E2D2 /* CompareAchievementCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */; };
 		FE8ECB6C14A48EDC00A6E2D2 /* CompareAchievementsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */; };
+		FE8F26B514A858B000C82006 /* ContactButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8F26B414A858B000C82006 /* ContactButton.m */; };
 		FE9015E1148E0A6B003004E7 /* GenericListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9015E0148E0A6B003004E7 /* GenericListController.m */; };
 		FE92D6D4149CA39300A7D6A5 /* xboxDefaultBoxart.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */; };
 		FE92D6D5149CA39300A7D6A5 /* xboxDefaultBoxart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6CF149CA39300A7D6A5 /* xboxDefaultBoxart@2x.png */; };
@@ -225,6 +226,8 @@
 		FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompareAchievementCell.m; sourceTree = "<group>"; };
 		FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CompareAchievementCell.xib; sourceTree = "<group>"; };
 		FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CompareAchievementsController.xib; sourceTree = "<group>"; };
+		FE8F26B314A858B000C82006 /* ContactButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactButton.h; sourceTree = "<group>"; };
+		FE8F26B414A858B000C82006 /* ContactButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactButton.m; sourceTree = "<group>"; };
 		FE9015DE148E0A5D003004E7 /* GenericListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericListController.h; sourceTree = "<group>"; };
 		FE9015E0148E0A6B003004E7 /* GenericListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericListController.m; sourceTree = "<group>"; };
 		FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxDefaultBoxart.png; sourceTree = "<group>"; };
@@ -611,6 +614,8 @@
 		FE993D50149881880075882C /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FE8F26B314A858B000C82006 /* ContactButton.h */,
+				FE8F26B414A858B000C82006 /* ContactButton.m */,
 				FEE0282D14A52558003B3DBF /* PlayerCell.h */,
 				FEE0282E14A52558003B3DBF /* PlayerCell.m */,
 				FE8BA7FA14A1BB710020D389 /* CompareGameCell.h */,
@@ -895,6 +900,7 @@
 				FEE0283A14A577FD003B3DBF /* FriendsOfFriendController.m in Sources */,
 				FEFCD56114A643E00018F05D /* MessageCell.m in Sources */,
 				FEFCD57C14A7366D0018F05D /* ViewMessageController.m in Sources */,
+				FE8F26B514A858B000C82006 /* ContactButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
