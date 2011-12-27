@@ -22,8 +22,13 @@
 
 @implementation AchievementListController
 
-@synthesize tvCell;
 @synthesize fetchedResultsController = __fetchedResultsController;
+
+@synthesize gameTitleLabel;
+@synthesize gameLastPlayedLabel;
+@synthesize gameAchievesLabel;
+@synthesize gameGamerScoreLabel;
+@synthesize gameBoxArtIcon;
 
 @synthesize gameUid;
 @synthesize gameTitle;
@@ -41,10 +46,9 @@
 -(id)initWithAccount:(XboxLiveAccount*)account
          gameTitleId:(NSString*)gameTitleId
 {
-    if (self = [super initWithNibName:@"AchievementListController" 
-                               bundle:nil])
+    if (self = [super initWithAccount:account
+                              nibName:@"AchievementListController"])
     {
-        self.account = account;
         self.gameUid = gameTitleId;
     }
     
@@ -86,6 +90,46 @@
         self.gameTitle = [game valueForKey:@"title"];
         self.isGameDirty = [[game valueForKey:@"achievesDirty"] boolValue];
         self.gameLastUpdated = [game valueForKey:@"lastUpdated"];
+        
+        self.gameTitleLabel.text = self.gameTitle;
+        self.gameLastPlayedLabel.text = [NSString localizedStringWithFormat:NSLocalizedString(@"GameLastPlayed", nil), 
+                                         [self.dateFormatter stringFromDate:[game valueForKey:@"lastPlayed"]]];
+        self.gameAchievesLabel.text = [NSString localizedStringWithFormat:NSLocalizedString(@"GameAchievementStats", nil), 
+                                       [game valueForKey:@"achievesUnlocked"],
+                                       [game valueForKey:@"achievesTotal"]];
+        self.gameGamerScoreLabel.text = [NSString localizedStringWithFormat:NSLocalizedString(@"GameScoreStats", nil), 
+                                         [self.numberFormatter stringFromNumber:[game valueForKey:@"gamerScoreEarned"]],
+                                         [self.numberFormatter stringFromNumber:[game valueForKey:@"gamerScoreTotal"]]];
+        
+        /*
+         // Last played
+         
+         label = (UILabel*)[cell viewWithTag:3];
+         
+         NSDate *lastPlayed = [managedObject valueForKey:@"lastPlayed"];
+         [label setText:
+         ;
+         
+         // Achievement stats
+         
+         label = (UILabel*)[cell viewWithTag:4];
+         
+         // Gamescore stats
+         
+         label = (UILabel*)[cell viewWithTag:5];
+         [label setText:];
+         
+         // Icon
+         
+         UIImageView *view = (UIImageView*)[cell viewWithTag:6];
+         UIImage *boxArt = [[ImageCache sharedInstance]
+         getCachedFile:[managedObject valueForKey:@"boxArtUrl"]
+         cropRect:CGRectMake(0, 16, 85, 85)
+         notifyObject:self
+         notifySelector:@selector(imageLoaded:)];
+         
+         [view setImage:boxArt];
+         */
     }
 }
 
@@ -160,7 +204,7 @@
         [[NSBundle mainBundle] loadNibNamed:@"AchievementCell"
                                       owner:self
                                     options:nil];
-        cell = [self tvCell];
+        cell = self.tableViewCell;
     }
     
     [self configureCell:cell 

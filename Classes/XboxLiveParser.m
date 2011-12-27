@@ -1735,10 +1735,9 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [profile setValue:[self avatarUrlForGamertag:gamertag] forKey:@"avatarUrl"];
     
     [profile setValue:[dict objectForKey:@"iconUrl"] forKey:@"iconUrl"];
-    [profile setValue:[dict objectForKey:@"tier"] forKey:@"tier"];
+    [profile setValue:[dict objectForKey:@"accountType"] forKey:@"accountType"];
     [profile setValue:[dict objectForKey:@"pointsBalance"] forKey:@"pointsBalance"];
     [profile setValue:[dict objectForKey:@"gamerscore"] forKey:@"gamerscore"];
-    [profile setValue:[dict objectForKey:@"isGold"] forKey:@"isGold"];
     [profile setValue:[dict objectForKey:@"unreadMessages"] forKey:@"unreadMessages"];
     [profile setValue:[dict objectForKey:@"unreadNotifications"] forKey:@"unreadNotifications"];
     [profile setValue:[dict objectForKey:@"rep"] forKey:@"rep"];
@@ -1753,6 +1752,11 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         
         return NO;
     }
+    
+    account.screenName = [dict objectForKey:@"screenName"];
+    account.accountTier = [[dict objectForKey:@"tier"] integerValue];
+    
+    [account save];
     
     NSLog(@"synchronizeProfileWithAccount: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
@@ -3595,10 +3599,10 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (!page)
         return NO;
     
-    NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
+    NSDictionary *response = [XboxLiveParser jsonObjectFromPage:page
                                                           error:error];
     
-    if (!data)
+    if (!response)
     {
         if (error)
         {
@@ -3609,7 +3613,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     NSLog(@"parseSendMessageToRecipients: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
-    return data != nil;
+    return [[response objectForKey:@"Success"] boolValue];
 }
 
 -(NSDictionary*)parseSyncMessageWithUid:(NSString*)uid
@@ -3710,11 +3714,11 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     [profile setObject:gamertag forKey:@"screenName"];
     [profile setObject:[object objectForKey:@"gamerpic"] forKey:@"iconUrl"];
-    [profile setObject:[object objectForKey:@"tiertext"] forKey:@"tier"];
+    [profile setObject:[object objectForKey:@"tiertext"] forKey:@"accountType"];
     
     [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"pointsbalancetext"] intValue]] forKey:@"pointsBalance"];
     [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"gamerscore"] intValue]] forKey:@"gamerscore"];
-    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"tier"] intValue] >= 6] forKey:@"isGold"];
+    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"tier"] intValue]] forKey:@"tier"];
     [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"messages"] intValue]] forKey:@"unreadMessages"];
     [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"notifications"] intValue]] forKey:@"unreadNotifications"];
     
@@ -4374,6 +4378,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         }
         
         httpBody = [urlBuilder componentsJoinedByString:@"&"];
+        
         [urlBuilder release];
     }
     

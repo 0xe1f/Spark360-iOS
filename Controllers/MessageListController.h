@@ -16,6 +16,8 @@
 
 -(id)initWithAccount:(XboxLiveAccount*)account;
 
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *composeButton;
+
 -(IBAction)refresh:(id)sender;
 -(IBAction)compose:(id)sender;
 

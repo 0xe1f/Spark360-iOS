@@ -21,8 +21,6 @@
 @implementation XboxLiveAccount
 {
     NSString *_uuid;
-    BOOL _canSendMessages;
-    BOOL _canSendMessagesDirty;
     NSDate *_lastGamesUpdate;
     BOOL _lastGamesUpdateDirty;
     NSDate *_lastMessagesUpdate;
@@ -37,16 +35,18 @@
     BOOL _passwordDirty;
     NSString *_screenName;
     BOOL _screenNameDirty;
+    NSInteger _accountTier;
+    BOOL _accountTierDirty;
 }
 
 NSString * const KeychainPassword = @"com.akop.bach";
 
 NSString * const StalePeriodKey = @"StalePeriod";
 NSString * const ScreenNameKey = @"ScreenName";
-NSString * const CanSendMessagesKey = @"CanSendMessages";
 NSString * const GameLastUpdatedKey = @"GamesLastUpdated";
 NSString * const MessagesLastUpdatedKey = @"MessagesLastUpdated";
 NSString * const FriendsLastUpdatedKey = @"FriendsLastUpdated";
+NSString * const AccountTierKey = @"AccountTier";
 NSString * const CookiesKey = @"Cookies";
 
 #define DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS (60*30)
@@ -68,7 +68,7 @@ NSString * const CookiesKey = @"Cookies";
         self.lastFriendsUpdate = [prefs objectForKey:[self keyForPreference:FriendsLastUpdatedKey]];
         self.stalePeriodInSeconds = [prefs objectForKey:[self keyForPreference:StalePeriodKey]];
         self.screenName = [prefs objectForKey:[self keyForPreference:ScreenNameKey]];
-        self.canSendMessages = [[prefs objectForKey:[self keyForPreference:CanSendMessagesKey]] boolValue];
+        self.accountTier = [[prefs objectForKey:[self keyForPreference:AccountTierKey]] integerValue];
         
         // Load Secure properties
         KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
@@ -102,7 +102,7 @@ NSString * const CookiesKey = @"Cookies";
     [prefs removeObjectForKey:[self keyForPreference:FriendsLastUpdatedKey]];
     [prefs removeObjectForKey:[self keyForPreference:StalePeriodKey]];
     [prefs removeObjectForKey:[self keyForPreference:ScreenNameKey]];
-    [prefs removeObjectForKey:[self keyForPreference:CanSendMessagesKey]];
+    [prefs removeObjectForKey:[self keyForPreference:AccountTierKey]];
     
     KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
                                                                             serviceName:KeychainPassword
@@ -137,10 +137,10 @@ NSString * const CookiesKey = @"Cookies";
                           forKey:[self keyForPreference:FriendsLastUpdatedKey]];
             }
             
-            if (_canSendMessagesDirty)
+            if (_accountTierDirty)
             {
-                [prefs setObject:[NSNumber numberWithBool:self.canSendMessages]
-                          forKey:[self keyForPreference:CanSendMessagesKey]];
+                [prefs setObject:[NSNumber numberWithInteger:self.accountTier]
+                          forKey:[self keyForPreference:AccountTierKey]];
             }
             
             if (_browseRefreshPeriodInSecondsDirty)
@@ -179,18 +179,23 @@ NSString * const CookiesKey = @"Cookies";
     _emailAddressDirty = NO;
     _passwordDirty = NO;
     _screenNameDirty = NO;
-    _canSendMessagesDirty = NO;
+    _accountTierDirty = NO;
 }
 
 -(BOOL)canSendMessages
 {
-    return _canSendMessages;
+    return (self.accountTier >= 6);
 }
 
--(void)setCanSendMessages:(BOOL)canSendMessages
+-(NSInteger)accountTier
 {
-    _canSendMessages = canSendMessages;
-    _canSendMessagesDirty = YES;
+    return _accountTier;
+}
+
+-(void)setAccountTier:(NSInteger)accountTier
+{
+    _accountTier = accountTier;
+    _accountTierDirty = YES;
 }
 
 -(NSDate*)lastGamesUpdate

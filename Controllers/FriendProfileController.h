@@ -16,6 +16,8 @@
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) IBOutlet UIToolbar *toolbar;
 
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *composeButton;
+
 @property (nonatomic, retain) NSString *friendUid;
 @property (nonatomic, retain) NSString *friendScreenName;
 @property (nonatomic, assign) BOOL isStale;

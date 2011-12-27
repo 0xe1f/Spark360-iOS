@@ -19,9 +19,6 @@
 
 -(NSString*)uuid;
 
--(BOOL)canSendMessages;
--(void)setCanSendMessages:(BOOL)canSendMessages;
-
 -(NSString*)screenName;
 -(void)setScreenName:(NSString*)screenName;
 
@@ -40,6 +37,9 @@
 -(NSString*)emailAddress;
 -(void)setEmailAddress:(NSString*)emailAddress;
 
+-(NSInteger)accountTier;
+-(void)setAccountTier:(NSInteger)accountTier;
+
 -(NSString*)password;
 -(void)setPassword:(NSString*)password;
 
@@ -49,5 +49,7 @@
 -(BOOL)areMessagesStale;
 -(BOOL)areFriendsStale;
 -(BOOL)isDataStale:(NSDate*)lastRefreshed;
+
+-(BOOL)canSendMessages;
 
 @end

@@ -12,7 +12,7 @@
 #import "ImageCache.h"
 #import "TaskController.h"
 
-#import "MessageComposeController.h"
+#import "MessageCompositionController.h"
 #import "CompareGamesController.h"
 #import "FriendsOfFriendController.h"
 
@@ -39,6 +39,8 @@
 
 @synthesize tableView;
 @synthesize toolbar;
+
+@synthesize composeButton;
 
 @synthesize friendUid;
 @synthesize friendScreenName;
@@ -108,6 +110,7 @@
                                                object:nil];
     
     self.title = self.friendScreenName;
+    self.composeButton.enabled = [self.account canSendMessages];
     
     if (self.isStale)
         [self refresh:nil];
@@ -521,7 +524,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 -(void)compose:(id)sender
 {
-    MessageComposeController *ctlr = [[MessageComposeController alloc] initWithRecipient:self.friendScreenName
+    MessageCompositionController *ctlr = [[MessageCompositionController alloc] initWithRecipient:self.friendScreenName
                                                                                  account:self.account];
     
     [self.navigationController pushViewController:ctlr animated:YES];

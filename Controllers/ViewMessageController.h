@@ -21,10 +21,12 @@
 @property (nonatomic, retain) NSString *messageUid;
 @property (nonatomic, retain) NSString *senderScreenName;
 
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *replyButton;
+
 -(id)initWithUid:(NSString*)uid
          account:(XboxLiveAccount*)account;
 
-- (IBAction)viewSenderProfile:(id)sender;
+-(IBAction)viewSenderProfile:(id)sender;
 
 -(IBAction)refresh:(id)sender;
 -(IBAction)deleteMessage:(id)sender;

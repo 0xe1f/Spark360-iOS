@@ -11,7 +11,7 @@
 #import "TaskController.h"
 
 #import "ProfileController.h"
-#import "MessageComposeController.h"
+#import "MessageCompositionController.h"
 
 #define OK_BUTTON_INDEX 1
 
@@ -27,6 +27,7 @@
 @synthesize sender = _sender;
 @synthesize sent = _sent;
 @synthesize messageBody = _messageBody;
+@synthesize replyButton;
 
 @synthesize senderScreenName = _senderScreenName;
 @synthesize messageUid = _messageUid;
@@ -71,6 +72,8 @@
                                                     account:self.account
                                        managedObjectContext:managedObjectContext];
     }
+    
+    self.replyButton.enabled = [self.account canSendMessages];
 }
 
 - (void)viewDidUnload
@@ -151,11 +154,14 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
 
 -(IBAction)replyToMessage:(id)sender
 {
-    MessageComposeController *ctlr = [[MessageComposeController alloc] initWithRecipient:self.senderScreenName
-                                                                                 account:self.account];
-    
-    [self.navigationController pushViewController:ctlr animated:YES];
-    [ctlr release];
+    if (self.senderScreenName)
+    {
+        MessageCompositionController *ctlr = [[MessageCompositionController alloc] initWithRecipient:self.senderScreenName
+                                                                                             account:self.account];
+        
+        [self.navigationController pushViewController:ctlr animated:YES];
+        [ctlr release];
+    }
 }
 
 #pragma mark - Misc

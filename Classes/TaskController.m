@@ -532,7 +532,7 @@ static TaskController *sharedInstance = nil;
                           body:(NSString*)body
                        account:(XboxLiveAccount*)account
 {
-    NSString *identifier = [NSString stringWithFormat:@"%@.SendMessage:%@",
+    NSString *identifier = [NSString stringWithFormat:@"%@.SendMessage:%i",
                             account.uuid, [body hash]];
     
     NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:

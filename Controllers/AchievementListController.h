@@ -9,11 +9,15 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-#import "GenericListController.h"
+#import "GenericTableViewController.h"
 
-@interface AchievementListController : GenericListController <NSFetchedResultsControllerDelegate>
+@interface AchievementListController : GenericTableViewController <NSFetchedResultsControllerDelegate, UITableViewDataSource>
 
-@property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
+@property (nonatomic, retain) IBOutlet UILabel *gameTitleLabel;
+@property (nonatomic, retain) IBOutlet UILabel *gameLastPlayedLabel;
+@property (nonatomic, retain) IBOutlet UILabel *gameAchievesLabel;
+@property (nonatomic, retain) IBOutlet UILabel *gameGamerScoreLabel;
+@property (nonatomic, retain) IBOutlet UIImageView *gameBoxArtIcon;
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 

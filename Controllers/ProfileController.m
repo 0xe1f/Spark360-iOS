@@ -14,7 +14,7 @@
 
 #import "FriendProfileController.h"
 #import "CompareGamesController.h"
-#import "MessageComposeController.h"
+#import "MessageCompositionController.h"
 
 #import "ProfileInfoCell.h"
 #import "ProfileGamerscoreCell.h"
@@ -136,6 +136,7 @@
                                                object:nil];
     
     self.title = self.screenName;
+    self.composeButton.enabled = [self.account canSendMessages];
     
     [self refreshProfile];
 }
@@ -484,8 +485,8 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)compose:(id)sender
 {
-    MessageComposeController *ctlr = [[MessageComposeController alloc] initWithRecipient:self.screenName
-                                                                                 account:self.account];
+    MessageCompositionController *ctlr = [[MessageCompositionController alloc] initWithRecipient:self.screenName
+                                                                                         account:self.account];
     
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];

@@ -12,7 +12,7 @@
 #import "ImageCache.h"
 #import "TaskController.h"
 
-#import "MessageComposeController.h"
+#import "MessageCompositionController.h"
 #import "ViewMessageController.h"
 
 @interface MessageListController (Private)
@@ -25,6 +25,8 @@
 @implementation MessageListController
 
 @synthesize fetchedResultsController = __fetchedResultsController;
+
+@synthesize composeButton = _composeButton;
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
@@ -53,6 +55,7 @@
     if ([account isEqualToAccount:self.account])
     {
         [self hideRefreshHeaderTableView];
+        [self.tableView reloadData];
     }
 }
 
@@ -73,6 +76,8 @@
     
     if ([self.account areMessagesStale])
         [self refreshUsingRefreshHeaderTableView];
+    
+    self.composeButton.enabled = [self.account canSendMessages]; 
 }
 
 -(void)viewDidUnload
@@ -102,10 +107,7 @@
 	return self.account.lastMessagesUpdate;
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return [[self.fetchedResultsController sections] count];
-}
+#pragma mark - TableView
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -224,21 +226,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     [self.tableView beginUpdates];
 }
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
-{
-    switch(type)
-    {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
-}
-
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
@@ -280,8 +267,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(IBAction)compose:(id)sender
 {
-    MessageComposeController *ctlr = [[MessageComposeController alloc] initWithRecipient:nil
-                                                                                 account:self.account];
+    MessageCompositionController *ctlr = [[MessageCompositionController alloc] initWithRecipient:nil
+                                                                                         account:self.account];
     
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
@@ -295,18 +282,29 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     NSManagedObject *managedObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
     MessageCell *messageCell = (MessageCell*)cell;
     
-    NSString *excerptTemplate;
-    if (![[managedObject valueForKey:@"isDirty"] boolValue])
-        excerptTemplate = NSLocalizedString(@"MessageExcerptTemplate_f", nil);
-    else
-        excerptTemplate = NSLocalizedString(@"MessageDirtyExcerptTemplate_f", nil);
+    NSString *excerpt = [managedObject valueForKey:@"excerpt"];
     
-    messageCell.title.text = [NSString stringWithFormat:excerptTemplate,
-                              [managedObject valueForKey:@"excerpt"]];
-    messageCell.sender.text = [NSString localizedStringWithFormat:NSLocalizedString(@"From_f", nil), 
-                        [managedObject valueForKey:@"sender"]];
-    messageCell.sent.text = [NSString localizedStringWithFormat:NSLocalizedString(@"Sent_f", nil), 
-                      [self.shortDateFormatter stringFromDate:[managedObject valueForKey:@"sent"]]];
+    if (!excerpt || excerpt.length < 1)
+    {
+        excerpt = NSLocalizedString(@"MessageHasNoText", nil);
+    }
+    else
+    {
+        NSString *excerptTemplate;
+        
+        if (![[managedObject valueForKey:@"isDirty"] boolValue])
+            excerptTemplate = NSLocalizedString(@"MessageExcerptTemplate_f", nil);
+        else
+            excerptTemplate = NSLocalizedString(@"MessageDirtyExcerptTemplate_f", nil);
+        
+        excerpt = [NSString stringWithFormat:excerptTemplate, excerpt];
+    }
+    
+    messageCell.title.text = excerpt;
+    messageCell.sender.text = [NSString localizedStringWithFormat:NSLocalizedString(@"From_f", nil),
+                               [managedObject valueForKey:@"sender"]];
+    messageCell.sent.text = [NSString localizedStringWithFormat:NSLocalizedString(@"Sent_f", nil),
+                             [self.shortDateFormatter stringFromDate:[managedObject valueForKey:@"sent"]]];
     messageCell.attachment.hidden = !([[managedObject valueForKey:@"hasPicture"] boolValue] || 
                                       [[managedObject valueForKey:@"hasVoice"] boolValue]);
     messageCell.unreadMarker.hidden = [[managedObject valueForKey:@"isRead"] boolValue];

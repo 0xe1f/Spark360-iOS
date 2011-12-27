@@ -95,4 +95,6 @@
     FromColon = "From:";
     DeleteMessageFrom_f = "Delete message from %@?";
     MessageHasNoText = "(This message contains no text)";
+    NewMessage = "New Message";
+    Send = "Send";
 }
