@@ -20,6 +20,7 @@ extern NSString* const BACHGamesCompared;
 extern NSString* const BACHAchievementsCompared;
 extern NSString* const BACHRecentPlayersLoaded;
 extern NSString* const BACHFriendsOfFriendLoaded;
+extern NSString* const BACHGameOverviewLoaded;
 
 extern NSString* const BACHMessageSynced;
 extern NSString* const BACHMessageDeleted;
@@ -107,6 +108,9 @@ extern NSString* const BACHNotificationNSError;
 -(BOOL)isComparingAchievementsForGameUid:(NSString*)uid
                               screenName:(NSString*)screenName
                                  account:(XboxLiveAccount*)account;
+
+-(void)loadGameOverviewWithUrl:(NSString*)url
+                       account:(XboxLiveAccount*)account;
 
 -(void)deleteMessageWithUid:(NSString*)uid
                     account:(XboxLiveAccount*)account

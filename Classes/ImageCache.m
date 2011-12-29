@@ -99,6 +99,12 @@ static ImageCache *sharedInstance = nil;
 #pragma mark Caching
 
 - (NSString*)cacheFilenameForUrl:(NSString*)url
+{
+    return [self cacheFilenameForUrl:url
+                            cropRect:CGRectNull];
+}
+
+- (NSString*)cacheFilenameForUrl:(NSString*)url
                         cropRect:(CGRect)cropRect
 {
     if (url == nil)
@@ -117,6 +123,24 @@ static ImageCache *sharedInstance = nil;
     }
     
     return [cacheDirectory stringByAppendingPathComponent:cacheFile];
+}
+
+- (BOOL)hasLocalCopyOfUrl:(NSString*)url
+{
+    return [self hasLocalCopyOfUrl:url 
+                          cropRect:CGRectNull];
+}
+
+- (BOOL)hasLocalCopyOfUrl:(NSString*)url
+                 cropRect:(CGRect)cropRect
+{
+    NSString *cacheFile = [self cacheFilenameForUrl:url
+                                           cropRect:cropRect];
+    
+    if ([inMemCache valueForKey:cacheFile])
+        return YES;
+    
+    return [[NSFileManager defaultManager] fileExistsAtPath:cacheFile];
 }
 
 - (UIImage*)getCachedFile:(NSString*)url
@@ -153,6 +177,9 @@ static ImageCache *sharedInstance = nil;
         
         return image;
     }
+    
+    if (!notifyObject || !notifySelector)
+        return nil;
     
     // Load from network
     

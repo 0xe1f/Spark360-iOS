@@ -23,8 +23,12 @@
 
 @property (nonatomic, retain) NSString *gameUid;
 @property (nonatomic, retain) NSString *gameTitle;
+@property (nonatomic, retain) NSString *gameDetailUrl;
 @property (nonatomic, retain) NSDate *gameLastUpdated;
 @property (nonatomic, assign) BOOL isGameDirty;
+
+-(IBAction)refresh:(id)sender;
+-(IBAction)showDetails:(id)sender;
 
 -(id)initWithAccount:(XboxLiveAccount*)account
          gameTitleId:(NSString*)gameTitleId;

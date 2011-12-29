@@ -10,8 +10,9 @@
 
 #import "ImageCache.h"
 #import "TaskController.h"
-
 #import "XboxLiveParser.h"
+
+#import "GameOverviewController.h"
 
 @interface AchievementListController (Private)
 
@@ -31,6 +32,7 @@
 @synthesize gameBoxArtIcon;
 
 @synthesize gameUid;
+@synthesize gameDetailUrl;
 @synthesize gameTitle;
 @synthesize isGameDirty;
 @synthesize gameLastUpdated;
@@ -59,9 +61,10 @@
 {
     [__fetchedResultsController release];
     
-    gameTitle = nil;
-    gameUid = nil;
-    gameLastUpdated = nil;
+    self.gameTitle = nil;
+    self.gameUid = nil;
+    self.gameLastUpdated = nil;
+    self.gameDetailUrl = nil;
     
     [super dealloc];
 }
@@ -88,6 +91,7 @@
     if (game)
     {
         self.gameTitle = [game valueForKey:@"title"];
+        self.gameDetailUrl = [game valueForKey:@"gameUrl"];
         self.isGameDirty = [[game valueForKey:@"achievesDirty"] boolValue];
         self.gameLastUpdated = [game valueForKey:@"lastUpdated"];
         
@@ -100,36 +104,6 @@
         self.gameGamerScoreLabel.text = [NSString localizedStringWithFormat:NSLocalizedString(@"GameScoreStats", nil), 
                                          [self.numberFormatter stringFromNumber:[game valueForKey:@"gamerScoreEarned"]],
                                          [self.numberFormatter stringFromNumber:[game valueForKey:@"gamerScoreTotal"]]];
-        
-        /*
-         // Last played
-         
-         label = (UILabel*)[cell viewWithTag:3];
-         
-         NSDate *lastPlayed = [managedObject valueForKey:@"lastPlayed"];
-         [label setText:
-         ;
-         
-         // Achievement stats
-         
-         label = (UILabel*)[cell viewWithTag:4];
-         
-         // Gamescore stats
-         
-         label = (UILabel*)[cell viewWithTag:5];
-         [label setText:];
-         
-         // Icon
-         
-         UIImageView *view = (UIImageView*)[cell viewWithTag:6];
-         UIImage *boxArt = [[ImageCache sharedInstance]
-         getCachedFile:[managedObject valueForKey:@"boxArtUrl"]
-         cropRect:CGRectMake(0, 16, 85, 85)
-         notifyObject:self
-         notifySelector:@selector(imageLoaded:)];
-         
-         [view setImage:boxArt];
-         */
     }
 }
 
@@ -391,6 +365,26 @@
 -(void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
+}
+
+#pragma mark - Actions
+
+-(IBAction)refresh:(id)sender
+{
+    [self refreshUsingRefreshHeaderTableView];
+}
+
+-(IBAction)showDetails:(id)sender
+{
+    if (self.gameDetailUrl)
+    {
+        GameOverviewController *ctlr =  [[GameOverviewController alloc] initWithTitle:self.gameTitle
+                                                                            detailUrl:self.gameDetailUrl
+                                                                              account:self.account];
+        
+        [self.navigationController pushViewController:ctlr animated:YES];
+        [ctlr release];
+    }
 }
 
 @end

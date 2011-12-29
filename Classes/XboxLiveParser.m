@@ -29,6 +29,8 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                isIncoming:(BOOL)isIncoming
                isOutgoing:(BOOL)isOutgoing;
 
+- (NSString*)getRedirectionUrl:(NSString*)url
+                         error:(NSError**)error;
 - (NSString*)loadWithMethod:(NSString*)method
                         url:(NSString*)url 
                      fields:(NSDictionary*)fields
@@ -56,6 +58,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 +(NSNumber*)getStarRatingFromPage:(NSString*)html;
 -(NSString*)getBoxArtForTitleId:(NSNumber*)titleId
                     largeBoxArt:(BOOL)largeBoxArt;
+-(NSString*)getDetailUrlForTitleId:(NSNumber*)titleId;
 
 -(void)saveSessionForAccount:(XboxLiveAccount*)account;
 -(void)saveSessionForEmailAddress:(NSString*)emailAddress;
@@ -97,6 +100,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                      screenName:(NSString*)screenName
                                     withAccount:(XboxLiveAccount*)account
                                           error:(NSError**)error;
+-(NSDictionary*)parseGameOverview:(NSString*)detailUrl
+                            error:(NSError**)error;
+
 -(NSArray*)parseRecentPlayersForAccount:(XboxLiveAccount*)account
                                   error:(NSError**)error;
 -(NSArray*)parseFriendsOfFriendForScreenName:(NSString*)screenName
@@ -169,6 +175,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                        screenName:(NSString*)screenName
                                           account:(XboxLiveAccount*)account
                                             error:(NSError**)error;
+-(NSDictionary*)retrieveGameOverview:(NSString*)detailUrl
+                             account:(XboxLiveAccount*)account
+                               error:(NSError**)error;
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
                             account:(XboxLiveAccount*)account
@@ -274,11 +283,19 @@ NSString* const PATTERN_GAMERPIC_AVATAR = @"/avatarpic-(s)(.png)$"; //CASE_INSEN
 NSString* const PATTERN_ACH_JSON = @"loadActivityDetailsView\\((.*)\\);\\s*\\}\\);";
 NSString* const PATTERN_COMPARE_ACH_JSON = @"loadCompareView\\((.*)\\);\\s*\\}\\);";
 
+NSString* const PATTERN_GAME_OVERVIEW_TITLE = @"<h1>([^<]*)</h1>";
+NSString* const PATTERN_GAME_OVERVIEW_DESCRIPTION = @"<div class=\"Text\">\\s*<p\\s*[^>]*>([^<]+)</p>\\s*</div>";
+NSString* const PATTERN_GAME_OVERVIEW_MANUAL = @"<a class=\"Manual\" href=\"([^\"]+)\"";
+NSString* const PATTERN_GAME_OVERVIEW_ESRB = @"<img alt=\"([^\"]*)\" class=\"ratingLogo\" src=\"([^\"]*)\"";
+NSString* const PATTERN_GAME_OVERVIEW_IMAGE = @"<div id=\"image\\d+\" class=\"TabPage\">\\s*<img (?:width=\"[^\"]*\" )?src=\"([^\"]*)\"";
+NSString* const PATTERN_GAME_OVERVIEW_BANNER = @"<img src=\"([^\"]*)\" alt=\"[^\"]*\" class=\"Banner\" />";
+
 NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/HiddenAchievement.png";
 NSString* const URL_GAMERPIC = @"http://avatar.xboxlive.com/avatar/%@/avatarpic-l.png";
 NSString* const URL_AVATAR_BODY = @"http://avatar.xboxlive.com/avatar/%@/avatar-body.png";
 
 NSString* const BOXART_TEMPLATE = @"http://tiles.xbox.com/consoleAssets/%X/%@/%@boxart.jpg";
+NSString* const GAME_DETAIL_URL_TEMPLATE = @"http://marketplace.xbox.com/%@/Title/%i";
 
 NSString* const FRIEND_ACTION_ADD = @"Add";
 NSString* const FRIEND_ACTION_REMOVE = @"Remove";
@@ -877,6 +894,38 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                             account, BACHNotificationAccount, 
                                             screenName, BACHNotificationScreenName,
                                             uid, BACHNotificationUid,
+                                            data, BACHNotificationData,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
+-(void)loadGameOverview:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSString *detailUrl = [arguments objectForKey:@"url"];
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveGameOverview:detailUrl
+                                            account:account
+                                              error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHGameOverviewLoaded
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            detailUrl, BACHNotificationUid,
                                             data, BACHNotificationData,
                                             nil]];
     }
@@ -1512,6 +1561,16 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return achievements;
 }
 
+-(NSDictionary*)retrieveGameOverview:(NSString*)detailUrl
+                             account:(XboxLiveAccount*)account
+                               error:(NSError**)error
+{
+    [self restoreSessionForAccount:account];
+    
+    return [self parseGameOverview:detailUrl
+                             error:error];
+}
+
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
                             account:(XboxLiveAccount*)account
                               error:(NSError**)error
@@ -1696,776 +1755,6 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [self saveSessionForEmailAddress:emailAddress];
     
     return dict;
-}
-
-#pragma mark - write*Data
-
--(BOOL)synchronizeProfileWithAccount:(XboxLiveAccount*)account
-                 withRetrievedObject:(NSDictionary*)dict
-                               error:(NSError**)error
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxProfile"
-                                                         inManagedObjectContext:self.context];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", account.uuid];
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    
-    [request setEntity:entityDescription];
-    [request setPredicate:predicate];
-    
-    NSArray *array = [self.context executeFetchRequest:request error:nil];
-    
-    [request release];
-    
-    NSManagedObject *profile = [array lastObject];
-    if (!profile)
-    {
-        // The profile is gone/nonexistent. Create a new one
-        
-        profile = [NSEntityDescription insertNewObjectForEntityForName:@"XboxProfile" 
-                                                inManagedObjectContext:self.context];
-        
-        [profile setValue:account.uuid forKey:@"uuid"];
-    }
-    
-    NSString *gamertag = [dict objectForKey:@"screenName"];
-    
-    [profile setValue:gamertag forKey:@"screenName"];
-    [profile setValue:[self avatarUrlForGamertag:gamertag] forKey:@"avatarUrl"];
-    
-    [profile setValue:[dict objectForKey:@"iconUrl"] forKey:@"iconUrl"];
-    [profile setValue:[dict objectForKey:@"accountType"] forKey:@"accountType"];
-    [profile setValue:[dict objectForKey:@"pointsBalance"] forKey:@"pointsBalance"];
-    [profile setValue:[dict objectForKey:@"gamerscore"] forKey:@"gamerscore"];
-    [profile setValue:[dict objectForKey:@"unreadMessages"] forKey:@"unreadMessages"];
-    [profile setValue:[dict objectForKey:@"unreadNotifications"] forKey:@"unreadNotifications"];
-    [profile setValue:[dict objectForKey:@"rep"] forKey:@"rep"];
-    
-    if (![self.context save:nil])
-    {
-        if (error)
-        {
-            *error = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                   localizationKey:@"ErrorCouldNotSaveProfile"];
-        }
-        
-        return NO;
-    }
-    
-    account.screenName = [dict objectForKey:@"screenName"];
-    account.accountTier = [[dict objectForKey:@"tier"] integerValue];
-    
-    [account save];
-    
-    NSLog(@"synchronizeProfileWithAccount: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
-    
-    return YES;
-}
-
--(void)writeGames:(NSDictionary*)args
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    NSDictionary *data = [args objectForKey:@"data"];
-    XboxLiveAccount *account = [args objectForKey:@"account"];
-    
-    NSManagedObject *profile = [self profileForAccount:account];
-    if (!profile)
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorProfileNotFound"];
-        
-        return;
-    }
-    
-    NSDate *lastUpdated = [NSDate date];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
-                                                         inManagedObjectContext:self.context];
-    
-    int newItems = 0;
-    int existingItems = 0;
-    int listOrder = 0;
-    
-    NSArray *inGames = [data objectForKey:@"games"];
-    
-    for (NSDictionary *inGame in inGames)
-    {
-        listOrder++;
-        
-        // Fetch game, or create a new one
-        NSManagedObject *game;
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
-                                  [inGame objectForKey:@"uid"], profile];
-        
-        NSFetchRequest *request = [[NSFetchRequest alloc] init];
-        
-        [request setEntity:entityDescription];
-        [request setPredicate:predicate];
-        
-        NSArray *array = [self.context executeFetchRequest:request 
-                                                     error:nil];
-        
-        [request release];
-        
-        if (!(game = [array lastObject]))
-        {
-            newItems++;
-            game = [NSEntityDescription insertNewObjectForEntityForName:@"XboxGame"
-                                                 inManagedObjectContext:self.context];
-            
-            // These will not change, so just set them up the first time
-            
-            [game setValue:[inGame objectForKey:@"uid"] forKey:@"uid"];
-            [game setValue:profile forKey:@"profile"];
-            [game setValue:[inGame objectForKey:@"gameUrl"] forKey:@"gameUrl"];
-            [game setValue:[inGame objectForKey:@"title"] forKey:@"title"];
-            [game setValue:[inGame objectForKey:@"boxArtUrl"] forKey:@"boxArtUrl"];
-            [game setValue:[NSNumber numberWithBool:YES] forKey:@"achievesDirty"];
-        }
-        else
-        {
-            existingItems++;
-            if (![[game valueForKey:@"achievesUnlocked"] isEqualToNumber:[inGame objectForKey:@"achievesUnlocked"]] ||
-                ![[game valueForKey:@"achievesTotal"] isEqualToNumber:[inGame objectForKey:@"achievesTotal"]] ||
-                ![[game valueForKey:@"gamerScoreEarned"] isEqualToNumber:[inGame objectForKey:@"gamerScoreEarned"]] ||
-                ![[game valueForKey:@"gamerScoreTotal"] isEqualToNumber:[inGame objectForKey:@"gamerScoreTotal"]])
-            {
-                [game setValue:[NSNumber numberWithBool:YES] forKey:@"achievesDirty"];
-            }
-        }
-        
-        // We now have a game object (new or existing)
-        // Handle the rest of the data
-        
-        // Game achievements
-        
-        [game setValue:[inGame objectForKey:@"achievesUnlocked"] forKey:@"achievesUnlocked"];
-        [game setValue:[inGame objectForKey:@"achievesTotal"] forKey:@"achievesTotal"];
-        
-        // Game score
-        
-        [game setValue:[inGame objectForKey:@"gamerScoreEarned"] forKey:@"gamerScoreEarned"];
-        [game setValue:[inGame objectForKey:@"gamerScoreTotal"] forKey:@"gamerScoreTotal"];
-        
-        // Last played
-        
-        NSDate *lastPlayed = nil;
-        if ([inGame objectForKey:@"lastPlayed"] != [NSDate distantPast])
-            lastPlayed = [inGame objectForKey:@"lastPlayed"];
-        
-        [game setValue:lastPlayed forKey:@"lastPlayed"];
-        [game setValue:lastUpdated forKey:@"lastUpdated"];
-        [game setValue:[NSNumber numberWithInt:listOrder] forKey:@"listOrder"];
-    }
-    
-    // Find "stale" games
-    
-    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND profile == %@", 
-    lastUpdated, profile];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entityDescription];
-    [request setPredicate:stalePredicate];
-    
-    NSArray *staleObjs = [self.context executeFetchRequest:request 
-                                                     error:NULL];
-    [request release];
-    
-    // Delete "stale" games
-    
-    for (NSManagedObject *staleObj in staleObjs)
-        [self.context deleteObject:staleObj];
-    
-    // Save
-    
-    if (![self.context save:NULL])
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorCouldNotSaveGameList"];
-        
-        return;
-    }
-    
-    account.lastGamesUpdate = [NSDate date];
-    [account save];
-    
-    NSLog(@"writeGames: (%i new, %i existing) %.04fs", 
-          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
-}
-
--(void)writeAchievements:(NSDictionary*)args
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    NSDictionary *data = [args objectForKey:@"data"];
-    XboxLiveAccount *account = [args objectForKey:@"account"];
-    
-    NSManagedObject *game = [self getGameWithTitleId:[data objectForKey:@"titleId"]
-                                             account:account];
-    
-    if (!game)
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorGameNotFound"];
-        return;
-    }
-    
-    NSDate *lastUpdated = [NSDate date];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxAchievement"
-                                                         inManagedObjectContext:self.context];
-    
-    NSArray *inAchieves = [data objectForKey:@"achievements"];
-    
-    int newItems = 0;
-    int existingItems = 0;
-    
-    for (NSDictionary *inAchieve in inAchieves)
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND game == %@", 
-                                  [inAchieve objectForKey:@"uid"], game];
-        
-        NSFetchRequest *request = [[NSFetchRequest alloc] init];
-        
-        [request setEntity:entityDescription];
-        [request setPredicate:predicate];
-        
-        NSArray *array = [self.context executeFetchRequest:request 
-                                                     error:nil];
-        
-        [request release];
-        
-        BOOL update = NO;
-        NSManagedObject *achieve = [array lastObject];
-        
-        if (!achieve)
-        {
-            achieve = [NSEntityDescription insertNewObjectForEntityForName:@"XboxAchievement"
-                                                    inManagedObjectContext:self.context];
-            
-            [achieve setValue:game forKey:@"game"];
-            [achieve setValue:[inAchieve objectForKey:@"uid"] forKey:@"uid"];
-            [achieve setValue:[inAchieve objectForKey:@"gamerScore"] forKey:@"gamerScore"];
-            
-            newItems++;
-            update = YES;
-        }
-        else
-        {
-            existingItems++;
-            update = [[inAchieve objectForKey:@"isLocked"] boolValue] 
-                != [[achieve valueForKey:@"isLocked"] boolValue];
-        }
-        
-        [achieve setValue:lastUpdated forKey:@"lastUpdated"];
-        [achieve setValue:[inAchieve objectForKey:@"sortIndex"] forKey:@"sortIndex"];
-        
-        if (update)
-        {
-            [achieve setValue:[inAchieve objectForKey:@"isSecret"] forKey:@"isSecret"];
-            [achieve setValue:[inAchieve objectForKey:@"isLocked"] forKey:@"isLocked"];
-            [achieve setValue:[inAchieve objectForKey:@"title"] forKey:@"title"];
-            [achieve setValue:[inAchieve objectForKey:@"iconUrl"] forKey:@"iconUrl"];
-            [achieve setValue:[inAchieve objectForKey:@"achDescription"] forKey:@"achDescription"];
-            [achieve setValue:[inAchieve objectForKey:@"acquired"] forKey:@"acquired"];
-        }
-    }
-    
-    NSDictionary *inGame = [data objectForKey:@"game"];
-    if (inGame)
-    {
-        [game setValue:[inGame objectForKey:@"achievesTotal"]
-                forKey:@"achievesTotal"];
-        [game setValue:[inGame objectForKey:@"gamerScoreTotal"]
-                forKey:@"gamerScoreTotal"];
-        
-        if ([inGame objectForKey:@"achievesUnlocked"])
-            [game setValue:[inGame objectForKey:@"achievesUnlocked"]
-                    forKey:@"achievesUnlocked"];
-        if ([inGame objectForKey:@"gamerScoreEarned"])
-            [game setValue:[inGame objectForKey:@"gamerScoreEarned"]
-                    forKey:@"gamerScoreEarned"];
-        if ([inGame objectForKey:@"lastPlayed"])
-            [game setValue:[inGame objectForKey:@"lastPlayed"]
-                    forKey:@"lastPlayed"];
-        
-        [game setValue:lastUpdated
-                forKey:@"lastUpdated"];
-        [game setValue:[NSNumber numberWithBool:NO]
-                forKey:@"achievesDirty"];
-    }
-    
-    // Find achievements no longer in the game (will it ever happen?)
-    
-    NSPredicate *removedPredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND game == %@", 
-                                     lastUpdated, game];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    
-    [request setEntity:entityDescription];
-    [request setPredicate:removedPredicate];
-    
-    NSArray *removedObjs = [self.context executeFetchRequest:request 
-                                                     error:NULL];
-    
-    [request release];
-    
-    // Delete removed achievements
-    
-    for (NSManagedObject *removedObj in removedObjs)
-        [self.context deleteObject:removedObj];
-    
-    // Save
-    
-    if (![self.context save:NULL])
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorCouldNotSaveGameList"];
-        return;
-    }
-    
-    NSLog(@"writeAchievements: (%i new, %i existing) %.04fs", 
-          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
-}
-
--(void)writeMessages:(NSDictionary *)args
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    NSDictionary *data = [args objectForKey:@"data"];
-    XboxLiveAccount *account = [args objectForKey:@"account"];
-    
-    NSManagedObject *profile = [self profileForAccount:account];
-    if (!profile)
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorProfileNotFound"];
-        
-        return;
-    }
-    
-    NSDate *lastUpdated = [NSDate date];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
-                                                         inManagedObjectContext:self.context];
-    
-    int newItems = 0;
-    int existingItems = 0;
-    
-    NSArray *inMessages = [data objectForKey:@"messages"];
-    
-    for (NSDictionary *inMessage in inMessages)
-    {
-        // Fetch game, or create a new one
-        NSManagedObject *message;
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
-                                  [inMessage objectForKey:@"uid"], profile];
-        
-        NSFetchRequest *request = [[NSFetchRequest alloc] init];
-        
-        [request setEntity:entityDescription];
-        [request setPredicate:predicate];
-        
-        NSArray *array = [self.context executeFetchRequest:request 
-                                                     error:nil];
-        
-        [request release];
-        
-        if (!(message = [array lastObject]))
-        {
-            newItems++;
-            message = [NSEntityDescription insertNewObjectForEntityForName:@"XboxMessage"
-                                                    inManagedObjectContext:self.context];
-            
-            // These will not change, so just set them up the first time
-            
-            [message setValue:profile forKey:@"profile"];
-            [message setValue:[inMessage objectForKey:@"uid"] forKey:@"uid"];
-            [message setValue:[inMessage objectForKey:@"sender"] forKey:@"sender"];
-            [message setValue:[inMessage objectForKey:@"senderIconUrl"] forKey:@"senderIconUrl"];
-            [message setValue:[inMessage objectForKey:@"isDeletable"] forKey:@"isDeletable"];
-            [message setValue:[inMessage objectForKey:@"hasText"] forKey:@"hasText"];
-            [message setValue:[inMessage objectForKey:@"hasPicture"] forKey:@"hasPicture"];
-            [message setValue:[inMessage objectForKey:@"hasVoice"] forKey:@"hasVoice"];
-            [message setValue:[inMessage objectForKey:@"sent"] forKey:@"sent"];
-            [message setValue:[NSNumber numberWithBool:YES] forKey:@"isDirty"];
-            
-            [message setValue:[inMessage objectForKey:@"messageText"] forKey:@"excerpt"];
-            [message setValue:[inMessage objectForKey:@"messageText"] forKey:@"messageText"];
-        }
-        else
-        {
-            existingItems++;
-        }
-        
-        // We now have a message object (new or existing)
-        // Handle the rest of the data
-        
-        [message setValue:lastUpdated forKey:@"lastUpdated"];
-        [message setValue:[inMessage objectForKey:@"isRead"] forKey:@"isRead"];
-    }
-    
-    // Find missing messages
-    
-    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND profile == %@", 
-                                   lastUpdated, profile];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entityDescription];
-    [request setPredicate:stalePredicate];
-    
-    NSArray *staleObjs = [self.context executeFetchRequest:request 
-                                                     error:NULL];
-    [request release];
-    
-    // Delete missing messages
-    
-    for (NSManagedObject *staleObj in staleObjs)
-        [self.context deleteObject:staleObj];
-    
-    // Save
-    
-    if (![self.context save:NULL])
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorCouldNotSaveMessageList"];
-        
-        return;
-    }
-    
-    account.lastMessagesUpdate = [NSDate date];
-    [account save];
-    
-    NSLog(@"writeMessages: (%i new, %i existing) %.04fs", 
-          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
-}
-
--(void)writeFriends:(NSDictionary *)args
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    NSDictionary *data = [args objectForKey:@"data"];
-    XboxLiveAccount *account = [args objectForKey:@"account"];
-    
-    NSManagedObject *profile = [self profileForAccount:account];
-    if (!profile)
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorProfileNotFound"];
-        
-        return;
-    }
-    
-    NSDate *lastUpdated = [NSDate date];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
-                                                         inManagedObjectContext:self.context];
-    
-    int newItems = 0;
-    int existingItems = 0;
-    
-    NSArray *inFriends = [data objectForKey:@"friends"];
-    
-    for (NSDictionary *inFriend in inFriends)
-    {
-        NSManagedObject *friend;
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
-                                  [inFriend objectForKey:@"uid"], profile];
-        
-        NSFetchRequest *request = [[NSFetchRequest alloc] init];
-        
-        [request setEntity:entityDescription];
-        [request setPredicate:predicate];
-        
-        NSArray *array = [self.context executeFetchRequest:request 
-                                                     error:nil];
-        
-        [request release];
-        
-        if (!(friend = [array lastObject]))
-        {
-            newItems++;
-            friend = [NSEntityDescription insertNewObjectForEntityForName:@"XboxFriend"
-                                                   inManagedObjectContext:self.context];
-            
-            // These will not change, so just set them up the first time
-            
-            [friend setValue:profile forKey:@"profile"];
-            [friend setValue:[inFriend objectForKey:@"uid"] forKey:@"uid"];
-            
-            // These will be updated later by other parsers
-            
-            [friend setValue:[NSDate distantPast] forKey:@"profileLastUpdated"];
-            [friend setValue:[NSNumber numberWithBool:NO] forKey:@"isFavorite"];
-            [friend setValue:nil forKey:@"bio"];
-            [friend setValue:nil forKey:@"location"];
-            [friend setValue:nil forKey:@"motto"];
-            [friend setValue:nil forKey:@"name"];
-            [friend setValue:[NSNumber numberWithInt:0] forKey:@"rep"];
-        }
-        else
-        {
-            existingItems++;
-        }
-        
-        // We now have an object (new or existing)
-        // Handle the rest of the data
-        
-        NSString *gamertag = [inFriend objectForKey:@"screenName"];
-        
-        [friend setValue:gamertag forKey:@"screenName"];
-        [friend setValue:[self avatarUrlForGamertag:gamertag] forKey:@"avatarUrl"];
-        [friend setValue:lastUpdated forKey:@"lastUpdated"];
-        [friend setValue:[inFriend objectForKey:@"isOnline"] forKey:@"isOnline"];
-        [friend setValue:[inFriend objectForKey:@"iconUrl"] forKey:@"iconUrl"];
-        [friend setValue:[inFriend objectForKey:@"gamerScore"] forKey:@"gamerScore"];
-        [friend setValue:[inFriend objectForKey:@"lastSeen"] forKey:@"lastSeen"];
-        [friend setValue:[inFriend objectForKey:@"activityText"] forKey:@"activityText"];
-        [friend setValue:[inFriend objectForKey:@"isIncoming"] forKey:@"isIncoming"];
-        [friend setValue:[inFriend objectForKey:@"isOutgoing"] forKey:@"isOutgoing"];
-        
-        if ([[inFriend objectForKey:@"isIncoming"] boolValue] ||
-            [[inFriend objectForKey:@"isOutgoing"] boolValue])
-        {
-            [friend setValue:[NSNumber numberWithInt:XBLFriendPending] forKey:@"statusCode"];
-        }
-        else if ([[inFriend objectForKey:@"isOnline"] boolValue])
-        {
-            [friend setValue:[NSNumber numberWithInt:XBLFriendOnline] forKey:@"statusCode"];
-        }
-        else
-        {
-            [friend setValue:[NSNumber numberWithInt:XBLFriendOffline] forKey:@"statusCode"];
-        }
-        
-        id titleObj;
-        if ((titleObj = [inFriend objectForKey:@"activityTitleId"]))
-            [friend setValue:titleObj forKey:@"activityTitleId"];
-        if ((titleObj = [inFriend objectForKey:@"activityTitleName"]))
-            [friend setValue:titleObj forKey:@"activityTitleName"];
-        if ((titleObj = [inFriend objectForKey:@"activityTitleIconUrl"]))
-            [friend setValue:titleObj forKey:@"activityTitleIconUrl"];
-    }
-    
-    // Find missing objects
-    
-    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND profile == %@", 
-                                   lastUpdated, profile];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entityDescription];
-    [request setPredicate:stalePredicate];
-    
-    NSArray *staleObjs = [self.context executeFetchRequest:request 
-                                                     error:NULL];
-    [request release];
-    
-    // Delete missing objects
-    
-    for (NSManagedObject *staleObj in staleObjs)
-        [self.context deleteObject:staleObj];
-    
-    // Save
-    
-    if (![self.context save:NULL])
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorCouldNotSaveFriendsList"];
-        
-        return;
-    }
-    
-    account.lastFriendsUpdate = [NSDate date];
-    [account save];
-    
-    NSLog(@"writeFriends: (%i new, %i existing) %.04fs", 
-          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
-}
-
--(void)writeFriendProfile:(NSDictionary *)args
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    NSDictionary *data = [args objectForKey:@"data"];
-    XboxLiveAccount *account = [args objectForKey:@"account"];
-    NSString *uid = [args objectForKey:@"uid"];
-    
-    NSManagedObject *friend = [self friendWithUid:uid
-                                          account:account];
-    
-    // No need to throw an error if friend is not found
-    
-    if (friend)
-    {
-        NSArray *keys = [NSArray arrayWithObjects:
-                         @"gamerScore",
-                         @"bio", 
-                         @"location", 
-                         @"motto",
-                         @"name",
-                         @"rep",
-                         nil];
-        
-        for (NSString *key in keys) 
-        {
-            id info = [data objectForKey:key];
-            if (info)
-                [friend setValue:info forKey:key];
-        }
-        
-        [friend setValue:[NSDate date] forKey:@"lastUpdated"];
-        [friend setValue:[NSDate date] forKey:@"profileLastUpdated"];
-        
-        if (![self.context save:NULL])
-        {
-            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                           localizationKey:@"ErrorCouldNotSaveFriendsProfile"];
-            
-            return;
-        }
-    }
-    else
-    {
-        NSLog(@"Friend not found");
-    }
-    
-    [account save];
-    
-    NSLog(@"writeFriendProfile: %.04fs", 
-          CFAbsoluteTimeGetCurrent() - startTime);
-}
-
--(void)writeRemoveFromFriends:(NSDictionary *)args
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    XboxLiveAccount *account = [args objectForKey:@"account"];
-    NSString *screenName = [args objectForKey:@"screenName"];
-    
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
-                                                         inManagedObjectContext:self.context];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"screenName == %@ AND profile.uuid == %@", 
-                              screenName, account.uuid];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    
-    [request setEntity:entityDescription];
-    [request setPredicate:predicate];
-    
-    NSArray *array = [self.context executeFetchRequest:request 
-                                                 error:nil];
-    
-    [request release];
-    
-    NSManagedObject *obj = [array lastObject];
-    if (obj)
-    {
-        [self.context deleteObject:obj];
-        [self.context save:NULL]; // Suppress any errors
-    }
-    
-    account.lastFriendsUpdate = [NSDate distantPast];
-    [account save];
-    
-    NSLog(@"writeRemoveFromFriends: %.04fs", 
-          CFAbsoluteTimeGetCurrent() - startTime);
-}
-
--(void)writeDeleteMessage:(NSDictionary *)args
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    NSString *uid = [args objectForKey:@"uid"];
-    XboxLiveAccount *account = [args objectForKey:@"account"];
-    
-    NSManagedObject *profile = [self profileForAccount:account];
-    if (!profile)
-    {
-        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                       localizationKey:@"ErrorProfileNotFound"];
-        
-        return;
-    }
-    
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
-                                                         inManagedObjectContext:self.context];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
-                              uid, profile];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    
-    [request setEntity:entityDescription];
-    [request setPredicate:predicate];
-    
-    NSArray *array = [self.context executeFetchRequest:request 
-                                                 error:nil];
-    
-    [request release];
-    
-    NSManagedObject *message = [array lastObject];
-    if (message)
-    {
-        [self.context deleteObject:message];
-        if (![self.context save:NULL])
-        {
-            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                           localizationKey:@"ErrorCouldNotSaveChanges"];
-            
-            return;
-        }
-    }
-    
-    [account save];
-    
-    NSLog(@"writeDeleteMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
-}
-
--(void)writeSyncMessage:(NSDictionary*)args
-{
-    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
-    
-    NSString *uid = [args objectForKey:@"uid"];
-    XboxLiveAccount *account = [args objectForKey:@"account"];
-    NSDictionary *inMessage = [args objectForKey:@"data"];
-    
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
-                                                         inManagedObjectContext:self.context];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile.uuid == %@", 
-                              uid, account.uuid];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    
-    [request setEntity:entityDescription];
-    [request setPredicate:predicate];
-    
-    NSArray *array = [self.context executeFetchRequest:request 
-                                                 error:nil];
-    
-    [request release];
-    
-    NSManagedObject *message = [array lastObject];
-    if (message && inMessage)
-    {
-        [message setValue:[inMessage objectForKey:@"isRead"]
-                   forKey:@"isRead"];
-        [message setValue:[inMessage objectForKey:@"messageText"]
-                   forKey:@"messageText"];
-        [message setValue:[inMessage objectForKey:@"excerpt"]
-                   forKey:@"excerpt"];
-        [message setValue:[NSNumber numberWithBool:NO]
-                   forKey:@"isDirty"];
-        
-        if (![self.context save:NULL])
-        {
-            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
-                                           localizationKey:@"ErrorCouldNotSaveChanges"];
-            
-            return;
-        }
-    }
-    
-    [account save];
-    
-    NSLog(@"writeSyncMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 #pragma mark - parse*
@@ -3417,6 +2706,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     NSMutableDictionary *payload = [[[NSMutableDictionary alloc] init] autorelease];
     
+    NSDictionary *game = [data objectForKey:@"Game"];
+    
     NSArray *players = [data objectForKey:@"Players"];
     if ([players count] < 2)
         return payload;
@@ -3426,6 +2717,9 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     NSString *yourScreenName = [you objectForKey:@"Gamertag"];
     NSString *myScreenName = [me objectForKey:@"Gamertag"];
+    
+    [payload setObject:[game objectForKey:@"Name"] forKey:@"title"];
+    [payload setObject:[game objectForKey:@"Url"] forKey:@"detailUrl"];
     
     [payload setObject:[you objectForKey:@"Gamerpic"] forKey:@"yourIconUrl"];
     [payload setObject:[me objectForKey:@"Gamerpic"] forKey:@"myIconUrl"];
@@ -3511,6 +2805,156 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return payload;
+}
+
+-(NSDictionary*)parseGameOverview:(NSString*)detailUrl
+                            error:(NSError**)error
+{
+    NSString *redirUrl = [self getRedirectionUrl:detailUrl
+                                           error:error];
+    
+    if (!redirUrl)
+        return nil;
+    
+    NSString *overviewPage = [self loadWithGET:[redirUrl stringByAppendingString:@"?NoSplash=1"]
+                                        fields:nil
+                                        useXhr:NO
+                                         error:error];
+    
+    if (!overviewPage)
+        return nil;
+    
+    NSRegularExpression *regex;
+    NSTextCheckingResult *match;
+    NSString *text;
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAME_OVERVIEW_TITLE
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:overviewPage
+                              options:0
+                                range:NSMakeRange(0, [overviewPage length])];
+    
+    if (!match)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorLoadingGameDetails"];
+        }
+        
+        return nil;
+    }
+    
+    NSMutableDictionary *data = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    text = [[overviewPage substringWithRange:[match rangeAtIndex:1]] 
+            gtm_stringByUnescapingFromHTML];
+    
+    [data setObject:text forKey:@"title"];
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:@"/(\\d+)$"
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:detailUrl
+                              options:0
+                                range:NSMakeRange(0, [detailUrl length])];
+    
+    if (match)
+    {
+        int gameUid = [[detailUrl substringWithRange:[match rangeAtIndex:1]] intValue];
+        NSString *boxArtUrl = [self getBoxArtForTitleId:[NSNumber numberWithInt:gameUid] 
+                                         largeBoxArt:YES];
+        
+        if (boxArtUrl)
+        {
+            [data setObject:boxArtUrl
+                     forKey:@"boxArtUrl"];
+        }
+    }
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAME_OVERVIEW_DESCRIPTION
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:overviewPage
+                              options:0
+                                range:NSMakeRange(0, [overviewPage length])];
+    
+    if (match)
+    {
+        text = [[overviewPage substringWithRange:[match rangeAtIndex:1]] 
+                gtm_stringByUnescapingFromHTML];
+        
+        [data setObject:text forKey:@"description"];
+    }
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAME_OVERVIEW_MANUAL
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:overviewPage
+                              options:0
+                                range:NSMakeRange(0, [overviewPage length])];
+    
+    if (match)
+    {
+        text = [overviewPage substringWithRange:[match rangeAtIndex:1]];
+        [data setObject:text forKey:@"manualUrl"];
+    }
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAME_OVERVIEW_ESRB
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:overviewPage
+                              options:0
+                                range:NSMakeRange(0, [overviewPage length])];
+    
+    if (match)
+    {
+        text = [[overviewPage substringWithRange:[match rangeAtIndex:1]]
+                gtm_stringByUnescapingFromHTML];
+        
+        [data setObject:text forKey:@"esrbDescription"];
+        [data setObject:[overviewPage substringWithRange:[match rangeAtIndex:2]]
+                 forKey:@"esrbIconUrl"];
+    }
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAME_OVERVIEW_BANNER
+                                                      options:0
+                                                        error:NULL];
+    
+    match = [regex firstMatchInString:overviewPage
+                              options:0
+                                range:NSMakeRange(0, [overviewPage length])];
+    
+    if (match)
+    {
+        [data setObject:[overviewPage substringWithRange:[match rangeAtIndex:1]]
+                 forKey:@"bannerImageUrl"];
+    }
+    
+    NSMutableArray *screenshots = [[NSMutableArray alloc] init];
+    [data setObject:screenshots forKey:@"screenshots"];
+    [screenshots release];
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_GAME_OVERVIEW_IMAGE
+                                                      options:0
+                                                        error:NULL];
+    
+    [regex enumerateMatchesInString:overviewPage 
+                            options:0
+                              range:NSMakeRange(0, [overviewPage length])
+                               usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) 
+     {
+         NSString *imageUrl = [overviewPage substringWithRange:[result rangeAtIndex:1]];
+         [screenshots addObject:imageUrl];
+     }];
+    
+    return data;
 }
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid
@@ -4008,6 +3452,776 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return YES;
 }
 
+#pragma mark - write*Data
+
+-(BOOL)synchronizeProfileWithAccount:(XboxLiveAccount*)account
+                 withRetrievedObject:(NSDictionary*)dict
+                               error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxProfile"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", account.uuid];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request error:nil];
+    
+    [request release];
+    
+    NSManagedObject *profile = [array lastObject];
+    if (!profile)
+    {
+        // The profile is gone/nonexistent. Create a new one
+        
+        profile = [NSEntityDescription insertNewObjectForEntityForName:@"XboxProfile" 
+                                                inManagedObjectContext:self.context];
+        
+        [profile setValue:account.uuid forKey:@"uuid"];
+    }
+    
+    NSString *gamertag = [dict objectForKey:@"screenName"];
+    
+    [profile setValue:gamertag forKey:@"screenName"];
+    [profile setValue:[self avatarUrlForGamertag:gamertag] forKey:@"avatarUrl"];
+    
+    [profile setValue:[dict objectForKey:@"iconUrl"] forKey:@"iconUrl"];
+    [profile setValue:[dict objectForKey:@"accountType"] forKey:@"accountType"];
+    [profile setValue:[dict objectForKey:@"pointsBalance"] forKey:@"pointsBalance"];
+    [profile setValue:[dict objectForKey:@"gamerscore"] forKey:@"gamerscore"];
+    [profile setValue:[dict objectForKey:@"unreadMessages"] forKey:@"unreadMessages"];
+    [profile setValue:[dict objectForKey:@"unreadNotifications"] forKey:@"unreadNotifications"];
+    [profile setValue:[dict objectForKey:@"rep"] forKey:@"rep"];
+    
+    if (![self.context save:nil])
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                   localizationKey:@"ErrorCouldNotSaveProfile"];
+        }
+        
+        return NO;
+    }
+    
+    account.screenName = [dict objectForKey:@"screenName"];
+    account.accountTier = [[dict objectForKey:@"tier"] integerValue];
+    
+    [account save];
+    
+    NSLog(@"synchronizeProfileWithAccount: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
+}
+
+-(void)writeGames:(NSDictionary*)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSDictionary *data = [args objectForKey:@"data"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    
+    NSManagedObject *profile = [self profileForAccount:account];
+    if (!profile)
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorProfileNotFound"];
+        
+        return;
+    }
+    
+    NSDate *lastUpdated = [NSDate date];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
+                                                         inManagedObjectContext:self.context];
+    
+    int newItems = 0;
+    int existingItems = 0;
+    int listOrder = 0;
+    
+    NSArray *inGames = [data objectForKey:@"games"];
+    
+    for (NSDictionary *inGame in inGames)
+    {
+        listOrder++;
+        
+        // Fetch game, or create a new one
+        NSManagedObject *game;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
+                                  [inGame objectForKey:@"uid"], profile];
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        
+        [request setEntity:entityDescription];
+        [request setPredicate:predicate];
+        
+        NSArray *array = [self.context executeFetchRequest:request 
+                                                     error:nil];
+        
+        [request release];
+        
+        if (!(game = [array lastObject]))
+        {
+            newItems++;
+            game = [NSEntityDescription insertNewObjectForEntityForName:@"XboxGame"
+                                                 inManagedObjectContext:self.context];
+            
+            // These will not change, so just set them up the first time
+            
+            [game setValue:[inGame objectForKey:@"uid"] forKey:@"uid"];
+            [game setValue:profile forKey:@"profile"];
+            [game setValue:[inGame objectForKey:@"gameUrl"] forKey:@"gameUrl"];
+            [game setValue:[inGame objectForKey:@"title"] forKey:@"title"];
+            [game setValue:[inGame objectForKey:@"boxArtUrl"] forKey:@"boxArtUrl"];
+            [game setValue:[NSNumber numberWithBool:YES] forKey:@"achievesDirty"];
+        }
+        else
+        {
+            existingItems++;
+            if (![[game valueForKey:@"achievesUnlocked"] isEqualToNumber:[inGame objectForKey:@"achievesUnlocked"]] ||
+                ![[game valueForKey:@"achievesTotal"] isEqualToNumber:[inGame objectForKey:@"achievesTotal"]] ||
+                ![[game valueForKey:@"gamerScoreEarned"] isEqualToNumber:[inGame objectForKey:@"gamerScoreEarned"]] ||
+                ![[game valueForKey:@"gamerScoreTotal"] isEqualToNumber:[inGame objectForKey:@"gamerScoreTotal"]])
+            {
+                [game setValue:[NSNumber numberWithBool:YES] forKey:@"achievesDirty"];
+            }
+        }
+        
+        // We now have a game object (new or existing)
+        // Handle the rest of the data
+        
+        // Game achievements
+        
+        [game setValue:[inGame objectForKey:@"achievesUnlocked"] forKey:@"achievesUnlocked"];
+        [game setValue:[inGame objectForKey:@"achievesTotal"] forKey:@"achievesTotal"];
+        
+        // Game score
+        
+        [game setValue:[inGame objectForKey:@"gamerScoreEarned"] forKey:@"gamerScoreEarned"];
+        [game setValue:[inGame objectForKey:@"gamerScoreTotal"] forKey:@"gamerScoreTotal"];
+        
+        // Last played
+        
+        NSDate *lastPlayed = nil;
+        if ([inGame objectForKey:@"lastPlayed"] != [NSDate distantPast])
+            lastPlayed = [inGame objectForKey:@"lastPlayed"];
+        
+        [game setValue:lastPlayed forKey:@"lastPlayed"];
+        [game setValue:lastUpdated forKey:@"lastUpdated"];
+        [game setValue:[NSNumber numberWithInt:listOrder] forKey:@"listOrder"];
+    }
+    
+    // Find "stale" games
+    
+    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND profile == %@", 
+                                   lastUpdated, profile];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    [request setPredicate:stalePredicate];
+    
+    NSArray *staleObjs = [self.context executeFetchRequest:request 
+                                                     error:NULL];
+    [request release];
+    
+    // Delete "stale" games
+    
+    for (NSManagedObject *staleObj in staleObjs)
+        [self.context deleteObject:staleObj];
+    
+    // Save
+    
+    if (![self.context save:NULL])
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorCouldNotSaveGameList"];
+        
+        return;
+    }
+    
+    account.lastGamesUpdate = [NSDate date];
+    [account save];
+    
+    NSLog(@"writeGames: (%i new, %i existing) %.04fs", 
+          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeAchievements:(NSDictionary*)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSDictionary *data = [args objectForKey:@"data"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    
+    NSManagedObject *game = [self getGameWithTitleId:[data objectForKey:@"titleId"]
+                                             account:account];
+    
+    if (!game)
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorGameNotFound"];
+        return;
+    }
+    
+    NSDate *lastUpdated = [NSDate date];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxAchievement"
+                                                         inManagedObjectContext:self.context];
+    
+    NSArray *inAchieves = [data objectForKey:@"achievements"];
+    
+    int newItems = 0;
+    int existingItems = 0;
+    
+    for (NSDictionary *inAchieve in inAchieves)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND game == %@", 
+                                  [inAchieve objectForKey:@"uid"], game];
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        
+        [request setEntity:entityDescription];
+        [request setPredicate:predicate];
+        
+        NSArray *array = [self.context executeFetchRequest:request 
+                                                     error:nil];
+        
+        [request release];
+        
+        BOOL update = NO;
+        NSManagedObject *achieve = [array lastObject];
+        
+        if (!achieve)
+        {
+            achieve = [NSEntityDescription insertNewObjectForEntityForName:@"XboxAchievement"
+                                                    inManagedObjectContext:self.context];
+            
+            [achieve setValue:game forKey:@"game"];
+            [achieve setValue:[inAchieve objectForKey:@"uid"] forKey:@"uid"];
+            [achieve setValue:[inAchieve objectForKey:@"gamerScore"] forKey:@"gamerScore"];
+            
+            newItems++;
+            update = YES;
+        }
+        else
+        {
+            existingItems++;
+            update = [[inAchieve objectForKey:@"isLocked"] boolValue] 
+            != [[achieve valueForKey:@"isLocked"] boolValue];
+        }
+        
+        [achieve setValue:lastUpdated forKey:@"lastUpdated"];
+        [achieve setValue:[inAchieve objectForKey:@"sortIndex"] forKey:@"sortIndex"];
+        
+        if (update)
+        {
+            [achieve setValue:[inAchieve objectForKey:@"isSecret"] forKey:@"isSecret"];
+            [achieve setValue:[inAchieve objectForKey:@"isLocked"] forKey:@"isLocked"];
+            [achieve setValue:[inAchieve objectForKey:@"title"] forKey:@"title"];
+            [achieve setValue:[inAchieve objectForKey:@"iconUrl"] forKey:@"iconUrl"];
+            [achieve setValue:[inAchieve objectForKey:@"achDescription"] forKey:@"achDescription"];
+            [achieve setValue:[inAchieve objectForKey:@"acquired"] forKey:@"acquired"];
+        }
+    }
+    
+    NSDictionary *inGame = [data objectForKey:@"game"];
+    if (inGame)
+    {
+        [game setValue:[inGame objectForKey:@"achievesTotal"]
+                forKey:@"achievesTotal"];
+        [game setValue:[inGame objectForKey:@"gamerScoreTotal"]
+                forKey:@"gamerScoreTotal"];
+        
+        if ([inGame objectForKey:@"achievesUnlocked"])
+            [game setValue:[inGame objectForKey:@"achievesUnlocked"]
+                    forKey:@"achievesUnlocked"];
+        if ([inGame objectForKey:@"gamerScoreEarned"])
+            [game setValue:[inGame objectForKey:@"gamerScoreEarned"]
+                    forKey:@"gamerScoreEarned"];
+        if ([inGame objectForKey:@"lastPlayed"])
+            [game setValue:[inGame objectForKey:@"lastPlayed"]
+                    forKey:@"lastPlayed"];
+        
+        [game setValue:lastUpdated
+                forKey:@"lastUpdated"];
+        [game setValue:[NSNumber numberWithBool:NO]
+                forKey:@"achievesDirty"];
+    }
+    
+    // Find achievements no longer in the game (will it ever happen?)
+    
+    NSPredicate *removedPredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND game == %@", 
+                                     lastUpdated, game];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:removedPredicate];
+    
+    NSArray *removedObjs = [self.context executeFetchRequest:request 
+                                                       error:NULL];
+    
+    [request release];
+    
+    // Delete removed achievements
+    
+    for (NSManagedObject *removedObj in removedObjs)
+        [self.context deleteObject:removedObj];
+    
+    // Save
+    
+    if (![self.context save:NULL])
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorCouldNotSaveGameList"];
+        return;
+    }
+    
+    NSLog(@"writeAchievements: (%i new, %i existing) %.04fs", 
+          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeMessages:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSDictionary *data = [args objectForKey:@"data"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    
+    NSManagedObject *profile = [self profileForAccount:account];
+    if (!profile)
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorProfileNotFound"];
+        
+        return;
+    }
+    
+    NSDate *lastUpdated = [NSDate date];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
+                                                         inManagedObjectContext:self.context];
+    
+    int newItems = 0;
+    int existingItems = 0;
+    
+    NSArray *inMessages = [data objectForKey:@"messages"];
+    
+    for (NSDictionary *inMessage in inMessages)
+    {
+        // Fetch game, or create a new one
+        NSManagedObject *message;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
+                                  [inMessage objectForKey:@"uid"], profile];
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        
+        [request setEntity:entityDescription];
+        [request setPredicate:predicate];
+        
+        NSArray *array = [self.context executeFetchRequest:request 
+                                                     error:nil];
+        
+        [request release];
+        
+        if (!(message = [array lastObject]))
+        {
+            newItems++;
+            message = [NSEntityDescription insertNewObjectForEntityForName:@"XboxMessage"
+                                                    inManagedObjectContext:self.context];
+            
+            // These will not change, so just set them up the first time
+            
+            [message setValue:profile forKey:@"profile"];
+            [message setValue:[inMessage objectForKey:@"uid"] forKey:@"uid"];
+            [message setValue:[inMessage objectForKey:@"sender"] forKey:@"sender"];
+            [message setValue:[inMessage objectForKey:@"senderIconUrl"] forKey:@"senderIconUrl"];
+            [message setValue:[inMessage objectForKey:@"isDeletable"] forKey:@"isDeletable"];
+            [message setValue:[inMessage objectForKey:@"hasText"] forKey:@"hasText"];
+            [message setValue:[inMessage objectForKey:@"hasPicture"] forKey:@"hasPicture"];
+            [message setValue:[inMessage objectForKey:@"hasVoice"] forKey:@"hasVoice"];
+            [message setValue:[inMessage objectForKey:@"sent"] forKey:@"sent"];
+            [message setValue:[NSNumber numberWithBool:YES] forKey:@"isDirty"];
+            
+            [message setValue:[inMessage objectForKey:@"messageText"] forKey:@"excerpt"];
+            [message setValue:[inMessage objectForKey:@"messageText"] forKey:@"messageText"];
+        }
+        else
+        {
+            existingItems++;
+        }
+        
+        // We now have a message object (new or existing)
+        // Handle the rest of the data
+        
+        [message setValue:lastUpdated forKey:@"lastUpdated"];
+        [message setValue:[inMessage objectForKey:@"isRead"] forKey:@"isRead"];
+    }
+    
+    // Find missing messages
+    
+    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND profile == %@", 
+                                   lastUpdated, profile];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    [request setPredicate:stalePredicate];
+    
+    NSArray *staleObjs = [self.context executeFetchRequest:request 
+                                                     error:NULL];
+    [request release];
+    
+    // Delete missing messages
+    
+    for (NSManagedObject *staleObj in staleObjs)
+        [self.context deleteObject:staleObj];
+    
+    // Save
+    
+    if (![self.context save:NULL])
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorCouldNotSaveMessageList"];
+        
+        return;
+    }
+    
+    account.lastMessagesUpdate = [NSDate date];
+    [account save];
+    
+    NSLog(@"writeMessages: (%i new, %i existing) %.04fs", 
+          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeFriends:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSDictionary *data = [args objectForKey:@"data"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    
+    NSManagedObject *profile = [self profileForAccount:account];
+    if (!profile)
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorProfileNotFound"];
+        
+        return;
+    }
+    
+    NSDate *lastUpdated = [NSDate date];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
+                                                         inManagedObjectContext:self.context];
+    
+    int newItems = 0;
+    int existingItems = 0;
+    
+    NSArray *inFriends = [data objectForKey:@"friends"];
+    
+    for (NSDictionary *inFriend in inFriends)
+    {
+        NSManagedObject *friend;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
+                                  [inFriend objectForKey:@"uid"], profile];
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        
+        [request setEntity:entityDescription];
+        [request setPredicate:predicate];
+        
+        NSArray *array = [self.context executeFetchRequest:request 
+                                                     error:nil];
+        
+        [request release];
+        
+        if (!(friend = [array lastObject]))
+        {
+            newItems++;
+            friend = [NSEntityDescription insertNewObjectForEntityForName:@"XboxFriend"
+                                                   inManagedObjectContext:self.context];
+            
+            // These will not change, so just set them up the first time
+            
+            [friend setValue:profile forKey:@"profile"];
+            [friend setValue:[inFriend objectForKey:@"uid"] forKey:@"uid"];
+            
+            // These will be updated later by other parsers
+            
+            [friend setValue:[NSDate distantPast] forKey:@"profileLastUpdated"];
+            [friend setValue:[NSNumber numberWithBool:NO] forKey:@"isFavorite"];
+            [friend setValue:nil forKey:@"bio"];
+            [friend setValue:nil forKey:@"location"];
+            [friend setValue:nil forKey:@"motto"];
+            [friend setValue:nil forKey:@"name"];
+            [friend setValue:[NSNumber numberWithInt:0] forKey:@"rep"];
+        }
+        else
+        {
+            existingItems++;
+        }
+        
+        // We now have an object (new or existing)
+        // Handle the rest of the data
+        
+        NSString *gamertag = [inFriend objectForKey:@"screenName"];
+        
+        [friend setValue:gamertag forKey:@"screenName"];
+        [friend setValue:[self avatarUrlForGamertag:gamertag] forKey:@"avatarUrl"];
+        [friend setValue:lastUpdated forKey:@"lastUpdated"];
+        [friend setValue:[inFriend objectForKey:@"isOnline"] forKey:@"isOnline"];
+        [friend setValue:[inFriend objectForKey:@"iconUrl"] forKey:@"iconUrl"];
+        [friend setValue:[inFriend objectForKey:@"gamerScore"] forKey:@"gamerScore"];
+        [friend setValue:[inFriend objectForKey:@"lastSeen"] forKey:@"lastSeen"];
+        [friend setValue:[inFriend objectForKey:@"activityText"] forKey:@"activityText"];
+        [friend setValue:[inFriend objectForKey:@"isIncoming"] forKey:@"isIncoming"];
+        [friend setValue:[inFriend objectForKey:@"isOutgoing"] forKey:@"isOutgoing"];
+        
+        if ([[inFriend objectForKey:@"isIncoming"] boolValue] ||
+            [[inFriend objectForKey:@"isOutgoing"] boolValue])
+        {
+            [friend setValue:[NSNumber numberWithInt:XBLFriendPending] forKey:@"statusCode"];
+        }
+        else if ([[inFriend objectForKey:@"isOnline"] boolValue])
+        {
+            [friend setValue:[NSNumber numberWithInt:XBLFriendOnline] forKey:@"statusCode"];
+        }
+        else
+        {
+            [friend setValue:[NSNumber numberWithInt:XBLFriendOffline] forKey:@"statusCode"];
+        }
+        
+        id titleObj;
+        if ((titleObj = [inFriend objectForKey:@"activityTitleId"]))
+            [friend setValue:titleObj forKey:@"activityTitleId"];
+        if ((titleObj = [inFriend objectForKey:@"activityTitleName"]))
+            [friend setValue:titleObj forKey:@"activityTitleName"];
+        if ((titleObj = [inFriend objectForKey:@"activityTitleIconUrl"]))
+            [friend setValue:titleObj forKey:@"activityTitleIconUrl"];
+    }
+    
+    // Find missing objects
+    
+    NSPredicate *stalePredicate = [NSPredicate predicateWithFormat:@"lastUpdated != %@ AND profile == %@", 
+                                   lastUpdated, profile];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    [request setPredicate:stalePredicate];
+    
+    NSArray *staleObjs = [self.context executeFetchRequest:request 
+                                                     error:NULL];
+    [request release];
+    
+    // Delete missing objects
+    
+    for (NSManagedObject *staleObj in staleObjs)
+        [self.context deleteObject:staleObj];
+    
+    // Save
+    
+    if (![self.context save:NULL])
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorCouldNotSaveFriendsList"];
+        
+        return;
+    }
+    
+    account.lastFriendsUpdate = [NSDate date];
+    [account save];
+    
+    NSLog(@"writeFriends: (%i new, %i existing) %.04fs", 
+          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeFriendProfile:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSDictionary *data = [args objectForKey:@"data"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    NSString *uid = [args objectForKey:@"uid"];
+    
+    NSManagedObject *friend = [self friendWithUid:uid
+                                          account:account];
+    
+    // No need to throw an error if friend is not found
+    
+    if (friend)
+    {
+        NSArray *keys = [NSArray arrayWithObjects:
+                         @"gamerScore",
+                         @"bio", 
+                         @"location", 
+                         @"motto",
+                         @"name",
+                         @"rep",
+                         nil];
+        
+        for (NSString *key in keys) 
+        {
+            id info = [data objectForKey:key];
+            if (info)
+                [friend setValue:info forKey:key];
+        }
+        
+        [friend setValue:[NSDate date] forKey:@"lastUpdated"];
+        [friend setValue:[NSDate date] forKey:@"profileLastUpdated"];
+        
+        if (![self.context save:NULL])
+        {
+            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                           localizationKey:@"ErrorCouldNotSaveFriendsProfile"];
+            
+            return;
+        }
+    }
+    else
+    {
+        NSLog(@"Friend not found");
+    }
+    
+    [account save];
+    
+    NSLog(@"writeFriendProfile: %.04fs", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeRemoveFromFriends:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    NSString *screenName = [args objectForKey:@"screenName"];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"screenName == %@ AND profile.uuid == %@", 
+                              screenName, account.uuid];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    NSManagedObject *obj = [array lastObject];
+    if (obj)
+    {
+        [self.context deleteObject:obj];
+        [self.context save:NULL]; // Suppress any errors
+    }
+    
+    account.lastFriendsUpdate = [NSDate distantPast];
+    [account save];
+    
+    NSLog(@"writeRemoveFromFriends: %.04fs", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeDeleteMessage:(NSDictionary *)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *uid = [args objectForKey:@"uid"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    
+    NSManagedObject *profile = [self profileForAccount:account];
+    if (!profile)
+    {
+        self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                       localizationKey:@"ErrorProfileNotFound"];
+        
+        return;
+    }
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile == %@", 
+                              uid, profile];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    NSManagedObject *message = [array lastObject];
+    if (message)
+    {
+        [self.context deleteObject:message];
+        if (![self.context save:NULL])
+        {
+            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                           localizationKey:@"ErrorCouldNotSaveChanges"];
+            
+            return;
+        }
+    }
+    
+    [account save];
+    
+    NSLog(@"writeDeleteMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeSyncMessage:(NSDictionary*)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *uid = [args objectForKey:@"uid"];
+    XboxLiveAccount *account = [args objectForKey:@"account"];
+    NSDictionary *inMessage = [args objectForKey:@"data"];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxMessage"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile.uuid == %@", 
+                              uid, account.uuid];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *array = [self.context executeFetchRequest:request 
+                                                 error:nil];
+    
+    [request release];
+    
+    NSManagedObject *message = [array lastObject];
+    if (message && inMessage)
+    {
+        [message setValue:[inMessage objectForKey:@"isRead"]
+                   forKey:@"isRead"];
+        [message setValue:[inMessage objectForKey:@"messageText"]
+                   forKey:@"messageText"];
+        [message setValue:[inMessage objectForKey:@"excerpt"]
+                   forKey:@"excerpt"];
+        [message setValue:[NSNumber numberWithBool:NO]
+                   forKey:@"isDirty"];
+        
+        if (![self.context save:NULL])
+        {
+            self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
+                                           localizationKey:@"ErrorCouldNotSaveChanges"];
+            
+            return;
+        }
+    }
+    
+    [account save];
+    
+    NSLog(@"writeSyncMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+}
+
 #pragma mark Helpers
 
 -(NSString*)getBoxArtForTitleId:(NSNumber*)titleId
@@ -4018,6 +4232,15 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     return [NSString stringWithFormat:BOXART_TEMPLATE, 
             [titleId intValue], LOCALE, largeBoxArt ? @"large" : @"small"];
+}
+
+-(NSString*)getDetailUrlForTitleId:(NSNumber *)titleId
+{
+    if (!titleId)
+        return nil;
+    
+    return [NSString stringWithFormat:GAME_DETAIL_URL_TEMPLATE, 
+            LOCALE, [titleId intValue]];
 }
 
 +(NSNumber*)getStarRatingFromPage:(NSString*)html
@@ -4340,6 +4563,23 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 }
 
 #pragma mark Core stuff
+
+- (NSString*)getRedirectionUrl:(NSString*)url
+                         error:(NSError**)error
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                       timeoutInterval:30];
+    
+    [request setHTTPMethod:@"GET"];
+    
+    NSURLResponse *response = nil;
+    [NSURLConnection sendSynchronousRequest:request
+                          returningResponse:&response
+                                      error:error];
+    
+    return [[response URL] absoluteString];
+}
 
 - (NSString*)loadWithMethod:(NSString*)method
                         url:(NSString*)requestUrl

@@ -97,4 +97,7 @@
     MessageHasNoText = "(This message contains no text)";
     NewMessage = "New Message";
     Send = "Send";
+    ErrorLoadingGameDetails = "Could not retrieve details - this game may not have any available";
+    GameDetails = "Game Details";
+    ImageViewer = "Image Viewer";
 }

@@ -24,6 +24,7 @@ NSString* const BACHGamesCompared = @"BachGamesCompared";
 NSString* const BACHAchievementsCompared = @"BachAchievementsCompared";
 NSString* const BACHRecentPlayersLoaded = @"BachRecentPlayersLoaded";
 NSString* const BACHFriendsOfFriendLoaded = @"BachFriendsOfFriendLoaded";
+NSString* const BACHGameOverviewLoaded = @"BachGameOverviewLoaded";
 
 NSString* const BACHMessageSynced = @"BachMessageSynced";
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
@@ -569,6 +570,29 @@ static TaskController *sharedInstance = nil;
     TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
                                                                         selectorOwner:parser
                                                                    backgroundSelector:@selector(syncMessage:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(void)loadGameOverviewWithUrl:(NSString*)url
+                       account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.GameOverview:%@",
+                            account.uuid, url];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               url, @"url",
+                               account, @"account",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(loadGameOverview:)
                                                                             arguments:arguments];
     
     [parser release];

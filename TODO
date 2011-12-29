@@ -1,3 +1,5 @@
+! Are messages being sent to multi. recipients?
+! Icons missing for game details (list, compare)
 ! Clicking on profiles in Account selection creates new Account instances each
   time. This causes leaks and can cause data loss!
 

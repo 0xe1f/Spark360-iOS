@@ -12,12 +12,16 @@
 #import "ImageCache.h"
 #import "CompareAchievementCell.h"
 
+#import "GameOverviewController.h"
+
 @implementation CompareAchievementsController
 
 @synthesize achievements = _achievements;
 @synthesize screenName = _screenName;
 @synthesize gameUid = _gameUid;
 @synthesize lastUpdated = _lastUpdated;
+@synthesize gameTitle = _gameTitle;
+@synthesize gameDetailUrl = _gameDetailUrl;
 
 -(id)initWithGameUid:(NSString*)gameUid
           screenName:(NSString*)screenName
@@ -29,6 +33,8 @@
         self.screenName = screenName;
         self.gameUid = gameUid;
         self.lastUpdated = nil;
+        self.gameTitle = nil;
+        self.gameDetailUrl = nil;
         
         _achievements = [[NSMutableArray alloc] init];
     }
@@ -42,6 +48,8 @@
     self.screenName = nil;
     self.gameUid = nil;
     self.lastUpdated = nil;
+    self.gameDetailUrl = nil;
+    self.gameTitle = nil;
     
     [super dealloc];
 }
@@ -216,6 +224,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         NSDictionary *payload = [notification.userInfo objectForKey:BACHNotificationData];
         NSArray *achievements = [payload objectForKey:@"achievements"];
         
+        self.gameTitle = [payload objectForKey:@"title"];
+        self.gameDetailUrl = [payload objectForKey:@"detailUrl"];
+        
         [self.achievements removeAllObjects];
         [self.achievements addObjectsFromArray:achievements];
         
@@ -223,6 +234,26 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         [self.tableView reloadData];
         
         [_refreshHeaderView refreshLastUpdatedDate];
+    }
+}
+
+#pragma mark - Actions
+
+-(IBAction)refresh:(id)sender
+{
+    [self refreshUsingRefreshHeaderTableView];
+}
+
+-(IBAction)showDetails:(id)sender
+{
+    if (self.gameDetailUrl)
+    {
+        GameOverviewController *ctlr =  [[GameOverviewController alloc] initWithTitle:self.gameTitle
+                                                                            detailUrl:self.gameDetailUrl
+                                                                              account:self.account];
+        
+        [self.navigationController pushViewController:ctlr animated:YES];
+        [ctlr release];
     }
 }
 

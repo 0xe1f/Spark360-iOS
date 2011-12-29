@@ -14,6 +14,8 @@
 
 @property (nonatomic, retain) NSString *screenName;
 @property (nonatomic, retain) NSString *gameUid;
+@property (nonatomic, retain) NSString *gameTitle;
+@property (nonatomic, retain) NSString *gameDetailUrl;
 @property (nonatomic, retain) NSDate *lastUpdated;
 
 @property (nonatomic, retain) NSMutableArray *achievements;
@@ -21,5 +23,8 @@
 -(id)initWithGameUid:(NSString*)gameUid
           screenName:(NSString*)screenName
              account:(XboxLiveAccount*)account;
+
+-(IBAction)refresh:(id)sender;
+-(IBAction)showDetails:(id)sender;
 
 @end

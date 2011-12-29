@@ -54,6 +54,8 @@
     if ([account isEqualToAccount:self.account])
     {
         [self hideRefreshHeaderTableView];
+        
+        [self.tableView reloadData];
     }
 }
 

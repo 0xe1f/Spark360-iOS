@@ -48,6 +48,7 @@
     NSLog(@"Got sync completed notification");
     
     [self hideRefreshHeaderTableView];
+    [self.tableView reloadData];
 }
 
 - (void)viewDidLoad

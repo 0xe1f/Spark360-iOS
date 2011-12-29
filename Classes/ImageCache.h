@@ -20,8 +20,12 @@
 + (id)sharedInstance;
 
 - (void)purgeInMemCache;
+- (BOOL)hasLocalCopyOfUrl:(NSString*)url;
+- (BOOL)hasLocalCopyOfUrl:(NSString*)url
+                 cropRect:(CGRect)cropRect;
 - (NSString*)cacheFilenameForUrl:(NSString*)url
                         cropRect:(CGRect)cropRect;
+- (NSString*)cacheFilenameForUrl:(NSString*)url;
 - (UIImage*)getCachedFile:(NSString*)url
              notifyObject:(id)notifyObject
            notifySelector:(SEL)notifySelector;
