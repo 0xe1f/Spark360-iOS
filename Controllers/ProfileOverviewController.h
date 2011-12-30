@@ -8,17 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-#import "XboxLiveAccount.h"
+#import "GenericController.h"
 
-@interface ProfileOverviewController : UIViewController
-{
-    IBOutlet UIButton *gamesButton;
-    IBOutlet UIButton *messagesButton;
-    IBOutlet UIButton *friendsButton;
-}
+@interface ProfileOverviewController : GenericController<UITableViewDataSource>
 
-@property (nonatomic, retain) XboxLiveAccount *account;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+-(id)initWithAccount:(XboxLiveAccount*)account;
+
+@property (nonatomic, retain) IBOutlet UITableView *tableView;
+
+@property (nonatomic, retain) NSString *screenName;
+@property (nonatomic, retain) NSString *gamerpicUrl;
 
 - (IBAction)viewGames:(id)sender;
 - (IBAction)viewMessages:(id)sender;

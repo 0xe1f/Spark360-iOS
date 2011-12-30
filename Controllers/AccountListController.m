@@ -164,12 +164,7 @@
         }
         else
         {
-            ProfileOverviewController *ctlr = [[ProfileOverviewController alloc] initWithNibName:@"ProfileOverview"
-                                                                                          bundle:nil];
-            
-            ctlr.account = account;
-            ctlr.managedObjectContext = self.managedObjectContext;
-            
+            ProfileOverviewController *ctlr = [[ProfileOverviewController alloc] initWithAccount:account];
             [self.navigationController pushViewController:ctlr animated:YES];
             [ctlr release];
         }

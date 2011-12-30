@@ -21,6 +21,9 @@
 		FE3CB76114AD6D41007EF7D8 /* xboxStatusNotOk@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75D14AD6D41007EF7D8 /* xboxStatusNotOk@2x.png */; };
 		FE3CB76214AD6D41007EF7D8 /* xboxStatusOk.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75E14AD6D41007EF7D8 /* xboxStatusOk.png */; };
 		FE3CB76314AD6D41007EF7D8 /* xboxStatusOk@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75F14AD6D41007EF7D8 /* xboxStatusOk@2x.png */; };
+		FE3CB76514ADAD5F007EF7D8 /* ProfileGamertagCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB76414ADAD5F007EF7D8 /* ProfileGamertagCell.xib */; };
+		FE3CB76814ADAE2C007EF7D8 /* ProfileGamertagCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3CB76714ADAE2B007EF7D8 /* ProfileGamertagCell.m */; };
+		FE3CB76B14ADB7A8007EF7D8 /* RoundedCornerView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3CB76A14ADB7A7007EF7D8 /* RoundedCornerView.m */; };
 		FE3FE14D13F72F7E009467EF /* gamerScore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3FE14C13F72F7E009467EF /* gamerScore.png */; };
 		FE610D3113EDD8A700420372 /* ImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3013EDD8A700420372 /* ImageCache.m */; };
 		FE610D3513EE125700420372 /* ImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3413EE125700420372 /* ImageCacheOperation.m */; };
@@ -190,6 +193,11 @@
 		FE3CB75D14AD6D41007EF7D8 /* xboxStatusNotOk@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStatusNotOk@2x.png"; sourceTree = "<group>"; };
 		FE3CB75E14AD6D41007EF7D8 /* xboxStatusOk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxStatusOk.png; sourceTree = "<group>"; };
 		FE3CB75F14AD6D41007EF7D8 /* xboxStatusOk@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStatusOk@2x.png"; sourceTree = "<group>"; };
+		FE3CB76414ADAD5F007EF7D8 /* ProfileGamertagCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileGamertagCell.xib; sourceTree = "<group>"; };
+		FE3CB76614ADAE2B007EF7D8 /* ProfileGamertagCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileGamertagCell.h; sourceTree = "<group>"; };
+		FE3CB76714ADAE2B007EF7D8 /* ProfileGamertagCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileGamertagCell.m; sourceTree = "<group>"; };
+		FE3CB76914ADB7A7007EF7D8 /* RoundedCornerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedCornerView.h; sourceTree = "<group>"; };
+		FE3CB76A14ADB7A7007EF7D8 /* RoundedCornerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedCornerView.m; sourceTree = "<group>"; };
 		FE3FE14C13F72F7E009467EF /* gamerScore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScore.png; sourceTree = "<group>"; };
 		FE610D2F13EDD8A700420372 /* ImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCache.h; sourceTree = "<group>"; };
 		FE610D3013EDD8A700420372 /* ImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCache.m; sourceTree = "<group>"; };
@@ -761,6 +769,10 @@
 				FEFCD56014A643E00018F05D /* MessageCell.m */,
 				FE3CB75514AD3398007EF7D8 /* XboxLiveStatusCell.h */,
 				FE3CB75614AD3398007EF7D8 /* XboxLiveStatusCell.m */,
+				FE3CB76614ADAE2B007EF7D8 /* ProfileGamertagCell.h */,
+				FE3CB76714ADAE2B007EF7D8 /* ProfileGamertagCell.m */,
+				FE3CB76914ADB7A7007EF7D8 /* RoundedCornerView.h */,
+				FE3CB76A14ADB7A7007EF7D8 /* RoundedCornerView.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -778,6 +790,7 @@
 				FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */,
 				FEE0283614A526A3003B3DBF /* PlayerCell.xib */,
 				FE3CB75814AD3427007EF7D8 /* XboxLiveStatusCell.xib */,
+				FE3CB76414ADAD5F007EF7D8 /* ProfileGamertagCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -968,6 +981,7 @@
 				FE3CB76114AD6D41007EF7D8 /* xboxStatusNotOk@2x.png in Resources */,
 				FE3CB76214AD6D41007EF7D8 /* xboxStatusOk.png in Resources */,
 				FE3CB76314AD6D41007EF7D8 /* xboxStatusOk@2x.png in Resources */,
+				FE3CB76514ADAD5F007EF7D8 /* ProfileGamertagCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1051,6 +1065,8 @@
 				FE3CB74E14AC86CE007EF7D8 /* ImageViewController.m in Sources */,
 				FE3CB75414AD31A8007EF7D8 /* XboxLiveStatusController.m in Sources */,
 				FE3CB75714AD3398007EF7D8 /* XboxLiveStatusCell.m in Sources */,
+				FE3CB76814ADAE2C007EF7D8 /* ProfileGamertagCell.m in Sources */,
+				FE3CB76B14ADB7A8007EF7D8 /* RoundedCornerView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
