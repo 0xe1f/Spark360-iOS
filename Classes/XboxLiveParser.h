@@ -63,6 +63,7 @@ typedef enum _XboxLiveParserErrorType
 -(void)loadRecentPlayers:(NSDictionary*)arguments;
 -(void)loadFriendsOfFriend:(NSDictionary*)arguments;
 -(void)loadGameOverview:(NSDictionary*)arguments;
+-(void)loadXboxLiveStatus:(NSDictionary*)arguments;
 
 -(void)deleteMessage:(NSDictionary*)arguments;
 -(void)sendMessage:(NSDictionary*)arguments;

@@ -23,5 +23,6 @@
 - (IBAction)viewGames:(id)sender;
 - (IBAction)viewMessages:(id)sender;
 - (IBAction)viewFriends:(id)sender;
+- (IBAction)viewLiveStatus:(id)sender;
 
 @end

@@ -13,6 +13,14 @@
 		FE3AB9CA14973D790056E87F /* ProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3AB9C814973D790056E87F /* ProfileController.xib */; };
 		FE3CB74E14AC86CE007EF7D8 /* ImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3CB74D14AC86CE007EF7D8 /* ImageViewController.m */; };
 		FE3CB75114AC8A20007EF7D8 /* ImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75014AC8A20007EF7D8 /* ImageViewController.xib */; };
+		FE3CB75414AD31A8007EF7D8 /* XboxLiveStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3CB75314AD31A8007EF7D8 /* XboxLiveStatusController.m */; };
+		FE3CB75714AD3398007EF7D8 /* XboxLiveStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3CB75614AD3398007EF7D8 /* XboxLiveStatusCell.m */; };
+		FE3CB75914AD3428007EF7D8 /* XboxLiveStatusCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75814AD3427007EF7D8 /* XboxLiveStatusCell.xib */; };
+		FE3CB75B14AD350A007EF7D8 /* XboxLiveStatusController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75A14AD350A007EF7D8 /* XboxLiveStatusController.xib */; };
+		FE3CB76014AD6D41007EF7D8 /* xboxStatusNotOk.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75C14AD6D41007EF7D8 /* xboxStatusNotOk.png */; };
+		FE3CB76114AD6D41007EF7D8 /* xboxStatusNotOk@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75D14AD6D41007EF7D8 /* xboxStatusNotOk@2x.png */; };
+		FE3CB76214AD6D41007EF7D8 /* xboxStatusOk.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75E14AD6D41007EF7D8 /* xboxStatusOk.png */; };
+		FE3CB76314AD6D41007EF7D8 /* xboxStatusOk@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3CB75F14AD6D41007EF7D8 /* xboxStatusOk@2x.png */; };
 		FE3FE14D13F72F7E009467EF /* gamerScore.png in Resources */ = {isa = PBXBuildFile; fileRef = FE3FE14C13F72F7E009467EF /* gamerScore.png */; };
 		FE610D3113EDD8A700420372 /* ImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3013EDD8A700420372 /* ImageCache.m */; };
 		FE610D3513EE125700420372 /* ImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FE610D3413EE125700420372 /* ImageCacheOperation.m */; };
@@ -172,6 +180,16 @@
 		FE3CB74C14AC86CE007EF7D8 /* ImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
 		FE3CB74D14AC86CE007EF7D8 /* ImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewController.m; sourceTree = "<group>"; };
 		FE3CB75014AC8A20007EF7D8 /* ImageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageViewController.xib; sourceTree = "<group>"; };
+		FE3CB75214AD31A8007EF7D8 /* XboxLiveStatusController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveStatusController.h; sourceTree = "<group>"; };
+		FE3CB75314AD31A8007EF7D8 /* XboxLiveStatusController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveStatusController.m; sourceTree = "<group>"; };
+		FE3CB75514AD3398007EF7D8 /* XboxLiveStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveStatusCell.h; sourceTree = "<group>"; };
+		FE3CB75614AD3398007EF7D8 /* XboxLiveStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveStatusCell.m; sourceTree = "<group>"; };
+		FE3CB75814AD3427007EF7D8 /* XboxLiveStatusCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XboxLiveStatusCell.xib; sourceTree = "<group>"; };
+		FE3CB75A14AD350A007EF7D8 /* XboxLiveStatusController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XboxLiveStatusController.xib; sourceTree = "<group>"; };
+		FE3CB75C14AD6D41007EF7D8 /* xboxStatusNotOk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxStatusNotOk.png; sourceTree = "<group>"; };
+		FE3CB75D14AD6D41007EF7D8 /* xboxStatusNotOk@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStatusNotOk@2x.png"; sourceTree = "<group>"; };
+		FE3CB75E14AD6D41007EF7D8 /* xboxStatusOk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxStatusOk.png; sourceTree = "<group>"; };
+		FE3CB75F14AD6D41007EF7D8 /* xboxStatusOk@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxStatusOk@2x.png"; sourceTree = "<group>"; };
 		FE3FE14C13F72F7E009467EF /* gamerScore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamerScore.png; sourceTree = "<group>"; };
 		FE610D2F13EDD8A700420372 /* ImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCache.h; sourceTree = "<group>"; };
 		FE610D3013EDD8A700420372 /* ImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCache.m; sourceTree = "<group>"; };
@@ -415,6 +433,10 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE3CB75C14AD6D41007EF7D8 /* xboxStatusNotOk.png */,
+				FE3CB75D14AD6D41007EF7D8 /* xboxStatusNotOk@2x.png */,
+				FE3CB75E14AD6D41007EF7D8 /* xboxStatusOk.png */,
+				FE3CB75F14AD6D41007EF7D8 /* xboxStatusOk@2x.png */,
 				FEFCD57614A71CCE0018F05D /* paperclip.png */,
 				FEFCD58514A739530018F05D /* table_sep.png */,
 				FEFCD58614A739540018F05D /* table_sep@2x.png */,
@@ -490,6 +512,7 @@
 				FEFCD57F14A737D30018F05D /* ViewMessageController.xib */,
 				FE65030A14AB113500C883C3 /* GameOverviewController.xib */,
 				FE3CB75014AC8A20007EF7D8 /* ImageViewController.xib */,
+				FE3CB75A14AD350A007EF7D8 /* XboxLiveStatusController.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -563,6 +586,8 @@
 				FE8C9B4214AAFE21008DACAB /* GameOverviewController.m */,
 				FE3CB74C14AC86CE007EF7D8 /* ImageViewController.h */,
 				FE3CB74D14AC86CE007EF7D8 /* ImageViewController.m */,
+				FE3CB75214AD31A8007EF7D8 /* XboxLiveStatusController.h */,
+				FE3CB75314AD31A8007EF7D8 /* XboxLiveStatusController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -734,6 +759,8 @@
 				FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */,
 				FEFCD55F14A643E00018F05D /* MessageCell.h */,
 				FEFCD56014A643E00018F05D /* MessageCell.m */,
+				FE3CB75514AD3398007EF7D8 /* XboxLiveStatusCell.h */,
+				FE3CB75614AD3398007EF7D8 /* XboxLiveStatusCell.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -750,6 +777,7 @@
 				FE8BA7F814A1B9880020D389 /* CompareGameCell.xib */,
 				FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */,
 				FEE0283614A526A3003B3DBF /* PlayerCell.xib */,
+				FE3CB75814AD3427007EF7D8 /* XboxLiveStatusCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -934,6 +962,12 @@
 				FEFCD58814A739540018F05D /* table_sep@2x.png in Resources */,
 				FE65030B14AB113500C883C3 /* GameOverviewController.xib in Resources */,
 				FE3CB75114AC8A20007EF7D8 /* ImageViewController.xib in Resources */,
+				FE3CB75914AD3428007EF7D8 /* XboxLiveStatusCell.xib in Resources */,
+				FE3CB75B14AD350A007EF7D8 /* XboxLiveStatusController.xib in Resources */,
+				FE3CB76014AD6D41007EF7D8 /* xboxStatusNotOk.png in Resources */,
+				FE3CB76114AD6D41007EF7D8 /* xboxStatusNotOk@2x.png in Resources */,
+				FE3CB76214AD6D41007EF7D8 /* xboxStatusOk.png in Resources */,
+				FE3CB76314AD6D41007EF7D8 /* xboxStatusOk@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1015,6 +1049,8 @@
 				FE65034414AB1CA100C883C3 /* UIColor+AQGridView.m in Sources */,
 				FE908A6C14AB82C000FD51CF /* ScreenshotGridViewCell.m in Sources */,
 				FE3CB74E14AC86CE007EF7D8 /* ImageViewController.m in Sources */,
+				FE3CB75414AD31A8007EF7D8 /* XboxLiveStatusController.m in Sources */,
+				FE3CB75714AD3398007EF7D8 /* XboxLiveStatusCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

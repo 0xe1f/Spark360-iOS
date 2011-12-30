@@ -102,6 +102,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                           error:(NSError**)error;
 -(NSDictionary*)parseGameOverview:(NSString*)detailUrl
                             error:(NSError**)error;
+-(NSDictionary*)parseXboxLiveStatus:(NSError**)error;
 
 -(NSArray*)parseRecentPlayersForAccount:(XboxLiveAccount*)account
                                   error:(NSError**)error;
@@ -178,6 +179,8 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSDictionary*)retrieveGameOverview:(NSString*)detailUrl
                              account:(XboxLiveAccount*)account
                                error:(NSError**)error;
+-(NSDictionary*)retrieveXboxLiveStatus:(XboxLiveAccount*)account
+                                 error:(NSError**)error;
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
                             account:(XboxLiveAccount*)account
@@ -243,6 +246,7 @@ NSString* const REFERER_JSON_PROFILE = @"http://live.xbox.com/%@/MyXbox";
 NSString* const URL_ACHIEVEMENTS = @"http://live.xbox.com/%@/Activity/Details?titleId=%@";
 NSString* const URL_FRIEND_PROFILE = @"http://live.xbox.com/%@/Profile?gamertag=%@";
 NSString* const URL_COMPARE_ACHIEVEMENTS = @"http://live.xbox.com/%@/Activity/Details?compareTo=%@&titleId=%@";
+NSString* const URL_STATUS = @"http://support.xbox.com/%@/xbox-live-status";
 
 NSString* const URL_REPLY_TO = @"https://live.xbox.com/xweb/live/passport/setCookies.ashx";
 
@@ -289,6 +293,11 @@ NSString* const PATTERN_GAME_OVERVIEW_MANUAL = @"<a class=\"Manual\" href=\"([^\
 NSString* const PATTERN_GAME_OVERVIEW_ESRB = @"<img alt=\"([^\"]*)\" class=\"ratingLogo\" src=\"([^\"]*)\"";
 NSString* const PATTERN_GAME_OVERVIEW_IMAGE = @"<div id=\"image\\d+\" class=\"TabPage\">\\s*<img (?:width=\"[^\"]*\" )?src=\"([^\"]*)\"";
 NSString* const PATTERN_GAME_OVERVIEW_BANNER = @"<img src=\"([^\"]*)\" alt=\"[^\"]*\" class=\"Banner\" />";
+
+NSString* const PATTERN_STATUS_LINE = @"<div class=\"Status..\">\\s*(.*?\\s*</div>)\\s*</div>"; // DOTALL
+NSString* const PATTERN_STATUS_NAME = @"<strong>([^<]*)</strong>";
+NSString* const PATTERN_STATUS_IS_OK = @"class=\"StatusOKText\"";
+NSString* const PATTERN_STATUS_DESCRIPTION = @"<div class=\"StatusKOText\">(.*)?</div>"; // DOTALL
 
 NSString* const URL_SECRET_ACHIEVE_TILE = @"http://live.xbox.com/Content/Images/HiddenAchievement.png";
 NSString* const URL_GAMERPIC = @"http://avatar.xboxlive.com/avatar/%@/avatarpic-l.png";
@@ -939,6 +948,35 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [pool release];
 }
 
+-(void)loadXboxLiveStatus:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveXboxLiveStatus:account
+                                                error:&error];
+    
+    self.lastError = error;
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHXboxLiveStatusLoaded
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            data, BACHNotificationData,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
+
 -(void)deleteMessage:(NSDictionary*)arguments
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -1569,6 +1607,14 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     return [self parseGameOverview:detailUrl
                              error:error];
+}
+
+-(NSDictionary*)retrieveXboxLiveStatus:(XboxLiveAccount*)account
+                                 error:(NSError**)error
+{
+    [self restoreSessionForAccount:account];
+    
+    return [self parseXboxLiveStatus:error];
 }
 
 -(BOOL)retrieveDeleteMessageWithUid:(NSString*)uid
@@ -2955,6 +3001,103 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
      }];
     
     return data;
+}
+
+-(NSDictionary*)parseXboxLiveStatus:(NSError**)error
+{
+    NSString *url = [NSString stringWithFormat:URL_STATUS, LOCALE];
+    NSString *statusPage = [self loadWithGET:url
+                                      fields:nil
+                                      useXhr:NO
+                                       error:error];
+    
+    if (!statusPage)
+        return nil;
+    
+    NSMutableArray *statusList = [[[NSMutableArray alloc] initWithCapacity:15] autorelease];
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_STATUS_LINE
+                                                                           options:NSRegularExpressionDotMatchesLineSeparators
+                                                                             error:NULL];
+    
+    [regex enumerateMatchesInString:statusPage 
+                            options:0
+                              range:NSMakeRange(0, [statusPage length])
+                         usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) 
+     {
+         NSString *line = [statusPage substringWithRange:[result rangeAtIndex:1]];
+         
+         NSRegularExpression *regex;
+         NSTextCheckingResult *match;
+         
+         regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_STATUS_NAME
+                                                           options:0
+                                                             error:NULL];
+         
+         match = [regex firstMatchInString:line
+                                   options:0
+                                     range:NSMakeRange(0, [line length])];
+         
+         if (!match)
+             return;
+         
+         NSString *name = [[line substringWithRange:[match rangeAtIndex:1]] 
+                           gtm_stringByUnescapingFromHTML];
+         
+         regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_STATUS_IS_OK
+                                                           options:0
+                                                             error:NULL];
+         
+         match = [regex firstMatchInString:line
+                                   options:0
+                                     range:NSMakeRange(0, [line length])];
+         
+         BOOL isOk = (match != nil);
+         NSString *description;
+         
+         if (isOk)
+         {
+             description = NSLocalizedString(@"UpAndRunning", nil);
+         }
+         else
+         {
+             regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_STATUS_DESCRIPTION
+                                                               options:NSRegularExpressionDotMatchesLineSeparators
+                                                                 error:NULL];
+             
+             match = [regex firstMatchInString:line
+                                       options:0
+                                         range:NSMakeRange(0, [line length])];
+             
+             if (match)
+             {
+                 description = [[line substringWithRange:[match rangeAtIndex:1]] 
+                                gtm_stringByUnescapingFromHTML];
+             }
+             else
+             {
+                 description = NSLocalizedString(@"UnknownProblem", nil);
+             }
+         }
+         
+         [statusList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                name, @"name",
+                                [NSNumber numberWithBool:isOk], @"isOk",
+                                description, @"description",
+                                nil]];
+     }];
+    
+    if ([statusList count] < 1)
+    {
+        [statusList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                               NSLocalizedString(@"GeneralStatus", nil), @"name",
+                               [NSNumber numberWithBool:NO],
+                               NSLocalizedString(@"UnableToLoadStatuses", nil), @"description",
+                               nil]];
+    }
+    
+    return [NSDictionary dictionaryWithObject:statusList
+                                       forKey:@"statusList"];
 }
 
 -(BOOL)parseDeleteMessageWithUid:(NSString*)uid

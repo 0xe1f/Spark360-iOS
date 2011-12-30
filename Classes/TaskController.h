@@ -21,6 +21,7 @@ extern NSString* const BACHAchievementsCompared;
 extern NSString* const BACHRecentPlayersLoaded;
 extern NSString* const BACHFriendsOfFriendLoaded;
 extern NSString* const BACHGameOverviewLoaded;
+extern NSString* const BACHXboxLiveStatusLoaded;
 
 extern NSString* const BACHMessageSynced;
 extern NSString* const BACHMessageDeleted;
@@ -111,6 +112,9 @@ extern NSString* const BACHNotificationNSError;
 
 -(void)loadGameOverviewWithUrl:(NSString*)url
                        account:(XboxLiveAccount*)account;
+
+-(void)loadXboxLiveStatus:(XboxLiveAccount*)account;
+-(BOOL)isLoadingXboxLiveStatus:(XboxLiveAccount*)account;
 
 -(void)deleteMessageWithUid:(NSString*)uid
                     account:(XboxLiveAccount*)account

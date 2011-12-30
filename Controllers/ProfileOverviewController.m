@@ -11,6 +11,7 @@
 #import "GameListController.h"
 #import "MessageListController.h"
 #import "FriendListController.h"
+#import "XboxLiveStatusController.h"
 
 @implementation ProfileOverviewController
 
@@ -61,6 +62,13 @@
 -(void)viewFriends:(id)sender
 {
     FriendListController *ctlr = [[FriendListController alloc] initWithAccount:account];
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
+}
+
+- (IBAction)viewLiveStatus:(id)sender
+{
+    XboxLiveStatusController *ctlr = [[XboxLiveStatusController alloc] initWithAccount:account];
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
 }

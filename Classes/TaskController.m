@@ -25,6 +25,7 @@ NSString* const BACHAchievementsCompared = @"BachAchievementsCompared";
 NSString* const BACHRecentPlayersLoaded = @"BachRecentPlayersLoaded";
 NSString* const BACHFriendsOfFriendLoaded = @"BachFriendsOfFriendLoaded";
 NSString* const BACHGameOverviewLoaded = @"BachGameOverviewLoaded";
+NSString* const BACHXboxLiveStatusLoaded = @"BachXboxLiveStatusLoaded";
 
 NSString* const BACHMessageSynced = @"BachMessageSynced";
 NSString* const BACHMessageDeleted = @"BachMessageDeleted";
@@ -599,6 +600,31 @@ static TaskController *sharedInstance = nil;
     
     [self addOperation:op];
     [op release];
+}
+
+-(void)loadXboxLiveStatus:(XboxLiveAccount*)account
+{
+    NSString *identifier = @"XboxLiveStatus";
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(loadXboxLiveStatus:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(BOOL)isLoadingXboxLiveStatus:(XboxLiveAccount*)account
+{
+    return [self isOperationQueuedWithId:@"XboxLiveStatus"];
 }
 
 #pragma mark Singleton stuff

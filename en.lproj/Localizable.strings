@@ -100,4 +100,10 @@
     ErrorLoadingGameDetails = "Could not retrieve details - this game may not have any available";
     GameDetails = "Game Details";
     ImageViewer = "Image Viewer";
+    UpAndRunning = "Up and running";
+    UnknownProblem = "Unknown problem";
+    GeneralStatus = "General";
+    UnableToLoadStatuses = "Status information is unavailable";
+    XboxLiveStatus = "Xbox Live Status";
+    Services = "Services";
 }
