@@ -106,4 +106,10 @@
     UnableToLoadStatuses = "Status information is unavailable";
     XboxLiveStatus = "Xbox Live Status";
     Services = "Services";
+    MottoTemplate_f = "\"%@\"";
+    FriendsOnline_f = "Friends (%i)";
+    MessagesUnread_f = "Messages (%i)";
+    FriendsNoneOnline = "Friends";
+    MessagesNoneUnread = "Messages";
+    Games = "Games";
 }

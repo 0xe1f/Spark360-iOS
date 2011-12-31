@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ProfileInfoCell : UITableViewCell
+#import "ProfileCell.h"
 
-@property (nonatomic, assign) IBOutlet UILabel *name;
+@interface ProfileInfoCell : ProfileCell
+
 @property (nonatomic, assign) IBOutlet UILabel *value;
 
 @end

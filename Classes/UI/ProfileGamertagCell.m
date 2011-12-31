@@ -13,6 +13,7 @@
 @synthesize screenName;
 @synthesize gamerpic;
 @synthesize gamerpicContainer;
+@synthesize motto;
 
 -(NSString*)reuseIdentifier
 {

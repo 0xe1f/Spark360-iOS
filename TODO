@@ -1,5 +1,6 @@
-! Are messages being sent to multi. recipients?
-! Icons missing for game details (list, compare)
+! Refresh fails in overview when accounts are switched back & forth
+! Uninstalling, then installing the app results in the keychain thing crashing
+! Icons missing for game details bar icon (list, compare)
 ! Clicking on profiles in Account selection creates new Account instances each
   time. This causes leaks and can cause data loss!
 
@@ -10,17 +11,11 @@ Compare:
 
 Messages:
 
-* ALL: Disable message composition when user's account is not Gold
-* List: When a message contains no text, add placeholder text
-* List: Add icons denoting the type of content in the message
 * View: When message contains attachments, mention the the attachment types 
   in the viewer
-* Test sending messages to multiple recipients
 
 Friends:
 
-* In ProfileController, check to see if user is Friend, and if so, redirect to
-  FriendProfileController
 * Suppressed exceptions in FriendListController/configureCell cause rendering
   problems when friends list changes. Figure out a way to properly handle errors,
   and possibly redraw
@@ -30,14 +25,12 @@ All:
 
 * ProfileController will close view even if the incoming error has nothing to 
   do with invalid profile name. Filter notification types
-* Remove XIB files from the Controllers directory
 
 Core:
 
 * Change how ImageCache's notifications work - ImageCache shouldn't be setting 
   them - each controller should
 * When images are downloaded, update single icon, not all (see imageSynced)
-* [Account save] should be thread-safe!
 * Add network spinner when TaskControllerOp is in progress
 * Delete database contents and keychain items when an account is deleted 
 * Investigate the effects of commenting out the assertion in KeyChainWrapper:315!

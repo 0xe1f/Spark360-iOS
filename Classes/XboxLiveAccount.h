@@ -22,6 +22,9 @@
 -(NSString*)screenName;
 -(void)setScreenName:(NSString*)screenName;
 
+-(NSDate*)lastProfileUpdate;
+-(void)setLastProfileUpdate:(NSDate*)lastUpdate;
+
 -(NSDate*)lastGamesUpdate;
 -(void)setLastGamesUpdate:(NSDate*)lastUpdate;
 
@@ -48,6 +51,7 @@
 -(BOOL)areGamesStale;
 -(BOOL)areMessagesStale;
 -(BOOL)areFriendsStale;
+-(BOOL)isProfileStale;
 -(BOOL)isDataStale:(NSDate*)lastRefreshed;
 
 -(BOOL)canSendMessages;

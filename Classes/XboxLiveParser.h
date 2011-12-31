@@ -45,6 +45,7 @@ typedef enum _XboxLiveParserErrorType
                  withRetrievedObject:(NSDictionary*)retrieved
                                error:(NSError**)error;
 
+-(void)synchronizeProfile:(NSDictionary*)arguments;
 -(void)synchronizeAchievements:(NSDictionary*)arguments;
 -(void)synchronizeGames:(NSDictionary*)arguments;
 -(void)synchronizeMessages:(NSDictionary*)arguments;

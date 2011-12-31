@@ -15,13 +15,16 @@
 -(id)initWithAccount:(XboxLiveAccount*)account;
 
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
+@property (nonatomic, assign) IBOutlet UITableViewCell *optionsCell;
 
-@property (nonatomic, retain) NSString *screenName;
-@property (nonatomic, retain) NSString *gamerpicUrl;
+@property (nonatomic, retain) NSMutableDictionary *profile;
+@property (nonatomic, assign) NSInteger messagesUnread;
+@property (nonatomic, assign) NSInteger friendsOnline;
 
 - (IBAction)viewGames:(id)sender;
 - (IBAction)viewMessages:(id)sender;
 - (IBAction)viewFriends:(id)sender;
-- (IBAction)viewLiveStatus:(id)sender;
+
+-(IBAction)refresh:(id)sender;
 
 @end

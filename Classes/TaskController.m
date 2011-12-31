@@ -11,6 +11,7 @@
 #import "XboxLiveAccount.h"
 #import "XboxLiveParser.h"
 
+NSString* const BACHProfileSynced = @"BachProfileSynced";
 NSString* const BACHGamesSynced = @"BachGamesSynced";
 NSString* const BACHAchievementsSynced = @"BachAchievementsSynced";
 NSString* const BACHMessagesSynced = @"BachMessagesSynced";
@@ -28,7 +29,7 @@ NSString* const BACHGameOverviewLoaded = @"BachGameOverviewLoaded";
 NSString* const BACHXboxLiveStatusLoaded = @"BachXboxLiveStatusLoaded";
 
 NSString* const BACHMessageSynced = @"BachMessageSynced";
-NSString* const BACHMessageDeleted = @"BachMessageDeleted";
+NSString* const BACHMessagesChanged = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
 NSString* const BACHError = @"BachError";
 
@@ -89,6 +90,28 @@ static TaskController *sharedInstance = nil;
 }
 
 #pragma mark - Specifics
+
+-(void)synchronizeProfileForAccount:(XboxLiveAccount*)account
+               managedObjectContext:(NSManagedObjectContext*)moc
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.Profile",
+                            account.uuid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               account, @"account",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(synchronizeProfile:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
 
 -(void)synchronizeGamesForAccount:(XboxLiveAccount*)account
              managedObjectContext:(NSManagedObjectContext*)moc

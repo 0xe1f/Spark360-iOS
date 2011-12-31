@@ -10,7 +10,6 @@
 
 @implementation ProfileInfoCell
 
-@synthesize name;
 @synthesize value;
 
 -(NSString*)reuseIdentifier

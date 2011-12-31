@@ -9,6 +9,7 @@
 #import "TaskControllerOperation.h"
 #import "XboxLiveAccount.h"
 
+extern NSString* const BACHProfileSynced;
 extern NSString* const BACHGamesSynced;
 extern NSString* const BACHAchievementsSynced;
 extern NSString* const BACHMessagesSynced;
@@ -24,7 +25,7 @@ extern NSString* const BACHGameOverviewLoaded;
 extern NSString* const BACHXboxLiveStatusLoaded;
 
 extern NSString* const BACHMessageSynced;
-extern NSString* const BACHMessageDeleted;
+extern NSString* const BACHMessagesChanged;
 extern NSString* const BACHMessageSent;
 extern NSString* const BACHError;
 
@@ -43,6 +44,9 @@ extern NSString* const BACHNotificationNSError;
 
 -(BOOL)isOperationQueuedWithId:(NSString*)operationId;
 -(void)addOperation:(TaskControllerOperation*)op;
+
+-(void)synchronizeProfileForAccount:(XboxLiveAccount*)account
+               managedObjectContext:(NSManagedObjectContext*)moc;
 
 -(void)synchronizeGamesForAccount:(XboxLiveAccount*)account
              managedObjectContext:(NSManagedObjectContext*)moc;

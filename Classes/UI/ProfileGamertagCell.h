@@ -11,6 +11,7 @@
 @interface ProfileGamertagCell : UITableViewCell
 
 @property (nonatomic, assign) IBOutlet UILabel *screenName;
+@property (nonatomic, assign) IBOutlet UILabel *motto;
 @property (nonatomic, assign) IBOutlet UIImageView *gamerpic;
 @property (nonatomic, assign) IBOutlet UIView *gamerpicContainer;
 

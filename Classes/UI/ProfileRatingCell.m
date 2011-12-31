@@ -10,7 +10,6 @@
 
 @implementation ProfileRatingCell
 
-@synthesize name;
 @synthesize starOne;
 @synthesize starTwo;
 @synthesize starThree;

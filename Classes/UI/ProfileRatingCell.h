@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ProfileRatingCell : UITableViewCell
+#import "ProfileCell.h"
 
-@property (nonatomic, assign) IBOutlet UILabel *name;
+@interface ProfileRatingCell : ProfileCell
+
 @property (nonatomic, assign) IBOutlet UIImageView *starOne;
 @property (nonatomic, assign) IBOutlet UIImageView *starTwo;
 @property (nonatomic, assign) IBOutlet UIImageView *starThree;

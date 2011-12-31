@@ -193,6 +193,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                    account:(XboxLiveAccount*)account
                                      error:(NSError**)error;
 
+-(void)writeProfile:(NSDictionary*)args;
 -(void)writeGames:(NSDictionary*)args;
 -(void)writeAchievements:(NSDictionary*)data;
 -(void)writeMessages:(NSDictionary*)args;
@@ -243,6 +244,7 @@ NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Del
 
 NSString* const REFERER_JSON_PROFILE = @"http://live.xbox.com/%@/MyXbox";
 
+NSString* const URL_PROFILE = @"http://live.xbox.com/%@/Profile";
 NSString* const URL_ACHIEVEMENTS = @"http://live.xbox.com/%@/Activity/Details?titleId=%@";
 NSString* const URL_FRIEND_PROFILE = @"http://live.xbox.com/%@/Profile?gamertag=%@";
 NSString* const URL_COMPARE_ACHIEVEMENTS = @"http://live.xbox.com/%@/Activity/Details?compareTo=%@&titleId=%@";
@@ -331,6 +333,48 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 }
 
 #pragma mark - Externals
+
+-(void)synchronizeProfile:(NSDictionary*)arguments
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    
+    NSError *error = nil;
+    NSDictionary *data = [self retrieveProfileWithEmailAddress:account.emailAddress
+                                                      password:account.password
+                                                         error:&error];
+    
+    self.lastError = error;
+    
+    if (data)
+    {
+        NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:
+                              account, @"account",
+                              data, @"data",
+                              nil];
+        
+        [self performSelectorOnMainThread:@selector(writeProfile:) 
+                               withObject:args
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHProfileSynced
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
+}
 
 -(void)synchronizeGames:(NSDictionary*)arguments
 {
@@ -484,6 +528,11 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (!self.lastError)
     {
         [self postNotificationOnMainThread:BACHFriendsSynced
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            nil]];
+        
+        [self postNotificationOnMainThread:BACHFriendsChanged
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
                                             nil]];
@@ -1005,10 +1054,9 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     if (!self.lastError)
     {
-        [self postNotificationOnMainThread:BACHMessageDeleted
+        [self postNotificationOnMainThread:BACHMessagesChanged
                                   userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
                                             account, BACHNotificationAccount, 
-                                            uid, BACHNotificationUid,
                                             nil]];
     }
     else
@@ -3241,19 +3289,6 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         return nil;
     
     NSMutableDictionary *message = [[[NSMutableDictionary alloc] init] autorelease];
-    
-    /*
-    NSDictionary *dict;
-    if ((dict = [data objectForKey:@"Summary"]))
-    {
-        if ((dict = [dict objectForKey:@"Propeties"]))
-        {
-            [message setObject:[dict objectForKey:@"HasBeenRead"]
-                        forKey:@"isRead"];
-        }
-    }
-    */
-    
     NSString *messageText = [[data objectForKey:@"Text"] gtm_stringByUnescapingFromHTML];
     
     [message setObject:[NSNumber numberWithBool:YES] forKey:@"isRead"];
@@ -3304,23 +3339,107 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [profile setObject:[object objectForKey:@"tiertext"] forKey:@"accountType"];
     
     [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"pointsbalancetext"] intValue]] forKey:@"pointsBalance"];
-    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"gamerscore"] intValue]] forKey:@"gamerscore"];
+    [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"gamerscore"] intValue]] forKey:@"gamerScore"];
     [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"tier"] intValue]] forKey:@"tier"];
     [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"messages"] intValue]] forKey:@"unreadMessages"];
     [profile setObject:[NSNumber numberWithInt:[[object objectForKey:@"notifications"] intValue]] forKey:@"unreadNotifications"];
     
-    url = [NSString stringWithFormat:URL_GAMERCARD, LOCALE,
-           [gamertag gtm_stringByEscapingForURLArgument]];
+    url = [NSString stringWithFormat:URL_PROFILE, LOCALE];
     
-    NSString *cardPage = [self loadWithGET:url
-                                    fields:nil
-                                    useXhr:NO
-                                     error:nil];
+    NSString *profilePage = [self loadWithGET:url
+                                       fields:nil
+                                       useXhr:NO
+                                        error:error];
     
-    // An error for rep not fatal, so we ignore them
-    if (cardPage)
+    if (profilePage)
     {
-        [profile setObject:[XboxLiveParser getStarRatingFromPage:cardPage] forKey:@"rep"];
+        NSRegularExpression *regex = nil;
+        NSTextCheckingResult *match = nil;
+        NSString *text = nil;
+        
+        // Name
+        
+        regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_NAME
+                                                          options:NSRegularExpressionDotMatchesLineSeparators
+                                                            error:NULL];
+        
+        match = [regex firstMatchInString:profilePage
+                                  options:0
+                                    range:NSMakeRange(0, [profilePage length])];
+        
+        if (match)
+        {
+            text = [[profilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+            [profile setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                       forKey:@"name"];
+        }
+        
+        // Location
+        
+        regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_LOCATION
+                                                          options:NSRegularExpressionDotMatchesLineSeparators
+                                                            error:NULL];
+        
+        match = [regex firstMatchInString:profilePage
+                                  options:0
+                                    range:NSMakeRange(0, [profilePage length])];
+        
+        if (match)
+        {
+            text = [[profilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+            [profile setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] 
+                       forKey:@"location"];
+        }
+        
+        // Motto
+        
+        regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_MOTTO
+                                                          options:0
+                                                            error:NULL];
+        
+        match = [regex firstMatchInString:profilePage
+                                  options:0
+                                    range:NSMakeRange(0, [profilePage length])];
+        
+        if (match)
+        {
+            text = [[profilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+            [profile setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                        forKey:@"motto"];
+        }
+        
+        // Rep
+        
+        regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_REP
+                                                          options:NSRegularExpressionDotMatchesLineSeparators
+                                                            error:NULL];
+        
+        match = [regex firstMatchInString:profilePage
+                                  options:0
+                                    range:NSMakeRange(0, [profilePage length])];
+        
+        if (match)
+        {
+            text = [profilePage substringWithRange:[match rangeAtIndex:1]];
+            [profile setObject:[XboxLiveParser getStarRatingFromPage:text] forKey:@"rep"];
+        }
+        
+        // Bio
+        
+        regex = [NSRegularExpression regularExpressionWithPattern:PATTERN_SUMMARY_BIO
+                                                          options:NSRegularExpressionDotMatchesLineSeparators
+                                                            error:NULL];
+        
+        match = [regex firstMatchInString:profilePage
+                                  options:0
+                                    range:NSMakeRange(0, [profilePage length])];
+        
+        if (match)
+        {
+            text = [[profilePage substringWithRange:[match rangeAtIndex:1]] gtm_stringByUnescapingFromHTML];
+            [profile setObject:[text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                       forKey:@"bio"];
+        }
     }
     
     NSLog(@"parseSynchronizeProfile: %.04f", 
@@ -3634,10 +3753,21 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [profile setValue:[dict objectForKey:@"iconUrl"] forKey:@"iconUrl"];
     [profile setValue:[dict objectForKey:@"accountType"] forKey:@"accountType"];
     [profile setValue:[dict objectForKey:@"pointsBalance"] forKey:@"pointsBalance"];
-    [profile setValue:[dict objectForKey:@"gamerscore"] forKey:@"gamerscore"];
+    [profile setValue:[dict objectForKey:@"gamerScore"] forKey:@"gamerScore"];
     [profile setValue:[dict objectForKey:@"unreadMessages"] forKey:@"unreadMessages"];
     [profile setValue:[dict objectForKey:@"unreadNotifications"] forKey:@"unreadNotifications"];
-    [profile setValue:[dict objectForKey:@"rep"] forKey:@"rep"];
+    
+    id value;
+    if ((value = [dict objectForKey:@"rep"]))
+        [profile setValue:value forKey:@"rep"];
+    if ((value = [dict objectForKey:@"motto"]))
+        [profile setValue:value forKey:@"motto"];
+    if ((value = [dict objectForKey:@"name"]))
+        [profile setValue:value forKey:@"name"];
+    if ((value = [dict objectForKey:@"location"]))
+        [profile setValue:value forKey:@"location"];
+    if ((value = [dict objectForKey:@"bio"]))
+        [profile setValue:value forKey:@"bio"];
     
     if (![self.context save:nil])
     {
@@ -3652,13 +3782,24 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     account.screenName = [dict objectForKey:@"screenName"];
     account.accountTier = [[dict objectForKey:@"tier"] integerValue];
-    
+    account.lastProfileUpdate = [NSDate date];
     [account save];
     
     NSLog(@"synchronizeProfileWithAccount: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
+}
+
+-(void)writeProfile:(NSDictionary*)args
+{
+    NSError *error = nil;
+    
+    [self synchronizeProfileWithAccount:[args objectForKey:@"account"]
+                    withRetrievedObject:[args objectForKey:@"data"]
+                                  error:&error];
+    
+    self.lastError = error;
 }
 
 -(void)writeGames:(NSDictionary*)args

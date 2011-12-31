@@ -21,6 +21,8 @@
 @implementation XboxLiveAccount
 {
     NSString *_uuid;
+    NSDate *_lastProfileUpdate;
+    BOOL _lastProfileUpdateDirty;
     NSDate *_lastGamesUpdate;
     BOOL _lastGamesUpdateDirty;
     NSDate *_lastMessagesUpdate;
@@ -44,6 +46,7 @@ NSString * const KeychainPassword = @"com.akop.bach";
 NSString * const StalePeriodKey = @"StalePeriod";
 NSString * const ScreenNameKey = @"ScreenName";
 NSString * const GameLastUpdatedKey = @"GamesLastUpdated";
+NSString * const ProfileLastUpdatedKey = @"ProfileLastUpdated";
 NSString * const MessagesLastUpdatedKey = @"MessagesLastUpdated";
 NSString * const FriendsLastUpdatedKey = @"FriendsLastUpdated";
 NSString * const AccountTierKey = @"AccountTier";
@@ -66,6 +69,7 @@ NSString * const CookiesKey = @"Cookies";
         self.lastGamesUpdate = [prefs objectForKey:[self keyForPreference:GameLastUpdatedKey]];
         self.lastMessagesUpdate = [prefs objectForKey:[self keyForPreference:MessagesLastUpdatedKey]];
         self.lastFriendsUpdate = [prefs objectForKey:[self keyForPreference:FriendsLastUpdatedKey]];
+        self.lastProfileUpdate = [prefs objectForKey:[self keyForPreference:ProfileLastUpdatedKey]];
         self.stalePeriodInSeconds = [prefs objectForKey:[self keyForPreference:StalePeriodKey]];
         self.screenName = [prefs objectForKey:[self keyForPreference:ScreenNameKey]];
         self.accountTier = [[prefs objectForKey:[self keyForPreference:AccountTierKey]] integerValue];
@@ -90,6 +94,8 @@ NSString * const CookiesKey = @"Cookies";
             self.lastMessagesUpdate = [NSDate distantPast];
         if (!self.lastFriendsUpdate)
             self.lastFriendsUpdate = [NSDate distantPast];
+        if (!self.lastProfileUpdate)
+            self.lastProfileUpdate = [NSDate distantPast];
     }
 }
 
@@ -103,6 +109,7 @@ NSString * const CookiesKey = @"Cookies";
     [prefs removeObjectForKey:[self keyForPreference:StalePeriodKey]];
     [prefs removeObjectForKey:[self keyForPreference:ScreenNameKey]];
     [prefs removeObjectForKey:[self keyForPreference:AccountTierKey]];
+    [prefs removeObjectForKey:[self keyForPreference:ProfileLastUpdatedKey]];
     
     KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
                                                                             serviceName:KeychainPassword
@@ -118,6 +125,12 @@ NSString * const CookiesKey = @"Cookies";
         @synchronized([self class])
         {
             NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+            
+            if (_lastProfileUpdateDirty)
+            {
+                [prefs setObject:self.lastProfileUpdate
+                          forKey:[self keyForPreference:ProfileLastUpdatedKey]];
+            }
             
             if (_lastGamesUpdateDirty)
             {
@@ -175,6 +188,7 @@ NSString * const CookiesKey = @"Cookies";
     _lastGamesUpdateDirty = NO;
     _lastMessagesUpdateDirty = NO;
     _lastFriendsUpdateDirty = NO;
+    _lastProfileUpdateDirty = NO;
     _browseRefreshPeriodInSecondsDirty = NO;
     _emailAddressDirty = NO;
     _passwordDirty = NO;
@@ -196,6 +210,20 @@ NSString * const CookiesKey = @"Cookies";
 {
     _accountTier = accountTier;
     _accountTierDirty = YES;
+}
+
+-(NSDate*)lastProfileUpdate
+{
+    return _lastProfileUpdate;
+}
+
+-(void)setLastProfileUpdate:(NSDate*)lastUpdate
+{
+    [lastUpdate retain];
+    [_lastProfileUpdate release];
+    
+    _lastProfileUpdate = lastUpdate;
+    _lastProfileUpdateDirty = YES;
 }
 
 -(NSDate*)lastGamesUpdate
@@ -329,6 +357,11 @@ NSString * const CookiesKey = @"Cookies";
     return [self isDataStale:self.lastFriendsUpdate];
 }
 
+-(BOOL)isProfileStale
+{
+    return [self isDataStale:self.lastProfileUpdate];
+}
+
 -(BOOL)isEqual:(id)object
 {
     if (![object isKindOfClass:[XboxLiveAccount class]])
@@ -392,6 +425,7 @@ NSString * const CookiesKey = @"Cookies";
     self.lastGamesUpdate = nil;
     self.lastMessagesUpdate = nil;
     self.lastFriendsUpdate = nil;
+    self.lastProfileUpdate = nil;
     self.stalePeriodInSeconds = nil;
     self.emailAddress = nil;
     self.password = nil;
