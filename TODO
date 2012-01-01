@@ -34,4 +34,3 @@ Core:
 * Add network spinner when TaskControllerOp is in progress
 * Delete database contents and keychain items when an account is deleted 
 * Investigate the effects of commenting out the assertion in KeyChainWrapper:315!
-* App seems to be logging in excessively - investigate cookie saves

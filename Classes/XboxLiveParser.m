@@ -61,15 +61,12 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSString*)getDetailUrlForTitleId:(NSNumber*)titleId;
 
 -(void)saveSessionForAccount:(XboxLiveAccount*)account;
--(void)saveSessionForEmailAddress:(NSString*)emailAddress;
 -(BOOL)restoreSessionForAccount:(XboxLiveAccount*)account;
--(BOOL)restoreSessionForEmailAddress:(NSString*)emailAddress;
 -(void)clearAllSessions;
 
--(BOOL)parseSynchronizeProfile:(NSMutableDictionary*)profile
-                  emailAddress:(NSString*)emailAddress
-                      password:(NSString*)password
-                         error:(NSError**)error;
+-(BOOL)parseProfile:(NSMutableDictionary*)profile
+            account:(XboxLiveAccount*)account
+              error:(NSError**)error;
 -(BOOL)parseGames:(NSMutableDictionary*)games
                   forAccount:(XboxLiveAccount*)account
                        error:(NSError**)error;
@@ -141,6 +138,8 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSManagedObject*)friendWithUid:(NSString*)uid
                          account:(XboxLiveAccount*)account;
 
+-(NSDictionary*)retrieveProfileWithAccount:(XboxLiveAccount*)account
+                                     error:(NSError**)error;
 -(NSDictionary*)retrieveGamesWithAccount:(XboxLiveAccount*)account
                                    error:(NSError**)error;
 -(NSDictionary*)retrieveAchievementsWithAccount:(XboxLiveAccount*)account
@@ -341,9 +340,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     XboxLiveAccount *account = [arguments objectForKey:@"account"];
     
     NSError *error = nil;
-    NSDictionary *data = [self retrieveProfileWithEmailAddress:account.emailAddress
-                                                      password:account.password
-                                                         error:&error];
+    NSDictionary *data = [self retrieveProfileWithAccount:account
+                                                    error:&error];
     
     self.lastError = error;
     
@@ -1795,58 +1793,70 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return data;
 }
 
--(NSDictionary*)retrieveProfileWithAccount:(XboxLiveAccount*)account
-                                     error:(NSError**)error
-{
-    return [self retrieveProfileWithEmailAddress:account.emailAddress
-                                        password:account.password
-                                           error:error];
-}
-
 -(NSDictionary*)retrieveProfileWithEmailAddress:(NSString*)emailAddress
                                        password:(NSString*)password
-                                          error:(NSError**)error;
+                                          error:(NSError**)error
+{
+    NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
+    
+    [self clearAllSessions];
+    
+    if (![self authenticate:emailAddress
+               withPassword:password
+                      error:error])
+    {
+        return nil;
+    }
+    
+    if (![self parseProfile:dict
+                    account:nil
+                      error:error])
+    {
+        return nil;
+    }
+    
+    return dict;
+}
+
+-(NSDictionary*)retrieveProfileWithAccount:(XboxLiveAccount*)account
+                                     error:(NSError**)error
 {
     NSMutableDictionary *dict = [[[NSMutableDictionary alloc] init] autorelease];
     
     // Try restoring the session
     
-    if (![self restoreSessionForEmailAddress:emailAddress])
+    if (![self restoreSessionForAccount:account])
     {
         // Session couldn't be restored. Try re-authenticating
         
-        if (![self authenticate:emailAddress
-                   withPassword:password
-                          error:error])
+        if (![self authenticateAccount:account
+                                 error:error])
         {
             return nil;
         }
     }
     
-    if (![self parseSynchronizeProfile:dict
-                          emailAddress:emailAddress
-                              password:password
-                                 error:NULL])
+    if (![self parseProfile:dict
+                    account:account
+                      error:NULL])
     {
         // Account parsing failed. Try re-authenticating
         
-        if (![self authenticate:emailAddress
-                   withPassword:password
-                          error:error])
+        if (![self authenticateAccount:account
+                                 error:error])
         {
             return nil;
         }
         
-        if (![self parseSynchronizeProfile:dict
-                              emailAddress:emailAddress
-                                  password:password
-                                     error:error])
+        if (![self parseProfile:dict
+                        account:account
+                          error:error])
         {
             return nil;
         }
     }
     
-    [self saveSessionForEmailAddress:emailAddress];
+    [self saveSessionForAccount:account];
     
     return dict;
 }
@@ -3301,10 +3311,9 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return message;
 }
 
--(BOOL)parseSynchronizeProfile:(NSMutableDictionary*)profile
-                  emailAddress:(NSString*)emailAddress
-                      password:(NSString*)password
-                         error:(NSError**)error
+-(BOOL)parseProfile:(NSMutableDictionary*)profile
+            account:(XboxLiveAccount*)account
+              error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -3442,7 +3451,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         }
     }
     
-    NSLog(@"parseSynchronizeProfile: %.04f", 
+    NSLog(@"parseProfile: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
@@ -3522,25 +3531,27 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 
 -(BOOL)restoreSessionForAccount:(XboxLiveAccount*)account
 {
-    return [self restoreSessionForEmailAddress:account.emailAddress];
-}
-
--(BOOL)restoreSessionForEmailAddress:(NSString*)emailAddress
-{
-    NSLog(@"Restoring session for %@...", emailAddress);
+    NSLog(@"Restoring session for %@...", account.emailAddress);
     
     [self clearAllSessions];
     
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSString *cookieKey = [NSString stringWithFormat:@"Cookies:%@", emailAddress];
+    NSString *cookieKey = [NSString stringWithFormat:@"%@.Cookies", 
+                           account.uuid];
     NSData *data = [[NSUserDefaults standardUserDefaults] objectForKey:cookieKey];
     
     if (!data || [data length] <= 0)
+    {
+        NSLog(@"! restoreSession: No data or data empty; restore failed");
         return NO;
+    }
     
     NSArray *cookies = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     if (!cookies)
+    {
+        NSLog(@"! restoreSession: Cookie data unarchival error; restore failed");
         return NO;
+    }
     
     for (NSHTTPCookie *cookie in cookies)
         [cookieStorage setCookie:cookie];
@@ -3550,15 +3561,11 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 
 -(void)saveSessionForAccount:(XboxLiveAccount*)account
 {
-    [self saveSessionForEmailAddress:account.emailAddress];
-}
-
--(void)saveSessionForEmailAddress:(NSString*)emailAddress
-{
-    NSLog(@"Saving session for %@...", emailAddress);
+    NSLog(@"Saving session for %@...", account.emailAddress);
     
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    NSString *cookieKey = [NSString stringWithFormat:@"CookiesFor", emailAddress];
+    NSString *cookieKey = [NSString stringWithFormat:@"%@.Cookies", 
+                           account.uuid];
     NSArray *cookies = [cookieStorage cookies];
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     
@@ -3593,9 +3600,14 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 -(BOOL)authenticateAccount:(XboxLiveAccount *)account
                      error:(NSError **)error
 {
-    return [self authenticate:account.emailAddress
-                 withPassword:account.password
-                        error:error];
+    BOOL loginOk = [self authenticate:account.emailAddress
+                         withPassword:account.password
+                                error:error];
+    
+    if (loginOk)
+        [self saveSessionForAccount:account];
+    
+    return loginOk;
 }
 
 -(BOOL)authenticate:(NSString*)emailAddress
@@ -3709,16 +3721,14 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         return NO;
     }
     
-    [self saveSessionForEmailAddress:emailAddress];
-    
     return YES;
 }
 
 #pragma mark - write*Data
 
--(BOOL)synchronizeProfileWithAccount:(XboxLiveAccount*)account
-                 withRetrievedObject:(NSDictionary*)dict
-                               error:(NSError**)error
+-(BOOL)writeProfileOfAccount:(XboxLiveAccount*)account
+         withRetrievedObject:(NSDictionary*)dict
+                       error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -3795,9 +3805,9 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 {
     NSError *error = nil;
     
-    [self synchronizeProfileWithAccount:[args objectForKey:@"account"]
-                    withRetrievedObject:[args objectForKey:@"data"]
-                                  error:&error];
+    [self writeProfileOfAccount:[args objectForKey:@"account"]
+            withRetrievedObject:[args objectForKey:@"data"]
+                          error:&error];
     
     self.lastError = error;
 }

@@ -365,7 +365,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 -(void)viewGames:(id)sender
 {
     GameListController *ctlr = [[GameListController alloc] initWithAccount:self.account];
-    
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
 }
@@ -373,7 +372,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 -(void)viewMessages:(id)sender
 {
     MessageListController *ctlr = [[MessageListController alloc] initWithAccount:self.account];
-    
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
 }
@@ -470,15 +468,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)refreshProfile:(BOOL)forceRefresh
 {
-    // WHY ARE CONSECUTIVE TASKS FAILING? 
-    // POSSIBLY BECAUSE OF THE RAPID RE-AUTHS
     if (forceRefresh || [self.account isProfileStale])
     {
         [[TaskController sharedInstance] synchronizeProfileForAccount:self.account
                                                  managedObjectContext:managedObjectContext];
     }
     
-    /*
     if (forceRefresh || [self.account areFriendsStale])
     {
         [[TaskController sharedInstance] synchronizeFriendsForAccount:self.account
@@ -490,7 +485,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [[TaskController sharedInstance] synchronizeMessagesForAccount:self.account
                                                   managedObjectContext:managedObjectContext];
     }
-     */
 }
 
 -(void)updateData

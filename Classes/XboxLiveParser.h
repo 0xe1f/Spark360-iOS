@@ -32,18 +32,13 @@ typedef enum _XboxLiveParserErrorType
        withPassword:(NSString*)password
               error:(NSError**)error;
 
-// Retrieve* are expected to be called from background threads, and have a
-// valid autorelease pool. They don't need a managed context
+// Used by the account creator/editor controllers
 -(NSDictionary*)retrieveProfileWithEmailAddress:(NSString*)emailAddress
                                        password:(NSString*)password
                                           error:(NSError**)error;
--(NSDictionary*)retrieveProfileWithAccount:(XboxLiveAccount*)account
-                                     error:(NSError**)error;
-
-// Synchronize* are expected to be called from the main thread
--(BOOL)synchronizeProfileWithAccount:(XboxLiveAccount*)account
-                 withRetrievedObject:(NSDictionary*)retrieved
-                               error:(NSError**)error;
+-(BOOL)writeProfileOfAccount:(XboxLiveAccount*)account
+         withRetrievedObject:(NSDictionary*)dict
+                       error:(NSError**)error;
 
 -(void)synchronizeProfile:(NSDictionary*)arguments;
 -(void)synchronizeAchievements:(NSDictionary*)arguments;

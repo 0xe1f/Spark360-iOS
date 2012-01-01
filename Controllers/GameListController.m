@@ -22,15 +22,13 @@
 
 @implementation GameListController
 
-@synthesize tvCell;
 @synthesize fetchedResultsController = __fetchedResultsController;
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
-    if (self = [super initWithNibName:@"GameListController" 
-                               bundle:nil])
+    if (self = [super initWithAccount:account
+                              nibName:@"GameListController"])
     {
-        self.account = account;
     }
     
     return self;
@@ -118,7 +116,7 @@
         [[NSBundle mainBundle] loadNibNamed:@"GameCell"
                                       owner:self
                                     options:nil];
-        cell = [self tvCell];
+        cell = [self tableViewCell];
     }
     
     [self configureCell:cell 

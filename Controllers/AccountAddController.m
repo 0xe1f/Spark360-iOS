@@ -42,9 +42,9 @@
     self.account.password = self.password;
     
     XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];
-    [parser synchronizeProfileWithAccount:self.account
-                      withRetrievedObject:profile
-                                    error:nil];
+    [parser writeProfileOfAccount:self.account
+              withRetrievedObject:profile
+                            error:nil];
     [parser release];
     
     // TODO: Error?

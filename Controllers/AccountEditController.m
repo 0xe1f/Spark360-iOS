@@ -255,8 +255,8 @@ replacementString:(NSString *)string
 
 -(void)validateFields 
 {
-    if ([account.emailAddress isEqualToString:usernameTextField.text]
-        && [account.password isEqualToString:passwordTextField.text]) 
+    if ([account.emailAddress isEqualToString:usernameTextField.text] &&
+        [account.password isEqualToString:passwordTextField.text]) 
     {
         // Nothing's changed
         [self.navigationController popToRootViewControllerAnimated:YES];
@@ -340,9 +340,9 @@ replacementString:(NSString *)string
     account.password = self.password;
     
     XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:context];
-    [parser synchronizeProfileWithAccount:account
-                      withRetrievedObject:profile
-                                    error:nil];
+    [parser writeProfileOfAccount:self.account
+              withRetrievedObject:profile
+                            error:nil];
     [parser release];
     
     [savingIndicator stopAnimating];

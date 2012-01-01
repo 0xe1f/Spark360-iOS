@@ -9,11 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-#import "GenericListController.h"
+#import "GenericTableViewController.h"
 
-@interface GameListController : GenericListController <NSFetchedResultsControllerDelegate>
-
-@property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
+@interface GameListController : GenericTableViewController <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
