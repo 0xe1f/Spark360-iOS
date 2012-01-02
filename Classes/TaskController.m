@@ -60,6 +60,7 @@ static TaskController *sharedInstance = nil;
     if (self = [super init]) 
     {
         opQueue = [[NSOperationQueue alloc] init];
+        [opQueue setMaxConcurrentOperationCount:1];
     }
     
     return self;
@@ -71,13 +72,13 @@ static TaskController *sharedInstance = nil;
 {
     if ([[opQueue operations] containsObject:op])
     {
-        NSLog(@"Will not add task %@ to queue - already in queue", op.identifier);
+        NSLog(@"! Task: %@ in queue", op.identifier);
         return;
     }
     
     [opQueue addOperation:op];
     
-    NSLog(@"Operation %@ added to queue", op.identifier);
+    NSLog(@"+ Task: %@", op.identifier);
 }
 
 -(BOOL)isOperationQueuedWithId:(NSString*)operationId

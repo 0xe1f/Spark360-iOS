@@ -66,10 +66,23 @@
 
 - (void) dealloc
 {
+	[_insertItems release];
+	[_deleteItems release];
+	[_reloadItems release];
+	[_moveItems release];
+	[_insertedIndices release];
+	[_deletedIndices release];
+	[_reloadedIndices release];
+	[_oldMovedIndices release];
+	[_newMovedIndices release];
+	[_oldGridData release];
+	[_newGridData release];
 	if ( _oldToNewIndexMap != NULL )
-		free( _oldToNewIndexMap );
+		NSZoneFree( [self zone], _oldToNewIndexMap );
 	if ( _newToOldIndexMap != NULL )
-		free( _newToOldIndexMap );
+		NSZoneFree( [self zone], _newToOldIndexMap );
+	[_onlyMovedIndices release];
+	[super dealloc];
 }
 
 - (NSMutableArray *) updateItemArrayForAction: (AQGridViewUpdateAction) action
@@ -107,6 +120,7 @@
 																		   action: action
 																		animation: animation];
 		[array addObject: item];
+		[item release];
 		
 		i = [indices indexGreaterThanIndex: i];
 	}
@@ -122,6 +136,7 @@
 																	animation: animation];
 	item.newIndex = newIndex;
 	[array addObject: item];
+	[item release];
 }
 
 - (NSUInteger) numberOfUpdates
@@ -176,7 +191,7 @@
 #else
 		NSUInteger count = _oldGridData.numberOfItems;
 #endif
-		_oldToNewIndexMap = malloc( count * sizeof(NSUInteger) );
+		_oldToNewIndexMap = NSZoneMalloc( [self zone], count * sizeof(NSUInteger) );
 #if GUARD_ITEMS
 		memset(_oldToNewIndexMap, 0x55, count * sizeof(NSUInteger));
 #endif
@@ -197,7 +212,7 @@
 #else
 		NSUInteger count = _newGridData.numberOfItems;
 #endif
-		_newToOldIndexMap = malloc( count * sizeof(NSUInteger) );
+		_newToOldIndexMap = NSZoneMalloc( [self zone], count * sizeof(NSUInteger) );
 #if GUARD_ITEMS
 		memset(_newToOldIndexMap, 0x55, count * sizeof(NSUInteger));
 #endif
@@ -343,6 +358,8 @@
 		}
 	}
 	
+	[oldToNewIndices release];
+	[newToOldIndices release];
 }
 
 - (void) cleanupUpdateItems
@@ -433,27 +450,27 @@
 
 - (NSArray *) sortedInsertItems
 {
-	return ( [_insertItems copy] );
+	return ( [[_insertItems copy] autorelease] );
 }
 
 - (NSArray *) sortedDeleteItems
 {
-	return ( [_deleteItems copy] );
+	return ( [[_deleteItems copy] autorelease] );
 }
 
 - (NSArray *) sortedMoveItems
 {
-	return ( [_moveItems copy] );
+	return ( [[_moveItems copy] autorelease] );
 }
 
 - (NSArray *) sortedReloadItems
 {
-	return ( [_reloadItems copy] );
+	return ( [[_reloadItems copy] autorelease] );
 }
 
 - (AQGridViewData *) newGridViewData
 {
-	return ( _newGridData );
+	return ( [[_newGridData retain] autorelease] );
 }
 
 - (NSUInteger) numberOfItemsAfterUpdates
@@ -470,7 +487,7 @@
 	
 	UIGraphicsEndImageContext();
 	
-	return ( result );
+	return ( [result autorelease] );
 }
 
 - (UIImageView *) animateDeletionForCell: (AQGridViewCell *) cell withAnimation: (AQGridViewItemAnimation) animation
@@ -618,6 +635,7 @@
 	{
 		[cell setValue: [itemsToSetBeforeAnimation objectForKey: keyPath] forKey: keyPath];
 	}
+	[itemsToSetBeforeAnimation release];
 	[UIView setAnimationsEnabled: YES];
 	
 	for ( NSString * keyPath in itemsToAnimate )
@@ -625,6 +643,7 @@
 		[cell setValue: [itemsToAnimate objectForKey: keyPath] forKey: keyPath];
 	}
     
+    [itemsToAnimate release];
 }
 
 - (void) animateReloadForCell: (AQGridViewCell *) newCell originalCell: (AQGridViewCell *) originalCell withAnimation: (AQGridViewItemAnimation) animation
@@ -754,7 +773,7 @@
 	{
 		// only store real cells here
 		if ( [item.animatingView isKindOfClass: [AQGridViewCell class]] )
-			CFDictionaryAddValue( animatingCellTable, (void *)item.index, objc_unretainedPointer(item) );
+			CFDictionaryAddValue( animatingCellTable, (void *)item.index, item );
 	}
 	
 	// a set of the indices (in old grid data) for all currently-known cells which are now or will become visible
@@ -768,12 +787,13 @@
     
     NSMutableIndexSet * movingSet = [[NSMutableIndexSet alloc] initWithIndexSet: oldVisibleIndices];
     [movingSet addIndexes: oldIndicesOfAllVisibleCells];
+    [oldIndicesOfAllVisibleCells release];
 	
 	// most items were just moved from one location to another
 	for ( NSUInteger oldIndex = [movingSet firstIndex]; oldIndex != NSNotFound; oldIndex = [movingSet indexGreaterThanIndex: oldIndex] )
 	{
 		NSUInteger newIndex = _oldToNewIndexMap[oldIndex];
-		AQGridViewAnimatorItem * animatingItem = (AQGridViewAnimatorItem *)objc_unretainedObject(CFDictionaryGetValue( animatingCellTable, (void *)oldIndex ));
+		AQGridViewAnimatorItem * animatingItem = (AQGridViewAnimatorItem *)CFDictionaryGetValue( animatingCellTable, (void *)oldIndex );
 		
 		AQGridViewCell * cell = (AQGridViewCell *)animatingItem.animatingView;
 		if ( cell == nil )
@@ -823,6 +843,7 @@
 		[_gridView delegateWillDisplayCell: cell atIndex: newIndex];
 	}
 	
+	[movingSet release];
 	
 	// delete old items first
 	if ( _deleteItems.count != 0 )
@@ -832,7 +853,7 @@
 		{
 			if ( [oldVisibleIndices containsIndex: item.originalIndex] )
 			{
-				AQGridViewAnimatorItem * animatingItem = (AQGridViewAnimatorItem *)objc_unretainedObject(CFDictionaryGetValue( animatingCellTable, (void *)item.originalIndex ));
+				AQGridViewAnimatorItem * animatingItem = (AQGridViewAnimatorItem *)CFDictionaryGetValue( animatingCellTable, (void *)item.originalIndex );
 				
 				AQGridViewCell * deletingCell = (AQGridViewCell *)animatingItem.animatingView;
 				if ( deletingCell == nil )
@@ -877,7 +898,7 @@
 		if ( [newVisibleIndices containsIndex: item.index] == NO )
 			continue;
 		
-		AQGridViewAnimatorItem * animatingItem = (AQGridViewAnimatorItem *)objc_unretainedObject(CFDictionaryGetValue( animatingCellTable, (void *)item.originalIndex ));
+		AQGridViewAnimatorItem * animatingItem = (AQGridViewAnimatorItem *)CFDictionaryGetValue( animatingCellTable, (void *)item.originalIndex );
 		
 		AQGridViewCell * origCell = (AQGridViewCell *)animatingItem.animatingView;
 		if ( origCell == nil )
@@ -909,7 +930,7 @@
 	
 	CFRelease( animatingCellTable );
 	
-	return ( newVisibleCells );
+	return ( [newVisibleCells autorelease] );
 }
 
 @end

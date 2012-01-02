@@ -4885,7 +4885,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     NSString *httpBody = nil;
     NSURL *url = [NSURL URLWithString:requestUrl];
     
-    NSLog(@"Fetching %@ ...", requestUrl);
+    NSLog(@"< Parser: %@", requestUrl);
     
     if (fields)
     {

@@ -32,8 +32,6 @@
 
 -(void)dealloc
 {
-    _refreshHeaderView = nil;
-    
     [super dealloc];
 }
 
@@ -43,10 +41,9 @@
 {
     [super viewDidLoad];
     
-	if (_refreshHeaderView == nil) 
+	if (!_refreshHeaderView) 
     {
-        CGRect rect = CGRectMake(0.0f, 
-                                 0.0f - _tableView.bounds.size.height, 
+        CGRect rect = CGRectMake(0.0f, 0.0f - _tableView.bounds.size.height, 
                                  self.view.frame.size.width, 
                                  _tableView.bounds.size.height);
 		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc] initWithFrame:rect];
@@ -55,6 +52,13 @@
 		_refreshHeaderView = view;
 		[view release];
 	}
+}
+
+-(void)viewDidUnload
+{
+    [super viewDidUnload];
+    
+    _refreshHeaderView = nil;
 }
 
 #pragma mark - UIScrollViewDelegate Methods

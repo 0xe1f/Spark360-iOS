@@ -1,4 +1,4 @@
-! Refresh fails in overview when accounts are switched back & forth
+! ImageCache'r considerably slows list scrolling. Improve performance
 ! Uninstalling, then installing the app results in the keychain thing crashing
 ! Icons missing for game details bar icon (list, compare)
 ! Clicking on profiles in Account selection creates new Account instances each

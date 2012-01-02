@@ -96,8 +96,20 @@
 
 - (void) dealloc
 {
+	[_reuseIdentifier release];
+	[_contentView release];
+	[_backgroundView release];
+	[_selectedBackgroundView release];
+	[_selectedOverlayView release];
+	[_backgroundColor release];
+	[_separatorColor release];
+	[_selectionGlowColor release];
+	[_bottomSeparatorView release];
+	[_rightSeparatorView release];
 	if ( _selectionColorInfo != NULL )
 		CFRelease( _selectionColorInfo );
+	[_fadeTimer release];
+	[super dealloc];
 }
 
 - (NSComparisonResult) compareOriginAgainstCell: (AQGridViewCell *) otherCell
@@ -196,11 +208,11 @@
 	{
 		if ( view.opaque )
 		{
-			NSMutableDictionary * info = (NSMutableDictionary *) objc_unretainedObject(CFDictionaryGetValue( _selectionColorInfo, objc_unretainedPointer(view) ));
+			NSMutableDictionary * info = (NSMutableDictionary *) CFDictionaryGetValue( _selectionColorInfo, view );
 			if ( info == nil )
 			{
 				info = [NSMutableDictionary dictionaryWithCapacity: 2];
-				CFDictionarySetValue( _selectionColorInfo, objc_unretainedPointer(view), objc_unretainedPointer(info) );
+				CFDictionarySetValue( _selectionColorInfo, view, info );
 			}
 			
 			id value = view.backgroundColor;
@@ -220,7 +232,7 @@
 {
 	for ( UIView * view in aView.subviews )
 	{
-		NSMutableDictionary * info = (NSMutableDictionary *) objc_unretainedObject(CFDictionaryGetValue( _selectionColorInfo, objc_unretainedPointer(view) ));
+		NSMutableDictionary * info = (NSMutableDictionary *) CFDictionaryGetValue( _selectionColorInfo, view );
 		if ( info != nil )
 		{
 			id value = [info objectForKey: @"backgroundColor"];
@@ -245,11 +257,11 @@
 	{
 		if ( [view respondsToSelector: @selector(setHighlighted:)] )
 		{
-			NSMutableDictionary * info = (NSMutableDictionary *) objc_unretainedObject(CFDictionaryGetValue( _selectionColorInfo, objc_unretainedPointer(view) ));
+			NSMutableDictionary * info = (NSMutableDictionary *) CFDictionaryGetValue( _selectionColorInfo, view );
 			if ( info == nil )
 			{
 				info = [NSMutableDictionary dictionaryWithCapacity: 2];
-				CFDictionarySetValue( _selectionColorInfo, objc_unretainedPointer(view), objc_unretainedPointer(info) );
+				CFDictionarySetValue( _selectionColorInfo, view, info );
 			}
 			
 			// don't overwrite any prior cache of a view's original highlighted state.
@@ -275,7 +287,7 @@
 	for ( UIView * view in aView.subviews )
 	{
 		if ([view respondsToSelector:@selector(setHighlighted:)]) {
-			NSMutableDictionary * info = (NSMutableDictionary *) objc_unretainedObject(CFDictionaryGetValue( _selectionColorInfo, objc_unretainedPointer(view) ));
+			NSMutableDictionary * info = (NSMutableDictionary *) CFDictionaryGetValue( _selectionColorInfo, view );
 			if ( info != nil )
 			{
 				id value = [info objectForKey: @"highlighted"];
@@ -382,6 +394,7 @@
 		if ( _fadeTimer != nil )
 		{
 			[_fadeTimer invalidate];
+			[_fadeTimer release];
 		}
 		
 		_fadeTimer = [[NSTimer alloc] initWithFireDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]
@@ -516,7 +529,8 @@
 	if ( _backgroundView.superview == self )
 		[_backgroundView removeFromSuperview];
 	
-	_backgroundView = aView;
+	[_backgroundView release];
+	_backgroundView = [aView retain];
 	
 	_backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 	
@@ -558,6 +572,7 @@
 		else if ( _bottomSeparatorView != nil )
 		{
 			[_bottomSeparatorView removeFromSuperview];
+			[_bottomSeparatorView release];
 			_bottomSeparatorView = nil;
 		}
 		
@@ -577,6 +592,7 @@
 		else if ( _rightSeparatorView != nil )
 		{
 			[_rightSeparatorView removeFromSuperview];
+			[_rightSeparatorView release];
 			_rightSeparatorView = nil;
 		}
 	}
@@ -588,6 +604,8 @@
 
 - (void) setSelectionGlowColor: (UIColor *) aColor
 {
+	[aColor retain];
+	[_selectionGlowColor release];
 	_selectionGlowColor = aColor;
 	
 	_cellFlags.selectionGlowColorSet = (aColor == nil ? 0 : 1);
@@ -601,7 +619,8 @@
 	if ( _selectedBackgroundView.superview == self )
 		[_selectedBackgroundView removeFromSuperview];
 	
-	_selectedBackgroundView = aView;
+	[_selectedBackgroundView release];
+	_selectedBackgroundView = [aView retain];
 	
 	_selectedBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 	
@@ -646,7 +665,7 @@
 
 - (UIColor *) separatorColor
 {
-	return ( _separatorColor );
+	return ( [[_separatorColor retain] autorelease] );
 }
 
 - (void) setSeparatorColor: (UIColor *) color
@@ -654,7 +673,8 @@
 	if ( _separatorColor == color )
 		return;
 	
-	_separatorColor = color;
+	[_separatorColor release];
+	_separatorColor = [color retain];
 	
 	_bottomSeparatorView.backgroundColor = _separatorColor;
 	_rightSeparatorView.backgroundColor = _separatorColor;

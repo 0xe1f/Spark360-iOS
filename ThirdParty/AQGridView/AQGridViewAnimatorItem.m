@@ -17,9 +17,14 @@
 	AQGridViewAnimatorItem * result = [[self alloc] init];
 	result.animatingView = aView;
 	result.index = anIndex;
-	return ( result );
+	return ( [result autorelease] );
 }
 
+- (void) dealloc
+{
+	self.animatingView = nil;
+	[super dealloc];
+}
 
 - (NSUInteger) hash
 {
@@ -38,9 +43,9 @@
 {
 	if ( [obj isKindOfClass: [self class]] == NO )
 	{
-		if ( (void *)objc_unretainedPointer(self) < (void *)objc_unretainedPointer(obj) )
+		if ( (void *)self < (void *)obj )
 			return ( NSOrderedAscending );
-		if ( (void *)objc_unretainedPointer(self) > (void *)objc_unretainedPointer(obj) )
+		if ( (void *)self > (void *)obj )
 			return ( NSOrderedDescending );
 		return ( NSOrderedSame );			// how ??!?!?
 	}

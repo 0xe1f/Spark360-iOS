@@ -30,10 +30,9 @@
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
-    if (self = [super initWithNibName:@"MessageListController" 
-                               bundle:nil])
+    if (self = [super initWithAccount:account 
+                              nibName:@"MessageListController"])
     {
-        self.account = account;
     }
     
     return self;
@@ -41,8 +40,6 @@
 
 -(void)dealloc
 {
-    self.fetchedResultsController = nil;
-    
     [super dealloc];
 }
 
@@ -87,6 +84,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:BACHMessagesSynced
                                                   object:nil];
+    
+    self.fetchedResultsController = nil;
 }
 
 #pragma mark - EGORefreshTableHeaderDelegate Methods
