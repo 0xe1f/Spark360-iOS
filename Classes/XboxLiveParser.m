@@ -2560,7 +2560,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
             continue;
         
         NSDictionary *beaconObj;
-        if (!(beaconObj = [activity objectForKey:@"beacon"]))
+        if ([(beaconObj = [activity objectForKey:@"beacon"]) isKindOfClass:[NSNull class]])
             continue;
         
         NSString *message;
@@ -4451,7 +4451,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
             NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriendBeacon"
                                                                  inManagedObjectContext:self.context];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"friend.uid == %@ AND friend.profile.uuid", 
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"friend.uid == %@ AND friend.profile.uuid == %@", 
                                       uid, account.uuid];
             NSFetchRequest *request = [[NSFetchRequest alloc] init];
             
