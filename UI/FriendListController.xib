@@ -81,7 +81,7 @@
 							<object class="IBUIBarButtonItem" id="769003119">
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIToolbar" ref="865266878"/>
-								<int key="IBUISystemItemIdentifier">4</int>
+								<int key="IBUISystemItemIdentifier">12</int>
 							</object>
 							<object class="IBUIBarButtonItem" id="152139526">
 								<object class="NSCustomResource" key="IBUIImage">

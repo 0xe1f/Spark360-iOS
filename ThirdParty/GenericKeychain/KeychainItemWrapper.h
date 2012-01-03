@@ -60,6 +60,9 @@
     NSMutableDictionary *genericPasswordQuery;	// A placeholder for the generic keychain item query used to locate the item.
 }
 
+@property (nonatomic, retain) NSString *serviceName;
+@property (nonatomic, retain) NSString *identifier;
+
 @property (nonatomic, retain) NSMutableDictionary *keychainItemData;
 @property (nonatomic, retain) NSMutableDictionary *genericPasswordQuery;
 

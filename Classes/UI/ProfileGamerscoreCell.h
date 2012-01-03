@@ -12,6 +12,9 @@
 
 @interface ProfileGamerscoreCell : ProfileInfoCell
 
+@property (nonatomic, assign) IBOutlet UIImageView *icon;
+
 -(void)setGamerscore:(NSNumber*)score;
+-(void)setMsp:(NSNumber *)points;
 
 @end

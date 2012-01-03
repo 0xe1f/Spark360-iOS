@@ -90,6 +90,8 @@ Keychain API expects as a validly constructed container class.
 @implementation KeychainItemWrapper
 
 @synthesize keychainItemData, genericPasswordQuery;
+@synthesize serviceName = _serviceName;
+@synthesize identifier = _identifier;
 
 - (id)initWithIdentifier:(NSString*)identifier 
              serviceName:(NSString*)serviceName
@@ -97,6 +99,9 @@ Keychain API expects as a validly constructed container class.
 {
     if (self = [super init])
     {
+        self.serviceName = serviceName;
+        self.identifier = identifier;
+        
         // Begin Keychain search setup. The genericPasswordQuery leverages the special user
         // defined attribute kSecAttrGeneric to distinguish itself between other generic Keychain
         // items which may be included by the same application.
@@ -173,6 +178,9 @@ Keychain API expects as a validly constructed container class.
 {
     [keychainItemData release];
     [genericPasswordQuery release];
+    
+    self.serviceName = nil;
+    self.identifier = nil;
     
 	[super dealloc];
 }
@@ -306,13 +314,32 @@ Keychain API expects as a validly constructed container class.
         // An implicit assumption is that you can only update a single item at a time.
 		
         result = SecItemUpdate((CFDictionaryRef)updateItem, (CFDictionaryRef)tempCheck);
-		NSAssert( result == noErr, @"Couldn't update the Keychain Item." );
+		//NSAssert( result == noErr, @"Couldn't update the Keychain Item." );
+        NSLog(@"SecItemUpdate returned status %ld", result);
     }
     else
     {
+        // Before adding the new item, make sure we don't have the same address 
+        // with a different account identifier
+        
+        NSString *account;
+        if ((account = [keychainItemData objectForKey:kSecAttrAccount]))
+        {
+            NSMutableDictionary *searchData = [[NSMutableDictionary alloc] init];
+            [searchData setObject:(id)kSecClassGenericPassword forKey:(id)kSecClass];
+            [searchData setObject:self.serviceName forKey:(id)kSecAttrService];
+            [searchData setObject:account forKey:(id)kSecAttrAccount];
+            
+            result = SecItemDelete((CFDictionaryRef)searchData);
+            [searchData release];
+            
+            NSLog(@"Tried to delete possibly existing account '%@' with status %ld", account, result);
+        }
+        
         // No previous item found; add the new one.
         result = SecItemAdd((CFDictionaryRef)[self dictionaryToSecItemFormat:keychainItemData], NULL);
 		//NSAssert( result == noErr, @"Couldn't add the Keychain Item." );
+        NSLog(@"SecItemAdd returned status %ld", result);
     }
 }
 

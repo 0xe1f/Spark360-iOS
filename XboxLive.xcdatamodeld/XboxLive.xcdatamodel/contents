@@ -38,6 +38,13 @@
         <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="profile" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxProfile" syncable="YES"/>
     </entity>
+    <entity name="XboxFriendBeacon" syncable="YES">
+        <attribute name="gameBoxArtUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gameName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gameUid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="friend" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxFriend" syncable="YES"/>
+    </entity>
     <entity name="XboxGame" syncable="YES">
         <attribute name="achievesDirty" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="achievesTotal" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -95,5 +102,6 @@
         <element name="XboxGame" positionX="-162" positionY="201" width="128" height="240"/>
         <element name="XboxMessage" positionX="160" positionY="192" width="128" height="255"/>
         <element name="XboxProfile" positionX="160" positionY="192" width="128" height="315"/>
+        <element name="XboxFriendBeacon" positionX="160" positionY="192" width="128" height="120"/>
     </elements>
 </model>

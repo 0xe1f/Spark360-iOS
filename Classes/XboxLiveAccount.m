@@ -173,8 +173,8 @@ NSString * const CookiesKey = @"Cookies";
                 KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:self.uuid
                                                                                         serviceName:KeychainPassword
                                                                                         accessGroup:nil];
-                [keychainItem setObject:self.password forKey:kSecValueData];
                 [keychainItem setObject:self.emailAddress forKey:kSecAttrAccount];
+                [keychainItem setObject:self.password forKey:kSecValueData];
                 [keychainItem release];
             }
             

@@ -47,7 +47,7 @@
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
     if (self = [super initWithAccount:account
-                              nibName:@"ProfileOverview"])
+                              nibName:@"ProfileOverviewController"])
     {
         self.profile = nil;
         
@@ -56,6 +56,8 @@
                                @"rep",
                                @"name",
                                @"location",
+                               @"pointsBalance",
+                               @"accountType",
                                @"bio",
                                nil] retain];
         
@@ -64,6 +66,8 @@
                               NSLocalizedString(@"InfoRep", nil),
                               NSLocalizedString(@"InfoName", nil),
                               NSLocalizedString(@"InfoLocation", nil), 
+                              NSLocalizedString(@"InfoMsp", nil), 
+                              NSLocalizedString(@"InfoMemberType", nil), 
                               NSLocalizedString(@"InfoBio", nil), 
                               nil] retain];
     }
@@ -228,6 +232,32 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             
             pCell = gsCell;
         }
+        else if ([column isEqualToString:@"pointsBalance"])
+        {
+            ProfileGamerscoreCell *gsCell = (ProfileGamerscoreCell*)[self.tableView dequeueReusableCellWithIdentifier:@"gamerscoreCell"];
+            
+            if (!gsCell)
+            {
+                UINib *cellNib = [UINib nibWithNibName:@"ProfileGamerscoreCell" 
+                                                bundle:nil];
+                
+                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                                 options:nil];
+                
+                for (id object in topLevelObjects)
+                {
+                    if ([object isKindOfClass:[UITableViewCell class]])
+                    {
+                        gsCell = (ProfileGamerscoreCell*)object;
+                        break;
+                    }
+                }
+            }
+            
+            [gsCell setMsp:[self.profile objectForKey:column]];
+            
+            pCell = gsCell;
+        }
         else if ([column isEqualToString:@"rep"])
         {
             ProfileRatingCell *starCell = (ProfileRatingCell*)[self.tableView dequeueReusableCellWithIdentifier:@"ratingCell"];
@@ -362,6 +392,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self refreshProfile:YES];
 }
 
+- (void)viewLiveStatus:(id)sender
+{
+    XboxLiveStatusController *ctlr = [[XboxLiveStatusController alloc] initWithAccount:self.account];
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
+}
+
 -(void)viewGames:(id)sender
 {
     GameListController *ctlr = [[GameListController alloc] initWithAccount:self.account];
@@ -379,13 +416,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 -(void)viewFriends:(id)sender
 {
     FriendListController *ctlr = [[FriendListController alloc] initWithAccount:self.account];
-    [self.navigationController pushViewController:ctlr animated:YES];
-    [ctlr release];
-}
-
-- (void)viewLiveStatus:(id)sender
-{
-    XboxLiveStatusController *ctlr = [[XboxLiveStatusController alloc] initWithAccount:self.account];
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
 }
@@ -515,8 +545,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         
         for (NSString *column in statSectionColumns)
         {
-            [self.profile setObject:[profile valueForKey:column] 
-                             forKey:column];
+            id value;
+            if ((value = [profile valueForKey:column]))
+                [self.profile setObject:value forKey:column];
         }
     }
     

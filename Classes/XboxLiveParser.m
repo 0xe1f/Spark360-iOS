@@ -117,12 +117,17 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSDictionary*)parseSyncMessageWithUid:(NSString*)uid
                              forAccount:(XboxLiveAccount*)account
                                   error:(NSError**)error;
+-(NSArray*)parseLoadBeaconsForScreenName:(NSString*)screenName
+                                 account:(XboxLiveAccount*)account
+                       verificationToken:(NSString*)token
+                                   error:(NSError**)error;
 
 +(NSError*)errorWithCode:(NSInteger)code
                  message:(NSString*)message;
 +(NSError*)errorWithCode:(NSInteger)code
          localizationKey:(NSString*)key;
 
+-(NSString*)tokenFromContents:(NSString*)pageContents;
 -(NSString*)obtainTokenFrom:(NSString*)url;
 -(NSString*)obtainTokenFrom:(NSString*)url
                   parameter:(NSString*)param;
@@ -238,6 +243,7 @@ NSString* const URL_JSON_FRIEND_REQUEST = @"http://live.xbox.com/%@/Friends/%@";
 NSString* const URL_JSON_COMPARE_GAMES = @"http://live.xbox.com/%@/Activity/Summary?CompareTo=%@";
 NSString* const URL_JSON_RECENT_LIST = @"http://live.xbox.com/%@/Friends/Recent";
 NSString* const URL_JSON_FOF_LIST = @"http://live.xbox.com/%@/Friends/List";
+NSString* const URL_JSON_BEACONS = @"http://live.xbox.com/%@/Beacons/JumpInList";
 
 NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Delete";
 
@@ -2498,10 +2504,83 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         [friend setObject:[XboxLiveParser getStarRatingFromPage:text] forKey:@"rep"];
     }
     
+    NSString *vtoken = [self tokenFromContents:friendProfilePage];
+    if (vtoken)
+    {
+        NSArray *beacons = [self parseLoadBeaconsForScreenName:uid
+                                                       account:account
+                                             verificationToken:vtoken
+                                                         error:nil];
+        
+        if (beacons)
+            [friend setObject:beacons forKey:@"beacons"];
+    }
+    
     NSLog(@"parseFriendProfile: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
     return friend;
+}
+
+-(NSArray*)parseLoadBeaconsForScreenName:(NSString*)screenName
+                                 account:(XboxLiveAccount*)account
+                       verificationToken:(NSString*)token
+                                   error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *url = [NSString stringWithFormat:URL_JSON_BEACONS, LOCALE];
+    
+    NSMutableDictionary *inputs = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
+    [inputs setObject:token forKey:@"__RequestVerificationToken"];
+    
+    if (screenName)
+        [inputs setObject:screenName forKey:@"gamertag"];
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return NO;
+    
+    NSArray *data = [XboxLiveParser jsonDataObjectFromPage:page
+                                                     error:error];
+    
+    if (!data)
+        return nil;
+    
+    NSMutableArray *beacons = [[[NSMutableArray alloc] init] autorelease];
+    
+    for (NSDictionary *activity in data) 
+    {
+        NSNumber *gameUid;
+        if (!(gameUid = [activity objectForKey:@"titleId"]))
+            continue;
+        
+        NSDictionary *beaconObj;
+        if (!(beaconObj = [activity objectForKey:@"beacon"]))
+            continue;
+        
+        NSString *message;
+        if (!(message = [beaconObj objectForKey:@"text"]))
+            message = @"";
+        
+        NSDictionary *beacon = [NSDictionary dictionaryWithObjectsAndKeys:
+                                [gameUid stringValue], @"gameUid", 
+                                [activity objectForKey:@"titleName"], @"gameName",
+                                [self getBoxArtForTitleId:gameUid largeBoxArt:NO], @"gameBoxArtUrl",
+                                message, @"message",
+                                nil];
+        
+        [beacons addObject:beacon];
+    }
+    
+    NSLog(@"parseLoadBeaconsForScreenName: %.04f", 
+          CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return beacons;
 }
 
 -(NSDictionary*)parseProfileWithScreenName:(NSString*)screenName
@@ -4363,6 +4442,46 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         [friend setValue:[NSDate date] forKey:@"lastUpdated"];
         [friend setValue:[NSDate date] forKey:@"profileLastUpdated"];
         
+        NSArray *inBeacons = [data objectForKey:@"beacons"];
+        
+        if (inBeacons)
+        {
+            // Update the beacons
+            
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriendBeacon"
+                                                                 inManagedObjectContext:self.context];
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"friend.uid == %@ AND friend.profile.uuid", 
+                                      uid, account.uuid];
+            NSFetchRequest *request = [[NSFetchRequest alloc] init];
+            
+            [request setEntity:entityDescription];
+            [request setPredicate:predicate];
+            
+            NSArray *matchingBeacons = [self.context executeFetchRequest:request 
+                                                                   error:nil];
+            
+            [request release];
+            
+            // Remove existing beacons
+            
+            for (NSManagedObject *obj in matchingBeacons)
+                [self.context deleteObject:obj];
+            
+            NSManagedObject *beacon;
+            for (NSDictionary *inBeacon in inBeacons)
+            {
+                beacon = [NSEntityDescription insertNewObjectForEntityForName:@"XboxFriendBeacon"
+                                                       inManagedObjectContext:self.context];
+                
+                [beacon setValue:friend forKey:@"friend"];
+                [beacon setValue:[inBeacon objectForKey:@"gameBoxArtUrl"] forKey:@"gameBoxArtUrl"];
+                [beacon setValue:[inBeacon objectForKey:@"gameName"] forKey:@"gameName"];
+                [beacon setValue:[inBeacon objectForKey:@"gameUid"] forKey:@"gameUid"];
+                [beacon setValue:[inBeacon objectForKey:@"message"] forKey:@"message"];
+            }
+        }
+        
         if (![self.context save:NULL])
         {
             self.lastError = [XboxLiveParser errorWithCode:XBLPCoreDataError
@@ -4679,6 +4798,9 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 +(NSMutableDictionary*)getInputs:(NSString*)response
                      namePattern:(NSRegularExpression*)namePattern
 {
+    if (!response)
+        return nil;
+    
     NSMutableDictionary *inputs = [[[NSMutableDictionary alloc] init] autorelease];
     
     NSError *error = nil;
@@ -4749,6 +4871,14 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return inputs;
 }
 
+-(NSString*)tokenFromContents:(NSString*)pageContents
+{
+    NSMutableDictionary *inputs = [XboxLiveParser getInputs:pageContents
+                                                namePattern:nil];
+    
+    return [inputs objectForKey:@"__RequestVerificationToken"];
+}
+
 -(NSString*)obtainTokenFrom:(NSString*)url
                   parameter:(NSString*)param
 {
@@ -4758,16 +4888,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                 useXhr:NO
                                  error:NULL];
     
-    if (!page)
-        return nil;
-    
-    NSMutableDictionary *inputs = [XboxLiveParser getInputs:page
-                                                namePattern:nil];
-    
-    if (!inputs)
-        return nil;
-    
-    return [inputs objectForKey:@"__RequestVerificationToken"];
+    return [self tokenFromContents:page];
 }
 
 -(NSString*)obtainTokenFrom:(NSString*)url
@@ -4777,16 +4898,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                 useXhr:NO
                                  error:NULL];
     
-    if (!page)
-        return nil;
-    
-    NSMutableDictionary *inputs = [XboxLiveParser getInputs:page
-                                                namePattern:nil];
-    
-    if (!inputs)
-        return nil;
-    
-    return [inputs objectForKey:@"__RequestVerificationToken"];
+    return [self tokenFromContents:page];
 }
 
 -(NSString*)parseObtainNewToken

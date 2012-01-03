@@ -26,5 +26,7 @@
 - (IBAction)viewFriends:(id)sender;
 
 -(IBAction)refresh:(id)sender;
+-(IBAction)viewLiveStatus:(id)sender;
+//-(IBAction)about:(id)sender;
 
 @end

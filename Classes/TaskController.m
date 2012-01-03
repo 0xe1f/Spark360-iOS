@@ -17,6 +17,7 @@ NSString* const BACHAchievementsSynced = @"BachAchievementsSynced";
 NSString* const BACHMessagesSynced = @"BachMessagesSynced";
 NSString* const BACHFriendsSynced = @"BachFriendsSynced";
 NSString* const BACHFriendProfileSynced = @"BachFriendProfileSynced";
+NSString* const BACHBeaconsSynced = @"BachBeaconsSynced";
 
 NSString* const BACHProfileLoaded = @"BachProfileLoaded";
 NSString* const BACHFriendsChanged = @"BachFriendsChanged";

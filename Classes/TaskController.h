@@ -15,6 +15,7 @@ extern NSString* const BACHAchievementsSynced;
 extern NSString* const BACHMessagesSynced;
 extern NSString* const BACHFriendsSynced;
 extern NSString* const BACHFriendProfileSynced;
+extern NSString* const BACHBeaconsSynced;
 extern NSString* const BACHProfileLoaded;
 extern NSString* const BACHFriendsChanged;
 extern NSString* const BACHGamesCompared;

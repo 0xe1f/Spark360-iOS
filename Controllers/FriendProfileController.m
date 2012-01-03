@@ -21,6 +21,7 @@
 #import "ProfileRatingCell.h"
 #import "ProfileLargeTextCell.h"
 #import "ProfileStatusCell.h"
+#import "ProfileGamertagCell.h"
 
 #define OK_BUTTON_INDEX 1
 
@@ -30,26 +31,24 @@
 
 @interface FriendProfileController (Private) 
 
--(void)updateFriendStats;
+-(BOOL)updateData;
 -(void)syncCompleted:(NSNotification *)notification;
 
 @end
 
 @implementation FriendProfileController
+{
+    NSArray *statSectionColumns;
+    NSArray *statSectionLabels;
+    NSInteger profileStatus;
+}
 
 @synthesize tableView;
-@synthesize toolbar;
 
 @synthesize composeButton;
 
-@synthesize friendUid;
-@synthesize friendScreenName;
-@synthesize isStale;
-@synthesize friendStatus;
-
-@synthesize properties = _properties;
-@synthesize propertyKeys = _propertyKeys;
-@synthesize propertyTitles = _propertyTitles;
+@synthesize profile = _profile;
+@synthesize profileScreenName = _profileScreenName;
 
 -(id)initWithFriendUid:(NSString*)uid
                account:(XboxLiveAccount*)account
@@ -57,28 +56,24 @@
     if (self = [super initWithAccount:account
                               nibName:@"FriendProfileController"])
     {
-        self.friendUid = uid;
-        self.friendScreenName = nil;
-        self.isStale = false;
+        self.profileScreenName = uid;
+        self.profile = nil;
         
-        _properties = [[NSMutableDictionary alloc] init];
-        self.propertyKeys = [NSArray arrayWithObjects:
-                             @"gamerScore",
-                             @"rep",
-                             @"name",
-                             @"location",
-                             @"motto",
-                             @"bio",
-                             nil];
-        self.propertyTitles = [NSDictionary dictionaryWithObjectsAndKeys:
-                               @"InfoStatus", @"statusCode",
-                               @"InfoGamerscore", @"gamerScore",
-                               @"InfoRep", @"rep",
-                               @"InfoMotto", @"motto",
-                               @"InfoName", @"name",
-                               @"InfoLocation", @"location",
-                               @"InfoBio", @"bio",
-                               nil];
+        statSectionColumns = [[NSArray arrayWithObjects:
+                               @"gamerScore",
+                               @"rep",
+                               @"name",
+                               @"location",
+                               @"bio",
+                               nil] retain];
+        
+        statSectionLabels = [[NSArray arrayWithObjects:
+                              NSLocalizedString(@"InfoGamerscore", nil),
+                              NSLocalizedString(@"InfoRep", nil),
+                              NSLocalizedString(@"InfoName", nil),
+                              NSLocalizedString(@"InfoLocation", nil), 
+                              NSLocalizedString(@"InfoBio", nil), 
+                              nil] retain];
     }
     
     return self;
@@ -86,12 +81,12 @@
 
 -(void)dealloc
 {
-    self.friendUid = nil;
-    self.friendScreenName = nil;
+    self.profile = nil;
     
-    self.properties = nil;
-    self.propertyKeys = nil;
-    self.propertyTitles = nil;
+    [statSectionColumns release];
+    statSectionColumns = nil;
+    [statSectionLabels release];
+    statSectionLabels = nil;
     
     [super dealloc];
 }
@@ -102,17 +97,17 @@
 {
     [super viewDidLoad];
     
-    [self updateFriendStats];
+    BOOL isStale = [self updateData];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(syncCompleted:)
                                                  name:BACHFriendProfileSynced
                                                object:nil];
     
-    self.title = self.friendScreenName;
+    self.title = self.profileScreenName;
     self.composeButton.enabled = [self.account canSendMessages];
     
-    if (self.isStale)
+    if (isStale)
         [self refresh:nil];
 }
 
@@ -125,41 +120,22 @@
                                                   object:nil];
 }
 
-#pragma mark Table view data source
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
 {
-    return 3;
-}
-
-- (NSString*)tableView:(UITableView *)tableView 
- titleForHeaderInSection:(NSInteger)section
-{
-    if (section == 1)
-    {
-        return NSLocalizedString(@"CurrentStatus", nil);
-    }
-    else if (section == 2)
-    {
-        return NSLocalizedString(@"Statistics", nil);
-    }
-    
-    return nil;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView 
  numberOfRowsInSection:(NSInteger)section 
 {
     if (section == 0)
-    {
-        return 0;
-    }
-    else if (section == 2)
-    {
-        return [self.propertyKeys count];
-    }
+        return 1;
+    else if (section == 1)
+        return [statSectionColumns count];
     
-    return 1;
+    return 0;
 }
 
 - (CGFloat)tableView:tableView 
@@ -167,18 +143,15 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0)
     {
-        return 0;
+        return 52;
     }
     else if (indexPath.section == 1)
     {
-        return 68;
-    }
-    else if (indexPath.section == 2)
-    {
-        NSString *infoKey = [self.propertyKeys objectAtIndex:indexPath.row];
-        if ([infoKey isEqualToString:@"bio"])
+        NSString *column = [statSectionColumns objectAtIndex:indexPath.row];
+        
+        if ([column isEqualToString:@"bio"])
         {
-            NSString *text = [self.properties objectForKey:infoKey];
+            NSString *text = [self.profile objectForKey:column];
             
             CGSize s = [text sizeWithFont:[UIFont systemFontOfSize:12] 
                         constrainedToSize:CGSizeMake(280, 500)];
@@ -189,144 +162,155 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         return 24;
     }
     
-    return 0;
+    return 42;
+}
+
+- (void)tableView:(UITableView *)tableView 
+  willDisplayCell:(UITableViewCell *)cell 
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0)
+    {
+        // Make the background of the cell transparent
+        
+        UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
+        
+        backView.backgroundColor = [UIColor clearColor];
+        cell.backgroundView = backView;
+        
+        [backView release];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv 
          cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
+    UITableViewCell *cell = nil;
+    
     if (indexPath.section == 0)
     {
-    }
-    else if (indexPath.section == 1)
-    {
-        ProfileStatusCell *statusCell = (ProfileStatusCell*)[self.tableView dequeueReusableCellWithIdentifier:@"statusCell"];
-        
-        if (!statusCell)
+        if (indexPath.row == 0)
         {
-            UINib *cellNib = [UINib nibWithNibName:@"ProfileStatusCell" 
-                                            bundle:nil];
+            ProfileGamertagCell *gtCell = (ProfileGamertagCell*)[self.tableView dequeueReusableCellWithIdentifier:@"gamertagCell"];
             
-            NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil options:nil];
-            
-            for (id object in topLevelObjects)
+            if (!gtCell)
             {
-                if ([object isKindOfClass:[UITableViewCell class]])
-                {
-                    statusCell = (ProfileStatusCell *)object;
-                    break;
-                }
-            }
-        }
-        
-        int statusCode = [[self.properties objectForKey:@"statusCode"] intValue];
-        
-        statusCell.status.text = [XboxLive descriptionFromFriendStatus:statusCode];
-        statusCell.activity.text = [self.properties objectForKey:@"activityText"];
-        
-        UIImage *boxArt = [[ImageCache sharedInstance] getCachedFile:[self.properties objectForKey:@"activityTitleIconUrl"]
-                                                        notifyObject:self
-                                                      notifySelector:@selector(imageLoaded:)];
-        
-        [statusCell.titleIcon setImage:boxArt];
-        
-        UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[self.properties objectForKey:@"iconUrl"]
-                                                          notifyObject:self
-                                                        notifySelector:@selector(imageLoaded:)];
-        
-        [statusCell.gamerpic setImage:gamerpic];
-        
-        return statusCell;
-    }
-    else if (indexPath.section == 2)
-    {
-        NSString *infoKey = [self.propertyKeys objectAtIndex:indexPath.row];
-        
-        NSString *name = NSLocalizedString([self.propertyTitles objectForKey:infoKey], nil);
-        id value = [self.properties objectForKey:infoKey];
-        
-        // Bio
-        if ([infoKey isEqualToString:@"bio"])
-        {
-            ProfileLargeTextCell *largeTextCell = (ProfileLargeTextCell*)[self.tableView dequeueReusableCellWithIdentifier:@"largeTextCell"];
-            
-            if (!largeTextCell)
-            {
-                UINib *cellNib = [UINib nibWithNibName:@"ProfileLargeTextCell" 
+                UINib *cellNib = [UINib nibWithNibName:@"ProfileGamertagCell" 
                                                 bundle:nil];
                 
-                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil options:nil];
+                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                                 options:nil];
                 
                 for (id object in topLevelObjects)
                 {
                     if ([object isKindOfClass:[UITableViewCell class]])
                     {
-                        largeTextCell = (ProfileLargeTextCell *)object;
+                        gtCell = (ProfileGamertagCell*)object;
                         break;
                     }
                 }
             }
             
-            largeTextCell.name.text = name;
-            [largeTextCell setText:value];
+            gtCell.screenName.text = self.profileScreenName;
+            gtCell.gamerpic.image = [[ImageCache sharedInstance] getCachedFile:[self.profile objectForKey:@"iconUrl"]
+                                                                  notifyObject:self
+                                                                notifySelector:@selector(imageLoaded:)];
             
-            return largeTextCell;
+            NSString *motto = nil;
+            if ([self.profile objectForKey:@"motto"])
+            {
+                motto = [NSString stringWithFormat:NSLocalizedString(@"MottoTemplate_f", nil),
+                         [self.profile objectForKey:@"motto"]];
+            }
+            
+            gtCell.motto.text = motto;
+            
+            cell = gtCell;
         }
-        // Gamerscore
-        else if ([infoKey isEqualToString:@"gamerScore"])
+    }
+    else if (indexPath.section == 1)
+    {
+        NSString *column = [statSectionColumns objectAtIndex:indexPath.row];
+        ProfileCell *pCell = nil;
+        
+        if ([column isEqualToString:@"gamerScore"])
         {
-            ProfileGamerscoreCell *gamerscoreCell = (ProfileGamerscoreCell*)[self.tableView dequeueReusableCellWithIdentifier:@"gamerscoreCell"];
+            ProfileGamerscoreCell *gsCell = (ProfileGamerscoreCell*)[self.tableView dequeueReusableCellWithIdentifier:@"gamerscoreCell"];
             
-            if (!gamerscoreCell)
+            if (!gsCell)
             {
                 UINib *cellNib = [UINib nibWithNibName:@"ProfileGamerscoreCell" 
                                                 bundle:nil];
                 
-                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil options:nil];
+                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                                 options:nil];
                 
                 for (id object in topLevelObjects)
                 {
                     if ([object isKindOfClass:[UITableViewCell class]])
                     {
-                        gamerscoreCell = (ProfileGamerscoreCell *)object;
+                        gsCell = (ProfileGamerscoreCell*)object;
                         break;
                     }
                 }
             }
             
-            gamerscoreCell.name.text = name;
-            [gamerscoreCell setGamerscore:value];
+            [gsCell setGamerscore:[self.profile objectForKey:column]];
             
-            return gamerscoreCell;
+            pCell = gsCell;
         }
-        // Rep
-        else if ([infoKey isEqualToString:@"rep"])
+        else if ([column isEqualToString:@"rep"])
         {
-            ProfileRatingCell *ratingCell = (ProfileRatingCell*)[self.tableView dequeueReusableCellWithIdentifier:@"ratingCell"];
+            ProfileRatingCell *starCell = (ProfileRatingCell*)[self.tableView dequeueReusableCellWithIdentifier:@"ratingCell"];
             
-            if (!ratingCell)
+            if (!starCell)
             {
                 UINib *cellNib = [UINib nibWithNibName:@"ProfileRatingCell" 
                                                 bundle:nil];
                 
-                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil options:nil];
+                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                                 options:nil];
                 
                 for (id object in topLevelObjects)
                 {
                     if ([object isKindOfClass:[UITableViewCell class]])
                     {
-                        ratingCell = (ProfileRatingCell *)object;
+                        starCell = (ProfileRatingCell*)object;
                         break;
                     }
                 }
             }
             
-            ratingCell.name.text = name;
-            [ratingCell setRating:value];
+            [starCell setRating:[self.profile objectForKey:column]];
             
-            return ratingCell;
+            pCell = starCell;
         }
-        // Basic NSString entries
+        else if ([column isEqualToString:@"bio"])
+        {
+            ProfileLargeTextCell *bioCell = (ProfileLargeTextCell*)[self.tableView dequeueReusableCellWithIdentifier:@"largeTextCell"];
+            
+            if (!bioCell)
+            {
+                UINib *cellNib = [UINib nibWithNibName:@"ProfileLargeTextCell" 
+                                                bundle:nil];
+                
+                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                                 options:nil];
+                
+                for (id object in topLevelObjects)
+                {
+                    if ([object isKindOfClass:[UITableViewCell class]])
+                    {
+                        bioCell = (ProfileLargeTextCell*)object;
+                        break;
+                    }
+                }
+            }
+            
+            [bioCell setText:[self.profile objectForKey:column]];
+            
+            pCell = bioCell;
+        }
         else
         {
             ProfileInfoCell *infoCell = (ProfileInfoCell*)[self.tableView dequeueReusableCellWithIdentifier:@"infoCell"];
@@ -336,26 +320,29 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
                 UINib *cellNib = [UINib nibWithNibName:@"ProfileInfoCell" 
                                                 bundle:nil];
                 
-                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil options:nil];
+                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                                 options:nil];
                 
                 for (id object in topLevelObjects)
                 {
                     if ([object isKindOfClass:[UITableViewCell class]])
                     {
-                        infoCell = (ProfileInfoCell *)object;
+                        infoCell = (ProfileInfoCell*)object;
                         break;
                     }
                 }
             }
             
-            infoCell.name.text = name;
-            infoCell.value.text = value;
+            infoCell.value.text = [self.profile objectForKey:column];
             
-            return infoCell;
+            pCell = infoCell;
         }
+        
+        pCell.name.text = [statSectionLabels objectAtIndex:indexPath.row];
+        cell = pCell;
     }
     
-    return nil;
+    return cell;
 }
 
 #pragma mark - UIActionSheetDelegate
@@ -367,7 +354,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     {
         if (buttonIndex == 0) // Delete friend
         {
-            [[TaskController sharedInstance] removeFromFriendsScreenName:self.friendScreenName
+            [[TaskController sharedInstance] removeFromFriendsScreenName:self.profileScreenName
                                                                  account:self.account
                                                     managedObjectContext:managedObjectContext];
             
@@ -378,7 +365,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     {
         if (buttonIndex == 0) // Approve request
         {
-            [[TaskController sharedInstance] approveFriendRequestScreenName:self.friendScreenName
+            [[TaskController sharedInstance] approveFriendRequestScreenName:self.profileScreenName
                                                                     account:self.account
                                                        managedObjectContext:managedObjectContext];
             
@@ -386,7 +373,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
         }
         else if (buttonIndex == 1) // Reject request
         {
-            [[TaskController sharedInstance] rejectFriendRequestScreenName:self.friendScreenName
+            [[TaskController sharedInstance] rejectFriendRequestScreenName:self.profileScreenName
                                                                    account:self.account
                                                       managedObjectContext:managedObjectContext];
             
@@ -397,7 +384,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     {
         if (buttonIndex == 0) // Cancel request
         {
-            [[TaskController sharedInstance] cancelFriendRequestScreenName:self.friendScreenName
+            [[TaskController sharedInstance] cancelFriendRequestScreenName:self.profileScreenName
                                                                    account:self.account
                                                       managedObjectContext:managedObjectContext];
             
@@ -418,7 +405,14 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     NSLog(@"Got sync completed notification");
     
-    [self updateFriendStats];
+    XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
+    NSString *uid = [notification.userInfo objectForKey:BACHNotificationUid];
+    
+    if ([account isEqualToAccount:self.account] && 
+        [uid isEqualToString:self.profileScreenName])
+    {
+        [self updateData];
+    }
 }
 
 #pragma mark - Misc
@@ -427,7 +421,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     NSString *title = NSLocalizedString(@"AreYouSure", nil);
     NSString *message = [NSString stringWithFormat:NSLocalizedString(@"RemoveFromFriends_f", nil),
-                         self.friendScreenName];
+                         self.profileScreenName];
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title 
                                                         message:message
@@ -439,13 +433,13 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     [alertView release];
 }
 
--(void)updateFriendStats
+-(BOOL)updateData
 {
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxFriend"
                                                          inManagedObjectContext:managedObjectContext];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile.uuid == %@", 
-                              self.friendUid, self.account.uuid];
+                              self.profileScreenName, self.account.uuid];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     
     [request setEntity:entityDescription];
@@ -454,68 +448,60 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     NSArray *array = [managedObjectContext executeFetchRequest:request 
                                                          error:nil];
     
-    NSManagedObject *friend = [array lastObject];
+    NSManagedObject *profile = [array lastObject];
     
     [request release];
     
-    if (friend)
+    BOOL isStale = YES;
+    
+    if (profile)
     {
-        self.friendScreenName = [friend valueForKey:@"screenName"];
-        self.isStale = [self.account isDataStale:[friend valueForKey:@"profileLastUpdated"]];
+        isStale = [self.account isDataStale:[profile valueForKey:@"profileLastUpdated"]];
         
-        if ([[friend valueForKey:@"isIncoming"] boolValue])
+        self.profileScreenName = [profile valueForKey:@"screenName"];
+        self.profile = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                        [profile valueForKey:@"iconUrl"], @"iconUrl",
+                        [profile valueForKey:@"motto"], @"motto",
+                        nil];
+        
+        for (NSString *column in statSectionColumns)
         {
-            self.friendStatus = STATUS_INVITE_RCVD;
+            id value;
+            if ((value = [profile valueForKey:column]))
+                [self.profile setObject:value forKey:column];
         }
-        else if ([[friend valueForKey:@"isOutgoing"] boolValue])
+        
+        if ([[profile valueForKey:@"isIncoming"] boolValue])
         {
-            self.friendStatus = STATUS_INVITE_SENT;
+            profileStatus = STATUS_INVITE_RCVD;
+        }
+        else if ([[profile valueForKey:@"isOutgoing"] boolValue])
+        {
+            profileStatus = STATUS_INVITE_SENT;
         }
         else
         {
-            self.friendStatus = STATUS_FRIEND;
+            profileStatus = STATUS_FRIEND;
         }
-        
-        [self.properties removeAllObjects];
-        
-        NSArray *loadKeys = [NSArray arrayWithObjects:
-                             @"screenName",
-                             @"avatarUrl",
-                             @"activityText",
-                             @"activityTitleIconUrl",
-                             @"iconUrl",
-                             @"statusCode",
-                             @"gamerScore",
-                             @"rep",
-                             @"name",
-                             @"location",
-                             @"motto",
-                             @"bio",
-                             nil];
-        
-        for (NSString *key in loadKeys) 
-        {
-            id value = [friend valueForKey:key];
-            if (value)
-                [self.properties setObject:value forKey:key];
-        }
-        
-        [tableView reloadData];
     }
+    
+    [tableView reloadData];
+    
+    return isStale;
 }
 
 #pragma mark - Actions
 
 -(void)refresh:(id)sender
 {
-    [[TaskController sharedInstance] synchronizeFriendProfileForUid:self.friendUid
+    [[TaskController sharedInstance] synchronizeFriendProfileForUid:self.profileScreenName
                                                             account:self.account
                                                managedObjectContext:managedObjectContext];
 }
 
 -(void)compareGames:(id)sender
 {
-    CompareGamesController *ctlr = [[CompareGamesController alloc] initWithScreenName:self.friendScreenName
+    CompareGamesController *ctlr = [[CompareGamesController alloc] initWithScreenName:self.profileScreenName
                                                                               account:self.account];
     
     [self.navigationController pushViewController:ctlr animated:YES];
@@ -524,7 +510,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 -(void)compose:(id)sender
 {
-    MessageCompositionController *ctlr = [[MessageCompositionController alloc] initWithRecipient:self.friendScreenName
+    MessageCompositionController *ctlr = [[MessageCompositionController alloc] initWithRecipient:self.profileScreenName
                                                                                  account:self.account];
     
     [self.navigationController pushViewController:ctlr animated:YES];
@@ -534,7 +520,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 -(void)showActionMenu:(id)sender
 {
     UIActionSheet *actionSheet = nil;
-    if (self.friendStatus == STATUS_FRIEND)
+    if (profileStatus == STATUS_FRIEND)
     {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self 
@@ -544,7 +530,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
                        NSLocalizedString(@"RemoveFriend", nil), 
                        nil];
     }
-    else if (self.friendStatus == STATUS_INVITE_RCVD)
+    else if (profileStatus == STATUS_INVITE_RCVD)
     {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self 
@@ -555,7 +541,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
                        NSLocalizedString(@"RejectRequest", nil),
                        nil];
     }
-    else if (self.friendStatus == STATUS_INVITE_SENT)
+    else if (profileStatus == STATUS_INVITE_SENT)
     {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self 
@@ -568,7 +554,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     
     if (actionSheet)
     {
-        actionSheet.tag = self.friendStatus;
+        actionSheet.tag = profileStatus;
         actionSheet.actionSheetStyle = UIActionSheetStyleAutomatic;
         
         [actionSheet showInView:self.view];
@@ -578,7 +564,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 -(void)viewFriends:(id)sender
 {
-    FriendsOfFriendController *ctlr = [[FriendsOfFriendController alloc] initWithScreenName:self.friendScreenName
+    FriendsOfFriendController *ctlr = [[FriendsOfFriendController alloc] initWithScreenName:self.profileScreenName
                                                                                     account:self.account];
     
     [self.navigationController pushViewController:ctlr animated:YES];

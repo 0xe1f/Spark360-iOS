@@ -11,6 +11,8 @@
 		FE0DBD2714AEF4D0001E7B4D /* ProfileCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE0DBD2614AEF4D0001E7B4D /* ProfileCell.m */; };
 		FE0DBD2A14AEFEAD001E7B4D /* ProfileOptionsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE0DBD2914AEFEAD001E7B4D /* ProfileOptionsCell.xib */; };
 		FE0DBD2D14AF028A001E7B4D /* ProfileOptionsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE0DBD2C14AF028A001E7B4D /* ProfileOptionsCell.m */; };
+		FE0DBD3414B18BC0001E7B4D /* msp.png in Resources */ = {isa = PBXBuildFile; fileRef = FE0DBD3214B18BC0001E7B4D /* msp.png */; };
+		FE0DBD3514B18BC0001E7B4D /* msp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE0DBD3314B18BC0001E7B4D /* msp@2x.png */; };
 		FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE20CD3613F7B86B0060D902 /* AccountList.xib */; };
 		FE3AB9C914973D790056E87F /* FriendProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3AB9C714973D790056E87F /* FriendProfileController.m */; };
 		FE3AB9CA14973D790056E87F /* ProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3AB9C814973D790056E87F /* ProfileController.xib */; };
@@ -146,7 +148,7 @@
 		FEC7F9FD1479070F00537213 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F41479070F00537213 /* whiteArrow.png */; };
 		FEC7F9FE1479070F00537213 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC7F9F51479070F00537213 /* whiteArrow@2x.png */; };
 		FEC7FA00147908A300537213 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEC7F9FF147908A300537213 /* QuartzCore.framework */; };
-		FEC8400E148A1F37005BC782 /* ProfileOverview.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC8400D148A1F37005BC782 /* ProfileOverview.xib */; };
+		FEC8400E148A1F37005BC782 /* ProfileOverviewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC8400D148A1F37005BC782 /* ProfileOverviewController.xib */; };
 		FEC84012148A1F6A005BC782 /* ProfileOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */; };
 		FEC84019148A29F6005BC782 /* AchievementListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84018148A29F6005BC782 /* AchievementListController.xib */; };
 		FEC84020148A2EC9005BC782 /* AchievementListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC8401F148A2EC9005BC782 /* AchievementListController.m */; };
@@ -183,6 +185,8 @@
 		FE0DBD2914AEFEAD001E7B4D /* ProfileOptionsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileOptionsCell.xib; sourceTree = "<group>"; };
 		FE0DBD2B14AF0289001E7B4D /* ProfileOptionsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileOptionsCell.h; sourceTree = "<group>"; };
 		FE0DBD2C14AF028A001E7B4D /* ProfileOptionsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileOptionsCell.m; sourceTree = "<group>"; };
+		FE0DBD3214B18BC0001E7B4D /* msp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = msp.png; sourceTree = "<group>"; };
+		FE0DBD3314B18BC0001E7B4D /* msp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "msp@2x.png"; sourceTree = "<group>"; };
 		FE20CD3613F7B86B0060D902 /* AccountList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountList.xib; sourceTree = "<group>"; };
 		FE3AB9C614973D790056E87F /* FriendProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendProfileController.h; sourceTree = "<group>"; };
 		FE3AB9C714973D790056E87F /* FriendProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendProfileController.m; sourceTree = "<group>"; };
@@ -388,7 +392,7 @@
 		FEC7F9F41479070F00537213 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
 		FEC7F9F51479070F00537213 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
 		FEC7F9FF147908A300537213 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		FEC8400D148A1F37005BC782 /* ProfileOverview.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileOverview.xib; sourceTree = "<group>"; };
+		FEC8400D148A1F37005BC782 /* ProfileOverviewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileOverviewController.xib; sourceTree = "<group>"; };
 		FEC8400F148A1F6A005BC782 /* ProfileOverviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileOverviewController.h; sourceTree = "<group>"; };
 		FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileOverviewController.m; sourceTree = "<group>"; };
 		FEC84018148A29F6005BC782 /* AchievementListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementListController.xib; sourceTree = "<group>"; };
@@ -446,6 +450,8 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE0DBD3214B18BC0001E7B4D /* msp.png */,
+				FE0DBD3314B18BC0001E7B4D /* msp@2x.png */,
 				FE3CB75C14AD6D41007EF7D8 /* xboxStatusNotOk.png */,
 				FE3CB75D14AD6D41007EF7D8 /* xboxStatusNotOk@2x.png */,
 				FE3CB75E14AD6D41007EF7D8 /* xboxStatusOk.png */,
@@ -503,28 +509,28 @@
 			isa = PBXGroup;
 			children = (
 				FE993D54149891E20075882C /* Cells */,
-				FE3AB9C814973D790056E87F /* ProfileController.xib */,
-				FE8B882B149EA85300F7F92C /* FriendProfileController.xib */,
-				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
+				FEFE0E6114774554009C7084 /* MainWindow.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
+				FEC84021148A3AC1005BC782 /* AchievementCell.xib */,
 				FEC602A61494996300DD3849 /* FriendCell.xib */,
+				FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */,
+				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
 				FEC84018148A29F6005BC782 /* AchievementListController.xib */,
-				FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */,
-				FEC84021148A3AC1005BC782 /* AchievementCell.xib */,
-				FEC7F9DB1478653600537213 /* GameListController.xib */,
-				FEC602AD1494A75F00DD3849 /* FriendListController.xib */,
-				FEEE7CF21493CAF8009F475C /* MessageCompositionController.xib */,
-				FEA24800148F6019003D87C5 /* MessageListController.xib */,
-				FE8BA7F614A1B55A0020D389 /* CompareGamesController.xib */,
-				FEC8400D148A1F37005BC782 /* ProfileOverview.xib */,
-				FEFE0E6114774554009C7084 /* MainWindow.xib */,
 				FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */,
-				FEE0283414A52623003B3DBF /* RecentPlayersController.xib */,
+				FE8BA7F614A1B55A0020D389 /* CompareGamesController.xib */,
+				FEC602AD1494A75F00DD3849 /* FriendListController.xib */,
+				FE8B882B149EA85300F7F92C /* FriendProfileController.xib */,
 				FE8B691214A59D0200275E41 /* FriendsOfFriendController.xib */,
-				FEFCD57F14A737D30018F05D /* ViewMessageController.xib */,
+				FEC7F9DB1478653600537213 /* GameListController.xib */,
 				FE65030A14AB113500C883C3 /* GameOverviewController.xib */,
 				FE3CB75014AC8A20007EF7D8 /* ImageViewController.xib */,
+				FEEE7CF21493CAF8009F475C /* MessageCompositionController.xib */,
+				FEA24800148F6019003D87C5 /* MessageListController.xib */,
+				FE3AB9C814973D790056E87F /* ProfileController.xib */,
+				FEC8400D148A1F37005BC782 /* ProfileOverviewController.xib */,
+				FEE0283414A52623003B3DBF /* RecentPlayersController.xib */,
+				FEFCD57F14A737D30018F05D /* ViewMessageController.xib */,
 				FE3CB75A14AD350A007EF7D8 /* XboxLiveStatusController.xib */,
 			);
 			path = UI;
@@ -557,8 +563,6 @@
 		FE610D3713EE938400420372 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				FEE0283114A52594003B3DBF /* RecentPlayersController.h */,
-				FEE0283214A52594003B3DBF /* RecentPlayersController.m */,
 				FEC26EA4146BB25400D31608 /* AccountAddController.h */,
 				FEC26EA5146BB25400D31608 /* AccountAddController.m */,
 				FE726B7C1463CAD200534279 /* AccountEditController.h */,
@@ -567,36 +571,38 @@
 				FEC26EA7146BB25400D31608 /* AccountListController.m */,
 				FEC8401E148A2ACA005BC782 /* AchievementListController.h */,
 				FEC8401F148A2EC9005BC782 /* AchievementListController.m */,
-				FEC26EA8146BB25400D31608 /* GameListController.h */,
-				FEC26EA9146BB25400D31608 /* GameListController.m */,
-				FE041176149362F80010C898 /* GenericController.h */,
-				FE041177149363040010C898 /* GenericController.m */,
-				FEC602A814949D3B00DD3849 /* GenericTableViewController.h */,
-				FEC602A914949D3B00DD3849 /* GenericTableViewController.m */,
-				FEA247FB148F5F90003D87C5 /* MessageListController.h */,
-				FEA247FC148F5F90003D87C5 /* MessageListController.m */,
-				FEC8400F148A1F6A005BC782 /* ProfileOverviewController.h */,
-				FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */,
-				FEEE7CF01493CAF8009F475C /* MessageCompositionController.h */,
-				FEEE7CF11493CAF8009F475C /* MessageCompositionController.m */,
+				FE8ECB6014A4825B00A6E2D2 /* CompareAchievementsController.h */,
+				FE8ECB6114A4825C00A6E2D2 /* CompareAchievementsController.m */,
+				FE8BA7F214A1B3E90020D389 /* CompareGamesController.h */,
+				FE8BA7F314A1B3E90020D389 /* CompareGamesController.m */,
 				FEC602A01494921B00DD3849 /* FriendListController.h */,
 				FEC602A11494921B00DD3849 /* FriendListController.m */,
 				FE3AB9C614973D790056E87F /* FriendProfileController.h */,
 				FE3AB9C714973D790056E87F /* FriendProfileController.m */,
-				FE8BF2C4149E8B9F00FC8485 /* ProfileController.h */,
-				FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */,
-				FE8BA7F214A1B3E90020D389 /* CompareGamesController.h */,
-				FE8BA7F314A1B3E90020D389 /* CompareGamesController.m */,
-				FE8ECB6014A4825B00A6E2D2 /* CompareAchievementsController.h */,
-				FE8ECB6114A4825C00A6E2D2 /* CompareAchievementsController.m */,
 				FEE0283814A577FD003B3DBF /* FriendsOfFriendController.h */,
 				FEE0283914A577FD003B3DBF /* FriendsOfFriendController.m */,
-				FEFCD57A14A7366C0018F05D /* ViewMessageController.h */,
-				FEFCD57B14A7366D0018F05D /* ViewMessageController.m */,
+				FEC26EA8146BB25400D31608 /* GameListController.h */,
+				FEC26EA9146BB25400D31608 /* GameListController.m */,
 				FE8C9B4114AAFE21008DACAB /* GameOverviewController.h */,
 				FE8C9B4214AAFE21008DACAB /* GameOverviewController.m */,
+				FE041176149362F80010C898 /* GenericController.h */,
+				FE041177149363040010C898 /* GenericController.m */,
+				FEC602A814949D3B00DD3849 /* GenericTableViewController.h */,
+				FEC602A914949D3B00DD3849 /* GenericTableViewController.m */,
 				FE3CB74C14AC86CE007EF7D8 /* ImageViewController.h */,
 				FE3CB74D14AC86CE007EF7D8 /* ImageViewController.m */,
+				FEEE7CF01493CAF8009F475C /* MessageCompositionController.h */,
+				FEEE7CF11493CAF8009F475C /* MessageCompositionController.m */,
+				FEA247FB148F5F90003D87C5 /* MessageListController.h */,
+				FEA247FC148F5F90003D87C5 /* MessageListController.m */,
+				FE8BF2C4149E8B9F00FC8485 /* ProfileController.h */,
+				FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */,
+				FEC8400F148A1F6A005BC782 /* ProfileOverviewController.h */,
+				FEC84010148A1F6A005BC782 /* ProfileOverviewController.m */,
+				FEE0283114A52594003B3DBF /* RecentPlayersController.h */,
+				FEE0283214A52594003B3DBF /* RecentPlayersController.m */,
+				FEFCD57A14A7366C0018F05D /* ViewMessageController.h */,
+				FEFCD57B14A7366D0018F05D /* ViewMessageController.m */,
 				FE3CB75214AD31A8007EF7D8 /* XboxLiveStatusController.h */,
 				FE3CB75314AD31A8007EF7D8 /* XboxLiveStatusController.m */,
 			);
@@ -725,11 +731,11 @@
 			isa = PBXGroup;
 			children = (
 				FE65032314AB1C6900C883C3 /* AQGridView */,
-				FE8C9ABB14A9C151008DACAB /* TITokenFieldView */,
 				FEC7F9E81479070F00537213 /* EGOTableViewPullRefresh */,
+				FE8CA91D1474597C00A5C9EA /* GenericKeychain */,
 				FEB3E13D13E6404900095480 /* GTM */,
 				FE726B4814611E9C00534279 /* JSON */,
-				FE8CA91D1474597C00A5C9EA /* GenericKeychain */,
+				FE8C9ABB14A9C151008DACAB /* TITokenFieldView */,
 			);
 			path = ThirdParty;
 			sourceTree = "<group>";
@@ -746,40 +752,40 @@
 		FE993D50149881880075882C /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				FE908A6A14AB82C000FD51CF /* ScreenshotGridViewCell.h */,
-				FE908A6B14AB82C000FD51CF /* ScreenshotGridViewCell.m */,
-				FE8F26B314A858B000C82006 /* ContactButton.h */,
-				FE8F26B414A858B000C82006 /* ContactButton.m */,
-				FEE0282D14A52558003B3DBF /* PlayerCell.h */,
-				FEE0282E14A52558003B3DBF /* PlayerCell.m */,
-				FE8BA7FA14A1BB710020D389 /* CompareGameCell.h */,
-				FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */,
-				FE0DBD2514AEF4D0001E7B4D /* ProfileCell.h */,
-				FE0DBD2614AEF4D0001E7B4D /* ProfileCell.m */,
-				FE993D51149881B00075882C /* ProfileInfoCell.h */,
-				FE993D52149881B00075882C /* ProfileInfoCell.m */,
-				FE993D5D1498A4EF0075882C /* ProfileGamerscoreCell.h */,
-				FE993D5E1498A4EF0075882C /* ProfileGamerscoreCell.m */,
-				FE993D641499E6E80075882C /* ProfileRatingCell.h */,
-				FE993D651499E6E90075882C /* ProfileRatingCell.m */,
-				FE993D891499F6B10075882C /* ProfileLargeTextCell.h */,
-				FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */,
-				FEC24B77149B3400008058BF /* ProfileStatusCell.h */,
-				FEC24B78149B3400008058BF /* ProfileStatusCell.m */,
-				FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */,
-				FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */,
 				FE8ECB6414A4884700A6E2D2 /* CompareAchievementCell.h */,
 				FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */,
+				FE8BA7FA14A1BB710020D389 /* CompareGameCell.h */,
+				FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */,
+				FE8F26B314A858B000C82006 /* ContactButton.h */,
+				FE8F26B414A858B000C82006 /* ContactButton.m */,
 				FEFCD55F14A643E00018F05D /* MessageCell.h */,
 				FEFCD56014A643E00018F05D /* MessageCell.m */,
-				FE3CB75514AD3398007EF7D8 /* XboxLiveStatusCell.h */,
-				FE3CB75614AD3398007EF7D8 /* XboxLiveStatusCell.m */,
+				FEE0282D14A52558003B3DBF /* PlayerCell.h */,
+				FEE0282E14A52558003B3DBF /* PlayerCell.m */,
+				FE0DBD2514AEF4D0001E7B4D /* ProfileCell.h */,
+				FE0DBD2614AEF4D0001E7B4D /* ProfileCell.m */,
+				FE993D5D1498A4EF0075882C /* ProfileGamerscoreCell.h */,
+				FE993D5E1498A4EF0075882C /* ProfileGamerscoreCell.m */,
 				FE3CB76614ADAE2B007EF7D8 /* ProfileGamertagCell.h */,
 				FE3CB76714ADAE2B007EF7D8 /* ProfileGamertagCell.m */,
-				FE3CB76914ADB7A7007EF7D8 /* RoundedCornerView.h */,
-				FE3CB76A14ADB7A7007EF7D8 /* RoundedCornerView.m */,
+				FE993D51149881B00075882C /* ProfileInfoCell.h */,
+				FE993D52149881B00075882C /* ProfileInfoCell.m */,
+				FE993D891499F6B10075882C /* ProfileLargeTextCell.h */,
+				FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */,
 				FE0DBD2B14AF0289001E7B4D /* ProfileOptionsCell.h */,
 				FE0DBD2C14AF028A001E7B4D /* ProfileOptionsCell.m */,
+				FEC24B77149B3400008058BF /* ProfileStatusCell.h */,
+				FEC24B78149B3400008058BF /* ProfileStatusCell.m */,
+				FE993D641499E6E80075882C /* ProfileRatingCell.h */,
+				FE993D651499E6E90075882C /* ProfileRatingCell.m */,
+				FE3CB76914ADB7A7007EF7D8 /* RoundedCornerView.h */,
+				FE3CB76A14ADB7A7007EF7D8 /* RoundedCornerView.m */,
+				FE908A6A14AB82C000FD51CF /* ScreenshotGridViewCell.h */,
+				FE908A6B14AB82C000FD51CF /* ScreenshotGridViewCell.m */,
+				FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */,
+				FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */,
+				FE3CB75514AD3398007EF7D8 /* XboxLiveStatusCell.h */,
+				FE3CB75614AD3398007EF7D8 /* XboxLiveStatusCell.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -787,18 +793,18 @@
 		FE993D54149891E20075882C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */,
+				FE8BA7F814A1B9880020D389 /* CompareGameCell.xib */,
 				FEA24802148F62B6003D87C5 /* MessageCell.xib */,
+				FEE0283614A526A3003B3DBF /* PlayerCell.xib */,
 				FE993D59149898DA0075882C /* ProfileInfoCell.xib */,
 				FE993D5B1498A4330075882C /* ProfileGamerscoreCell.xib */,
-				FE993D671499E77C0075882C /* ProfileRatingCell.xib */,
-				FE993D871499F60D0075882C /* ProfileLargeTextCell.xib */,
-				FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */,
-				FE8BA7F814A1B9880020D389 /* CompareGameCell.xib */,
-				FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */,
-				FEE0283614A526A3003B3DBF /* PlayerCell.xib */,
-				FE3CB75814AD3427007EF7D8 /* XboxLiveStatusCell.xib */,
 				FE3CB76414ADAD5F007EF7D8 /* ProfileGamertagCell.xib */,
+				FE993D871499F60D0075882C /* ProfileLargeTextCell.xib */,
 				FE0DBD2914AEFEAD001E7B4D /* ProfileOptionsCell.xib */,
+				FE993D671499E77C0075882C /* ProfileRatingCell.xib */,
+				FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */,
+				FE3CB75814AD3427007EF7D8 /* XboxLiveStatusCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -926,7 +932,7 @@
 				FEC7F9FC1479070F00537213 /* grayArrow@2x.png in Resources */,
 				FEC7F9FD1479070F00537213 /* whiteArrow.png in Resources */,
 				FEC7F9FE1479070F00537213 /* whiteArrow@2x.png in Resources */,
-				FEC8400E148A1F37005BC782 /* ProfileOverview.xib in Resources */,
+				FEC8400E148A1F37005BC782 /* ProfileOverviewController.xib in Resources */,
 				FEC84019148A29F6005BC782 /* AchievementListController.xib in Resources */,
 				FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */,
 				FEC84027148C3678005BC782 /* TaskControllerOperation.h in Resources */,
@@ -991,6 +997,8 @@
 				FE3CB76314AD6D41007EF7D8 /* xboxStatusOk@2x.png in Resources */,
 				FE3CB76514ADAD5F007EF7D8 /* ProfileGamertagCell.xib in Resources */,
 				FE0DBD2A14AEFEAD001E7B4D /* ProfileOptionsCell.xib in Resources */,
+				FE0DBD3414B18BC0001E7B4D /* msp.png in Resources */,
+				FE0DBD3514B18BC0001E7B4D /* msp@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

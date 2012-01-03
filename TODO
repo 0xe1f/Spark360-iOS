@@ -1,8 +1,7 @@
 ! ImageCache'r considerably slows list scrolling. Improve performance
-! Uninstalling, then installing the app results in the keychain thing crashing
+
 ! Icons missing for game details bar icon (list, compare)
-! Clicking on profiles in Account selection creates new Account instances each
-  time. This causes leaks and can cause data loss!
+! Icons missing for live status
 
 Compare:
 
@@ -33,4 +32,3 @@ Core:
 * When images are downloaded, update single icon, not all (see imageSynced)
 * Add network spinner when TaskControllerOp is in progress
 * Delete database contents and keychain items when an account is deleted 
-* Investigate the effects of commenting out the assertion in KeyChainWrapper:315!

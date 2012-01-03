@@ -23,6 +23,9 @@
 @end
 
 @implementation AccountListController
+{
+    NSMutableDictionary *accountCache;
+}
 
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
@@ -32,6 +35,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [accountCache release];
+    accountCache = [[NSMutableDictionary alloc] init];
     
     // Set up the edit and add buttons.
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
@@ -47,6 +53,13 @@
     [addButton release];
     
     self.tableView.allowsSelectionDuringEditing = YES;
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    
+    [accountCache release];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -145,7 +158,13 @@
 {
     NSManagedObject *profile = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSString *uuid = [profile valueForKey:@"uuid"];
-    XboxLiveAccount *account = [XboxLiveAccount preferencesForUuid:uuid];
+    
+    XboxLiveAccount *account = nil;
+    if (!(account = [accountCache objectForKey:uuid]))
+    {
+        if ((account = [XboxLiveAccount preferencesForUuid:uuid]))
+            [accountCache setObject:account forKey:uuid];
+    }
     
     if (account)
     {
@@ -177,14 +196,6 @@
     [super didReceiveMemoryWarning];
     
     // Relinquish ownership any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
 }
 
 - (void)dealloc
