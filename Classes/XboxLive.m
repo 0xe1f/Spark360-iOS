@@ -22,4 +22,15 @@
     return NSLocalizedString(@"Unknown", nil);
 }
 
++(BOOL)isPlayable:(NSString *)titleId
+{
+    if ([titleId isEqualToString:@"4293722112"])
+        return NO; // Xbox.com
+    else if ([titleId isEqualToString:@"0"])
+        return NO; // Unknown
+    else if ([titleId isEqualToString:@"4294838225"])
+        return NO; // Xbox Dashboard
+    
+    return YES;
+}
 @end

@@ -272,7 +272,8 @@
     NSSortDescriptor *sortByStatus = [[NSSortDescriptor alloc] initWithKey:@"statusCode" 
                                                                  ascending:YES];
     NSSortDescriptor *sortByScreenName = [[NSSortDescriptor alloc] initWithKey:@"screenName" 
-                                                                     ascending:YES];
+                                                                     ascending:YES
+                                                                      selector:@selector(caseInsensitiveCompare:)];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortByStatus, sortByScreenName, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];

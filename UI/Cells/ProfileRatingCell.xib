@@ -87,10 +87,6 @@
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">xboxStar4.png</string>
 								</object>
-								<object class="NSCustomResource" key="IBUIHighlightedImage" id="87818546">
-									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">gamerScoreInverse.png</string>
-								</object>
 							</object>
 							<object class="IBUIImageView" id="902968753">
 								<reference key="NSNextResponder" ref="820833328"/>
@@ -102,7 +98,6 @@
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIImage" ref="643221599"/>
-								<reference key="IBUIHighlightedImage" ref="87818546"/>
 							</object>
 							<object class="IBUIImageView" id="997596244">
 								<reference key="NSNextResponder" ref="820833328"/>
@@ -114,7 +109,6 @@
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIImage" ref="643221599"/>
-								<reference key="IBUIHighlightedImage" ref="87818546"/>
 							</object>
 							<object class="IBUIImageView" id="648070831">
 								<reference key="NSNextResponder" ref="820833328"/>
@@ -126,7 +120,6 @@
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIImage" ref="643221599"/>
-								<reference key="IBUIHighlightedImage" ref="87818546"/>
 							</object>
 							<object class="IBUIImageView" id="841472999">
 								<reference key="NSNextResponder" ref="820833328"/>
@@ -138,7 +131,6 @@
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIImage" ref="643221599"/>
-								<reference key="IBUIHighlightedImage" ref="87818546"/>
 							</object>
 						</array>
 						<string key="NSFrameSize">{295, 21}</string>
@@ -161,6 +153,7 @@
 				<reference key="NSNextKeyView" ref="820833328"/>
 				<string key="NSReuseIdentifierKey">_NS:384</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+				<int key="IBUISelectionStyle">0</int>
 				<reference key="IBUIContentView" ref="820833328"/>
 			</object>
 		</array>
@@ -303,10 +296,10 @@
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="gamerScoreInverse.png">{18, 18}</string>
-			<string key="xboxStar4.png">{19, 18}</string>
-		</dictionary>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NS.key.0">xboxStar4.png</string>
+			<string key="NS.object.0">{19, 18}</string>
+		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>
 </archive>

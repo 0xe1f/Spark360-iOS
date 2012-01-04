@@ -1,5 +1,5 @@
 ! ImageCache'r considerably slows list scrolling. Improve performance
-
+! MessageCompositionController crashes on simulated memory warnings
 ! Icons missing for game details bar icon (list, compare)
 ! Icons missing for live status
 

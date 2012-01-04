@@ -18,7 +18,10 @@
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *composeButton;
 
 @property (nonatomic, retain) NSMutableDictionary *profile;
+@property (nonatomic, retain) NSMutableArray *beacons;
 @property (nonatomic, retain) NSString *profileScreenName;
+
+-(NSString*)valueOrEmptyString:(NSString*)value;
 
 -(id)initWithFriendUid:(NSString*)uid
                account:(XboxLiveAccount*)account;

@@ -114,4 +114,6 @@
     FriendsNoneOnline = "Friends";
     MessagesNoneUnread = "Messages";
     Games = "Games";
+    LetsPlay_f = "Let's play '%@'";
+    Beacons = "Beacons";
 }

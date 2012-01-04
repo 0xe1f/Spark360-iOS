@@ -22,6 +22,8 @@
 #import "ProfileLargeTextCell.h"
 #import "ProfileStatusCell.h"
 #import "ProfileGamertagCell.h"
+#import "BeaconInfoCell.h"
+#import "ActivityInfoCell.h"
 
 #define OK_BUTTON_INDEX 1
 
@@ -48,6 +50,7 @@
 @synthesize composeButton;
 
 @synthesize profile = _profile;
+@synthesize beacons = _beacons;
 @synthesize profileScreenName = _profileScreenName;
 
 -(id)initWithFriendUid:(NSString*)uid
@@ -56,6 +59,7 @@
     if (self = [super initWithAccount:account
                               nibName:@"FriendProfileController"])
     {
+        self.beacons = [[NSMutableArray alloc] init];
         self.profileScreenName = uid;
         self.profile = nil;
         
@@ -82,6 +86,7 @@
 -(void)dealloc
 {
     self.profile = nil;
+    self.beacons = nil;
     
     [statSectionColumns release];
     statSectionColumns = nil;
@@ -124,7 +129,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
 {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView 
@@ -133,6 +138,8 @@
     if (section == 0)
         return 1;
     else if (section == 1)
+        return [self.beacons count] + 1; // extra for latest activity
+    else if (section == 2)
         return [statSectionColumns count];
     
     return 0;
@@ -146,6 +153,10 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         return 52;
     }
     else if (indexPath.section == 1)
+    {
+        return 44;
+    }
+    else if (indexPath.section == 2)
     {
         NSString *column = [statSectionColumns objectAtIndex:indexPath.row];
         
@@ -229,6 +240,77 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         }
     }
     else if (indexPath.section == 1)
+    {
+        if (indexPath.row == 0)
+        {
+            // Latest activity
+            
+            ActivityInfoCell *aiCell = (ActivityInfoCell*)[self.tableView dequeueReusableCellWithIdentifier:@"activityInfoCell"];
+            
+            if (!aiCell)
+            {
+                UINib *cellNib = [UINib nibWithNibName:@"ActivityInfoCell" 
+                                                bundle:nil];
+                
+                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                                 options:nil];
+                
+                for (id object in topLevelObjects)
+                {
+                    if ([object isKindOfClass:[UITableViewCell class]])
+                    {
+                        aiCell = (ActivityInfoCell*)object;
+                        break;
+                    }
+                }
+            }
+            
+            aiCell.titleName.text = [self.profile objectForKey:@"activityTitleName"];
+            aiCell.activityInfo.text = [self.profile objectForKey:@"activityText"];
+            aiCell.titleIcon.image = [[ImageCache sharedInstance] getCachedFile:[self.profile objectForKey:@"activityTitleIconUrl"]
+                                                                       cropRect:CGRectMake(0, 16, 85, 85)
+                                                                   notifyObject:self
+                                                                 notifySelector:@selector(imageLoaded:)];
+            
+            cell = aiCell;
+        }
+        else
+        {
+            // Beacon
+            
+            BeaconInfoCell *biCell = (BeaconInfoCell*)[self.tableView dequeueReusableCellWithIdentifier:@"beaconInfoCell"];
+            
+            if (!biCell)
+            {
+                UINib *cellNib = [UINib nibWithNibName:@"BeaconInfoCell" 
+                                                bundle:nil];
+                
+                NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                                 options:nil];
+                
+                for (id object in topLevelObjects)
+                {
+                    if ([object isKindOfClass:[UITableViewCell class]])
+                    {
+                        biCell = (BeaconInfoCell*)object;
+                        break;
+                    }
+                }
+            }
+            
+            NSDictionary *beacon = [self.beacons objectAtIndex:indexPath.row - 1];
+            
+            biCell.titleName.text = [beacon objectForKey:@"gameName"];
+            biCell.message.text = [beacon objectForKey:@"message"];
+            biCell.titleIcon.image = [[ImageCache sharedInstance] getCachedFile:[beacon objectForKey:@"gameBoxArtUrl"]
+                                                                       cropRect:CGRectMake(0, 16, 85, 85)
+                                                                   notifyObject:self
+                                                                 notifySelector:@selector(imageLoaded:)];
+            
+            cell = biCell;
+        }
+    }
+    else if (indexPath.section == 2)
     {
         NSString *column = [statSectionColumns objectAtIndex:indexPath.row];
         ProfileCell *pCell = nil;
@@ -345,6 +427,48 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView 
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 1 && [self.account canSendMessages])
+    {
+        NSString *titleName = nil;
+        NSString *titleId = nil;
+        
+        if (indexPath.row == 0)
+        {
+            // Activity cell
+            
+            titleName = [self.profile objectForKey:@"activityTitleName"];
+            titleId = [self.profile objectForKey:@"activityTitleId"];
+        }
+        else
+        {
+            // Beacon selected
+            
+            NSDictionary *beacon = [self.beacons objectAtIndex:indexPath.row - 1];
+            
+            titleName = [beacon objectForKey:@"gameName"];
+            titleId = [beacon objectForKey:@"gameUid"];
+        }
+        
+        if (titleName && [XboxLive isPlayable:titleId])
+        {
+            NSString *message = [NSString stringWithFormat:NSLocalizedString(@"LetsPlay_f", nil),
+                                 titleName];
+            
+            MessageCompositionController *ctlr = [[MessageCompositionController alloc] initWithRecipient:self.profileScreenName
+                                                                                             messageBody:message
+                                                                                                 account:self.account];
+            
+            [self.navigationController pushViewController:ctlr
+                                                 animated:YES];
+            
+            [ctlr release];
+        }
+    }
+}
+
 #pragma mark - UIActionSheetDelegate
 
 -(void)actionSheet:(UIActionSheet *)actionSheet 
@@ -417,6 +541,14 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 
 #pragma mark - Misc
 
+-(NSString*)valueOrEmptyString:(NSString*)value
+{
+    if (value)
+        return value;
+    
+    return @"";
+}
+
 -(void)removeFriend
 {
     NSString *title = NSLocalizedString(@"AreYouSure", nil);
@@ -458,15 +590,27 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     {
         isStale = [self.account isDataStale:[profile valueForKey:@"profileLastUpdated"]];
         
+        id value;
+        
         self.profileScreenName = [profile valueForKey:@"screenName"];
-        self.profile = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                        [profile valueForKey:@"iconUrl"], @"iconUrl",
-                        [profile valueForKey:@"motto"], @"motto",
-                        nil];
+        self.profile = [NSMutableDictionary dictionary];
+        
+        if ((value = [profile valueForKey:@"iconUrl"]))
+            [self.profile setObject:value forKey:@"iconUrl"];
+        if ((value = [profile valueForKey:@"motto"]))
+            [self.profile setObject:value forKey:@"motto"];
+        
+        if ((value = [profile valueForKey:@"activityText"]))
+            [self.profile setObject:value forKey:@"activityText"];
+        if ((value = [profile valueForKey:@"activityTitleIconUrl"]))
+            [self.profile setObject:value forKey:@"activityTitleIconUrl"];
+        if ((value = [profile valueForKey:@"activityTitleName"]))
+            [self.profile setObject:value forKey:@"activityTitleName"];
+        if ((value = [profile valueForKey:@"activityTitleId"]))
+            [self.profile setObject:value forKey:@"activityTitleId"];
         
         for (NSString *column in statSectionColumns)
         {
-            id value;
             if ((value = [profile valueForKey:column]))
                 [self.profile setObject:value forKey:column];
         }
@@ -483,6 +627,35 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
         {
             profileStatus = STATUS_FRIEND;
         }
+    }
+    
+    // Beacons
+    
+    entityDescription = [NSEntityDescription entityForName:@"XboxFriendBeacon"
+                                    inManagedObjectContext:managedObjectContext];
+    
+    predicate = [NSPredicate predicateWithFormat:@"friend.uid == %@ AND friend.profile.uuid == %@",
+                 self.profileScreenName, self.account.uuid];
+    request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSArray *beacons = [managedObjectContext executeFetchRequest:request 
+                                                           error:nil];
+    
+    [request release];
+    
+    [self.beacons removeAllObjects];
+    
+    for (NSManagedObject *beacon in beacons)
+    {
+        [self.beacons addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [beacon valueForKey:@"gameBoxArtUrl"], @"gameBoxArtUrl",
+                                 [beacon valueForKey:@"gameName"], @"gameName",
+                                 [beacon valueForKey:@"gameUid"], @"gameUid",
+                                 [beacon valueForKey:@"message"], @"message",
+                                 nil]];
     }
     
     [tableView reloadData];

@@ -127,6 +127,8 @@
 		FEB204CC14A07E36005EFA25 /* toolbarCompareGames.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB204CA14A07E35005EFA25 /* toolbarCompareGames.png */; };
 		FEB204CD14A07E36005EFA25 /* toolbarCompareGames@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEB204CB14A07E35005EFA25 /* toolbarCompareGames@2x.png */; };
 		FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14013E6404900095480 /* GTMNSString+HTML.m */; };
+		FEB4EC9A14B44C5500473BEB /* BeaconInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEB4EC9914B44C5500473BEB /* BeaconInfoCell.xib */; };
+		FEB4EC9E14B44D5800473BEB /* BeaconInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB4EC9D14B44D5800473BEB /* BeaconInfoCell.m */; };
 		FEC24B76149B31F3008058BF /* ProfileStatusCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */; };
 		FEC24B79149B3400008058BF /* ProfileStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC24B78149B3400008058BF /* ProfileStatusCell.m */; };
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
@@ -163,6 +165,12 @@
 		FEE0283A14A577FD003B3DBF /* FriendsOfFriendController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0283914A577FD003B3DBF /* FriendsOfFriendController.m */; };
 		FEEE7CF31493CAF8009F475C /* MessageCompositionController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEE7CF11493CAF8009F475C /* MessageCompositionController.m */; };
 		FEEE7CF41493CAF8009F475C /* MessageCompositionController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEE7CF21493CAF8009F475C /* MessageCompositionController.xib */; };
+		FEEF0B0914B45851002877F5 /* beacon_off.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF0B0514B45851002877F5 /* beacon_off.png */; };
+		FEEF0B0A14B45851002877F5 /* beacon_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF0B0614B45851002877F5 /* beacon_off@2x.png */; };
+		FEEF0B0B14B45851002877F5 /* beacon_on.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF0B0714B45851002877F5 /* beacon_on.png */; };
+		FEEF0B0C14B45851002877F5 /* beacon_on@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEEF0B0814B45851002877F5 /* beacon_on@2x.png */; };
+		FEEF0B0F14B45D2E002877F5 /* ActivityInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEEF0B0E14B45D2E002877F5 /* ActivityInfoCell.xib */; };
+		FEEF0B1214B45DA0002877F5 /* ActivityInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEEF0B1114B45DA0002877F5 /* ActivityInfoCell.m */; };
 		FEFCD56114A643E00018F05D /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEFCD56014A643E00018F05D /* MessageCell.m */; };
 		FEFCD57414A716230018F05D /* unreadMarker.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57214A716230018F05D /* unreadMarker.png */; };
 		FEFCD57514A716230018F05D /* unreadMarker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57314A716230018F05D /* unreadMarker@2x.png */; };
@@ -364,6 +372,9 @@
 		FEB3E13E13E6404900095480 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		FEB3E13F13E6404900095480 /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		FEB3E14013E6404900095480 /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		FEB4EC9914B44C5500473BEB /* BeaconInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BeaconInfoCell.xib; sourceTree = "<group>"; };
+		FEB4EC9C14B44D5800473BEB /* BeaconInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconInfoCell.h; sourceTree = "<group>"; };
+		FEB4EC9D14B44D5800473BEB /* BeaconInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconInfoCell.m; sourceTree = "<group>"; };
 		FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileStatusCell.xib; sourceTree = "<group>"; };
 		FEC24B77149B3400008058BF /* ProfileStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileStatusCell.h; sourceTree = "<group>"; };
 		FEC24B78149B3400008058BF /* ProfileStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileStatusCell.m; sourceTree = "<group>"; };
@@ -414,6 +425,13 @@
 		FEEE7CF01493CAF8009F475C /* MessageCompositionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCompositionController.h; sourceTree = "<group>"; };
 		FEEE7CF11493CAF8009F475C /* MessageCompositionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageCompositionController.m; sourceTree = "<group>"; };
 		FEEE7CF21493CAF8009F475C /* MessageCompositionController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MessageCompositionController.xib; path = ../Controllers/MessageCompositionController.xib; sourceTree = "<group>"; };
+		FEEF0B0514B45851002877F5 /* beacon_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beacon_off.png; sourceTree = "<group>"; };
+		FEEF0B0614B45851002877F5 /* beacon_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beacon_off@2x.png"; sourceTree = "<group>"; };
+		FEEF0B0714B45851002877F5 /* beacon_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beacon_on.png; sourceTree = "<group>"; };
+		FEEF0B0814B45851002877F5 /* beacon_on@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "beacon_on@2x.png"; sourceTree = "<group>"; };
+		FEEF0B0E14B45D2E002877F5 /* ActivityInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivityInfoCell.xib; sourceTree = "<group>"; };
+		FEEF0B1014B45DA0002877F5 /* ActivityInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityInfoCell.h; sourceTree = "<group>"; };
+		FEEF0B1114B45DA0002877F5 /* ActivityInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityInfoCell.m; sourceTree = "<group>"; };
 		FEFCD55F14A643E00018F05D /* MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCell.h; sourceTree = "<group>"; };
 		FEFCD56014A643E00018F05D /* MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageCell.m; sourceTree = "<group>"; };
 		FEFCD57214A716230018F05D /* unreadMarker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unreadMarker.png; sourceTree = "<group>"; };
@@ -450,6 +468,10 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FEEF0B0514B45851002877F5 /* beacon_off.png */,
+				FEEF0B0614B45851002877F5 /* beacon_off@2x.png */,
+				FEEF0B0714B45851002877F5 /* beacon_on.png */,
+				FEEF0B0814B45851002877F5 /* beacon_on@2x.png */,
 				FE0DBD3214B18BC0001E7B4D /* msp.png */,
 				FE0DBD3314B18BC0001E7B4D /* msp@2x.png */,
 				FE3CB75C14AD6D41007EF7D8 /* xboxStatusNotOk.png */,
@@ -752,6 +774,10 @@
 		FE993D50149881880075882C /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FEEF0B1014B45DA0002877F5 /* ActivityInfoCell.h */,
+				FEEF0B1114B45DA0002877F5 /* ActivityInfoCell.m */,
+				FEB4EC9C14B44D5800473BEB /* BeaconInfoCell.h */,
+				FEB4EC9D14B44D5800473BEB /* BeaconInfoCell.m */,
 				FE8ECB6414A4884700A6E2D2 /* CompareAchievementCell.h */,
 				FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */,
 				FE8BA7FA14A1BB710020D389 /* CompareGameCell.h */,
@@ -805,6 +831,8 @@
 				FE993D671499E77C0075882C /* ProfileRatingCell.xib */,
 				FEC24B75149B31F3008058BF /* ProfileStatusCell.xib */,
 				FE3CB75814AD3427007EF7D8 /* XboxLiveStatusCell.xib */,
+				FEB4EC9914B44C5500473BEB /* BeaconInfoCell.xib */,
+				FEEF0B0E14B45D2E002877F5 /* ActivityInfoCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -999,6 +1027,12 @@
 				FE0DBD2A14AEFEAD001E7B4D /* ProfileOptionsCell.xib in Resources */,
 				FE0DBD3414B18BC0001E7B4D /* msp.png in Resources */,
 				FE0DBD3514B18BC0001E7B4D /* msp@2x.png in Resources */,
+				FEB4EC9A14B44C5500473BEB /* BeaconInfoCell.xib in Resources */,
+				FEEF0B0914B45851002877F5 /* beacon_off.png in Resources */,
+				FEEF0B0A14B45851002877F5 /* beacon_off@2x.png in Resources */,
+				FEEF0B0B14B45851002877F5 /* beacon_on.png in Resources */,
+				FEEF0B0C14B45851002877F5 /* beacon_on@2x.png in Resources */,
+				FEEF0B0F14B45D2E002877F5 /* ActivityInfoCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1085,6 +1119,8 @@
 				FE3CB76B14ADB7A8007EF7D8 /* RoundedCornerView.m in Sources */,
 				FE0DBD2714AEF4D0001E7B4D /* ProfileCell.m in Sources */,
 				FE0DBD2D14AF028A001E7B4D /* ProfileOptionsCell.m in Sources */,
+				FEB4EC9E14B44D5800473BEB /* BeaconInfoCell.m in Sources */,
+				FEEF0B1214B45DA0002877F5 /* ActivityInfoCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

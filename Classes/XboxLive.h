@@ -19,5 +19,6 @@ typedef enum _XBLFriendStatus
 } XBLFriendStatus;
 
 +(NSString*)descriptionFromFriendStatus:(XBLFriendStatus)status;
++(BOOL)isPlayable:(NSString*)titleId;
 
 @end
