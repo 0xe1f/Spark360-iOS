@@ -117,10 +117,10 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSDictionary*)parseSyncMessageWithUid:(NSString*)uid
                              forAccount:(XboxLiveAccount*)account
                                   error:(NSError**)error;
--(NSArray*)parseLoadBeaconsForScreenName:(NSString*)screenName
-                                 account:(XboxLiveAccount*)account
-                       verificationToken:(NSString*)token
-                                   error:(NSError**)error;
+-(NSArray*)parseJumpInListForScreenName:(NSString*)screenName
+                                account:(XboxLiveAccount*)account
+                      verificationToken:(NSString*)token
+                                  error:(NSError**)error;
 
 +(NSError*)errorWithCode:(NSInteger)code
                  message:(NSString*)message;
@@ -2507,13 +2507,45 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     NSString *vtoken = [self tokenFromContents:friendProfilePage];
     if (vtoken)
     {
-        NSArray *beacons = [self parseLoadBeaconsForScreenName:uid
-                                                       account:account
-                                             verificationToken:vtoken
-                                                         error:nil];
+        NSArray *jumpInItems = [self parseJumpInListForScreenName:uid
+                                                          account:account
+                                                verificationToken:vtoken
+                                                            error:nil];
         
-        if (beacons)
+        if (jumpInItems)
+        {
+            if ([jumpInItems count] > 0)
+            {
+                NSDictionary *item = [jumpInItems objectAtIndex:0];
+                NSDictionary *lastActivity = [NSDictionary dictionaryWithObjectsAndKeys:
+                                              [item objectForKey:@"gameUid"], @"activityTitleId",
+                                              [item objectForKey:@"gameName"], @"activityTitleName",
+                                              [item objectForKey:@"gameBoxArtUrl"], @"activityTitleIconUrl",
+                                              nil];
+                
+                [friend setObject:lastActivity forKey:@"lastActivity"];
+            }
+            
+            NSMutableArray *beacons = [NSMutableArray arrayWithCapacity:3];
             [friend setObject:beacons forKey:@"beacons"];
+            
+            for (NSDictionary *item in jumpInItems)
+            {
+                if ([[item objectForKey:@"isBeacon"] boolValue])
+                {
+                    NSString *message = [item objectForKey:@"message"];
+                    if (!message)
+                        message = @"";
+                    
+                    [beacons addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                        [item objectForKey:@"gameUid"], @"gameUid",
+                                        [item objectForKey:@"gameName"], @"gameName",
+                                        [item objectForKey:@"gameBoxArtUrl"], @"gameBoxArtUrl",
+                                        [item objectForKey:@"message"], @"message",
+                                        nil]];
+                }
+            }
+        }
     }
     
     NSLog(@"parseFriendProfile: %.04f", 
@@ -2522,10 +2554,10 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return friend;
 }
 
--(NSArray*)parseLoadBeaconsForScreenName:(NSString*)screenName
-                                 account:(XboxLiveAccount*)account
-                       verificationToken:(NSString*)token
-                                   error:(NSError**)error
+-(NSArray*)parseJumpInListForScreenName:(NSString*)screenName
+                                account:(XboxLiveAccount*)account
+                      verificationToken:(NSString*)token
+                                  error:(NSError**)error
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -2551,7 +2583,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     if (!data)
         return nil;
     
-    NSMutableArray *beacons = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray *jumpInList = [[[NSMutableArray alloc] init] autorelease];
     
     for (NSDictionary *activity in data) 
     {
@@ -2559,28 +2591,33 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         if (!(gameUid = [activity objectForKey:@"titleId"]))
             continue;
         
+        BOOL isBeacon = NO;
+        NSString *beaconMessage = nil;
+        
         NSDictionary *beaconObj;
-        if ([(beaconObj = [activity objectForKey:@"beacon"]) isKindOfClass:[NSNull class]])
-            continue;
+        if (![(beaconObj = [activity objectForKey:@"beacon"]) isKindOfClass:[NSNull class]])
+        {
+            isBeacon = YES;
+            beaconMessage = [beaconObj objectForKey:@"text"];
+        }
         
-        NSString *message;
-        if (!(message = [beaconObj objectForKey:@"text"]))
-            message = @"";
+        NSMutableDictionary *item = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                     [gameUid stringValue], @"gameUid", 
+                                     [activity objectForKey:@"titleName"], @"gameName",
+                                     [self getBoxArtForTitleId:gameUid largeBoxArt:NO], @"gameBoxArtUrl",
+                                     [NSNumber numberWithBool:isBeacon], @"isBeacon",
+                                     nil];
         
-        NSDictionary *beacon = [NSDictionary dictionaryWithObjectsAndKeys:
-                                [gameUid stringValue], @"gameUid", 
-                                [activity objectForKey:@"titleName"], @"gameName",
-                                [self getBoxArtForTitleId:gameUid largeBoxArt:NO], @"gameBoxArtUrl",
-                                message, @"message",
-                                nil];
+        if (beaconMessage)
+            [item setObject:beaconMessage forKey:@"message"];
         
-        [beacons addObject:beacon];
+        [jumpInList addObject:item];
     }
     
-    NSLog(@"parseLoadBeaconsForScreenName: %.04f", 
+    NSLog(@"parseLoadJumpInListForScreenName: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
     
-    return beacons;
+    return jumpInList;
 }
 
 -(NSDictionary*)parseProfileWithScreenName:(NSString*)screenName
@@ -4468,9 +4505,12 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
             for (NSManagedObject *obj in matchingBeacons)
                 [self.context deleteObject:obj];
             
+            NSInteger listOrder = 0;
             NSManagedObject *beacon;
+            
             for (NSDictionary *inBeacon in inBeacons)
             {
+                listOrder++;
                 beacon = [NSEntityDescription insertNewObjectForEntityForName:@"XboxFriendBeacon"
                                                        inManagedObjectContext:self.context];
                 
@@ -4479,6 +4519,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                 [beacon setValue:[inBeacon objectForKey:@"gameName"] forKey:@"gameName"];
                 [beacon setValue:[inBeacon objectForKey:@"gameUid"] forKey:@"gameUid"];
                 [beacon setValue:[inBeacon objectForKey:@"message"] forKey:@"message"];
+                [beacon setValue:[NSNumber numberWithInteger:listOrder] forKey:@"listOrder"];
             }
         }
         

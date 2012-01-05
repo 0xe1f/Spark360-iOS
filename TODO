@@ -1,6 +1,5 @@
 ! ImageCache'r considerably slows list scrolling. Improve performance
 ! MessageCompositionController crashes on simulated memory warnings
-! Icons missing for game details bar icon (list, compare)
 ! Icons missing for live status
 
 Compare:
@@ -19,6 +18,10 @@ Friends:
   problems when friends list changes. Figure out a way to properly handle errors,
   and possibly redraw
 * Add avatars to profiles
+
+Games:
+
+* Add stock icon for Xbox.com
 
 All:
 

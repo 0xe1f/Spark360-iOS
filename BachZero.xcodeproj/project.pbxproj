@@ -113,6 +113,11 @@
 		FE993D8B1499F6B20075882C /* ProfileLargeTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */; };
 		FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */; };
 		FE9E371713F8EA5C00A6EE36 /* UITableViewTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */; };
+		FE9FAA9F14B57265000ACBC0 /* toolbarFindProfile.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9FAA9B14B57265000ACBC0 /* toolbarFindProfile.png */; };
+		FE9FAAA014B57265000ACBC0 /* toolbarFindProfile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9FAA9C14B57265000ACBC0 /* toolbarFindProfile@2x.png */; };
+		FE9FAAA114B57265000ACBC0 /* toolbarGameInfo.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9FAA9D14B57265000ACBC0 /* toolbarGameInfo.png */; };
+		FE9FAAA214B57265000ACBC0 /* toolbarGameInfo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE9FAA9E14B57265000ACBC0 /* toolbarGameInfo@2x.png */; };
+		FE9FAAA614B577BC000ACBC0 /* GenericProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE9FAAA514B577BC000ACBC0 /* GenericProfileController.m */; };
 		FEA247FE148F5F91003D87C5 /* MessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA247FC148F5F90003D87C5 /* MessageListController.m */; };
 		FEA24801148F6019003D87C5 /* MessageListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24800148F6019003D87C5 /* MessageListController.xib */; };
 		FEA24803148F62B6003D87C5 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24802148F62B6003D87C5 /* MessageCell.xib */; };
@@ -354,6 +359,12 @@
 		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
 		FE9E371513F8EA5C00A6EE36 /* UITableViewTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewTextFieldCell.h; sourceTree = "<group>"; };
 		FE9E371613F8EA5C00A6EE36 /* UITableViewTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewTextFieldCell.m; sourceTree = "<group>"; };
+		FE9FAA9B14B57265000ACBC0 /* toolbarFindProfile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toolbarFindProfile.png; sourceTree = "<group>"; };
+		FE9FAA9C14B57265000ACBC0 /* toolbarFindProfile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbarFindProfile@2x.png"; sourceTree = "<group>"; };
+		FE9FAA9D14B57265000ACBC0 /* toolbarGameInfo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toolbarGameInfo.png; sourceTree = "<group>"; };
+		FE9FAA9E14B57265000ACBC0 /* toolbarGameInfo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbarGameInfo@2x.png"; sourceTree = "<group>"; };
+		FE9FAAA414B577BB000ACBC0 /* GenericProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericProfileController.h; sourceTree = "<group>"; };
+		FE9FAAA514B577BC000ACBC0 /* GenericProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericProfileController.m; sourceTree = "<group>"; };
 		FEA247FB148F5F90003D87C5 /* MessageListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListController.h; sourceTree = "<group>"; };
 		FEA247FC148F5F90003D87C5 /* MessageListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListController.m; sourceTree = "<group>"; };
 		FEA24800148F6019003D87C5 /* MessageListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageListController.xib; sourceTree = "<group>"; };
@@ -468,6 +479,10 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				FE9FAA9B14B57265000ACBC0 /* toolbarFindProfile.png */,
+				FE9FAA9C14B57265000ACBC0 /* toolbarFindProfile@2x.png */,
+				FE9FAA9D14B57265000ACBC0 /* toolbarGameInfo.png */,
+				FE9FAA9E14B57265000ACBC0 /* toolbarGameInfo@2x.png */,
 				FEEF0B0514B45851002877F5 /* beacon_off.png */,
 				FEEF0B0614B45851002877F5 /* beacon_off@2x.png */,
 				FEEF0B0714B45851002877F5 /* beacon_on.png */,
@@ -609,6 +624,8 @@
 				FE8C9B4214AAFE21008DACAB /* GameOverviewController.m */,
 				FE041176149362F80010C898 /* GenericController.h */,
 				FE041177149363040010C898 /* GenericController.m */,
+				FE9FAAA414B577BB000ACBC0 /* GenericProfileController.h */,
+				FE9FAAA514B577BC000ACBC0 /* GenericProfileController.m */,
 				FEC602A814949D3B00DD3849 /* GenericTableViewController.h */,
 				FEC602A914949D3B00DD3849 /* GenericTableViewController.m */,
 				FE3CB74C14AC86CE007EF7D8 /* ImageViewController.h */,
@@ -1033,6 +1050,10 @@
 				FEEF0B0B14B45851002877F5 /* beacon_on.png in Resources */,
 				FEEF0B0C14B45851002877F5 /* beacon_on@2x.png in Resources */,
 				FEEF0B0F14B45D2E002877F5 /* ActivityInfoCell.xib in Resources */,
+				FE9FAA9F14B57265000ACBC0 /* toolbarFindProfile.png in Resources */,
+				FE9FAAA014B57265000ACBC0 /* toolbarFindProfile@2x.png in Resources */,
+				FE9FAAA114B57265000ACBC0 /* toolbarGameInfo.png in Resources */,
+				FE9FAAA214B57265000ACBC0 /* toolbarGameInfo@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1121,6 +1142,7 @@
 				FE0DBD2D14AF028A001E7B4D /* ProfileOptionsCell.m in Sources */,
 				FEB4EC9E14B44D5800473BEB /* BeaconInfoCell.m in Sources */,
 				FEEF0B1214B45DA0002877F5 /* ActivityInfoCell.m in Sources */,
+				FE9FAAA614B577BC000ACBC0 /* GenericProfileController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

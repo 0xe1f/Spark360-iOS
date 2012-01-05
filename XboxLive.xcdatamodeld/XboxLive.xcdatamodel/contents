@@ -42,6 +42,7 @@
         <attribute name="gameBoxArtUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gameName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gameUid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="listOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="friend" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="XboxFriend" syncable="YES"/>
     </entity>
@@ -99,9 +100,9 @@
     <elements>
         <element name="XboxAchievement" positionX="160" positionY="192" width="128" height="210"/>
         <element name="XboxFriend" positionX="160" positionY="192" width="128" height="390"/>
+        <element name="XboxFriendBeacon" positionX="160" positionY="192" width="128" height="135"/>
         <element name="XboxGame" positionX="-162" positionY="201" width="128" height="240"/>
         <element name="XboxMessage" positionX="160" positionY="192" width="128" height="255"/>
         <element name="XboxProfile" positionX="160" positionY="192" width="128" height="315"/>
-        <element name="XboxFriendBeacon" positionX="160" positionY="192" width="128" height="120"/>
     </elements>
 </model>

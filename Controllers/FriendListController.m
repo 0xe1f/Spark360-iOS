@@ -177,8 +177,8 @@
         return;
     }
     
-    FriendProfileController *ctlr = [[FriendProfileController alloc] initWithFriendUid:[friend valueForKey:@"uid"]
-                                                                               account:self.account];
+    FriendProfileController *ctlr = [[FriendProfileController alloc] initWithScreenName:[friend valueForKey:@"uid"]
+                                                                                account:self.account];
     
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];

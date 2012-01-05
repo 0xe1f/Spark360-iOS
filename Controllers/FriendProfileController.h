@@ -8,27 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-#import "GenericController.h"
-#import "ProfileInfoCell.h"
+#import "GenericProfileController.h"
 
-@interface FriendProfileController : GenericController<UIActionSheetDelegate, UITableViewDataSource>
+@interface FriendProfileController : GenericProfileController<UIActionSheetDelegate>
 
-@property (nonatomic, retain) IBOutlet UITableView *tableView;
-
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *composeButton;
-
-@property (nonatomic, retain) NSMutableDictionary *profile;
-@property (nonatomic, retain) NSMutableArray *beacons;
-@property (nonatomic, retain) NSString *profileScreenName;
-
--(NSString*)valueOrEmptyString:(NSString*)value;
-
--(id)initWithFriendUid:(NSString*)uid
-               account:(XboxLiveAccount*)account;
+-(id)initWithScreenName:(NSString*)screenName
+                account:(XboxLiveAccount*)account;
 
 -(IBAction)refresh:(id)sender;
--(IBAction)compareGames:(id)sender;
--(IBAction)compose:(id)sender;
 -(IBAction)showActionMenu:(id)sender;
 -(IBAction)viewFriends:(id)sender;
 
