@@ -84,6 +84,7 @@
 		FE8ECB6614A4884700A6E2D2 /* CompareAchievementCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */; };
 		FE8ECB6A14A4892F00A6E2D2 /* CompareAchievementCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */; };
 		FE8ECB6C14A48EDC00A6E2D2 /* CompareAchievementsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */; };
+		FE8ED30414B6CAB8004EF96D /* AKImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8ED30314B6CAB8004EF96D /* AKImageCache.m */; };
 		FE8F26B514A858B000C82006 /* ContactButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8F26B414A858B000C82006 /* ContactButton.m */; };
 		FE908A6C14AB82C000FD51CF /* ScreenshotGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE908A6B14AB82C000FD51CF /* ScreenshotGridViewCell.m */; };
 		FE92D6D4149CA39300A7D6A5 /* xboxDefaultBoxart.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */; };
@@ -323,6 +324,8 @@
 		FE8ECB6514A4884700A6E2D2 /* CompareAchievementCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompareAchievementCell.m; sourceTree = "<group>"; };
 		FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CompareAchievementCell.xib; sourceTree = "<group>"; };
 		FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CompareAchievementsController.xib; sourceTree = "<group>"; };
+		FE8ED30214B6CAB8004EF96D /* AKImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AKImageCache.h; sourceTree = "<group>"; };
+		FE8ED30314B6CAB8004EF96D /* AKImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKImageCache.m; sourceTree = "<group>"; };
 		FE8F26B314A858B000C82006 /* ContactButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactButton.h; sourceTree = "<group>"; };
 		FE8F26B414A858B000C82006 /* ContactButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactButton.m; sourceTree = "<group>"; };
 		FE908A6A14AB82C000FD51CF /* ScreenshotGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotGridViewCell.h; sourceTree = "<group>"; };
@@ -581,6 +584,8 @@
 				FE8CA92214745AED00A5C9EA /* AppPreferences.m */,
 				FE610D2F13EDD8A700420372 /* ImageCache.h */,
 				FE610D3013EDD8A700420372 /* ImageCache.m */,
+				FE8ED30214B6CAB8004EF96D /* AKImageCache.h */,
+				FE8ED30314B6CAB8004EF96D /* AKImageCache.m */,
 				FE610D3313EE125700420372 /* ImageCacheOperation.h */,
 				FE610D3413EE125700420372 /* ImageCacheOperation.m */,
 				FEC84023148C2F2C005BC782 /* TaskController.h */,
@@ -1143,6 +1148,7 @@
 				FEB4EC9E14B44D5800473BEB /* BeaconInfoCell.m in Sources */,
 				FEEF0B1214B45DA0002877F5 /* ActivityInfoCell.m in Sources */,
 				FE9FAAA614B577BC000ACBC0 /* GenericProfileController.m in Sources */,
+				FE8ED30414B6CAB8004EF96D /* AKImageCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

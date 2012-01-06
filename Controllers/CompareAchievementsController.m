@@ -9,7 +9,6 @@
 #import "CompareAchievementsController.h"
 
 #import "TaskController.h"
-#import "ImageCache.h"
 #import "CompareAchievementCell.h"
 
 #import "GameOverviewController.h"
@@ -174,9 +173,8 @@
         
         cell.yourAcquired.text = unlockedText;
         
-        UIImage *icon = [[ImageCache sharedInstance] getCachedFile:[achievement objectForKey:@"iconUrl"]
-                                                      notifyObject:self
-                                                    notifySelector:@selector(imageLoaded:)];
+        UIImage *icon = [self tableCellImageFromUrl:[achievement objectForKey:@"iconUrl"]
+                                          indexPath:indexPath];
         
         cell.icon.image = icon;
     }
@@ -200,12 +198,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark - Notifications
-
-- (void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
-}
 
 -(void)achievementsCompared:(NSNotification *)notification
 {

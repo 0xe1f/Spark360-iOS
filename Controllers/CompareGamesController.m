@@ -10,7 +10,6 @@
 
 #import "CompareAchievementsController.h"
 #import "TaskController.h"
-#import "ImageCache.h"
 #import "CompareGameCell.h"
 
 @implementation CompareGamesController
@@ -135,10 +134,9 @@
                                     [self.numberFormatter stringFromNumber:[game objectForKey:@"gamerScoreTotal"]]];
         
         // Boxart
-        UIImage *boxArt = [[ImageCache sharedInstance] getCachedFile:[game objectForKey:@"boxArtUrl"]
-                                                            cropRect:CGRectMake(0, 16, 85, 85)
-                                                        notifyObject:self
-                                                      notifySelector:@selector(imageLoaded:)];
+        UIImage *boxArt = [self tableCellImageFromUrl:[game objectForKey:@"boxArtUrl"]
+                                             cropRect:CGRectMake(0, 16, 85, 85)
+                                            indexPath:indexPath];
         
         cell.boxArt.image = boxArt;
     }
@@ -160,12 +158,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark - Notifications
-
-- (void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
-}
 
 -(void)gamesCompared:(NSNotification *)notification
 {

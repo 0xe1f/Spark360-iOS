@@ -31,6 +31,15 @@
 
 -(NSString*)inputDialogText:(UIAlertView*)alertView;
 
--(void)onSyncError:(NSNotification *)notification;
+-(void)onSyncError:(NSNotification*)notification;
+
+-(UIImage*)imageFromUrl:(NSString*)url
+              parameter:(id)parameter;
+-(UIImage*)imageFromUrl:(NSString*)url
+               cropRect:(CGRect)cropRect
+              parameter:(id)parameter;
+
+-(void)receivedImage:(NSString*)url
+           parameter:(id)parameter;
 
 @end

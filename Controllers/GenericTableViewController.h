@@ -19,6 +19,12 @@
 @property (nonatomic, assign) IBOutlet UITableView *tableView;
 @property (nonatomic, assign) IBOutlet UITableViewCell *tableViewCell;
 
+-(UIImage*)tableCellImageFromUrl:(NSString*)url
+                       indexPath:(NSIndexPath*)indexPath;
+-(UIImage*)tableCellImageFromUrl:(NSString*)url
+                        cropRect:(CGRect)cropRect
+                       indexPath:(NSIndexPath*)indexPath;
+
 -(void)refreshUsingRefreshHeaderTableView;
 -(void)hideRefreshHeaderTableView;
 

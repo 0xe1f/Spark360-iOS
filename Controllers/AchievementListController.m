@@ -8,7 +8,6 @@
 
 #import "AchievementListController.h"
 
-#import "ImageCache.h"
 #import "TaskController.h"
 #import "XboxLiveParser.h"
 
@@ -41,8 +40,13 @@
 {
     NSLog(@"Got sync completed notification");
     
-    [self updateGameStats];
-    [self hideRefreshHeaderTableView];
+    if ([self.account isEqualToAccount:[notification.userInfo objectForKey:BACHNotificationAccount]])
+    {
+        [self updateGameStats];
+        [self hideRefreshHeaderTableView];
+        
+        [self.tableView reloadData];
+    }
 }
 
 -(id)initWithAccount:(XboxLiveAccount*)account
@@ -248,18 +252,11 @@
     // Icon
 
     UIImageView *view = (UIImageView*)[cell viewWithTag:7];
-    UIImage *icon = [[ImageCache sharedInstance] getCachedFile:[managedObject valueForKey:@"iconUrl"]
-                                                  notifyObject:self
-                                                notifySelector:@selector(imageLoaded:)];
+    UIImage *icon = [self tableCellImageFromUrl:[managedObject valueForKey:@"iconUrl"]
+                                      indexPath:indexPath];
     
     [view setImage:icon];
     [view setClipsToBounds:YES];
-}
-
--(void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
 }
 
 #pragma mark - Fetched results controller

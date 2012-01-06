@@ -9,7 +9,6 @@
 #import "RecentPlayersController.h"
 
 #import "TaskController.h"
-#import "ImageCache.h"
 #import "PlayerCell.h"
 
 #import "ProfileController.h"
@@ -122,14 +121,12 @@
         playerCell.activity.text = [player objectForKey:@"activityText"];
         playerCell.gamerScore.text = [NSString localizedStringWithFormat:[self.numberFormatter stringFromNumber:[player objectForKey:@"gamerScore"]]];
         
-        UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[player objectForKey:@"iconUrl"]
-                                                          notifyObject:self
-                                                        notifySelector:@selector(imageLoaded:)];
+        UIImage *gamerpic = [self tableCellImageFromUrl:[player objectForKey:@"iconUrl"]
+                                              indexPath:indexPath];
         
-        UIImage *boxArt = [[ImageCache sharedInstance] getCachedFile:[player objectForKey:@"activityTitleIconUrl"]
-                                                            cropRect:CGRectMake(0,16,85,85)
-                                                        notifyObject:self
-                                                      notifySelector:@selector(imageLoaded:)];
+        UIImage *boxArt = [self tableCellImageFromUrl:[player objectForKey:@"activityTitleIconUrl"]
+                                             cropRect:CGRectMake(0,16,85,85)
+                                            indexPath:indexPath];
         
         playerCell.gamerpic.image = gamerpic;
         playerCell.titleIcon.image = boxArt;
@@ -150,12 +147,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark - Notifications
-
-- (void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
-}
 
 -(void)playersLoaded:(NSNotification *)notification
 {

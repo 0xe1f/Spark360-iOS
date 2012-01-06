@@ -6,34 +6,53 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "ImageCache2.h"
+#import "AKImageCache.h"
+
+NSString* const AKImageRetrieved = @"BachCacheImageRetrieved";
+
+NSString* const AKImageUrl = @"url";
+NSString* const AKImageRequestor = @"requestor";
+NSString* const AKImageParameter = @"parameter";
 
 #pragma mark ImageCacheOperation
 
-@interface ImageCacheOperation : NSOperation
+@interface ImageCacheOp : NSOperation
 
 - (id)initWithUrl:(NSString*)url
        outputFile:(NSString*)outputFile
-         cropRect:(CGRect)rect;
+         cropRect:(CGRect)rect
+        requestor:(id)requestor
+        parameter:(id)parameter;
+
+@property (nonatomic, copy) NSString *outputFile;
+@property (nonatomic, copy) NSString *url;
+@property (nonatomic, assign) CGRect cropRect;
+@property (nonatomic, retain) id requestor;
+@property (nonatomic, retain) id parameter;
 
 @end
 
-@implementation ImageCacheOperation
-{
-    NSString *_url;
-    NSString *_outputFile;
-    CGRect _cropRect;
-}
+@implementation ImageCacheOp
+
+@synthesize outputFile = _outputFile;
+@synthesize url = _url;
+@synthesize cropRect = _cropRect;
+@synthesize requestor = _requestor;
+@synthesize parameter = _parameter;
 
 - (id)initWithUrl:(NSString*)url
        outputFile:(NSString*)outputFile
          cropRect:(CGRect)cropRect
+        requestor:(id)requestor 
+        parameter:(id)parameter
 {
     if (self = [super init]) 
     {
-        _url = [url copy];
-        _outputFile = [outputFile copy];
-        _cropRect = cropRect;
+        self.url = url;
+        self.outputFile = outputFile;
+        self.cropRect = cropRect;
+        self.requestor = requestor;
+        self.parameter = parameter;
     }
     
     return self;
@@ -41,8 +60,10 @@
 
 - (void)dealloc
 {
-    [_url release];
-    [_outputFile release];
+    self.url = nil;
+    self.outputFile = nil;
+    self.requestor = nil;
+    self.parameter = nil;
     
     [super dealloc];
 }
@@ -53,62 +74,67 @@
         return;
     
     NSError *error = NULL;
-    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:_url]];
+    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.url]];
     
-    if (data)
+    if (!data)
     {
-        if (!CGRectIsNull(_cropRect))
+        NSLog(@"** %@ is null", self.url);
+        return;
+    }
+    
+    if (!CGRectIsNull(self.cropRect))
+    {
+        UIImage *image = [UIImage imageWithData:data];
+        
+        if (image)
         {
-            UIImage *image = [UIImage imageWithData:data];
+            CGRect intersection = CGRectIntersection(self.cropRect, 
+                                                     CGRectMake(0, 0, 
+                                                                image.size.width, 
+                                                                image.size.height));
             
-            if (image)
+            if (!CGRectIsNull(intersection))
             {
-                CGRect intersection = CGRectIntersection(_cropRect, 
-                                                         CGRectMake(0, 0, image.size.width, image.size.height));
+                CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], intersection);
+                UIImage *cropped = [UIImage imageWithCGImage:imageRef];
+                CGImageRelease(imageRef);
                 
-                if (!CGRectIsNull(intersection))
-                {
-                    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], intersection);
-                    UIImage *cropped = [UIImage imageWithCGImage:imageRef];
-                    CGImageRelease(imageRef);
-                    
-                    data = UIImagePNGRepresentation(cropped);
-                }
+                data = UIImagePNGRepresentation(cropped);
             }
         }
-        
-        if (![data writeToFile:_outputFile 
-                       options:NSDataWritingAtomic
-                         error:&error])
-        {
-            NSLog(@"*** Error writing '%@' to '%@' to cache: %@", 
-                  _url, _outputFile, error.localizedDescription);
-        }
-    }
-    else
-    {
-        NSLog(@"** %@ is null", _url);
     }
     
-// TODO
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ImageLoadedFromWeb"
-                                                        object:self];
+    if (![data writeToFile:self.outputFile 
+                   options:NSDataWritingAtomic
+                     error:&error])
+    {
+        NSLog(@"*** Error writing '%@' to '%@' to cache: %@", 
+              self.url, self.outputFile, error.localizedDescription);
+        
+        return;
+    }
+    
+    [self performSelectorOnMainThread:@selector(postNotification:) 
+                           withObject:nil
+                        waitUntilDone:YES];
 }
 
-- (void)notifyDone
+- (void)postNotification:(id)args
 {
-    if (self->notifySel != nil && self->notifyObj != nil)
-    {
-        [self->notifyObj performSelector:self->notifySel 
-                              withObject:self->url];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:AKImageRetrieved
+                                                        object:self
+                                                      userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                self.url, AKImageUrl,
+                                                                self.requestor, AKImageRequestor,
+                                                                self.parameter, AKImageParameter,
+                                                                nil]];
 }
 
 @end
 
 #pragma mark - ImageCache
 
-@interface ImageCache (Private)
+@interface AKImageCache (Private)
 
 - (NSString*)cacheFilenameForUrl:(NSString*)url;
 - (NSString*)cacheFilenameForUrl:(NSString*)url
@@ -116,7 +142,7 @@
 
 @end
 
-@implementation ImageCache
+@implementation AKImageCache
 {
     NSString *cacheDirectory;
     NSOperationQueue *opQueue;
@@ -124,7 +150,7 @@
     NSRegularExpression *filenameSanitizer;
 }
 
-static ImageCache *sharedInstance = nil;
+static AKImageCache *sharedInstance = nil;
 
 - (id)init
 {
@@ -207,26 +233,26 @@ static ImageCache *sharedInstance = nil;
     return [[NSFileManager defaultManager] fileExistsAtPath:cacheFile];
 }
 
-- (UIImage*)getCachedFile:(NSString*)url
-             notifyObject:(id)notifyObject
-           notifySelector:(SEL)notifySelector;
+- (UIImage*)imageFromUrl:(NSString*)url
+               requestor:(id)requestor
+               parameter:(id)parameter
 {
-    return [self getCachedFile:url
-                      cropRect:CGRectNull
-                  notifyObject:notifyObject
-                notifySelector:notifySelector];
+    return [self imageFromUrl:url
+                     cropRect:CGRectNull
+                    requestor:requestor
+                    parameter:parameter];
 }
 
-- (UIImage*)getCachedFile:(NSString*)url
-                 cropRect:(CGRect)rect
-             notifyObject:(id)notifyObject
-           notifySelector:(SEL)notifySelector;
+- (UIImage*)imageFromUrl:(NSString*)url
+                cropRect:(CGRect)cropRect
+               requestor:(id)requestor
+               parameter:(id)parameter
 {
     if (!url)
         return nil;
     
     NSString *cacheFile = [self cacheFilenameForUrl:url
-                                           cropRect:rect];
+                                           cropRect:cropRect];
     
     // Try the in-memory cache
     UIImage *image;
@@ -242,14 +268,11 @@ static ImageCache *sharedInstance = nil;
         return image;
     }
     
-    if (!notifyObject || !notifySelector)
-        return nil;
-    
     // Load from network
     
     // Make sure we're not already queued
     NSArray *operations = [self->opQueue operations];
-    for (ImageCacheOperation *op in operations) 
+    for (ImageCacheOp *op in operations) 
     {
         if ([op.outputFile isEqualToString:cacheFile])
         {
@@ -259,16 +282,11 @@ static ImageCache *sharedInstance = nil;
     }
     
     // Create a caching op and add it to queue
-    NSOperation *op = [[ImageCacheOperation alloc] initWithURL:url
-                                                    outputFile:cacheFile
-                                                  notifyObject:notifyObject
-                                                notifySelector:notifySelector
-                                                      cropRect:rect];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(operationFinished:) 
-                                                 name:@"ImageLoadedFromWeb"
-                                               object:op];
+    NSOperation *op = [[ImageCacheOp alloc] initWithUrl:url
+                                             outputFile:cacheFile
+                                               cropRect:cropRect
+                                              requestor:requestor
+                                              parameter:parameter];
     
     [self->opQueue addOperation:op];
     [op release];
@@ -276,26 +294,10 @@ static ImageCache *sharedInstance = nil;
     return nil;
 }
 
-- (void)operationFinished:(NSNotification*)n
-{
-    [self performSelectorOnMainThread:@selector(imageLoaded:)
-                           withObject:[n object]
-                        waitUntilDone:NO];
-}
-
-- (void)imageLoaded:(ImageCacheOperation*)op
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:@"ImageLoadedFromWeb"
-                                                  object:op];
-    
-    [op notifyDone];
-}
-
 #pragma mark - Singleton-related
 
 // Get the shared instance and create it if necessary.
-+ (ImageCache*)sharedInstance 
++ (AKImageCache*)sharedInstance 
 {
     if (sharedInstance == nil) 
     {

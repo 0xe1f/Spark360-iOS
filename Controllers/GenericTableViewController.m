@@ -9,7 +9,7 @@
 #import "GenericTableViewController.h"
 
 #import "BachAppDelegate.h"
-#import "ImageCache.h"
+#import "AKImageCache.h"
 #import "TaskController.h"
 
 @implementation GenericTableViewController
@@ -125,6 +125,36 @@
 -(void)hideRefreshHeaderTableView
 {
     [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:_tableView];
+}
+
+#pragma mark - Misc
+
+-(void)receivedImage:(NSString*)url
+           parameter:(id)parameter
+{
+    NSIndexPath *indexPath = (NSIndexPath*)parameter;
+    
+    if ([self.tableView cellForRowAtIndexPath:indexPath])
+    {
+        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                              withRowAnimation:UITableViewRowAnimationNone];
+    }
+}
+
+-(UIImage*)tableCellImageFromUrl:(NSString*)url
+                        cropRect:(CGRect)cropRect
+                       indexPath:(NSIndexPath*)indexPath
+{
+    return [self imageFromUrl:url
+                     cropRect:cropRect
+                    parameter:indexPath];
+}
+
+-(UIImage*)tableCellImageFromUrl:(NSString*)url
+                       indexPath:(NSIndexPath*)indexPath
+{
+    return [self imageFromUrl:url
+                    parameter:indexPath];
 }
 
 @end

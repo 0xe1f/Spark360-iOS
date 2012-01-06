@@ -10,7 +10,6 @@
 
 #import "XboxLive.h"
 #import "TaskController.h"
-#import "ImageCache.h"
 
 #import "FriendProfileController.h"
 #import "RecentPlayersController.h"
@@ -212,17 +211,8 @@
     
     // Gamerpic
     
-    UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[obj valueForKey:@"iconUrl"]
-                                                        notifyObject:self
-                                                      notifySelector:@selector(imageLoaded:)];
-    
-    
-    if (!gamerpic)
-    {
-        NSString *imageName = [[NSBundle mainBundle] pathForResource:@"xboxDefaultGamerpic"
-                                                              ofType:@"png"];
-        gamerpic = [[[UIImage alloc] initWithContentsOfFile:imageName] autorelease];
-    }
+    UIImage *gamerpic = [self tableCellImageFromUrl:[obj valueForKey:@"iconUrl"]
+                                          indexPath:indexPath];
     
     icon = (UIImageView*)[cell viewWithTag:6];
     [icon setImage:gamerpic];
@@ -230,19 +220,12 @@
     // Box art
     
     NSString *boxArtUrl = [obj valueForKey:@"activityTitleIconUrl"];
-    UIImage *boxArt = [[ImageCache sharedInstance] getCachedFile:boxArtUrl
-                                                          cropRect:CGRectMake(0,16,85,85)
-                                                      notifyObject:self
-                                                    notifySelector:@selector(imageLoaded:)];
+    UIImage *boxArt = [self tableCellImageFromUrl:boxArtUrl
+                                         cropRect:CGRectMake(0,16,85,85)
+                                        indexPath:indexPath];
     
     icon = (UIImageView*)[cell viewWithTag:7];
     [icon setImage:boxArt];
-}
-
-- (void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
 }
 
 #pragma mark - Fetched results controller

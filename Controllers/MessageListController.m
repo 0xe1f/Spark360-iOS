@@ -9,7 +9,6 @@
 #import "MessageListController.h"
 
 #import "MessageCell.h"
-#import "ImageCache.h"
 #import "TaskController.h"
 
 #import "MessageCompositionController.h"
@@ -159,12 +158,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     [ctlr release];
 }
 
--(void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
-}
-
 #pragma mark - Fetched results controller
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -308,9 +301,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                       [[managedObject valueForKey:@"hasVoice"] boolValue]);
     messageCell.unreadMarker.hidden = [[managedObject valueForKey:@"isRead"] boolValue];
     
-    UIImage *gamerpic = [[ImageCache sharedInstance] getCachedFile:[managedObject valueForKey:@"senderIconUrl"]
-                                                      notifyObject:self
-                                                    notifySelector:@selector(imageLoaded:)];
+    UIImage *gamerpic = [self tableCellImageFromUrl:[managedObject valueForKey:@"senderIconUrl"]
+                                          indexPath:indexPath];
     
     messageCell.gamerpic.image = gamerpic;
 }

@@ -9,7 +9,6 @@
 #import "GameListController.h"
 
 #import "TaskController.h"
-#import "ImageCache.h"
 #import "XboxLiveParser.h"
 
 #import "AchievementListController.h"
@@ -177,19 +176,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     // Icon
     
     UIImageView *view = (UIImageView*)[cell viewWithTag:6];
-    UIImage *boxArt = [[ImageCache sharedInstance]
-                       getCachedFile:[managedObject valueForKey:@"boxArtUrl"]
-                       cropRect:CGRectMake(0, 16, 85, 85)
-                       notifyObject:self
-                       notifySelector:@selector(imageLoaded:)];
+    UIImage *boxArt = [self tableCellImageFromUrl:[managedObject valueForKey:@"boxArtUrl"]
+                                         cropRect:CGRectMake(0, 16, 85, 85)
+                                        indexPath:indexPath];
     
     [view setImage:boxArt];
-}
-
-- (void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
 }
 
 #pragma mark - Fetched results controller

@@ -3177,6 +3177,29 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return data;
 }
 
+-(NSString *)stripHTML:(NSString*)html
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<br/?>"
+                                                                           options:0
+                                                                             error:NULL];
+    
+    NSString *replacement = [regex stringByReplacingMatchesInString:html
+                                                            options:NSRegularExpressionCaseInsensitive
+                                                              range:NSMakeRange(0, [html length])
+                                                       withTemplate:@"\n"];
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:@"</?[^/>]*/?>"
+                                                      options:0
+                                                        error:NULL];
+    
+    replacement = [regex stringByReplacingMatchesInString:replacement
+                                                  options:0
+                                                    range:NSMakeRange(0, [replacement length])
+                                             withTemplate:@" "];
+    
+    return [replacement gtm_stringByUnescapingFromHTML];
+}
+
 -(NSDictionary*)parseXboxLiveStatus:(NSError**)error
 {
     NSString *url = [NSString stringWithFormat:URL_STATUS, LOCALE];
@@ -3245,8 +3268,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
              
              if (match)
              {
-                 description = [[line substringWithRange:[match rangeAtIndex:1]] 
-                                gtm_stringByUnescapingFromHTML];
+                 description = [self stripHTML:[line substringWithRange:[match rangeAtIndex:1]]];
+                 description = [description stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
              }
              else
              {
