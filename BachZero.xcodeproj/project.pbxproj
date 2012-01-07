@@ -66,6 +66,8 @@
 		FE80A8441495496500040D79 /* XboxLive.m in Sources */ = {isa = PBXBuildFile; fileRef = FE80A8431495496500040D79 /* XboxLive.m */; };
 		FE80A8461495A39300040D79 /* appIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8451495A39300040D79 /* appIcon.png */; };
 		FE80A8481495A39A00040D79 /* appIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8471495A39900040D79 /* appIcon@2x.png */; };
+		FE8B671A14B848DD00C965EC /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8B671914B848DD00C965EC /* Reachability.m */; };
+		FE8B671C14B84BC100C965EC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8B671B14B84BC100C965EC /* SystemConfiguration.framework */; };
 		FE8B691314A59D0200275E41 /* FriendsOfFriendController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8B691214A59D0200275E41 /* FriendsOfFriendController.xib */; };
 		FE8B882C149EA85300F7F92C /* FriendProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8B882B149EA85300F7F92C /* FriendProfileController.xib */; };
 		FE8BA7F414A1B3E90020D389 /* CompareGamesController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8BA7F314A1B3E90020D389 /* CompareGamesController.m */; };
@@ -294,6 +296,9 @@
 		FE80A8431495496500040D79 /* XboxLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLive.m; sourceTree = "<group>"; };
 		FE80A8451495A39300040D79 /* appIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appIcon.png; sourceTree = "<group>"; };
 		FE80A8471495A39900040D79 /* appIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appIcon@2x.png"; sourceTree = "<group>"; };
+		FE8B671814B848DD00C965EC /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		FE8B671914B848DD00C965EC /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		FE8B671B14B84BC100C965EC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FE8B691214A59D0200275E41 /* FriendsOfFriendController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendsOfFriendController.xib; sourceTree = "<group>"; };
 		FE8B882B149EA85300F7F92C /* FriendProfileController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendProfileController.xib; sourceTree = "<group>"; };
 		FE8BA7F214A1B3E90020D389 /* CompareGamesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompareGamesController.h; sourceTree = "<group>"; };
@@ -467,6 +472,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE8B671C14B84BC100C965EC /* SystemConfiguration.framework in Frameworks */,
 				FEC7FA00147908A300537213 /* QuartzCore.framework in Frameworks */,
 				FE8CA91B1474586000A5C9EA /* Security.framework in Frameworks */,
 				FE76A93A13E636A9006D6AFC /* UIKit.framework in Frameworks */,
@@ -725,6 +731,7 @@
 		FE76A92A13E636A9006D6AFC = {
 			isa = PBXGroup;
 			children = (
+				FE8B671B14B84BC100C965EC /* SystemConfiguration.framework */,
 				FE80A8451495A39300040D79 /* appIcon.png */,
 				FE80A8471495A39900040D79 /* appIcon@2x.png */,
 				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
@@ -762,6 +769,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FE8B671614B8489800C965EC /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				FE8B671814B848DD00C965EC /* Reachability.h */,
+				FE8B671914B848DD00C965EC /* Reachability.m */,
+			);
+			path = Reachability;
+			sourceTree = "<group>";
+		};
 		FE8C9ABB14A9C151008DACAB /* TITokenFieldView */ = {
 			isa = PBXGroup;
 			children = (
@@ -779,6 +795,7 @@
 				FE8CA91D1474597C00A5C9EA /* GenericKeychain */,
 				FEB3E13D13E6404900095480 /* GTM */,
 				FE726B4814611E9C00534279 /* JSON */,
+				FE8B671614B8489800C965EC /* Reachability */,
 				FE8C9ABB14A9C151008DACAB /* TITokenFieldView */,
 			);
 			path = ThirdParty;
@@ -1149,6 +1166,7 @@
 				FEEF0B1214B45DA0002877F5 /* ActivityInfoCell.m in Sources */,
 				FE9FAAA614B577BC000ACBC0 /* GenericProfileController.m in Sources */,
 				FE8ED30414B6CAB8004EF96D /* AKImageCache.m in Sources */,
+				FE8B671A14B848DD00C965EC /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

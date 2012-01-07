@@ -8,10 +8,14 @@
 
 #import "GenericController.h"
 
+#import "Reachability.h"
+
 #import "BachAppDelegate.h"
 #import "AKImageCache.h"
 #import "ImageCache.h"
 #import "TaskController.h"
+
+#define ERROR_DIALOG_TAG (0x1234)
 
 #pragma mark - GenericControllerRequestor
 
@@ -53,6 +57,8 @@
 @implementation GenericController
 {
     GenericControllerRequestor *_requestor;
+    BOOL _isAlertActive;
+    BOOL _isViewVisible;
 }
 
 @synthesize numberFormatter = _numberFormatter;
@@ -79,6 +85,8 @@
         BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
         managedObjectContext = bachApp.managedObjectContext;
         
+        _isViewVisible = NO;
+        _isAlertActive = NO;
         _requestor = [[GenericControllerRequestor alloc] initWithControllerClass:[self class]];
         
         _numberFormatter = [[NSNumberFormatter alloc] init];
@@ -115,18 +123,24 @@
 {
     NSLog(@"Got sync error notification");
     
-    NSError *error = [notification.userInfo objectForKey:BACHNotificationNSError];
-    
-    if (error)
+    if (_isViewVisible && !_isAlertActive) 
     {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
+        NSError *error = [notification.userInfo objectForKey:BACHNotificationNSError];
         
-        [alertView show];
-        [alertView release];
+        if (error)
+        {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
+                                                                message:[error localizedDescription]
+                                                               delegate:self
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            
+            alertView.tag = ERROR_DIALOG_TAG;
+            _isAlertActive = YES;
+            
+            [alertView show];
+            [alertView release];
+        }
     }
 }
 
@@ -140,6 +154,16 @@
     }
 }
 
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == ERROR_DIALOG_TAG)
+    {
+        _isAlertActive = NO;
+    }
+}
+
 #pragma mark - UIViewController
 
 -(void)viewDidLoad
@@ -149,6 +173,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onImageRetrieved:)
                                                  name:AKImageRetrieved
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onSyncError:)
+                                                 name:BACHError 
                                                object:nil];
     
     [[AKImageCache sharedInstance] purgeInMemCache];
@@ -165,6 +194,10 @@
                                                     name:AKImageRetrieved
                                                   object:nil];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:BACHError
+                                                  object:nil];
+    
     NSLog(@"-- View %@ unloaded", [self class]);
 }
 
@@ -172,19 +205,14 @@
 {
     [super viewDidAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onSyncError:)
-                                                 name:BACHError 
-                                               object:nil];
+    _isViewVisible = YES;
 }
 
 -(void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:BACHError
-                                                  object:nil];
+    _isViewVisible = NO;
 }
 
 -(void)didReceiveMemoryWarning
@@ -198,6 +226,13 @@
 }
 
 #pragma mark - Etc
+
+-(BOOL)isNetworkAvailable
+{
+    Reachability *r = [Reachability reachabilityForInternetConnection];
+    
+    return ([r currentReachabilityStatus] != NotReachable);
+}
 
 -(void)receivedImage:(NSString*)url
            parameter:(id)parameter
@@ -224,7 +259,7 @@
 }
 
 -(UIAlertView*)inputDialogWithTitle:(NSString*)title
-                        placeholder:(NSString*)placeholder
+                            message:(NSString*)message
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title 
                                                             message:@"\n\n\n"
@@ -240,7 +275,7 @@
     textField.keyboardAppearance = UIKeyboardAppearanceAlert;
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.autocorrectionType = UITextAutocorrectionTypeNo;
-    textField.placeholder = placeholder;
+    textField.placeholder = message;
     
     UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"textFieldBackground" 
                                                                                                                                        ofType:@"png"]]];

@@ -12,9 +12,6 @@
 #import "EGORefreshTableHeaderView.h"
 
 @interface GenericTableViewController : GenericController <UITableViewDelegate, EGORefreshTableHeaderDelegate>
-{
-    EGORefreshTableHeaderView *_refreshHeaderView;
-};
 
 @property (nonatomic, assign) IBOutlet UITableView *tableView;
 @property (nonatomic, assign) IBOutlet UITableViewCell *tableViewCell;
@@ -25,7 +22,12 @@
                         cropRect:(CGRect)cropRect
                        indexPath:(NSIndexPath*)indexPath;
 
--(void)refreshUsingRefreshHeaderTableView;
+-(void)synchronizeWithRemote;
+-(void)mustSynchronizeWithRemote;
+-(NSDate*)lastSynchronized;
+-(void)updateSynchronizationDate;
+
 -(void)hideRefreshHeaderTableView;
+-(BOOL)useRefreshTableHeaderView;
 
 @end

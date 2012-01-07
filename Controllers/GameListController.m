@@ -44,9 +44,15 @@
 {
     NSLog(@"Got sync completed notification");
     
-    [self hideRefreshHeaderTableView];
-    [self.tableView reloadData];
+    XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
+    
+    if ([account isEqualToAccount:self.account])
+    {
+        [self hideRefreshHeaderTableView];
+        [self.tableView reloadData];
+    }
 }
+
 
 - (void)viewDidLoad
 {
@@ -59,10 +65,8 @@
     
     self.title = NSLocalizedString(@"MyPlayedGames", nil);
     
-	[_refreshHeaderView refreshLastUpdatedDate];
-    
     if ([self.account areGamesStale])
-        [self refreshUsingRefreshHeaderTableView];
+        [self synchronizeWithRemote];
 }
 
 - (void)viewDidUnload
@@ -74,22 +78,26 @@
                                                   object:nil];
 }
 
-#pragma mark - EGORefreshTableHeaderDelegate Methods
+#pragma mark - GenericTableViewController
 
--(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
+- (NSDate*)lastSynchronized
 {
+    return self.account.lastGamesUpdate;
+}
+
+-(void)mustSynchronizeWithRemote
+{
+    [super mustSynchronizeWithRemote];
+    
     [[TaskController sharedInstance] synchronizeGamesForAccount:self.account
                                            managedObjectContext:managedObjectContext];
 }
 
+#pragma mark - EGORefreshTableHeaderDelegate Methods
+
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
 	return [[TaskController sharedInstance] isSynchronizingGamesForAccount:self.account];
-}
-
--(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
-{
-	return self.account.lastGamesUpdate;
 }
 
 // Customize the number of sections in the table view.

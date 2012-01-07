@@ -125,10 +125,8 @@
     self.title = [NSString localizedStringWithFormat:NSLocalizedString(@"Achievements_f", nil),
                   gameTitle];
     
-	[_refreshHeaderView refreshLastUpdatedDate];
-    
     if (self.isGameDirty)
-        [self refreshUsingRefreshHeaderTableView];
+        [self synchronizeWithRemote];
 }
 
 -(void)viewDidUnload
@@ -140,25 +138,28 @@
                                                   object:nil];
 }
 
-#pragma mark -
-#pragma mark EGORefreshTableHeaderDelegate Methods
+#pragma mark - GenericTableViewController
 
--(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
+- (NSDate*)lastSynchronized
 {
+    return self.gameLastUpdated;
+}
+
+-(void)mustSynchronizeWithRemote
+{
+    [super mustSynchronizeWithRemote];
+    
     [[TaskController sharedInstance] synchronizeAchievementsForGame:self.gameUid
                                                             account:self.account
                                                managedObjectContext:managedObjectContext];
 }
 
+#pragma mark - EGORefreshTableHeaderDelegate Methods
+
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
     return [[TaskController sharedInstance] isSynchronizingAchievementsForGame:self.gameUid
                                                                        account:self.account];
-}
-
--(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
-{
-	return self.gameLastUpdated;
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -368,7 +369,7 @@
 
 -(IBAction)refresh:(id)sender
 {
-    [self refreshUsingRefreshHeaderTableView];
+    [self synchronizeWithRemote];
 }
 
 -(IBAction)showDetails:(id)sender

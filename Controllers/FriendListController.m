@@ -87,10 +87,10 @@
     
     self.title = NSLocalizedString(@"MyFriends", nil);
     
-	[_refreshHeaderView refreshLastUpdatedDate];
+	[self updateSynchronizationDate];
     
     if ([self.account areFriendsStale])
-        [self refreshUsingRefreshHeaderTableView];
+        [self synchronizeWithRemote];
 }
 
 - (void)viewDidUnload
@@ -105,22 +105,26 @@
                                                   object:nil];
 }
 
-#pragma mark - EGORefreshTableHeaderDelegate Methods
+#pragma mark - GenericTableViewController
 
--(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
+- (NSDate*)lastSynchronized
 {
-    [[TaskController sharedInstance] synchronizeFriendsForAccount:self.account
-                                           managedObjectContext:managedObjectContext];
+	return self.account.lastFriendsUpdate;
 }
+
+-(void)mustSynchronizeWithRemote
+{
+    [super mustSynchronizeWithRemote];
+    
+    [[TaskController sharedInstance] synchronizeFriendsForAccount:self.account
+                                             managedObjectContext:managedObjectContext];
+}
+
+#pragma mark - EGORefreshTableHeaderDelegate Methods
 
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
 	return [[TaskController sharedInstance] isSynchronizingFriendsForAccount:self.account];
-}
-
--(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
-{
-	return self.account.lastFriendsUpdate;
 }
 
 #pragma mark - UITableViewDataSource
@@ -347,7 +351,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     {
         NSString *screenName = [self inputDialogText:alertView];
         
-        if (screenName)
+        if (screenName && [screenName length] > 0)
         {
             [ProfileController showProfileWithScreenName:screenName
                                                  account:self.account
@@ -361,13 +365,13 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
 
 -(void)refresh:(id)sender
 {
-    [self refreshUsingRefreshHeaderTableView];
+    [self synchronizeWithRemote];
 }
 
 -(void)findGamertag:(id)sender
 {
     UIAlertView *inputDialog = [self inputDialogWithTitle:NSLocalizedString(@"MembersGamertag", nil)
-                                              placeholder:nil];
+                                                  message:NSLocalizedString(@"PleaseEnterGamertag", nil)];
     
     [inputDialog show];
 }

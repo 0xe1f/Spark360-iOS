@@ -56,9 +56,7 @@
     
     self.title = NSLocalizedString(@"FriendsOfFriend", nil);
     
-	[_refreshHeaderView refreshLastUpdatedDate];
-    
-    [self refreshUsingRefreshHeaderTableView];
+    [self synchronizeWithRemote];
 }
 
 - (void)viewDidUnload
@@ -70,22 +68,26 @@
                                                   object:nil];
 }
 
-#pragma mark - EGORefreshTableHeaderDelegate Methods
+#pragma mark - GenericTableViewController
 
--(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
+-(NSDate*)lastSynchronized
 {
+    return self.lastUpdated;
+}
+
+- (void)mustSynchronizeWithRemote
+{
+    [super mustSynchronizeWithRemote];
+    
     [[TaskController sharedInstance] loadFriendsOfFriendForScreenName:self.screenName
                                                               account:self.account];
 }
 
+#pragma mark - EGORefreshTableHeaderDelegate Methods
+
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
 	return [[TaskController sharedInstance] isLoadingRecentPlayersForAccount:self.account];
-}
-
--(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
-{
-	return self.lastUpdated;
 }
 
 #pragma mark - UITableViewDataSource
@@ -172,7 +174,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         self.lastUpdated = [NSDate date];
         [self.tableView reloadData];
         
-        [_refreshHeaderView refreshLastUpdatedDate];
+        [self updateSynchronizationDate];
     }
 }
 

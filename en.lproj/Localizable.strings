@@ -70,7 +70,8 @@
     CurrentStatus = "Current Status";
     Statistics = "Statistics";
     Cancel = "Cancel";
-    MembersGamertag = "Member's Gamertag";
+    MembersGamertag = "Find Gamertag";
+    PleaseEnterGamertag = "Member's gamertag";
     Unknown = "Unknown";
     XboxLiveProfileNotFound = "Xbox Live Profile not found";
     AreYouSure = "Are you sure?";

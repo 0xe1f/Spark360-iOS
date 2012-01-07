@@ -12,8 +12,6 @@ Messages:
 
 Friends:
 
-* Disallow opening of profiles with empty gamertags (input dialog)
-* Add extra description for the "input gamertag" dialog
 * Suppressed exceptions in FriendListController/configureCell cause rendering
   problems when friends list changes. Figure out a way to properly handle errors,
   and possibly redraw
@@ -25,7 +23,6 @@ Games:
 
 All:
 
-* When an error occurs, EGO refresh headers remain open
 * ProfileController will close view even if the incoming error has nothing to 
   do with invalid profile name. Filter notification types
 
@@ -37,4 +34,4 @@ Core:
 
 Etc.:
 
-* Icons missing for live status
+* Icon missing for live status

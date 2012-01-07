@@ -13,7 +13,7 @@
 
 #import "XboxLiveAccount.h"
 
-@interface GenericController : UIViewController
+@interface GenericController : UIViewController<UIAlertViewDelegate>
 {
     NSManagedObjectContext *managedObjectContext;
 };
@@ -27,9 +27,11 @@
              nibName:(NSString*)nibName;
 
 -(UIAlertView*)inputDialogWithTitle:(NSString*)title
-                        placeholder:(NSString*)placeholder;
+                            message:(NSString*)message;
 
 -(NSString*)inputDialogText:(UIAlertView*)alertView;
+
+-(BOOL)isNetworkAvailable;
 
 -(void)onSyncError:(NSNotification*)notification;
 

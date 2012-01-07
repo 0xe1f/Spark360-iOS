@@ -39,6 +39,8 @@
 
 -(void)dealloc
 {
+    [__fetchedResultsController release];
+    
     [super dealloc];
 }
 
@@ -55,6 +57,21 @@
     }
 }
 
+#pragma mark - GenericTableViewController
+
+- (void)mustSynchronizeWithRemote
+{
+    [super mustSynchronizeWithRemote];
+    
+    [[TaskController sharedInstance] synchronizeMessagesForAccount:self.account
+                                              managedObjectContext:managedObjectContext];
+}
+
+- (NSDate*)lastSynchronized
+{
+    return self.account.lastMessagesUpdate;
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -68,10 +85,10 @@
     
     self.title = NSLocalizedString(@"MyMessages", nil);
     
-	[_refreshHeaderView refreshLastUpdatedDate];
+    [self updateSynchronizationDate];
     
     if ([self.account areMessagesStale])
-        [self refreshUsingRefreshHeaderTableView];
+        [self synchronizeWithRemote];
     
     self.composeButton.enabled = [self.account canSendMessages]; 
 }
@@ -89,20 +106,9 @@
 
 #pragma mark - EGORefreshTableHeaderDelegate Methods
 
--(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
-{
-    [[TaskController sharedInstance] synchronizeMessagesForAccount:self.account
-                                           managedObjectContext:managedObjectContext];
-}
-
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
 	return [[TaskController sharedInstance] isSynchronizingMessagesForAccount:self.account];
-}
-
--(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
-{
-	return self.account.lastMessagesUpdate;
 }
 
 #pragma mark - TableView
@@ -254,7 +260,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(IBAction)refresh:(id)sender
 {
-    [self refreshUsingRefreshHeaderTableView];
+    [self synchronizeWithRemote];
 }
 
 -(IBAction)compose:(id)sender

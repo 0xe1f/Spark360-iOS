@@ -13,6 +13,9 @@
 #import "TaskController.h"
 
 @implementation GenericTableViewController
+{
+    EGORefreshTableHeaderView *_refreshHeaderView;
+};
 
 @synthesize tableView = _tableView;
 @synthesize tableViewCell;
@@ -41,7 +44,7 @@
 {
     [super viewDidLoad];
     
-	if (!_refreshHeaderView) 
+	if ([self useRefreshTableHeaderView] && !_refreshHeaderView) 
     {
         CGRect rect = CGRectMake(0.0f, 0.0f - _tableView.bounds.size.height, 
                                  self.view.frame.size.width, 
@@ -52,6 +55,8 @@
 		_refreshHeaderView = view;
 		[view release];
 	}
+    
+	[_refreshHeaderView refreshLastUpdatedDate];
 }
 
 -(void)viewDidUnload
@@ -77,6 +82,12 @@
 
 -(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
 {
+    [self mustSynchronizeWithRemote];
+}
+
+-(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
+{
+    return [self lastSynchronized];
 }
 
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
@@ -84,42 +95,49 @@
     return false;
 }
 
--(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
-{
-    return nil;
-}
-
 #pragma mark - Notifications
 
 -(void)onSyncError:(NSNotification *)notification
 {
-    NSLog(@"Got sync error notification");
+    [super onSyncError:notification];
     
     [self hideRefreshHeaderTableView];
-    
-    NSError *error = [notification.userInfo objectForKey:BACHNotificationNSError];
-    
-    if (error)
-    {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", @"")
-                                                            message:[error localizedDescription]
-                                                           delegate:self
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-        
-        [alertView show];
-        [alertView release];
-    }
 }
 
 #pragma mark - Helper methods
 
--(void)refreshUsingRefreshHeaderTableView
+-(void)updateSynchronizationDate
 {
-    CGPoint offset = _tableView.contentOffset;
-    offset.y = - 65.0f;
-    _tableView.contentOffset = offset;
-    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:_tableView];
+    [_refreshHeaderView refreshLastUpdatedDate];
+}
+
+-(BOOL)useRefreshTableHeaderView
+{
+    return NO;
+}
+
+-(NSDate*)lastSynchronized
+{
+    return nil;
+}
+
+-(void)synchronizeWithRemote
+{
+    if ([self useRefreshTableHeaderView])
+    {
+        CGPoint offset = _tableView.contentOffset;
+        offset.y = - 65.0f;
+        _tableView.contentOffset = offset;
+        [_refreshHeaderView egoRefreshScrollViewDidEndDragging:_tableView];
+    }
+    else
+    {
+        [self mustSynchronizeWithRemote];
+    }
+}
+
+-(void)mustSynchronizeWithRemote
+{
 }
 
 -(void)hideRefreshHeaderTableView

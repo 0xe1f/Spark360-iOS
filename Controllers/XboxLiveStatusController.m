@@ -45,14 +45,12 @@
     
     self.title = NSLocalizedString(@"XboxLiveStatus", nil);
     
-	[_refreshHeaderView refreshLastUpdatedDate];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(statusLoaded:)
                                                  name:BACHXboxLiveStatusLoaded
                                                object:nil];
     
-    [self refreshUsingRefreshHeaderTableView];
+    [self synchronizeWithRemote];
 }
 
 - (void)viewDidUnload
@@ -64,21 +62,25 @@
                                                   object:nil];
 }
 
-#pragma mark - EGORefreshTableHeaderDelegate Methods
+#pragma mark - GenericTableViewController
 
--(void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view
+- (NSDate*)lastSynchronized
 {
+	return self.lastUpdated;
+}
+
+- (void)mustSynchronizeWithRemote
+{
+    [super mustSynchronizeWithRemote];
+    
     [[TaskController sharedInstance] loadXboxLiveStatus:self.account];
 }
+
+#pragma mark - EGORefreshTableHeaderDelegate Methods
 
 -(BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view
 {
 	return [[TaskController sharedInstance] isLoadingXboxLiveStatus:self.account];
-}
-
--(NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view
-{
-	return self.lastUpdated;
 }
 
 #pragma mark - UITableViewDataSource
@@ -166,14 +168,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     self.lastUpdated = [NSDate date];
     [self.tableView reloadData];
     
-    [_refreshHeaderView refreshLastUpdatedDate];
+    [self updateSynchronizationDate];
 }
 
 #pragma mark - Actions
 
 -(IBAction)refresh:(id)sender
 {
-    [self refreshUsingRefreshHeaderTableView];
+    [self synchronizeWithRemote];
 }
 
 @end
