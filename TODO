@@ -1,11 +1,9 @@
 ! ImageCache'r considerably slows list scrolling. Improve performance
 ! MessageCompositionController crashes on simulated memory warnings
-! Icons missing for live status
 
 Compare:
 
 * Add information on which side is whose on Compare Games, Achievements
-* Design a nicer title display for Compare Games, Achievements
 
 Messages:
 
@@ -14,6 +12,8 @@ Messages:
 
 Friends:
 
+* Disallow opening of profiles with empty gamertags (input dialog)
+* Add extra description for the "input gamertag" dialog
 * Suppressed exceptions in FriendListController/configureCell cause rendering
   problems when friends list changes. Figure out a way to properly handle errors,
   and possibly redraw
@@ -25,13 +25,16 @@ Games:
 
 All:
 
+* When an error occurs, EGO refresh headers remain open
 * ProfileController will close view even if the incoming error has nothing to 
   do with invalid profile name. Filter notification types
 
 Core:
 
-* Change how ImageCache's notifications work - ImageCache shouldn't be setting 
-  them - each controller should
-* When images are downloaded, update single icon, not all (see imageSynced)
+* Get rid of old ImageCache
 * Add network spinner when TaskControllerOp is in progress
 * Delete database contents and keychain items when an account is deleted 
+
+Etc.:
+
+* Icons missing for live status
