@@ -140,7 +140,8 @@
                                              cropRect:CGRectMake(0, 16, 85, 85)
                                             indexPath:indexPath];
         
-        cell.boxArt.image = boxArt;
+        if (boxArt)
+            cell.boxArt.image = boxArt;
     }
     
     return cell;

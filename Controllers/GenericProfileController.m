@@ -9,7 +9,7 @@
 #import "GenericProfileController.h"
 
 #import "XboxLive.h"
-#import "ImageCache.h"
+#import "AKImageCache.h"
 #import "TaskController.h"
 
 #import "MessageCompositionController.h"
@@ -237,9 +237,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             }
             
             gtCell.screenName.text = self.screenName;
-            gtCell.gamerpic.image = [[ImageCache sharedInstance] getCachedFile:[self.profile objectForKey:@"iconUrl"]
-                                                                  notifyObject:self
-                                                                notifySelector:@selector(imageLoaded:)];
+            gtCell.gamerpic.image = [self imageFromUrl:[self.profile objectForKey:@"iconUrl"]
+                                             parameter:nil];
             
             NSString *motto = nil;
             if ([self.profile objectForKey:@"motto"])
@@ -281,10 +280,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             
             aiCell.titleName.text = [self.profile objectForKey:@"activityTitleName"];
             aiCell.activityInfo.text = [self.profile objectForKey:@"activityText"];
-            aiCell.titleIcon.image = [[ImageCache sharedInstance] getCachedFile:[self.profile objectForKey:@"activityTitleIconUrl"]
-                                                                       cropRect:CGRectMake(0, 16, 85, 85)
-                                                                   notifyObject:self
-                                                                 notifySelector:@selector(imageLoaded:)];
+            aiCell.titleIcon.image = [self imageFromUrl:[self.profile objectForKey:@"activityTitleIconUrl"]
+                                               cropRect:CGRectMake(0, 16, 85, 85)
+                                              parameter:nil];
             
             cell = aiCell;
         }
@@ -316,10 +314,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             
             biCell.titleName.text = [beacon objectForKey:@"gameName"];
             biCell.message.text = [beacon objectForKey:@"message"];
-            biCell.titleIcon.image = [[ImageCache sharedInstance] getCachedFile:[beacon objectForKey:@"gameBoxArtUrl"]
-                                                                       cropRect:CGRectMake(0, 16, 85, 85)
-                                                                   notifyObject:self
-                                                                 notifySelector:@selector(imageLoaded:)];
+            biCell.titleIcon.image = [self imageFromUrl:[beacon objectForKey:@"gameBoxArtUrl"]
+                                               cropRect:CGRectMake(0, 16, 85, 85)
+                                              parameter:nil];
             
             cell = biCell;
         }
@@ -485,9 +482,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Notifications
 
-- (void)imageLoaded:(NSString*)url
+-(void)receivedImage:(NSString *)url 
+           parameter:(id)parameter
 {
-    // TODO: this causes a full data reload; not a good idea
     [self.tableView reloadData];
 }
 

@@ -7,14 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import <CoreData/CoreData.h>
 
-@interface AccountListController : UITableViewController <NSFetchedResultsControllerDelegate>
+#import "GenericTableViewController.h"
 
-@property (nonatomic, assign) IBOutlet UITableViewCell *tvCell;
+@interface AccountListController : GenericTableViewController <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @end

@@ -22,16 +22,23 @@
 @end
 
 @implementation MessageListController
+{
+    NSDateFormatter *_shortDateFormatter;
+}
 
 @synthesize fetchedResultsController = __fetchedResultsController;
-
 @synthesize composeButton = _composeButton;
+
+@synthesize today = _today;
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
     if (self = [super initWithAccount:account 
                               nibName:@"MessageListController"])
     {
+        _shortDateFormatter = [[NSDateFormatter alloc] init];
+        _shortDateFormatter.dateStyle = NSDateFormatterShortStyle;
+        _shortDateFormatter.timeStyle = NSDateFormatterShortStyle;
     }
     
     return self;
@@ -40,6 +47,9 @@
 -(void)dealloc
 {
     [__fetchedResultsController release];
+    [_shortDateFormatter release];
+    
+    self.today = nil;
     
     [super dealloc];
 }
@@ -102,6 +112,16 @@
                                                   object:nil];
     
     self.fetchedResultsController = nil;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    NSDateComponents* comps = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit 
+                                                              fromDate:[NSDate date]];
+    
+    self.today = [[NSCalendar currentCalendar] dateFromComponents:comps];
 }
 
 #pragma mark - EGORefreshTableHeaderDelegate Methods
@@ -298,11 +318,25 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         excerpt = [NSString stringWithFormat:excerptTemplate, excerpt];
     }
     
+    NSDate *sentDate = [managedObject valueForKey:@"sent"];
+    BOOL isTodays = ([self.today compare:sentDate] == NSOrderedAscending);
+    
+    if (isTodays)
+    {
+        _shortDateFormatter.dateStyle = NSDateFormatterNoStyle;
+        _shortDateFormatter.timeStyle = NSDateFormatterShortStyle;
+    }
+    else
+    {
+        _shortDateFormatter.dateStyle = NSDateFormatterShortStyle;
+        _shortDateFormatter.timeStyle = NSDateFormatterNoStyle;
+    }
+    
     messageCell.title.text = excerpt;
     messageCell.sender.text = [NSString localizedStringWithFormat:NSLocalizedString(@"From_f", nil),
                                [managedObject valueForKey:@"sender"]];
     messageCell.sent.text = [NSString localizedStringWithFormat:NSLocalizedString(@"Sent_f", nil),
-                             [self.shortDateFormatter stringFromDate:[managedObject valueForKey:@"sent"]]];
+                             [_shortDateFormatter stringFromDate:sentDate]];
     messageCell.attachment.hidden = !([[managedObject valueForKey:@"hasPicture"] boolValue] || 
                                       [[managedObject valueForKey:@"hasVoice"] boolValue]);
     messageCell.unreadMarker.hidden = [[managedObject valueForKey:@"isRead"] boolValue];

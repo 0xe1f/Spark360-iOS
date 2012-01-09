@@ -35,12 +35,14 @@ static ImageCache *sharedInstance = nil;
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES); 
         
         self->cacheDirectory = [[paths objectAtIndex:0] retain];
-        self->opQueue = [[NSOperationQueue alloc] init];
         self->inMemCache = [[NSMutableDictionary alloc] init];
         
         self.filenameSanitizer = [NSRegularExpression regularExpressionWithPattern:@"\\W" 
                                                                            options:0
                                                                              error:nil];
+        
+        self->opQueue = [[NSOperationQueue alloc] init];
+        [self->opQueue setMaxConcurrentOperationCount:2];
     }
     
     return self;

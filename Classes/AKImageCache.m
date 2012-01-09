@@ -14,6 +14,10 @@ NSString* const AKImageUrl = @"url";
 NSString* const AKImageRequestor = @"requestor";
 NSString* const AKImageParameter = @"parameter";
 
+NSString* const AKInternalImageLoaded = @"AKICImageLoaded";
+NSString* const AKInternalOutputFile = @"outputFile";
+NSString* const AKInternalImageData = @"imageData";
+
 #pragma mark ImageCacheOperation
 
 @interface ImageCacheOp : NSOperation
@@ -82,6 +86,8 @@ NSString* const AKImageParameter = @"parameter";
         return;
     }
     
+    id blob = data;
+    
     if (!CGRectIsNull(self.cropRect))
     {
         UIImage *image = [UIImage imageWithData:data];
@@ -100,6 +106,7 @@ NSString* const AKImageParameter = @"parameter";
                 CGImageRelease(imageRef);
                 
                 data = UIImagePNGRepresentation(cropped);
+                blob = cropped;
             }
         }
     }
@@ -114,9 +121,16 @@ NSString* const AKImageParameter = @"parameter";
         return;
     }
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:AKInternalImageLoaded
+                                                        object:self
+                                                      userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                self.outputFile, AKInternalOutputFile,
+                                                                blob, AKInternalImageData,
+                                                                nil]];
+    
     [self performSelectorOnMainThread:@selector(postNotification:) 
                            withObject:nil
-                        waitUntilDone:YES];
+                        waitUntilDone:NO];
 }
 
 - (void)postNotification:(id)args
@@ -159,11 +173,18 @@ static AKImageCache *sharedInstance = nil;
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES); 
         
         self->cacheDirectory = [[paths objectAtIndex:0] retain];
-        self->opQueue = [[NSOperationQueue alloc] init];
         self->inMemCache = [[NSMutableDictionary alloc] init];
         self->filenameSanitizer = [[NSRegularExpression regularExpressionWithPattern:@"\\W" 
                                                                              options:0
                                                                                error:nil] retain];
+        
+        self->opQueue = [[NSOperationQueue alloc] init];
+        [self->opQueue setMaxConcurrentOperationCount:2];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(onImageLoaded:)
+                                                     name:AKInternalImageLoaded
+                                                   object:nil];
     }
     
     return self;
@@ -176,10 +197,29 @@ static AKImageCache *sharedInstance = nil;
     [self->cacheDirectory release];
     [self->filenameSanitizer release];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [super dealloc];
 }
 
 #pragma mark - Private implementation
+
+-(void)onImageLoaded:(NSNotification*)notification
+{
+    NSDictionary *userInfo = notification.userInfo;
+    
+    NSString *outputFile = [userInfo objectForKey:AKInternalOutputFile];
+    id imageBlob = [userInfo objectForKey:AKInternalImageData];
+    
+    UIImage *image = nil;
+    if ([imageBlob isKindOfClass:[NSData class]])
+        image = [UIImage imageWithData:imageBlob]; // raw image data
+    else if ([imageBlob isKindOfClass:[UIImage class]])
+        image = imageBlob; // actual image
+    
+    if (image)
+        [inMemCache setValue:image forKey:outputFile];
+}
 
 - (NSString*)cacheFilenameForUrl:(NSString*)url
 {
@@ -255,31 +295,25 @@ static AKImageCache *sharedInstance = nil;
                                            cropRect:cropRect];
     
     // Try the in-memory cache
-    UIImage *image;
-    if ((image = [inMemCache valueForKey:cacheFile]))
-        return image;
+    id image = [inMemCache valueForKey:cacheFile];
+    if (image != nil)
+    {
+        if (image == [NSNull null])
+            return nil; // It's being fetched
+        
+        return image; // We have it now
+    }
     
     // Try loading from storage
     if ((image = [UIImage imageWithData:[NSData dataWithContentsOfFile:cacheFile]]))
     {
-        [inMemCache setValue:image
-                      forKey:cacheFile];
+        [inMemCache setValue:image forKey:cacheFile];
         
         return image;
     }
     
-    // Load from network
-    
-    // Make sure we're not already queued
-    NSArray *operations = [self->opQueue operations];
-    for (ImageCacheOp *op in operations) 
-    {
-        if ([op.outputFile isEqualToString:cacheFile])
-        {
-            NSLog(@"Will not add %@ to queue - already queued", cacheFile);
-            return nil;
-        }
-    }
+    // Load from network - add a placeholder to prevent dup. requests
+    [inMemCache setValue:[NSNull null] forKey:cacheFile];
     
     // Create a caching op and add it to queue
     NSOperation *op = [[ImageCacheOp alloc] initWithUrl:url

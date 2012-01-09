@@ -188,7 +188,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
                                          cropRect:CGRectMake(0, 16, 85, 85)
                                         indexPath:indexPath];
     
-    [view setImage:boxArt];
+    if (boxArt)
+        [view setImage:boxArt];
 }
 
 #pragma mark - Fetched results controller

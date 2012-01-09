@@ -86,12 +86,6 @@ static BachAppDelegate *bachApp = NULL;
     [super dealloc];
 }
 
-- (void)awakeFromNib
-{
-    AccountListController *ctrl = (AccountListController*)[self.navigationController topViewController];
-    ctrl.managedObjectContext = self.managedObjectContext;
-}
-
 - (void)saveContext
 {
     NSError *error = nil;

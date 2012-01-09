@@ -3288,7 +3288,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     {
         [statusList addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                NSLocalizedString(@"GeneralStatus", nil), @"name",
-                               [NSNumber numberWithBool:NO],
+                               [NSNumber numberWithBool:NO], @"isOk",
                                NSLocalizedString(@"UnableToLoadStatuses", nil), @"description",
                                nil]];
     }

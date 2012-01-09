@@ -218,8 +218,11 @@
     UIImage *gamerpic = [self tableCellImageFromUrl:[obj valueForKey:@"iconUrl"]
                                           indexPath:indexPath];
     
-    icon = (UIImageView*)[cell viewWithTag:6];
-    [icon setImage:gamerpic];
+    if (gamerpic)
+    {
+        icon = (UIImageView*)[cell viewWithTag:6];
+        [icon setImage:gamerpic];
+    }
     
     // Box art
     
@@ -228,8 +231,11 @@
                                          cropRect:CGRectMake(0,16,85,85)
                                         indexPath:indexPath];
     
-    icon = (UIImageView*)[cell viewWithTag:7];
-    [icon setImage:boxArt];
+    if (boxArt)
+    {
+        icon = (UIImageView*)[cell viewWithTag:7];
+        [icon setImage:boxArt];
+    }
 }
 
 #pragma mark - Fetched results controller

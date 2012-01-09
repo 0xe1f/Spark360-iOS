@@ -6,7 +6,6 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "TaskControllerOperation.h"
 #import "XboxLiveAccount.h"
 
 extern NSString* const BACHProfileSynced;
@@ -35,6 +34,21 @@ extern NSString* const BACHNotificationUid;
 extern NSString* const BACHNotificationScreenName;
 extern NSString* const BACHNotificationData;
 extern NSString* const BACHNotificationNSError;
+
+@interface TaskControllerOperation : NSOperation
+
+@property (nonatomic, copy) NSString *identifier;
+@property (nonatomic, retain) NSDictionary *arguments;
+@property (nonatomic, retain) id selectorOwner;
+@property (nonatomic, assign) SEL backgroundSelector;
+@property (nonatomic, assign) BOOL isNetworked;
+
+- (id)initWithIdentifier:(NSString*)identifier
+           selectorOwner:(id)selectorOwner
+      backgroundSelector:(SEL)backgroundSelector
+               arguments:(NSDictionary*)arguments;
+
+@end
 
 @interface TaskController : NSObject
 {

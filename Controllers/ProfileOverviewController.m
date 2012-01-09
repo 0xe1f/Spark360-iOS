@@ -13,7 +13,7 @@
 #import "FriendListController.h"
 #import "XboxLiveStatusController.h"
 
-#import "ImageCache.h"
+#import "AKImageCache.h"
 #import "TaskController.h"
 
 #import "ProfileCell.h"
@@ -185,9 +185,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             }
             
             gtCell.screenName.text = self.account.screenName;
-            gtCell.gamerpic.image = [[ImageCache sharedInstance] getCachedFile:[self.profile objectForKey:@"iconUrl"]
-                                                                  notifyObject:self
-                                                                notifySelector:@selector(imageLoaded:)];
+            gtCell.gamerpic.image = [self imageFromUrl:[self.profile objectForKey:@"iconUrl"]
+                                             parameter:nil];
             
             NSString *motto = nil;
             if ([self.profile objectForKey:@"motto"])
@@ -477,7 +476,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 #pragma mark - Notifications
 
-- (void)imageLoaded:(NSString*)url
+-(void)receivedImage:(NSString *)url 
+           parameter:(id)parameter
 {
     [self.tableView reloadData];
 }

@@ -178,7 +178,8 @@
         UIImage *icon = [self tableCellImageFromUrl:[achievement objectForKey:@"iconUrl"]
                                           indexPath:indexPath];
         
-        cell.icon.image = icon;
+        if (icon)
+            cell.icon.image = icon;
     }
     
     return cell;

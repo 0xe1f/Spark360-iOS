@@ -256,8 +256,8 @@
     UIImage *icon = [self tableCellImageFromUrl:[managedObject valueForKey:@"iconUrl"]
                                       indexPath:indexPath];
     
-    [view setImage:icon];
-    [view setClipsToBounds:YES];
+    if (icon)
+        [view setImage:icon];
 }
 
 #pragma mark - Fetched results controller

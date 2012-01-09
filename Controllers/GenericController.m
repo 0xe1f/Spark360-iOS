@@ -63,7 +63,6 @@
 
 @synthesize numberFormatter = _numberFormatter;
 @synthesize dateFormatter = _dateFormatter;
-@synthesize shortDateFormatter = _shortDateFormatter;
 
 @synthesize account = _account;
 
@@ -72,6 +71,29 @@
 {
     return [self initWithAccount:nil
                          nibName:nibNameOrNil];
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder])
+    {
+        self.account = nil;
+        
+        BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+        managedObjectContext = bachApp.managedObjectContext;
+        
+        _isViewVisible = NO;
+        _isAlertActive = NO;
+        _requestor = [[GenericControllerRequestor alloc] initWithControllerClass:[self class]];
+        
+        _numberFormatter = [[NSNumberFormatter alloc] init];
+        [self.numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    }
+    
+    return self;
 }
 
 -(id)initWithAccount:(XboxLiveAccount*)account
@@ -94,9 +116,6 @@
         
         _dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        
-        _shortDateFormatter = [[NSDateFormatter alloc] init];
-        [self.shortDateFormatter setDateStyle:NSDateFormatterShortStyle];
     }
     
     return self;
@@ -106,7 +125,6 @@
 {
     self.numberFormatter = nil;
     self.dateFormatter = nil;
-    self.shortDateFormatter = nil;
     self.account = nil;
     
     [_requestor release];

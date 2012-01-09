@@ -8,7 +8,7 @@
 
 #import "ImageViewController.h"
 
-#import "ImageCache.h"
+#import "AKImageCache.h"
 
 @implementation ImageViewController
 
@@ -33,6 +33,15 @@
     [super dealloc];
 }
 
+#pragma mark - GenericController
+
+- (void)receivedImage:(NSString *)url 
+            parameter:(id)parameter
+{
+    self.imageView.image = [self imageFromUrl:self.url
+                                    parameter:nil];
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -40,9 +49,8 @@
     [super viewDidLoad];
     
     self.title = NSLocalizedString(@"ImageViewer", nil);
-    self.imageView.image = [[ImageCache sharedInstance] getCachedFile:self.url
-                                                         notifyObject:self
-                                                       notifySelector:@selector(imageLoaded:)];
+    self.imageView.image = [self imageFromUrl:self.url
+                                    parameter:nil];
 }
 
 - (void)viewDidUnload
@@ -53,15 +61,6 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return YES;
-}
-
-#pragma mark - Notifications
-
-- (void)imageLoaded:(NSString*)imageUrl
-{
-    self.imageView.image = [[ImageCache sharedInstance] getCachedFile:self.url
-                                                         notifyObject:nil
-                                                       notifySelector:nil];
 }
 
 @end

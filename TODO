@@ -1,9 +1,13 @@
-! ImageCache'r considerably slows list scrolling. Improve performance
-! MessageCompositionController crashes on simulated memory warnings
+Critical:
 
-Compare:
-
-* Add information on which side is whose on Compare Games, Achievements
+* Compare: Add information on which side is whose on Compare Games, Achievements
+* ImageCache: Load achievements for PoP, then delete image cache,
+              then open achieve list. Only the first image loads
+* MessageCompositionController crashes on simulated memory warnings
+* Replace stock backgrounds on non-tableview views
+* Icon missing for live status
+* Add network spinner when TaskControllerOp is in progress
+* Delete database contents and keychain items when an account is deleted 
 
 Messages:
 
@@ -12,26 +16,23 @@ Messages:
 
 Friends:
 
-* Suppressed exceptions in FriendListController/configureCell cause rendering
-  problems when friends list changes. Figure out a way to properly handle errors,
-  and possibly redraw
 * Add avatars to profiles
 
 Games:
 
-* Add stock icon for Xbox.com
+* Add stock box art for Xbox.com
+* Way to save images while viewing them
 
 All:
 
+* Higher-res icon for Gamerscore
+* Add a "home" button to nav controller with gamerpic as icon
 * ProfileController will close view even if the incoming error has nothing to 
   do with invalid profile name. Filter notification types
 
 Core:
 
 * Get rid of old ImageCache
-* Add network spinner when TaskControllerOp is in progress
-* Delete database contents and keychain items when an account is deleted 
 
 Etc.:
 
-* Icon missing for live status

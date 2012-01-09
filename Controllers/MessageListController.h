@@ -16,6 +16,7 @@
 
 -(id)initWithAccount:(XboxLiveAccount*)account;
 
+@property (nonatomic, retain) NSDate *today;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *composeButton;
 
 -(IBAction)refresh:(id)sender;

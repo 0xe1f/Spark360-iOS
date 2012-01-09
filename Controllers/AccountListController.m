@@ -14,9 +14,9 @@
 #import "GameListController.h"
 #import "ProfileOverviewController.h"
 
-#import "ImageCache.h"
+#import "AKImageCache.h"
 
-@interface AccountListController ()
+@interface AccountListController (Private)
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
@@ -24,27 +24,21 @@
 
 @implementation AccountListController
 {
-    NSMutableDictionary *accountCache;
+    NSMutableDictionary *_accountCache;
 }
 
 @synthesize fetchedResultsController = __fetchedResultsController;
-@synthesize managedObjectContext = __managedObjectContext;
-
-@synthesize tvCell;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [accountCache release];
-    accountCache = [[NSMutableDictionary alloc] init];
+    _accountCache = [[NSMutableDictionary alloc] init];
     
     // Set up the edit and add buttons.
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
                                                                                target:self 
                                                                                action:@selector(insertNewObject)];
-    
-    [[ImageCache sharedInstance] purgeInMemCache];
     
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     self.navigationItem.title = NSLocalizedString(@"Accounts", nil);
@@ -59,7 +53,7 @@
 {
     [super viewDidUnload];
     
-    [accountCache release];
+    [_accountCache release];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -70,29 +64,6 @@
     [self.tableView setEditing:NO 
                       animated:YES];
 }
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-}
-
-/*
- // Override to allow orientations other than the default portrait orientation.
- - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
- // Return YES for supported orientations.
- return (interfaceOrientation == UIInterfaceOrientationPortrait);
- }
- */
 
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -116,7 +87,8 @@
         [[NSBundle mainBundle] loadNibNamed:@"AccountCell"
                                       owner:self
                                     options:nil];
-        cell = [self tvCell];
+        
+        cell = self.tableViewCell;
     }
     
     [self configureCell:cell 
@@ -148,22 +120,16 @@
     }
 }
 
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // The table view should not be re-orderable.
-    return NO;
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *profile = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSString *uuid = [profile valueForKey:@"uuid"];
     
     XboxLiveAccount *account = nil;
-    if (!(account = [accountCache objectForKey:uuid]))
+    if (!(account = [_accountCache objectForKey:uuid]))
     {
         if ((account = [XboxLiveAccount preferencesForUuid:uuid]))
-            [accountCache setObject:account forKey:uuid];
+            [_accountCache setObject:account forKey:uuid];
     }
     
     if (account)
@@ -190,18 +156,9 @@
     }
 }
 
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Relinquish ownership any cached data, images, etc that aren't in use.
-}
-
 - (void)dealloc
 {
     [__fetchedResultsController release];
-    [__managedObjectContext release];
     
     [super dealloc];
 }
@@ -216,19 +173,11 @@
     label = (UILabel*)[cell viewWithTag:3];
     [label setText:NSLocalizedString(@"XboxLiveAccount", @"")];
     
-    UIImage *boxArt = [[ImageCache sharedInstance]
-                       getCachedFile:[profile valueForKey:@"iconUrl"]
-                       notifyObject:self
-                       notifySelector:@selector(imageLoaded:)];
+    UIImage *boxArt = [self tableCellImageFromUrl:[profile valueForKey:@"iconUrl"]
+                                        indexPath:indexPath];
     
     UIImageView *view = (UIImageView*)[cell viewWithTag:6];
     [view setImage:boxArt];
-}
-
-- (void)imageLoaded:(NSString*)url
-{
-    // TODO: this causes a full data reload; not a good idea
-    [self.tableView reloadData];
 }
 
 - (void)insertNewObject
@@ -255,7 +204,7 @@
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"XboxProfile" 
-                                              inManagedObjectContext:self.managedObjectContext];
+                                              inManagedObjectContext:managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
@@ -272,7 +221,7 @@
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest 
-                                                                                                managedObjectContext:self.managedObjectContext 
+                                                                                                managedObjectContext:managedObjectContext 
                                                                                                   sectionNameKeyPath:nil 
                                                                                                            cacheName:@"Root"];
     aFetchedResultsController.delegate = self;
@@ -286,11 +235,6 @@
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])
     {
-	    /*
-	     Replace this implementation with code to handle the error appropriately.
-         
-	     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-	     */
 	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	}
     
