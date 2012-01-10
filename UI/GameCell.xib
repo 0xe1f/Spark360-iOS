@@ -50,6 +50,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{68, 0}, {206, 19}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="140157948"/>
 								<string key="NSReuseIdentifierKey">_NS:311</string>
 								<bool key="IBUIOpaque">NO</bool>
@@ -85,7 +86,8 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{68, 32}, {157, 21}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
-								<reference key="NSNextKeyView" ref="1020157203"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:311</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -117,7 +119,8 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{68, 18}, {184, 21}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
-								<reference key="NSNextKeyView" ref="14850859"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="1020157203"/>
 								<string key="NSReuseIdentifierKey">_NS:311</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -142,6 +145,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{222, 31}, {73, 21}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="985468771"/>
 								<string key="NSReuseIdentifierKey">_NS:311</string>
 								<bool key="IBUIOpaque">NO</bool>
@@ -168,6 +172,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{8, 0}, {52, 52}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="915294365"/>
 								<string key="NSReuseIdentifierKey">_NS:541</string>
 								<int key="IBUIContentMode">2</int>
@@ -184,6 +189,8 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{300, 36}, {12, 12}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="14850859"/>
 								<string key="NSReuseIdentifierKey">_NS:541</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -199,6 +206,7 @@
 						</object>
 						<string key="NSFrameSize">{320, 51}</string>
 						<reference key="NSSuperview" ref="346047580"/>
+						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="125735340"/>
 						<string key="NSReuseIdentifierKey">_NS:370</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
@@ -214,6 +222,7 @@
 				</object>
 				<string key="NSFrameSize">{320, 52}</string>
 				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="981767642"/>
 				<string key="NSReuseIdentifierKey">_NS:358</string>
 				<object class="NSColor" key="IBUIBackgroundColor">
@@ -350,7 +359,78 @@
 			<nil key="sourceID"/>
 			<int key="maxID">12</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<bool key="EncodedWithXMLCoder">YES</bool>
+				<object class="IBPartialClassDescription">
+					<string key="className">GameListController</string>
+					<string key="superclassName">GenericTableViewController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">refresh:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">refresh:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">refresh:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/GameListController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">GenericController</string>
+					<string key="superclassName">UIViewController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/GenericController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">GenericTableViewController</string>
+					<string key="superclassName">GenericController</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>tableView</string>
+							<string>tableViewCell</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>UITableView</string>
+							<string>UITableViewCell</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>tableView</string>
+							<string>tableViewCell</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">tableView</string>
+								<string key="candidateClassName">UITableView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">tableViewCell</string>
+								<string key="candidateClassName">UITableViewCell</string>
+							</object>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/GenericTableViewController.h</string>
+					</object>
+				</object>
+			</object>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">

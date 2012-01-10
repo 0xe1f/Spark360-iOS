@@ -14,7 +14,9 @@
 @property (nonatomic, assign) IBOutlet UILabel *description;
 @property (nonatomic, assign) IBOutlet UILabel *gamerScore;
 @property (nonatomic, assign) IBOutlet UILabel *myAcquired;
+@property (nonatomic, assign) IBOutlet UIImageView *myGamerpic;
 @property (nonatomic, assign) IBOutlet UILabel *yourAcquired;
+@property (nonatomic, assign) IBOutlet UIImageView *yourGamerpic;
 @property (nonatomic, assign) IBOutlet UIImageView *icon;
 
 @end

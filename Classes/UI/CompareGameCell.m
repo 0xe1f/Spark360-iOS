@@ -16,5 +16,7 @@
 @synthesize yourAchievements;
 @synthesize yourGamerscore;
 @synthesize boxArt;
+@synthesize myGamerpic;
+@synthesize yourGamerpic;
 
 @end

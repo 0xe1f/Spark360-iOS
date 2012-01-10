@@ -13,6 +13,7 @@
 #import "AccountEditController.h"
 #import "GameListController.h"
 #import "ProfileOverviewController.h"
+#import "XboxLiveStatusController.h"
 
 #import "AKImageCache.h"
 
@@ -65,6 +66,15 @@
                       animated:YES];
 }
 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing 
+             animated:animated];
+    
+    [self.tableView setEditing:editing
+                      animated:animated];
+}
+
 // Customize the number of sections in the table view.
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -106,7 +116,8 @@
         NSManagedObject *profile = [self.fetchedResultsController objectAtIndexPath:indexPath];
         
         NSString *uuid = [profile valueForKey:@"uuid"];
-        [AppPreferences deleteAccountWithUuid:uuid];
+        [AppPreferences deleteAccountWithUuid:uuid
+                         managedObjectContext:managedObjectContext];
         
         [context deleteObject:profile];
         
@@ -115,7 +126,6 @@
         if (![context save:&error])
         {
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
         }
     }
 }
@@ -294,6 +304,20 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView endUpdates];
+}
+
+#pragma mark - Actions
+
+-(void)refresh:(id)sender
+{
+    [self.tableView reloadData];
+}
+
+- (void)viewLiveStatus:(id)sender
+{
+    XboxLiveStatusController *ctlr = [[XboxLiveStatusController alloc] initWithAccount:self.account];
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
 }
 
 @end

@@ -2831,14 +2831,10 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     NSString *yourScreenName = [you objectForKey:@"Gamertag"];
     NSString *myScreenName = [me objectForKey:@"Gamertag"];
     
-    NSDictionary *overview = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [you objectForKey:@"Gamerpic"], @"youIconUrl",
-                              [me objectForKey:@"Gamerpic"], @"meIconUrl",
-                              [you objectForKey:@"Gamerscore"], @"youGamerscore",
-                              [me objectForKey:@"Gamerscore"], @"meGamerscore",
-                              nil];
-    
-    [payload setObject:overview forKey:@"overview"];
+    [payload setObject:[you objectForKey:@"Gamerpic"] forKey:@"youIconUrl"];
+    [payload setObject:[me objectForKey:@"Gamerpic"] forKey:@"meIconUrl"];
+    [payload setObject:[you objectForKey:@"Gamerscore"] forKey:@"youGamerscore"];
+    [payload setObject:[me objectForKey:@"Gamerscore"] forKey:@"meGamerscore"];
     
     NSMutableArray *games = [[[NSMutableArray alloc] init] autorelease];
     [payload setObject:games forKey:@"games"];
@@ -2941,10 +2937,10 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [payload setObject:[game objectForKey:@"Name"] forKey:@"title"];
     [payload setObject:[game objectForKey:@"Url"] forKey:@"detailUrl"];
     
-    [payload setObject:[you objectForKey:@"Gamerpic"] forKey:@"yourIconUrl"];
-    [payload setObject:[me objectForKey:@"Gamerpic"] forKey:@"myIconUrl"];
-    [payload setObject:[you objectForKey:@"Gamerscore"] forKey:@"yourGamerScore"];
-    [payload setObject:[me objectForKey:@"Gamerscore"] forKey:@"myGamerscore"];
+    [payload setObject:[you objectForKey:@"Gamerpic"] forKey:@"youIconUrl"];
+    [payload setObject:[me objectForKey:@"Gamerpic"] forKey:@"meIconUrl"];
+    [payload setObject:[you objectForKey:@"Gamerscore"] forKey:@"youGamerScore"];
+    [payload setObject:[me objectForKey:@"Gamerscore"] forKey:@"meGamerscore"];
     
     NSMutableArray *achievements = [[[NSMutableArray alloc] init] autorelease];
     [payload setObject:achievements forKey:@"achievements"];

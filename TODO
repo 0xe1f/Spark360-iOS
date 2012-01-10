@@ -1,13 +1,15 @@
 Critical:
 
-* Compare: Add information on which side is whose on Compare Games, Achievements
+* Setting Beacons
 * ImageCache: Load achievements for PoP, then delete image cache,
               then open achieve list. Only the first image loads
 * MessageCompositionController crashes on simulated memory warnings
 * Replace stock backgrounds on non-tableview views
-* Icon missing for live status
-* Add network spinner when TaskControllerOp is in progress
-* Delete database contents and keychain items when an account is deleted 
+
+Next release:
+
+* Notifications
+* Favorite friends
 
 Messages:
 
@@ -20,6 +22,7 @@ Friends:
 
 Games:
 
+* Add an overlay with spinner when game data is being loaded
 * Add stock box art for Xbox.com
 * Way to save images while viewing them
 

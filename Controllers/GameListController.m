@@ -300,4 +300,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     [self.tableView endUpdates];
 }
 
+#pragma mark - Actions
+
+-(void)refresh:(id)sender
+{
+    [self synchronizeWithRemote];
+}
+
 @end

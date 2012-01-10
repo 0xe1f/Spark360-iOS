@@ -18,6 +18,9 @@
 @synthesize screenName = _screenName;
 @synthesize lastUpdated = _lastUpdated;
 
+@synthesize myIconUrl = _myIconUrl;
+@synthesize yourIconUrl = _yourIconUrl;
+
 -(id)initWithScreenName:(NSString *)screenName 
                 account:(XboxLiveAccount *)account
 {
@@ -26,6 +29,8 @@
     {
         self.screenName = screenName;
         self.lastUpdated = nil;
+        self.myIconUrl = nil;
+        self.yourIconUrl = nil;
         
         _games = [[NSMutableArray alloc] init];
     }
@@ -142,6 +147,18 @@
         
         if (boxArt)
             cell.boxArt.image = boxArt;
+        
+        UIImage *myGamerpic = [self tableCellImageFromUrl:self.myIconUrl
+                                                indexPath:indexPath];
+        
+        if (myGamerpic)
+            cell.myGamerpic.image = myGamerpic; 
+        
+        UIImage *yourGamerpic = [self tableCellImageFromUrl:self.yourIconUrl
+                                                  indexPath:indexPath];
+        
+        if (yourGamerpic)
+            cell.yourGamerpic.image = yourGamerpic;
     }
     
     return cell;
@@ -176,6 +193,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         NSDictionary *payload = [notification.userInfo objectForKey:BACHNotificationData];
         NSArray *games = [payload objectForKey:@"games"];
         
+        self.myIconUrl = [payload objectForKey:@"meIconUrl"];
+        self.yourIconUrl = [payload objectForKey:@"youIconUrl"];
+        
+        NSLog(@"%@: %@", self.myIconUrl, self.yourIconUrl);
+        
         [self.games removeAllObjects];
         [self.games addObjectsFromArray:games];
         
@@ -184,6 +206,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         [self updateSynchronizationDate];
     }
+}
+
+#pragma mark - Actions
+
+-(void)refresh:(id)sender
+{
+    [self synchronizeWithRemote];
 }
 
 @end

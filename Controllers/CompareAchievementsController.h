@@ -20,6 +20,9 @@
 
 @property (nonatomic, retain) NSMutableArray *achievements;
 
+@property (nonatomic, retain) NSString *myIconUrl;
+@property (nonatomic, retain) NSString *yourIconUrl;
+
 -(id)initWithGameUid:(NSString*)gameUid
           screenName:(NSString*)screenName
              account:(XboxLiveAccount*)account;

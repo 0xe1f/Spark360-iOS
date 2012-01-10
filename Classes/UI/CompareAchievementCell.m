@@ -14,7 +14,9 @@
 @synthesize description;
 @synthesize gamerScore;
 @synthesize myAcquired;
+@synthesize myGamerpic;
 @synthesize yourAcquired;
+@synthesize yourGamerpic;
 @synthesize icon;
 
 @end

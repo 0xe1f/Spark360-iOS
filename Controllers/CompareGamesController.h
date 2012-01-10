@@ -17,7 +17,12 @@
 
 @property (nonatomic, retain) NSMutableArray *games;
 
+@property (nonatomic, retain) NSString *myIconUrl;
+@property (nonatomic, retain) NSString *yourIconUrl;
+
 -(id)initWithScreenName:(NSString*)screenName
                 account:(XboxLiveAccount*)account;
+
+-(IBAction)refresh:(id)sender;
 
 @end

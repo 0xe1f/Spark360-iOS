@@ -13,8 +13,10 @@
 @property (nonatomic, assign) IBOutlet UILabel *title;
 @property (nonatomic, assign) IBOutlet UILabel *myAchievements;
 @property (nonatomic, assign) IBOutlet UILabel *myGamerscore;
+@property (nonatomic, assign) IBOutlet UIImageView *myGamerpic;
 @property (nonatomic, assign) IBOutlet UILabel *yourAchievements;
 @property (nonatomic, assign) IBOutlet UILabel *yourGamerscore;
+@property (nonatomic, assign) IBOutlet UIImageView *yourGamerpic;
 @property (nonatomic, assign) IBOutlet UIImageView *boxArt;
 
 @end

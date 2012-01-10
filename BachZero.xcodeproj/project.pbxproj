@@ -88,6 +88,8 @@
 		FE8ECB6C14A48EDC00A6E2D2 /* CompareAchievementsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */; };
 		FE8ED30414B6CAB8004EF96D /* AKImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8ED30314B6CAB8004EF96D /* AKImageCache.m */; };
 		FE8F26B514A858B000C82006 /* ContactButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8F26B414A858B000C82006 /* ContactButton.m */; };
+		FE904CEA14BC01D5003A4273 /* toolbarSystemStatus.png in Resources */ = {isa = PBXBuildFile; fileRef = FE904CE814BC01D4003A4273 /* toolbarSystemStatus.png */; };
+		FE904CEB14BC01D5003A4273 /* toolbarSystemStatus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE904CE914BC01D4003A4273 /* toolbarSystemStatus@2x.png */; };
 		FE908A6C14AB82C000FD51CF /* ScreenshotGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE908A6B14AB82C000FD51CF /* ScreenshotGridViewCell.m */; };
 		FE92D6D4149CA39300A7D6A5 /* xboxDefaultBoxart.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */; };
 		FE92D6D5149CA39300A7D6A5 /* xboxDefaultBoxart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE92D6CF149CA39300A7D6A5 /* xboxDefaultBoxart@2x.png */; };
@@ -331,6 +333,8 @@
 		FE8ED30314B6CAB8004EF96D /* AKImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKImageCache.m; sourceTree = "<group>"; };
 		FE8F26B314A858B000C82006 /* ContactButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactButton.h; sourceTree = "<group>"; };
 		FE8F26B414A858B000C82006 /* ContactButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactButton.m; sourceTree = "<group>"; };
+		FE904CE814BC01D4003A4273 /* toolbarSystemStatus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toolbarSystemStatus.png; sourceTree = "<group>"; };
+		FE904CE914BC01D4003A4273 /* toolbarSystemStatus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbarSystemStatus@2x.png"; sourceTree = "<group>"; };
 		FE908A6A14AB82C000FD51CF /* ScreenshotGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotGridViewCell.h; sourceTree = "<group>"; };
 		FE908A6B14AB82C000FD51CF /* ScreenshotGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotGridViewCell.m; sourceTree = "<group>"; };
 		FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxDefaultBoxart.png; sourceTree = "<group>"; };
@@ -484,33 +488,33 @@
 		FE3FE14913F72AD2009467EF /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				FE9FAA9B14B57265000ACBC0 /* toolbarFindProfile.png */,
-				FE9FAA9C14B57265000ACBC0 /* toolbarFindProfile@2x.png */,
-				FE9FAA9D14B57265000ACBC0 /* toolbarGameInfo.png */,
-				FE9FAA9E14B57265000ACBC0 /* toolbarGameInfo@2x.png */,
 				FEEF0B0514B45851002877F5 /* beacon_off.png */,
 				FEEF0B0614B45851002877F5 /* beacon_off@2x.png */,
 				FEEF0B0714B45851002877F5 /* beacon_on.png */,
 				FEEF0B0814B45851002877F5 /* beacon_on@2x.png */,
+				FEC7F9D51478323600537213 /* gamerScoreInverse.png */,
+				FE3FE14C13F72F7E009467EF /* gamerScore.png */,
 				FE0DBD3214B18BC0001E7B4D /* msp.png */,
 				FE0DBD3314B18BC0001E7B4D /* msp@2x.png */,
-				FE3CB75C14AD6D41007EF7D8 /* xboxStatusNotOk.png */,
-				FE3CB75D14AD6D41007EF7D8 /* xboxStatusNotOk@2x.png */,
-				FE3CB75E14AD6D41007EF7D8 /* xboxStatusOk.png */,
-				FE3CB75F14AD6D41007EF7D8 /* xboxStatusOk@2x.png */,
 				FEFCD57614A71CCE0018F05D /* paperclip.png */,
+				FEFCD57714A71CCE0018F05D /* paperclip@2x.png */,
 				FEFCD58514A739530018F05D /* table_sep.png */,
 				FEFCD58614A739540018F05D /* table_sep@2x.png */,
-				FEFCD57714A71CCE0018F05D /* paperclip@2x.png */,
-				FEFCD57214A716230018F05D /* unreadMarker.png */,
-				FEFCD57314A716230018F05D /* unreadMarker@2x.png */,
+				FE98ADCC149F3CA300967286 /* textFieldBackground.png */,
 				FEB204CA14A07E35005EFA25 /* toolbarCompareGames.png */,
 				FEB204CB14A07E35005EFA25 /* toolbarCompareGames@2x.png */,
+				FE9FAA9B14B57265000ACBC0 /* toolbarFindProfile.png */,
+				FE9FAA9C14B57265000ACBC0 /* toolbarFindProfile@2x.png */,
 				FEB204C114A06BFE005EFA25 /* toolbarFriends.png */,
 				FEB204C214A06BFE005EFA25 /* toolbarFriends@2x.png */,
+				FE9FAA9D14B57265000ACBC0 /* toolbarGameInfo.png */,
+				FE9FAA9E14B57265000ACBC0 /* toolbarGameInfo@2x.png */,
 				FEB204C314A06BFE005EFA25 /* toolbarRecent.png */,
 				FEB204C414A06BFE005EFA25 /* toolbarRecent@2x.png */,
-				FE98ADCC149F3CA300967286 /* textFieldBackground.png */,
+				FE904CE814BC01D4003A4273 /* toolbarSystemStatus.png */,
+				FE904CE914BC01D4003A4273 /* toolbarSystemStatus@2x.png */,
+				FEFCD57214A716230018F05D /* unreadMarker.png */,
+				FEFCD57314A716230018F05D /* unreadMarker@2x.png */,
 				FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */,
 				FE92D6CF149CA39300A7D6A5 /* xboxDefaultBoxart@2x.png */,
 				FE92D6D0149CA39300A7D6A5 /* xboxDefaultCroppedBoxart.png */,
@@ -527,8 +531,10 @@
 				FE993D7A1499EB3E0075882C /* xboxStar3@2x.png */,
 				FE993D7B1499EB3E0075882C /* xboxStar4.png */,
 				FE993D7C1499EB3E0075882C /* xboxStar4@2x.png */,
-				FEC7F9D51478323600537213 /* gamerScoreInverse.png */,
-				FE3FE14C13F72F7E009467EF /* gamerScore.png */,
+				FE3CB75C14AD6D41007EF7D8 /* xboxStatusNotOk.png */,
+				FE3CB75D14AD6D41007EF7D8 /* xboxStatusNotOk@2x.png */,
+				FE3CB75E14AD6D41007EF7D8 /* xboxStatusOk.png */,
+				FE3CB75F14AD6D41007EF7D8 /* xboxStatusOk@2x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -1069,6 +1075,8 @@
 				FE9FAAA014B57265000ACBC0 /* toolbarFindProfile@2x.png in Resources */,
 				FE9FAAA114B57265000ACBC0 /* toolbarGameInfo.png in Resources */,
 				FE9FAAA214B57265000ACBC0 /* toolbarGameInfo@2x.png in Resources */,
+				FE904CEA14BC01D5003A4273 /* toolbarSystemStatus.png in Resources */,
+				FE904CEB14BC01D5003A4273 /* toolbarSystemStatus@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

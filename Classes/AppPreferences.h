@@ -14,6 +14,8 @@
 
 +(XboxLiveAccount*)createAndAddAccount;
 +(XboxLiveAccount*)findAccountWithEmailAddress:(NSString*)emailAddress;
-+(void)deleteAccountWithUuid:(NSString*)uuid;
++(void)deleteAccountWithUuid:(NSString*)uuid
+        managedObjectContext:(NSManagedObjectContext*)context;
+
 
 @end

@@ -49,6 +49,7 @@
     SecretAchieveTitle = "Secret Achievement";
     SecretAchieveDesc = "Continue playing to unlock this secret achievement.";
 	AchieveUnlocked_f = "Unlocked %@";
+	AchieveUnlockedBrief_f = "%@";
 	AchieveUnlockedOffline = "Unlocked";
 	AchieveLocked = "Locked";
 	Sent_f = "%@";

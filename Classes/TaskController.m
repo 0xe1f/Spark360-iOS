@@ -77,9 +77,14 @@ NSString* const BACHNotificationNSError = @"BachNotifNSError";
     [super dealloc];
 }
 
-- (void)toggleNetworkIndicator:(BOOL)isShowing
+- (void)showNetworkIndicator
 {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = isShowing;
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+- (void)hideNetworkIndicator
+{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
 - (void)main
@@ -87,8 +92,16 @@ NSString* const BACHNotificationNSError = @"BachNotifNSError";
     if ([self isCancelled])
         return;
     
+    [self performSelectorOnMainThread:@selector(showNetworkIndicator) 
+                           withObject:nil 
+                        waitUntilDone:YES];
+    
     [self.selectorOwner performSelector:self.backgroundSelector
                              withObject:self.arguments];
+    
+    [self performSelectorOnMainThread:@selector(hideNetworkIndicator) 
+                           withObject:nil 
+                        waitUntilDone:YES];
 }
 
 -(BOOL)isEqual:(id)object

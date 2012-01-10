@@ -22,6 +22,9 @@
 @synthesize gameTitle = _gameTitle;
 @synthesize gameDetailUrl = _gameDetailUrl;
 
+@synthesize myIconUrl = _myIconUrl;
+@synthesize yourIconUrl = _yourIconUrl;
+
 -(id)initWithGameUid:(NSString*)gameUid
           screenName:(NSString*)screenName
              account:(XboxLiveAccount*)account
@@ -148,7 +151,7 @@
             }
             else
             {
-                unlockedText = [NSString localizedStringWithFormat:NSLocalizedString(@"AchieveUnlocked_f", nil), 
+                unlockedText = [NSString localizedStringWithFormat:NSLocalizedString(@"AchieveUnlockedBrief_f", nil), 
                                 [self.dateFormatter stringFromDate:acquired]];
             }
         }
@@ -168,7 +171,7 @@
             }
             else
             {
-                unlockedText = [NSString localizedStringWithFormat:NSLocalizedString(@"AchieveUnlocked_f", nil), 
+                unlockedText = [NSString localizedStringWithFormat:NSLocalizedString(@"AchieveUnlockedBrief_f", nil), 
                                 [self.dateFormatter stringFromDate:acquired]];
             }
         }
@@ -180,6 +183,18 @@
         
         if (icon)
             cell.icon.image = icon;
+        
+        UIImage *myGamerpic = [self tableCellImageFromUrl:self.myIconUrl
+                                                indexPath:indexPath];
+        
+        if (myGamerpic)
+            cell.myGamerpic.image = myGamerpic; 
+        
+        UIImage *yourGamerpic = [self tableCellImageFromUrl:self.yourIconUrl
+                                                  indexPath:indexPath];
+        
+        if (yourGamerpic)
+            cell.yourGamerpic.image = yourGamerpic;
     }
     
     return cell;
@@ -218,6 +233,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         
         NSDictionary *payload = [notification.userInfo objectForKey:BACHNotificationData];
         NSArray *achievements = [payload objectForKey:@"achievements"];
+        
+        self.myIconUrl = [payload objectForKey:@"meIconUrl"];
+        self.yourIconUrl = [payload objectForKey:@"youIconUrl"];
         
         self.gameTitle = [payload objectForKey:@"title"];
         self.gameDetailUrl = [payload objectForKey:@"detailUrl"];

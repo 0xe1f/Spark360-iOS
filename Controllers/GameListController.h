@@ -17,4 +17,6 @@
 
 -(id)initWithAccount:(XboxLiveAccount*)account;
 
+-(IBAction)refresh:(id)sender;
+
 @end

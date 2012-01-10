@@ -42,7 +42,6 @@
 						<int key="NSvFlags">274</int>
 						<string key="NSFrameSize">{320, 416}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="228327193"/>
 						<string key="NSReuseIdentifierKey">_NS:418</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
@@ -121,8 +120,6 @@ AAgACAAIAAEAAQABAAE</bytes>
 						<int key="NSvFlags">266</int>
 						<string key="NSFrame">{{0, 416}, {320, 44}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:371</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
@@ -139,7 +136,10 @@ AAgACAAIAAEAAQABAAE</bytes>
 								<int key="IBUISystemItemIdentifier">5</int>
 							</object>
 							<object class="IBUIBarButtonItem" id="412581705">
-								<string key="IBUITitle">Live Status</string>
+								<object class="NSCustomResource" key="IBUIImage">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">toolbarSystemStatus.png</string>
+								</object>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIToolbar" ref="228327193"/>
 							</object>
@@ -148,7 +148,6 @@ AAgACAAIAAEAAQABAAE</bytes>
 				</array>
 				<string key="NSFrame">{{0, 20}, {320, 460}}</string>
 				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="371670795"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">3</int>
@@ -290,73 +289,15 @@ AAgACAAIAAEAAQABAAE</bytes>
 			<nil key="sourceID"/>
 			<int key="maxID">27</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<object class="IBPartialClassDescription">
-					<string key="className">GenericController</string>
-					<string key="superclassName">UIViewController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/GenericController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">ProfileOverviewController</string>
-					<string key="superclassName">GenericController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="refresh:">id</string>
-						<string key="viewFriends:">id</string>
-						<string key="viewGames:">id</string>
-						<string key="viewLiveStatus:">id</string>
-						<string key="viewMessages:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="refresh:">
-							<string key="name">refresh:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewFriends:">
-							<string key="name">viewFriends:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewGames:">
-							<string key="name">viewGames:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewLiveStatus:">
-							<string key="name">viewLiveStatus:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewMessages:">
-							<string key="name">viewMessages:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="optionsCell">UITableViewCell</string>
-						<string key="tableView">UITableView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="optionsCell">
-							<string key="name">optionsCell</string>
-							<string key="candidateClassName">UITableViewCell</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tableView">
-							<string key="name">tableView</string>
-							<string key="candidateClassName">UITableView</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ProfileOverviewController.h</string>
-					</object>
-				</object>
-			</array>
-		</object>
+		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
+		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="NS.key.0">toolbarSystemStatus.png</string>
+			<string key="NS.object.0">{20, 20}</string>
+		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>
 </archive>
