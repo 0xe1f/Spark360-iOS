@@ -15,8 +15,6 @@
 #import "RecentPlayersController.h"
 #import "ProfileController.h"
 
-#define OK_BUTTON_INDEX 1
-
 @interface FriendListController (Private)
 
 -(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -353,7 +351,7 @@
 -(void)alertView:(UIAlertView *)alertView 
 clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
-    if (buttonIndex == OK_BUTTON_INDEX)
+    if (buttonIndex == INPUT_ALERTVIEW_OK_BUTTON)
     {
         NSString *screenName = [self inputDialogText:alertView];
         

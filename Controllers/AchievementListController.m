@@ -36,6 +36,16 @@
 @synthesize isGameDirty;
 @synthesize gameLastUpdated;
 
+-(void)beaconToggled:(NSNotification *)notification
+{
+    NSLog(@"Got beacon toggled notification");
+    
+    if ([self.account isEqualToAccount:[notification.userInfo objectForKey:BACHNotificationAccount]])
+    {
+        [self updateGameStats];
+    }
+}
+
 -(void)syncCompleted:(NSNotification *)notification
 {
     NSLog(@"Got sync completed notification");
@@ -98,6 +108,7 @@
         self.gameDetailUrl = [game valueForKey:@"gameUrl"];
         self.isGameDirty = [[game valueForKey:@"achievesDirty"] boolValue];
         self.gameLastUpdated = [game valueForKey:@"lastUpdated"];
+        self.isBeaconSet = [[game valueForKey:@"isBeaconSet"] boolValue];
         
         self.gameTitleLabel.text = self.gameTitle;
         self.gameLastPlayedLabel.text = [NSString localizedStringWithFormat:NSLocalizedString(@"GameLastPlayed", nil), 
@@ -119,14 +130,34 @@
                                              selector:@selector(syncCompleted:)
                                                  name:BACHAchievementsSynced 
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(beaconToggled:)
+                                                 name:BACHBeaconToggled 
+                                               object:nil];
     
     [self updateGameStats];
     
     self.title = [NSString localizedStringWithFormat:NSLocalizedString(@"Achievements_f", nil),
                   gameTitle];
     
+    UIBarButtonItem *beaconButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"toolbarXboxBeacon"]
+                                                                     style:UIBarButtonItemStyleBordered
+                                                                    target:self
+                                                                    action:@selector(setBeacon)];
+    
+    self.navigationItem.rightBarButtonItem = beaconButton;
+    
+    [beaconButton release];
+    
     if (self.isGameDirty)
         [self synchronizeWithRemote];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self updateGameStats];
 }
 
 -(void)viewDidUnload
@@ -136,6 +167,25 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:BACHAchievementsSynced
                                                   object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:BACHBeaconToggled
+                                                  object:nil];
+}
+
+-(void)alertView:(UIAlertView *)alertView 
+clickedButtonAtIndex:(NSInteger)buttonIndex 
+{
+    if (buttonIndex == INPUT_ALERTVIEW_OK_BUTTON)
+    {
+        NSString *message = [self inputDialogText:alertView];
+        
+        if (message && [message length] > 0)
+        {
+            [[TaskController sharedInstance] setBeaconForGameUid:self.gameUid
+                                                         account:self.account
+                                                         message:message];
+        }
+    }
 }
 
 #pragma mark - GenericTableViewController
@@ -366,6 +416,27 @@
 }
 
 #pragma mark - Actions
+
+- (void)setBeacon
+{
+    if (self.isBeaconSet)
+    {
+        // Unset beacon
+        
+        [[TaskController sharedInstance] clearBeaconForGameUid:self.gameUid
+                                                       account:self.account];
+    }
+    else
+    {
+        // Set beacon - get the message
+        
+        UIAlertView *inputDialog = [self inputDialogWithTitle:NSLocalizedString(@"SetBeacon", nil)
+                                                      message:NSLocalizedString(@"BeaconMessage", nil)
+                                                         text:NSLocalizedString(@"IWantToPlayThisGameWithFriends", nil)];
+        
+        [inputDialog show];
+    }
+}
 
 -(IBAction)refresh:(id)sender
 {

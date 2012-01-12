@@ -50,10 +50,12 @@
         <attribute name="achievesDirty" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="achievesTotal" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="achievesUnlocked" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="beaconText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="boxArtUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gamerScoreEarned" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="gamerScoreTotal" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="gameUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isBeaconSet" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastPlayed" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="lastUpdated" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="listOrder" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>

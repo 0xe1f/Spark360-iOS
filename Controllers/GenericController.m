@@ -279,6 +279,15 @@
 -(UIAlertView*)inputDialogWithTitle:(NSString*)title
                             message:(NSString*)message
 {
+    return [self inputDialogWithTitle:title
+                              message:message
+                                 text:nil];
+}
+
+-(UIAlertView*)inputDialogWithTitle:(NSString*)title
+                            message:(NSString*)message
+                               text:(NSString*)text
+{
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title 
                                                             message:@"\n\n\n"
                                                            delegate:self 
@@ -294,6 +303,9 @@
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.autocorrectionType = UITextAutocorrectionTypeNo;
     textField.placeholder = message;
+    
+    if (text)
+        textField.text = text;
     
     UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"textFieldBackground" 
                                                                                                                                        ofType:@"png"]]];

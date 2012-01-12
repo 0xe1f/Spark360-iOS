@@ -122,6 +122,12 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                       verificationToken:(NSString*)token
                                   error:(NSError**)error;
 
+-(BOOL)parseToggleBeaconOfGameUid:(NSString*)uid
+                          message:(NSString*)message
+                        setBeacon:(BOOL)isSettingBeacon
+                          account:(XboxLiveAccount*)account
+                            error:(NSError**)error;
+
 +(NSError*)errorWithCode:(NSInteger)code
                  message:(NSString*)message;
 +(NSError*)errorWithCode:(NSInteger)code
@@ -136,6 +142,7 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(NSString*)largeGamerpicFromIconUrl:(NSString*)url;
 -(NSString*)gamerpicUrlForGamertag:(NSString*)gamertag;
 -(NSString*)avatarUrlForGamertag:(NSString*)gamertag;
+-(NSString *)stripHTML:(NSString*)html;
 
 -(NSManagedObject*)profileForAccount:(XboxLiveAccount*)account;
 -(NSManagedObject*)getGameWithTitleId:(NSString*)titleId
@@ -172,6 +179,11 @@ NSString* const BachErrorDomain = @"com.akop.bach";
                                  account:(XboxLiveAccount*)account
                             actionToTake:(NSString*)action
                                    error:(NSError**)error;
+-(BOOL)retrieveToggleBeaconOfGameUid:(NSString*)uid
+                             message:(NSString*)message
+                           setBeacon:(BOOL)isSettingBeacon
+                             account:(XboxLiveAccount*)account
+                               error:(NSError**)error;
 
 -(NSDictionary*)retrieveCompareGamesWithScreenName:(NSString*)screenName
                                            account:(XboxLiveAccount*)account
@@ -204,8 +216,9 @@ NSString* const BachErrorDomain = @"com.akop.bach";
 -(void)writeFriends:(NSDictionary*)args;
 -(void)writeFriendProfile:(NSDictionary*)args;
 -(void)writeDeleteMessage:(NSDictionary*)args;
--(void)writeSyncMessage:(NSDictionary*)args;
+-(void)writeMessage:(NSDictionary*)args;
 -(void)writeRemoveFromFriends:(NSDictionary*)args;
+-(void)writeToggleBeacon:(NSDictionary*)args;
 
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
                            userInfo:(NSDictionary*)userInfo;
@@ -230,6 +243,7 @@ NSString* const URL_VTOKEN = @"http://live.xbox.com/%@/Home";
 NSString* const URL_VTOKEN_MESSAGES = @"http://live.xbox.com/%@/Messages?xr=socialtwistnav";
 NSString* const URL_VTOKEN_FRIENDS = @"http://live.xbox.com/%@/Friends?xr=shellnav";
 NSString* const URL_VTOKEN_COMPARE_GAMES = @"http://live.xbox.com/%@/Activity?compareTo=%@";
+NSString* const URL_VTOKEN_ACTIVITY = @"http://live.xbox.com/%@/Activity?xr=shellnav";
 
 NSString* const URL_GAMERCARD = @"http://gamercard.xbox.com/%@/%@.card";
 
@@ -243,7 +257,10 @@ NSString* const URL_JSON_FRIEND_REQUEST = @"http://live.xbox.com/%@/Friends/%@";
 NSString* const URL_JSON_COMPARE_GAMES = @"http://live.xbox.com/%@/Activity/Summary?CompareTo=%@";
 NSString* const URL_JSON_RECENT_LIST = @"http://live.xbox.com/%@/Friends/Recent";
 NSString* const URL_JSON_FOF_LIST = @"http://live.xbox.com/%@/Friends/List";
+
 NSString* const URL_JSON_BEACONS = @"http://live.xbox.com/%@/Beacons/JumpInList";
+NSString* const URL_JSON_BEACON_SET = @"http://live.xbox.com/%@/Beacons/Set";
+NSString* const URL_JSON_BEACON_CLEAR = @"http://live.xbox.com/%@/Beacons/Clear";
 
 NSString* const URL_JSON_DELETE_MESSAGE = @"http://live.xbox.com/%@/Messages/Delete";
 
@@ -1128,7 +1145,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                               data, @"data",
                               nil];
         
-        [self performSelectorOnMainThread:@selector(writeSyncMessage:) 
+        [self performSelectorOnMainThread:@selector(writeMessage:) 
                                withObject:args
                             waitUntilDone:YES];
     }
@@ -1151,23 +1168,50 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [pool release];
 }
 
--(void)postNotificationOnMainThread:(NSString*)postNotificationName
-                           userInfo:(NSDictionary*)userInfo
+-(void)toggleBeacon:(NSDictionary*)arguments
 {
-    NSLog(@"Sending notification '%@' on main thread", postNotificationName);
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    [self performSelectorOnMainThread:@selector(postNotificationSelector:) 
-                           withObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                       postNotificationName, @"postNotificationName", 
-                                       userInfo, @"userInfo", nil]
-                        waitUntilDone:YES];
-}
-
--(void)postNotificationSelector:(NSDictionary*)args
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:[args objectForKey:@"postNotificationName"]
-                                                        object:self
-                                                      userInfo:[args objectForKey:@"userInfo"]];
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *uid = [arguments objectForKey:@"uid"];
+    BOOL isSettingBeacon = [[arguments objectForKey:@"isSettingBeacon"] boolValue];
+    NSString *message = nil;
+    
+    if (isSettingBeacon)
+        message = [arguments objectForKey:@"message"];
+    
+    NSError *error = nil;
+    BOOL beaconToggled = [self retrieveToggleBeaconOfGameUid:uid
+                                                     message:message
+                                                   setBeacon:isSettingBeacon
+                                                     account:account
+                                                       error:&error];
+    
+    self.lastError = error;
+    
+    if (beaconToggled)
+    {
+        [self performSelectorOnMainThread:@selector(writeToggleBeacon:) 
+                               withObject:arguments
+                            waitUntilDone:YES];
+    }
+    
+    if (!self.lastError)
+    {
+        [self postNotificationOnMainThread:BACHBeaconToggled
+                                  userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            account, BACHNotificationAccount, 
+                                            uid, BACHNotificationUid,
+                                            nil]];
+    }
+    else
+    {
+        [self postNotificationOnMainThread:BACHError
+                                  userInfo:[NSDictionary dictionaryWithObject:self.lastError
+                                                                       forKey:BACHNotificationNSError]];
+    }
+    
+    [pool release];
 }
 
 #pragma mark - Retrieve*
@@ -1865,6 +1909,54 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [self saveSessionForAccount:account];
     
     return dict;
+}
+
+-(BOOL)retrieveToggleBeaconOfGameUid:(NSString*)uid
+                             message:(NSString*)message
+                           setBeacon:(BOOL)isSettingBeacon
+                             account:(XboxLiveAccount*)account
+                               error:(NSError**)error
+{
+    // Try restoring the session
+    
+    if (![self restoreSessionForAccount:account])
+    {
+        // Session couldn't be restored. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return NO;
+        }
+    }
+    
+    if (![self parseToggleBeaconOfGameUid:uid
+                                  message:message
+                                setBeacon:isSettingBeacon
+                                  account:account
+                                    error:NULL])
+    {
+        // Account parsing failed. Try re-authenticating
+        
+        if (![self authenticateAccount:account
+                                 error:error])
+        {
+            return NO;
+        }
+        
+        if (![self parseToggleBeaconOfGameUid:uid
+                                      message:message
+                                    setBeacon:isSettingBeacon
+                                      account:account
+                                        error:error])
+        {
+            return NO;
+        }
+    }
+    
+    [self saveSessionForAccount:account];
+    
+    return YES;
 }
 
 #pragma mark - parse*
@@ -3173,29 +3265,6 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     return data;
 }
 
--(NSString *)stripHTML:(NSString*)html
-{
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<br/?>"
-                                                                           options:0
-                                                                             error:NULL];
-    
-    NSString *replacement = [regex stringByReplacingMatchesInString:html
-                                                            options:NSRegularExpressionCaseInsensitive
-                                                              range:NSMakeRange(0, [html length])
-                                                       withTemplate:@"\n"];
-    
-    regex = [NSRegularExpression regularExpressionWithPattern:@"</?[^/>]*/?>"
-                                                      options:0
-                                                        error:NULL];
-    
-    replacement = [regex stringByReplacingMatchesInString:replacement
-                                                  options:0
-                                                    range:NSMakeRange(0, [replacement length])
-                                             withTemplate:@" "];
-    
-    return [replacement gtm_stringByUnescapingFromHTML];
-}
-
 -(NSDictionary*)parseXboxLiveStatus:(NSError**)error
 {
     NSString *url = [NSString stringWithFormat:URL_STATUS, LOCALE];
@@ -3588,6 +3657,74 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     NSLog(@"parseProfile: %.04f", 
           CFAbsoluteTimeGetCurrent() - startTime);
+    
+    return YES;
+}
+
+-(BOOL)parseToggleBeaconOfGameUid:(NSString*)uid
+                          message:(NSString*)message
+                        setBeacon:(BOOL)isSettingBeacon
+                          account:(XboxLiveAccount*)account
+                            error:(NSError**)error
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    NSString *vtoken = [self obtainTokenFrom:URL_VTOKEN_ACTIVITY];
+    if (!vtoken)
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCannotObtainToken"];
+        }
+        
+        return NO;
+    }
+    
+    NSString *url = nil;
+    NSDictionary *inputs = nil;
+    
+    if (isSettingBeacon)
+    {
+        url = [NSString stringWithFormat:URL_JSON_BEACON_SET, LOCALE];
+        inputs = [NSDictionary dictionaryWithObjectsAndKeys:
+                  vtoken, @"__RequestVerificationToken",
+                  uid, @"titleId",
+                  message, @"text",
+                  nil];
+    }
+    else
+    {
+        url = [NSString stringWithFormat:URL_JSON_BEACON_CLEAR, LOCALE];
+        inputs = [NSDictionary dictionaryWithObjectsAndKeys:
+                  vtoken, @"__RequestVerificationToken",
+                  uid, @"titleId",
+                  nil];
+    }
+    
+    NSString *page = [self loadWithPOST:url
+                                 fields:inputs
+                                 useXhr:YES
+                                  error:error];
+    
+    if (!page)
+        return NO;
+    
+    NSDictionary *response = [XboxLiveParser jsonObjectFromPage:page
+                                                          error:error];
+    
+    if (!response || (![[response objectForKey:@"Success"] boolValue]))
+    {
+        if (error)
+        {
+            *error = [XboxLiveParser errorWithCode:XBLPParsingError
+                                   localizationKey:@"ErrorCouldNotUpdateBeacon"];
+        }
+        
+        return NO;
+    }
+    
+    NSLog(@"parseToggleBeaconOfGameUid: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -4646,7 +4783,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     NSLog(@"writeDeleteMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
 }
 
--(void)writeSyncMessage:(NSDictionary*)args
+-(void)writeMessage:(NSDictionary*)args
 {
     CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
     
@@ -4692,10 +4829,68 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     [account save];
     
-    NSLog(@"writeSyncMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+    NSLog(@"writeMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+}
+
+-(void)writeToggleBeacon:(NSDictionary*)args
+{
+    CFTimeInterval startTime = CFAbsoluteTimeGetCurrent(); 
+    
+    XboxLiveAccount *account = [arguments objectForKey:@"account"];
+    NSString *uid = [arguments objectForKey:@"uid"];
+    BOOL isSettingBeacon = [[arguments objectForKey:@"isSettingBeacon"] boolValue];
+    NSString *message = nil;
+    
+    if (isSettingBeacon)
+        message = [arguments objectForKey:@"message"];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxGame"
+                                                         inManagedObjectContext:self.context];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uid == %@ AND profile.uuid == %@", 
+                              uid, account.uuid];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    NSManagedObject *game = [[self.context executeFetchRequest:request 
+                                                         error:nil] lastObject];
+    
+    [request release];
+    
+    [game setValue:[NSNumber numberWithBool:isSettingBeacon]  forKey:@"isBeaconSet"];
+    [game setValue:message forKey:@"beaconText"];
+    
+    [self.context save:NULL];
+    
+    NSLog(@"writeToggleBeacon: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 #pragma mark Helpers
+
+-(NSString *)stripHTML:(NSString*)html
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<br/?>"
+                                                                           options:0
+                                                                             error:NULL];
+    
+    NSString *replacement = [regex stringByReplacingMatchesInString:html
+                                                            options:NSRegularExpressionCaseInsensitive
+                                                              range:NSMakeRange(0, [html length])
+                                                       withTemplate:@"\n"];
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:@"</?[^/>]*/?>"
+                                                      options:0
+                                                        error:NULL];
+    
+    replacement = [regex stringByReplacingMatchesInString:replacement
+                                                  options:0
+                                                    range:NSMakeRange(0, [replacement length])
+                                             withTemplate:@" "];
+    
+    return [replacement gtm_stringByUnescapingFromHTML];
+}
 
 -(NSString*)getBoxArtForTitleId:(NSNumber*)titleId
                     largeBoxArt:(BOOL)largeBoxArt
@@ -5026,6 +5221,25 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     return [NSString stringWithFormat:URL_AVATAR_BODY,
             [gamertag gtm_stringByEscapingForURLArgument]];
+}
+
+-(void)postNotificationOnMainThread:(NSString*)postNotificationName
+                           userInfo:(NSDictionary*)userInfo
+{
+    NSLog(@"Sending notification '%@' on main thread", postNotificationName);
+    
+    [self performSelectorOnMainThread:@selector(postNotificationSelector:) 
+                           withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                       postNotificationName, @"postNotificationName", 
+                                       userInfo, @"userInfo", nil]
+                        waitUntilDone:YES];
+}
+
+-(void)postNotificationSelector:(NSDictionary*)args
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:[args objectForKey:@"postNotificationName"]
+                                                        object:self
+                                                      userInfo:[args objectForKey:@"userInfo"]];
 }
 
 #pragma mark Core stuff

@@ -26,6 +26,7 @@
 @property (nonatomic, retain) NSString *gameDetailUrl;
 @property (nonatomic, retain) NSDate *gameLastUpdated;
 @property (nonatomic, assign) BOOL isGameDirty;
+@property (nonatomic, assign) BOOL isBeaconSet;
 
 -(IBAction)refresh:(id)sender;
 -(IBAction)showDetails:(id)sender;

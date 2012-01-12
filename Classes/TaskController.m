@@ -32,6 +32,8 @@ NSString* const BACHXboxLiveStatusLoaded = @"BachXboxLiveStatusLoaded";
 NSString* const BACHMessageSynced = @"BachMessageSynced";
 NSString* const BACHMessagesChanged = @"BachMessageDeleted";
 NSString* const BACHMessageSent = @"BachMessageSent";
+NSString* const BACHBeaconToggled = @"BachBeaconToggled";
+
 NSString* const BACHError = @"BachError";
 
 NSString* const BACHNotificationAccount = @"BachNotifAccount";
@@ -732,6 +734,56 @@ static TaskController *sharedInstance = nil;
 -(BOOL)isLoadingXboxLiveStatus:(XboxLiveAccount*)account
 {
     return [self isOperationQueuedWithId:@"XboxLiveStatus"];
+}
+
+-(void)setBeaconForGameUid:(NSString*)uid
+                   account:(XboxLiveAccount*)account
+                   message:(NSString*)message
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.ToggleBeacon:%@",
+                            account.uuid, uid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               uid, @"uid",
+                               account, @"account",
+                               [NSNumber numberWithBool:YES], @"isSettingBeacon",
+                               message, @"message",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(toggleBeacon:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
+}
+
+-(void)clearBeaconForGameUid:(NSString*)uid
+                     account:(XboxLiveAccount*)account
+{
+    NSString *identifier = [NSString stringWithFormat:@"%@.ToggleBeacon:%@",
+                            account.uuid, uid];
+    
+    NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:
+                               uid, @"uid",
+                               account, @"account",
+                               [NSNumber numberWithBool:NO], @"isSettingBeacon",
+                               nil];
+    
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
+                                                                        selectorOwner:parser
+                                                                   backgroundSelector:@selector(toggleBeacon:)
+                                                                            arguments:arguments];
+    
+    [parser release];
+    
+    [self addOperation:op];
+    [op release];
 }
 
 #pragma mark Singleton stuff

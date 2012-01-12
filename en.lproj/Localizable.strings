@@ -38,6 +38,7 @@
 	"ErrorCouldNotEditAccount" = "Could not edit account";
 	"ErrorCouldNotDeleteAccount" = "Could not delete account";
     "ErrorProfileNotFound" = "Profile could not be found";
+    ErrorCouldNotUpdateBeacon = "Could not update beacon. Please try again shortly";
 	MyPlayedGames = "My Games";
 	MyMessages = "My Messages";
 	MyProfile = "My Profile";
@@ -118,4 +119,7 @@
     Games = "Games";
     LetsPlay_f = "Let's play '%@'";
     Beacons = "Beacons";
+    SetBeacon = "Set Beacon";
+    BeaconMessage = "Message";
+    IWantToPlayThisGameWithFriends = "I want to play this game with friends";
 }

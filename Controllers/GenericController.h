@@ -13,6 +13,8 @@
 
 #import "XboxLiveAccount.h"
 
+#define INPUT_ALERTVIEW_OK_BUTTON (1)
+
 @interface GenericController : UIViewController<UIAlertViewDelegate>
 {
     NSManagedObjectContext *managedObjectContext;
@@ -25,6 +27,9 @@
 -(id)initWithAccount:(XboxLiveAccount*)account
              nibName:(NSString*)nibName;
 
+-(UIAlertView*)inputDialogWithTitle:(NSString*)title
+                            message:(NSString*)message
+                               text:(NSString*)text;
 -(UIAlertView*)inputDialogWithTitle:(NSString*)title
                             message:(NSString*)message;
 

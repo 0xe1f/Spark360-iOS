@@ -15,6 +15,7 @@ extern NSString* const BACHMessagesSynced;
 extern NSString* const BACHFriendsSynced;
 extern NSString* const BACHFriendProfileSynced;
 extern NSString* const BACHBeaconsSynced;
+
 extern NSString* const BACHProfileLoaded;
 extern NSString* const BACHFriendsChanged;
 extern NSString* const BACHGamesCompared;
@@ -24,9 +25,12 @@ extern NSString* const BACHFriendsOfFriendLoaded;
 extern NSString* const BACHGameOverviewLoaded;
 extern NSString* const BACHXboxLiveStatusLoaded;
 
+extern NSString* const BACHBeaconToggled;
+
 extern NSString* const BACHMessageSynced;
 extern NSString* const BACHMessagesChanged;
 extern NSString* const BACHMessageSent;
+
 extern NSString* const BACHError;
 
 extern NSString* const BACHNotificationAccount;
@@ -146,5 +150,12 @@ extern NSString* const BACHNotificationNSError;
 -(void)syncMessageWithUid:(NSString*)uid
                   account:(XboxLiveAccount*)account
      managedObjectContext:(NSManagedObjectContext*)moc;
+
+-(void)setBeaconForGameUid:(NSString*)uid
+                   account:(XboxLiveAccount*)account
+                   message:(NSString*)message;
+
+-(void)clearBeaconForGameUid:(NSString*)uid
+                     account:(XboxLiveAccount*)account;
 
 @end
