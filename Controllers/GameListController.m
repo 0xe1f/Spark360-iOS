@@ -169,10 +169,19 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     
     // Achievement stats
     
+    NSNumber *achievementsTotal = [managedObject valueForKey:@"achievesTotal"];
     label = (UILabel*)[cell viewWithTag:4];
-    [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameAchievementStats", nil), 
-                    [managedObject valueForKey:@"achievesUnlocked"],
-                    [managedObject valueForKey:@"achievesTotal"]]];
+    
+    if ([achievementsTotal intValue] > 0)
+    {
+        [label setText:[NSString localizedStringWithFormat:NSLocalizedString(@"GameAchievementStats", nil), 
+                        [managedObject valueForKey:@"achievesUnlocked"],
+                        achievementsTotal]];
+    }
+    else
+    {
+        [label setText:NSLocalizedString(@"NoAchievements", nil)];
+    }
     
     // Gamescore stats
     
@@ -190,6 +199,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     
     if (boxArt)
         [view setImage:boxArt];
+    
+    // Beacon
+    
+    UIImageView *beaconIcon = (UIImageView*)[cell viewWithTag:7];
+    beaconIcon.hidden = ![[managedObject valueForKey:@"isBeaconSet"] boolValue];
 }
 
 #pragma mark - Fetched results controller

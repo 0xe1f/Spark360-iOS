@@ -444,6 +444,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                  name:BACHFriendsChanged
                                                object:nil];
     
+	self.tableView.backgroundColor = [UIColor clearColor];
+    
     [self updateData];
     
     [self refreshProfile:NO];

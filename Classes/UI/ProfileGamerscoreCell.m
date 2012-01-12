@@ -51,7 +51,7 @@
     self.value.text = [numFormatter stringFromNumber:score];
     [numFormatter release];
     
-    NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"gamerScore"
+    NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"xboxGamerscore"
                                                           ofType:@"png"];
     
     self.icon.image = [UIImage imageWithContentsOfFile:imagePath];
@@ -67,7 +67,7 @@
     self.value.text = [numFormatter stringFromNumber:points];
     [numFormatter release];
     
-    NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"msp"
+    NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"xboxMsp"
                                                           ofType:@"png"];
     
     self.icon.image = [UIImage imageWithContentsOfFile:imagePath];

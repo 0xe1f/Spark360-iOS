@@ -156,11 +156,11 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">gamerScore.png</string>
+									<string key="NSResourceName">xboxGamerscore.png</string>
 								</object>
 								<object class="NSCustomResource" key="IBUIHighlightedImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">gamerScoreInverse.png</string>
+									<string key="NSResourceName">xboxGamerscoreInverse.png</string>
 								</object>
 							</object>
 							<object class="IBUILabel" id="604465909">
@@ -399,10 +399,10 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="gamerScore.png">{18, 18}</string>
-			<string key="gamerScoreInverse.png">{18, 18}</string>
 			<string key="xboxDefaultCroppedBoxart.png">{64, 64}</string>
 			<string key="xboxDefaultGamerpic.png">{64, 64}</string>
+			<string key="xboxGamerscore.png">{16, 16}</string>
+			<string key="xboxGamerscoreInverse.png">{16, 16}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>

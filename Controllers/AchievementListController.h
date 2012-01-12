@@ -30,6 +30,9 @@
 
 -(IBAction)refresh:(id)sender;
 -(IBAction)showDetails:(id)sender;
+-(IBAction)toggleBeacon:(id)sender;
+
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *beaconButton;
 
 -(id)initWithAccount:(XboxLiveAccount*)account
          gameTitleId:(NSString*)gameTitleId;

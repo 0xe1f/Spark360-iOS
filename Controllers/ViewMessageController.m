@@ -48,6 +48,7 @@
 -(void)dealloc
 {
     self.messageUid = nil;
+    self.senderScreenName = nil;
     
     [super dealloc];
 }

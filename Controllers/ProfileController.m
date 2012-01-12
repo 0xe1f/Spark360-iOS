@@ -167,7 +167,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     [self.beacons removeAllObjects];
     
     NSArray *beacons = [profile objectForKey:@"beacons"];
-    for (NSManagedObject *beacon in beacons)
+    for (NSDictionary *beacon in beacons)
         [self.beacons addObject:beacon];
     
     [self.tableView reloadData];

@@ -153,9 +153,11 @@ extern NSString* const BACHNotificationNSError;
 
 -(void)setBeaconForGameUid:(NSString*)uid
                    account:(XboxLiveAccount*)account
-                   message:(NSString*)message;
+                   message:(NSString*)message
+      managedObjectContext:(NSManagedObjectContext*)moc;
 
 -(void)clearBeaconForGameUid:(NSString*)uid
-                     account:(XboxLiveAccount*)account;
+                     account:(XboxLiveAccount*)account
+        managedObjectContext:(NSManagedObjectContext*)moc;
 
 @end

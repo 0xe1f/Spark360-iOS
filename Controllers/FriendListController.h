@@ -11,10 +11,6 @@
 #import "GenericTableViewController.h"
 
 @interface FriendListController : GenericTableViewController <NSFetchedResultsControllerDelegate, UITableViewDataSource>
-{
-    IBOutlet UIToolbar *toolbar;
-    IBOutlet UIBarButtonItem *refreshButton;
-}
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 

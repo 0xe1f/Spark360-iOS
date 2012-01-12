@@ -739,6 +739,7 @@ static TaskController *sharedInstance = nil;
 -(void)setBeaconForGameUid:(NSString*)uid
                    account:(XboxLiveAccount*)account
                    message:(NSString*)message
+      managedObjectContext:(NSManagedObjectContext*)moc
 {
     NSString *identifier = [NSString stringWithFormat:@"%@.ToggleBeacon:%@",
                             account.uuid, uid];
@@ -750,7 +751,7 @@ static TaskController *sharedInstance = nil;
                                message, @"message",
                                nil];
     
-    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
     TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
                                                                         selectorOwner:parser
                                                                    backgroundSelector:@selector(toggleBeacon:)
@@ -764,6 +765,7 @@ static TaskController *sharedInstance = nil;
 
 -(void)clearBeaconForGameUid:(NSString*)uid
                      account:(XboxLiveAccount*)account
+        managedObjectContext:(NSManagedObjectContext*)moc
 {
     NSString *identifier = [NSString stringWithFormat:@"%@.ToggleBeacon:%@",
                             account.uuid, uid];
@@ -774,7 +776,7 @@ static TaskController *sharedInstance = nil;
                                [NSNumber numberWithBool:NO], @"isSettingBeacon",
                                nil];
     
-    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:nil];
+    XboxLiveParser *parser = [[XboxLiveParser alloc] initWithManagedObjectContext:moc];
     TaskControllerOperation *op = [[TaskControllerOperation alloc] initWithIdentifier:identifier
                                                                         selectorOwner:parser
                                                                    backgroundSelector:@selector(toggleBeacon:)

@@ -50,6 +50,8 @@
                                                  name:BACHXboxLiveStatusLoaded
                                                object:nil];
     
+	self.tableView.backgroundColor = [UIColor clearColor];
+    
     [self synchronizeWithRemote];
 }
 

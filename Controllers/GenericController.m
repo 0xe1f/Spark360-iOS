@@ -41,6 +41,13 @@
     return self;
 }
 
+- (void)dealloc
+{
+    self.controllerClassName = nil;
+    
+    [super dealloc];
+}
+
 - (BOOL)isEqual:(id)object
 {
     if (![object isKindOfClass:[GenericControllerRequestor class]])
@@ -79,9 +86,6 @@
     {
         self.account = nil;
         
-        BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
-        managedObjectContext = bachApp.managedObjectContext;
-        
         _isViewVisible = NO;
         _isAlertActive = NO;
         _requestor = [[GenericControllerRequestor alloc] initWithControllerClass:[self class]];
@@ -103,9 +107,6 @@
                                bundle:nil])
     {
         self.account = account;
-        
-        BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
-        managedObjectContext = bachApp.managedObjectContext;
         
         _isViewVisible = NO;
         _isAlertActive = NO;
@@ -187,6 +188,9 @@
 -(void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    BachAppDelegate *bachApp = [BachAppDelegate sharedApp];
+    managedObjectContext = bachApp.managedObjectContext;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onImageRetrieved:)

@@ -2,12 +2,12 @@ Critical:
 
 * Setting Beacons
 * Refuse to set beacon if >= 3 already set
+* REmove the Bundle stuff (prefs?)
 * Update game & achievement controller to show that a beacon has been set
 * Google Achievement Help links
 * ImageCache: Load achievements for PoP, then delete image cache,
               then open achieve list. Only the first image loads
 * MessageCompositionController crashes on simulated memory warnings
-* Replace stock backgrounds on non-tableview views
 
 Next release:
 

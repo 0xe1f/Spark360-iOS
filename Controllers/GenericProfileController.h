@@ -18,7 +18,7 @@
 
 @property (nonatomic, retain) NSMutableDictionary *profile;
 @property (nonatomic, retain) NSMutableArray *beacons;
-@property (nonatomic, retain) NSString *screenName;
+@property (nonatomic, copy) NSString *screenName;
 
 +(void)showProfileWithScreenName:(NSString*)screenName
                          account:(XboxLiveAccount*)account

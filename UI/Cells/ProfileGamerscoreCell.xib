@@ -119,7 +119,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">gamerScore.png</string>
+									<string key="NSResourceName">xboxGamerscore.png</string>
 								</object>
 							</object>
 						</array>
@@ -243,8 +243,8 @@
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">gamerScore.png</string>
-			<string key="NS.object.0">{18, 18}</string>
+			<string key="NS.key.0">xboxGamerscore.png</string>
+			<string key="NS.object.0">{16, 16}</string>
 		</object>
 		<string key="IBCocoaTouchPluginVersion">933</string>
 	</data>

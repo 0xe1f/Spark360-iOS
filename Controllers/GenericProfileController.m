@@ -49,7 +49,7 @@
     if (self = [super initWithAccount:account
                               nibName:nibName])
     {
-        self.beacons = [[NSMutableArray alloc] init];
+        self.beacons = [NSMutableArray arrayWithCapacity:5];
         self.screenName = screenName;
         self.profile = nil;
         
@@ -77,6 +77,7 @@
 {
     self.profile = nil;
     self.beacons = nil;
+    self.screenName = nil;
     
     [statSectionColumns release];
     statSectionColumns = nil;
@@ -132,6 +133,8 @@
     
     self.title = self.screenName;
     self.composeButton.enabled = [self.account canSendMessages];
+    
+	self.tableView.backgroundColor = [UIColor clearColor];
 }
 
 - (void)viewDidUnload

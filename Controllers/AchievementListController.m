@@ -29,11 +29,13 @@
 @synthesize gameAchievesLabel;
 @synthesize gameGamerScoreLabel;
 @synthesize gameBoxArtIcon;
+@synthesize beaconButton;
 
 @synthesize gameUid;
 @synthesize gameDetailUrl;
 @synthesize gameTitle;
 @synthesize isGameDirty;
+@synthesize isBeaconSet;
 @synthesize gameLastUpdated;
 
 -(void)beaconToggled:(NSNotification *)notification
@@ -140,15 +142,6 @@
     self.title = [NSString localizedStringWithFormat:NSLocalizedString(@"Achievements_f", nil),
                   gameTitle];
     
-    UIBarButtonItem *beaconButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"toolbarXboxBeacon"]
-                                                                     style:UIBarButtonItemStyleBordered
-                                                                    target:self
-                                                                    action:@selector(setBeacon)];
-    
-    self.navigationItem.rightBarButtonItem = beaconButton;
-    
-    [beaconButton release];
-    
     if (self.isGameDirty)
         [self synchronizeWithRemote];
 }
@@ -183,7 +176,8 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
         {
             [[TaskController sharedInstance] setBeaconForGameUid:self.gameUid
                                                          account:self.account
-                                                         message:message];
+                                                         message:message
+                                            managedObjectContext:managedObjectContext];
         }
     }
 }
@@ -417,14 +411,33 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
 
 #pragma mark - Actions
 
-- (void)setBeacon
+-(void)refresh:(id)sender
+{
+    [self synchronizeWithRemote];
+}
+
+-(void)showDetails:(id)sender
+{
+    if (self.gameDetailUrl)
+    {
+        GameOverviewController *ctlr =  [[GameOverviewController alloc] initWithTitle:self.gameTitle
+                                                                            detailUrl:self.gameDetailUrl
+                                                                              account:self.account];
+        
+        [self.navigationController pushViewController:ctlr animated:YES];
+        [ctlr release];
+    }
+}
+
+-(void)toggleBeacon:(id)sender
 {
     if (self.isBeaconSet)
     {
         // Unset beacon
         
         [[TaskController sharedInstance] clearBeaconForGameUid:self.gameUid
-                                                       account:self.account];
+                                                       account:self.account
+                                          managedObjectContext:managedObjectContext];
     }
     else
     {
@@ -435,24 +448,6 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
                                                          text:NSLocalizedString(@"IWantToPlayThisGameWithFriends", nil)];
         
         [inputDialog show];
-    }
-}
-
--(IBAction)refresh:(id)sender
-{
-    [self synchronizeWithRemote];
-}
-
--(IBAction)showDetails:(id)sender
-{
-    if (self.gameDetailUrl)
-    {
-        GameOverviewController *ctlr =  [[GameOverviewController alloc] initWithTitle:self.gameTitle
-                                                                            detailUrl:self.gameDetailUrl
-                                                                              account:self.account];
-        
-        [self.navigationController pushViewController:ctlr animated:YES];
-        [ctlr release];
     }
 }
 
