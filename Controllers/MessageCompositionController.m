@@ -126,6 +126,8 @@
 
 - (void)viewDidUnload
 {
+    [super viewDidUnload];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillShowNotification
                                                   object:nil];
@@ -139,8 +141,6 @@
     
     [messageView release];
     messageView = nil;
-    
-    [super viewDidUnload];
 }
 
 #pragma mark - TITokenFieldViewDelegate

@@ -125,7 +125,8 @@
     ClearBeacon = "Remove Beacon";
     BeaconMessage = "Message";
     IWantToPlayThisGameWithFriends = "I want to play this game with friends";
-    OnlineAchievementHelp = "Online Help";
+    AchievementHelp = "Achievement Help";
+    OnlineHelp = "Online Help";
     AchievementHelpUrl_f = "http://www.google.com/search?q=%@";
     AchievementHelpTerm_f = "\"%@\" \"%@\" achievement help";
     CouldNotLaunchOnlineHelp = "Could not launch online help";

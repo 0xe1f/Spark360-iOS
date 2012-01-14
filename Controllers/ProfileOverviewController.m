@@ -12,6 +12,7 @@
 #import "MessageListController.h"
 #import "FriendListController.h"
 #import "XboxLiveStatusController.h"
+#import "AchievementListController.h"
 
 #import "AKImageCache.h"
 #import "TaskController.h"
@@ -23,6 +24,7 @@
 #import "ProfileRatingCell.h"
 #import "ProfileLargeTextCell.h"
 #import "ProfileOptionsCell.h"
+#import "BeaconInfoCell.h"
 
 @interface ProfileOverviewController (Private)
 
@@ -43,6 +45,7 @@
 @synthesize messagesUnread = _messagesUnread;
 @synthesize friendsOnline = _friendsOnline;
 @synthesize profile = _profile;
+@synthesize beacons = _beacons;
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
@@ -50,6 +53,7 @@
                               nibName:@"ProfileOverviewController"])
     {
         self.profile = nil;
+        self.beacons = [NSMutableArray arrayWithCapacity:5];
         
         statSectionColumns = [[NSArray arrayWithObjects:
                                @"gamerScore",
@@ -78,6 +82,7 @@
 -(void)dealloc
 {
     self.profile = nil;
+    self.beacons = nil;
     
     [statSectionColumns release];
     statSectionColumns = nil;
@@ -91,7 +96,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
 {
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView 
@@ -100,8 +105,10 @@
     if (section == 0)
         return 1;
     else if (section == 1)
-        return [statSectionColumns count];
+        return [self.beacons count];
     else if (section == 2)
+        return [statSectionColumns count];
+    else if (section == 3)
         return 1;
     
     return 0;
@@ -115,6 +122,10 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         return 52;
     }
     else if (indexPath.section == 1)
+    {
+        return 44;
+    }
+    else if (indexPath.section == 2)
     {
         NSString *column = [statSectionColumns objectAtIndex:indexPath.row];
         
@@ -130,7 +141,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
         
         return 24;
     }
-    else if (indexPath.section == 2)
+    else if (indexPath.section == 3)
     {
         return 111;
     }
@@ -142,7 +153,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath
   willDisplayCell:(UITableViewCell *)cell 
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0 || indexPath.section == 2)
+    if (indexPath.section == 0 || indexPath.section == 3)
     {
         // Make the background of the cell transparent
         
@@ -201,6 +212,40 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         }
     }
     else if (indexPath.section == 1)
+    {
+        // Beacon
+        
+        BeaconInfoCell *biCell = (BeaconInfoCell*)[self.tableView dequeueReusableCellWithIdentifier:@"beaconInfoCell"];
+        
+        if (!biCell)
+        {
+            UINib *cellNib = [UINib nibWithNibName:@"BeaconInfoCell" 
+                                            bundle:nil];
+            
+            NSArray *topLevelObjects = [cellNib instantiateWithOwner:nil 
+                                                             options:nil];
+            
+            for (id object in topLevelObjects)
+            {
+                if ([object isKindOfClass:[UITableViewCell class]])
+                {
+                    biCell = (BeaconInfoCell*)object;
+                    break;
+                }
+            }
+        }
+        
+        NSDictionary *beacon = [self.beacons objectAtIndex:indexPath.row];
+        
+        biCell.titleName.text = [beacon objectForKey:@"title"];
+        biCell.message.text = [beacon objectForKey:@"beaconText"];
+        biCell.titleIcon.image = [self imageFromUrl:[beacon objectForKey:@"boxArtUrl"]
+                                           cropRect:CGRectMake(0, 16, 85, 85)
+                                          parameter:nil];
+        
+        cell = biCell;
+    }
+    else if (indexPath.section == 2)
     {
         NSString *column = [statSectionColumns objectAtIndex:indexPath.row];
         ProfileCell *pCell = nil;
@@ -339,7 +384,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         pCell.name.text = [statSectionLabels objectAtIndex:indexPath.row];
         cell = pCell;
     }
-    else if (indexPath.section == 2)
+    else if (indexPath.section == 3)
     {
         ProfileOptionsCell *optCell = (ProfileOptionsCell*)[tableView dequeueReusableCellWithIdentifier:@"Cell"];
         
@@ -382,6 +427,26 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView 
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 1)
+    {
+        // Beacon selected
+        
+        NSDictionary *beacon = [self.beacons objectAtIndex:indexPath.row];
+        NSString *uid = [beacon objectForKey:@"uid"];
+        
+        AchievementListController *ctlr = [[AchievementListController alloc] initWithAccount:self.account
+                                                                                 gameTitleId:uid];
+        
+        [self.navigationController pushViewController:ctlr
+                                             animated:YES];
+        
+        [ctlr release];
+    }
 }
 
 #pragma mark - Actions
@@ -443,6 +508,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                              selector:@selector(syncCompleted:)
                                                  name:BACHFriendsChanged
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(syncCompleted:)
+                                                 name:BACHBeaconsSynced
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(syncCompleted:)
+                                                 name:BACHBeaconToggled
+                                               object:nil];
     
 	self.tableView.backgroundColor = [UIColor clearColor];
     
@@ -466,6 +539,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:BACHFriendsChanged
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:BACHBeaconsSynced
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:BACHBeaconToggled
                                                   object:nil];
 }
 
@@ -586,6 +665,33 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     array = [managedObjectContext executeFetchRequest:request error:nil];
     
     self.messagesUnread = [array count];
+    
+    [request release];
+    
+    // Beacons
+    
+    entityDescription = [NSEntityDescription entityForName:@"XboxGame"
+                                    inManagedObjectContext:managedObjectContext];
+    
+    predicate = [NSPredicate predicateWithFormat:@"profile.uuid == %@ AND isBeaconSet == TRUE", 
+                 self.account.uuid];
+    
+    request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    [request setPredicate:predicate];
+    
+    array = [managedObjectContext executeFetchRequest:request error:nil];
+    
+    [self.beacons removeAllObjects];
+    for (NSManagedObject *game in array)
+    {
+        [self.beacons addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                 [game valueForKey:@"title"], @"title", 
+                                 [game valueForKey:@"boxArtUrl"], @"boxArtUrl", 
+                                 [game valueForKey:@"beaconText"], @"beaconText", 
+                                 [game valueForKey:@"uid"], @"uid", 
+                                 nil]];
+    }
     
     [request release];
     

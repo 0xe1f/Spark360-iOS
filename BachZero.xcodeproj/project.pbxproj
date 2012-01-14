@@ -65,6 +65,8 @@
 		FE80A8441495496500040D79 /* XboxLive.m in Sources */ = {isa = PBXBuildFile; fileRef = FE80A8431495496500040D79 /* XboxLive.m */; };
 		FE80A8461495A39300040D79 /* appIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8451495A39300040D79 /* appIcon.png */; };
 		FE80A8481495A39A00040D79 /* appIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8471495A39900040D79 /* appIcon@2x.png */; };
+		FE89CBFA14C1A4A30063EB44 /* toolbarMessages.png in Resources */ = {isa = PBXBuildFile; fileRef = FE89CBF814C1A4A30063EB44 /* toolbarMessages.png */; };
+		FE89CBFB14C1A4A30063EB44 /* toolbarMessages@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE89CBF914C1A4A30063EB44 /* toolbarMessages@2x.png */; };
 		FE8B671A14B848DD00C965EC /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8B671914B848DD00C965EC /* Reachability.m */; };
 		FE8B671C14B84BC100C965EC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8B671B14B84BC100C965EC /* SystemConfiguration.framework */; };
 		FE8B691314A59D0200275E41 /* FriendsOfFriendController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8B691214A59D0200275E41 /* FriendsOfFriendController.xib */; };
@@ -74,6 +76,7 @@
 		FE8BA7F914A1B9880020D389 /* CompareGameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8BA7F814A1B9880020D389 /* CompareGameCell.xib */; };
 		FE8BA7FC14A1BB710020D389 /* CompareGameCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */; };
 		FE8BF2C6149E8B9F00FC8485 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */; };
+		FE8C8DA414C18D70007591D7 /* WebController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8C8DA314C18D70007591D7 /* WebController.m */; };
 		FE8C9ABE14A9C185008DACAB /* TITokenFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8C9ABD14A9C185008DACAB /* TITokenFieldView.m */; };
 		FE8C9B4314AAFE22008DACAB /* GameOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8C9B4214AAFE21008DACAB /* GameOverviewController.m */; };
 		FE8CA9191474212800A5C9EA /* XboxLiveAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8CA9181474212800A5C9EA /* XboxLiveAccount.m */; };
@@ -87,6 +90,7 @@
 		FE8ECB6C14A48EDC00A6E2D2 /* CompareAchievementsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8ECB6B14A48EDC00A6E2D2 /* CompareAchievementsController.xib */; };
 		FE8ED30414B6CAB8004EF96D /* AKImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8ED30314B6CAB8004EF96D /* AKImageCache.m */; };
 		FE8F26B514A858B000C82006 /* ContactButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8F26B414A858B000C82006 /* ContactButton.m */; };
+		FE90381F14C18E77008BE9D1 /* WebController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE90381E14C18E77008BE9D1 /* WebController.xib */; };
 		FE904CEA14BC01D5003A4273 /* toolbarSystemStatus.png in Resources */ = {isa = PBXBuildFile; fileRef = FE904CE814BC01D4003A4273 /* toolbarSystemStatus.png */; };
 		FE904CEB14BC01D5003A4273 /* toolbarSystemStatus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE904CE914BC01D4003A4273 /* toolbarSystemStatus@2x.png */; };
 		FE908A6C14AB82C000FD51CF /* ScreenshotGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE908A6B14AB82C000FD51CF /* ScreenshotGridViewCell.m */; };
@@ -298,6 +302,8 @@
 		FE80A8431495496500040D79 /* XboxLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLive.m; sourceTree = "<group>"; };
 		FE80A8451495A39300040D79 /* appIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appIcon.png; sourceTree = "<group>"; };
 		FE80A8471495A39900040D79 /* appIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appIcon@2x.png"; sourceTree = "<group>"; };
+		FE89CBF814C1A4A30063EB44 /* toolbarMessages.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toolbarMessages.png; sourceTree = "<group>"; };
+		FE89CBF914C1A4A30063EB44 /* toolbarMessages@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbarMessages@2x.png"; sourceTree = "<group>"; };
 		FE8B671814B848DD00C965EC /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		FE8B671914B848DD00C965EC /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		FE8B671B14B84BC100C965EC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -311,6 +317,8 @@
 		FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompareGameCell.m; sourceTree = "<group>"; };
 		FE8BF2C4149E8B9F00FC8485 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
 		FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
+		FE8C8DA214C18D70007591D7 /* WebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebController.h; sourceTree = "<group>"; };
+		FE8C8DA314C18D70007591D7 /* WebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebController.m; sourceTree = "<group>"; };
 		FE8C9ABC14A9C185008DACAB /* TITokenFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TITokenFieldView.h; sourceTree = "<group>"; };
 		FE8C9ABD14A9C185008DACAB /* TITokenFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TITokenFieldView.m; sourceTree = "<group>"; };
 		FE8C9B4114AAFE21008DACAB /* GameOverviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameOverviewController.h; sourceTree = "<group>"; };
@@ -335,6 +343,7 @@
 		FE8ED30314B6CAB8004EF96D /* AKImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AKImageCache.m; sourceTree = "<group>"; };
 		FE8F26B314A858B000C82006 /* ContactButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactButton.h; sourceTree = "<group>"; };
 		FE8F26B414A858B000C82006 /* ContactButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactButton.m; sourceTree = "<group>"; };
+		FE90381E14C18E77008BE9D1 /* WebController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WebController.xib; sourceTree = "<group>"; };
 		FE904CE814BC01D4003A4273 /* toolbarSystemStatus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toolbarSystemStatus.png; sourceTree = "<group>"; };
 		FE904CE914BC01D4003A4273 /* toolbarSystemStatus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbarSystemStatus@2x.png"; sourceTree = "<group>"; };
 		FE908A6A14AB82C000FD51CF /* ScreenshotGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotGridViewCell.h; sourceTree = "<group>"; };
@@ -368,7 +377,6 @@
 		FE993D871499F60D0075882C /* ProfileLargeTextCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileLargeTextCell.xib; sourceTree = "<group>"; };
 		FE993D891499F6B10075882C /* ProfileLargeTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileLargeTextCell.h; sourceTree = "<group>"; };
 		FE993D8A1499F6B10075882C /* ProfileLargeTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileLargeTextCell.m; sourceTree = "<group>"; };
-		FE9B1C8514BEBBF7001DF51A /* BachZero copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "BachZero copy-Info.plist"; path = "/Users/akop/Documents/BachZero/BachZero copy-Info.plist"; sourceTree = "<absolute>"; };
 		FE9B1C8614BEBFE2001DF51A /* toolbarXboxBeacon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toolbarXboxBeacon.png; sourceTree = "<group>"; };
 		FE9B1C8714BEBFE2001DF51A /* toolbarXboxBeacon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbarXboxBeacon@2x.png"; sourceTree = "<group>"; };
 		FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountAdd.xib; sourceTree = "<group>"; };
@@ -513,6 +521,8 @@
 				FEB204C214A06BFE005EFA25 /* toolbarFriends@2x.png */,
 				FE9FAA9D14B57265000ACBC0 /* toolbarGameInfo.png */,
 				FE9FAA9E14B57265000ACBC0 /* toolbarGameInfo@2x.png */,
+				FE89CBF814C1A4A30063EB44 /* toolbarMessages.png */,
+				FE89CBF914C1A4A30063EB44 /* toolbarMessages@2x.png */,
 				FEB204C314A06BFE005EFA25 /* toolbarRecent.png */,
 				FEB204C414A06BFE005EFA25 /* toolbarRecent@2x.png */,
 				FE904CE814BC01D4003A4273 /* toolbarSystemStatus.png */,
@@ -590,6 +600,7 @@
 				FEC8400D148A1F37005BC782 /* ProfileOverviewController.xib */,
 				FEE0283414A52623003B3DBF /* RecentPlayersController.xib */,
 				FEFCD57F14A737D30018F05D /* ViewMessageController.xib */,
+				FE90381E14C18E77008BE9D1 /* WebController.xib */,
 				FE3CB75A14AD350A007EF7D8 /* XboxLiveStatusController.xib */,
 			);
 			path = UI;
@@ -664,6 +675,8 @@
 				FEE0283214A52594003B3DBF /* RecentPlayersController.m */,
 				FEFCD57A14A7366C0018F05D /* ViewMessageController.h */,
 				FEFCD57B14A7366D0018F05D /* ViewMessageController.m */,
+				FE8C8DA214C18D70007591D7 /* WebController.h */,
+				FE8C8DA314C18D70007591D7 /* WebController.m */,
 				FE3CB75214AD31A8007EF7D8 /* XboxLiveStatusController.h */,
 				FE3CB75314AD31A8007EF7D8 /* XboxLiveStatusController.m */,
 			);
@@ -755,7 +768,6 @@
 				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
 				FE76A94713E636A9006D6AFC /* main.m */,
 				FE726B7F1463CD7600534279 /* TODO */,
-				FE9B1C8514BEBBF7001DF51A /* BachZero copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1091,6 +1103,9 @@
 				FEF1082714BD374000EF713D /* xboxGamerscoreInverse@2x.png in Resources */,
 				FE9B1C8814BEBFE2001DF51A /* toolbarXboxBeacon.png in Resources */,
 				FE9B1C8914BEBFE2001DF51A /* toolbarXboxBeacon@2x.png in Resources */,
+				FE90381F14C18E77008BE9D1 /* WebController.xib in Resources */,
+				FE89CBFA14C1A4A30063EB44 /* toolbarMessages.png in Resources */,
+				FE89CBFB14C1A4A30063EB44 /* toolbarMessages@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1181,6 +1196,7 @@
 				FE9FAAA614B577BC000ACBC0 /* GenericProfileController.m in Sources */,
 				FE8ED30414B6CAB8004EF96D /* AKImageCache.m in Sources */,
 				FE8B671A14B848DD00C965EC /* Reachability.m in Sources */,
+				FE8C8DA414C18D70007591D7 /* WebController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

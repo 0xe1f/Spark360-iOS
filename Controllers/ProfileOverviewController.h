@@ -18,6 +18,7 @@
 @property (nonatomic, assign) IBOutlet UITableViewCell *optionsCell;
 
 @property (nonatomic, retain) NSMutableDictionary *profile;
+@property (nonatomic, retain) NSMutableArray *beacons;
 @property (nonatomic, assign) NSInteger messagesUnread;
 @property (nonatomic, assign) NSInteger friendsOnline;
 

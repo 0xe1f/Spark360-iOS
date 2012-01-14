@@ -15,8 +15,6 @@
 #import "ImageCache.h"
 #import "TaskController.h"
 
-#define ERROR_DIALOG_TAG (0x1234)
-
 #pragma mark - GenericControllerRequestor
 
 @interface GenericControllerRequestor : NSObject
@@ -175,7 +173,8 @@
 
 #pragma mark - UIAlertViewDelegate
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+- (void)alertView:(UIAlertView *)alertView 
+didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     if (alertView.tag == ERROR_DIALOG_TAG)
     {

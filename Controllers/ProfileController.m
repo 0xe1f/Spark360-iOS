@@ -86,17 +86,6 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
         [self updateWithData:[notification.userInfo objectForKey:BACHNotificationData]];
 }
 
--(void)onSyncError:(NSNotification *)notification
-{
-    [super onSyncError:notification];
-    
-    if (!self.profile)
-    {
-        // Assume the profile couldn't be found. Close the view
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-}
-
 #pragma mark - Actions
 
 -(void)refresh:(id)sender

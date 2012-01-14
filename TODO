@@ -1,12 +1,8 @@
 Critical:
 
-* Open Netflix and try to view game details. Then press Back (crash)
-* Use UIWebView for ach. help
-* List beacons on profile page
-* Remove the Bundle stuff (prefs?)
+* Default icon for Xbox.com
 * ImageCache: Load achievements for PoP, then delete image cache,
               then open achieve list. Only the first image loads
-* MessageCompositionController crashes on simulated memory warnings
 
 Next release:
 
@@ -20,6 +16,7 @@ Messages:
 
 Friends:
 
+* Add search bar to list
 * Add avatars to profiles
 
 Games:

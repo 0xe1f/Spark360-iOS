@@ -163,17 +163,6 @@ didSelectItemAtIndex:(NSUInteger)index
     }
 }
 
--(void)onSyncError:(NSNotification *)notification
-{
-    [super onSyncError:notification];
-    
-    if (!self.gameDetails)
-    {
-        // Assume information could not be found. Close the view
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-}
-
 - (void)imageLoaded:(NSString*)imageUrl
 {
     [self updateGameDetails];

@@ -14,6 +14,7 @@
 #import "XboxLiveAccount.h"
 
 #define INPUT_ALERTVIEW_OK_BUTTON (1)
+#define ERROR_DIALOG_TAG          (0x1234)
 
 @interface GenericController : UIViewController<UIAlertViewDelegate>
 {

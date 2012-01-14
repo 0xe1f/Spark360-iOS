@@ -10,9 +10,10 @@
 
 #import "TaskController.h"
 #import "XboxLiveParser.h"
-
-#import "GameOverviewController.h"
 #import "GTMNSString+URLArguments.h"
+
+#import "WebController.h"
+#import "GameOverviewController.h"
 
 #define ALERTVIEW_ACH_DETAILS   100
 #define ALERTVIEW_SET_BEACON    101
@@ -188,17 +189,12 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
             NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:NSLocalizedString(@"AchievementHelpUrl_f", nil),
                                                [searchTerm gtm_stringByEscapingForURLArgument]]];
             
-            if (![[UIApplication sharedApplication] openURL:url])
-            {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) 
-                                                                    message:NSLocalizedString(@"CouldNotLaunchOnlineHelp", nil)
-                                                                   delegate:nil
-                                                          cancelButtonTitle:NSLocalizedString(@"OK",nil) 
-                                                          otherButtonTitles:nil];
-                
-                [alertView show];
-                [alertView release];
-            }
+            WebController *ctlr = [[WebController alloc] initWithUrl:url
+                                                           pageTitle:NSLocalizedString(@"AchievementHelp", nil)
+                                                             account:self.account];
+            
+            [self.navigationController pushViewController:ctlr animated:YES];
+            [ctlr release];
         }
     }
     else if (alertView.tag == ALERTVIEW_SET_BEACON)
@@ -280,7 +276,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
                                                         message:[achievement valueForKey:@"achDescription"]
                                                        delegate:self 
                                               cancelButtonTitle:NSLocalizedString(@"Close",nil) 
-                                              otherButtonTitles:NSLocalizedString(@"OnlineAchievementHelp",nil),
+                                              otherButtonTitles:NSLocalizedString(@"OnlineHelp",nil),
                                                                  nil];
     alertView.tag = ALERTVIEW_ACH_DETAILS;
     
