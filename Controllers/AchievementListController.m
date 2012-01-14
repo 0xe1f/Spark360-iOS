@@ -13,6 +13,12 @@
 
 #import "GameOverviewController.h"
 
+#define ALERTVIEW_ACH_DETAILS   100
+#define ALERTVIEW_SET_BEACON    101
+
+#define ACTIONSHEET_SET_BEACON   1
+#define ACTIONSHEET_CLEAR_BEACON 2
+
 @interface AchievementListController (Private)
 
 -(void)updateGameStats;
@@ -168,16 +174,40 @@
 -(void)alertView:(UIAlertView *)alertView 
 clickedButtonAtIndex:(NSInteger)buttonIndex 
 {
-    if (buttonIndex == INPUT_ALERTVIEW_OK_BUTTON)
+    if (alertView.tag == ALERTVIEW_ACH_DETAILS)
     {
-        NSString *message = [self inputDialogText:alertView];
+        // Achievement help
         
-        if (message && [message length] > 0)
+        NSString *searchTerm = [NSString stringWithFormat:NSLocalizedString(@"AchievementHelpTerm_f", nil),
+                                self.gameTitle, alertView.title];
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:NSLocalizedString(@"AchievementHelpUrl_f", nil),
+                                           [searchTerm gtm_stringByEscapingForURLArgument]]];
+        
+        if (![[UIApplication sharedApplication] openURL:url])
         {
-            [[TaskController sharedInstance] setBeaconForGameUid:self.gameUid
-                                                         account:self.account
-                                                         message:message
-                                            managedObjectContext:managedObjectContext];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) 
+                                                                message:NSLocalizedString(@"CouldNotLaunchOnlineHelp", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK",nil) 
+                                                      otherButtonTitles:nil];
+            
+            [alertView show];
+            [alertView release];
+        }
+    }
+    else if (alertView.tag == ALERTVIEW_SET_BEACON)
+    {
+        if (buttonIndex == INPUT_ALERTVIEW_OK_BUTTON)
+        {
+            NSString *message = [self inputDialogText:alertView];
+            
+            if (message && [message length] > 0)
+            {
+                [[TaskController sharedInstance] setBeaconForGameUid:self.gameUid
+                                                             account:self.account
+                                                             message:message
+                                                managedObjectContext:managedObjectContext];
+            }
         }
     }
 }
@@ -243,8 +273,10 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[achievement valueForKey:@"title"] 
                                                         message:[achievement valueForKey:@"achDescription"]
                                                        delegate:self 
-                                              cancelButtonTitle:NSLocalizedString(@"OK",nil) 
-                                              otherButtonTitles:nil];
+                                              cancelButtonTitle:NSLocalizedString(@"Close",nil) 
+                                              otherButtonTitles:NSLocalizedString(@"OnlineAchievementHelp",nil),
+                                                                 nil];
+    alertView.tag = ALERTVIEW_ACH_DETAILS;
     
     [alertView show];
     [alertView release];
@@ -409,6 +441,34 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     [self.tableView endUpdates];
 }
 
+#pragma mark - UIActionSheetDelegate
+
+-(void)actionSheet:(UIActionSheet *)actionSheet 
+didDismissWithButtonIndex:(NSInteger)buttonIndex 
+{
+    if (actionSheet.tag == ACTIONSHEET_CLEAR_BEACON)
+    {
+        if (buttonIndex == 0) // Unset beacon
+        {
+            [[TaskController sharedInstance] clearBeaconForGameUid:self.gameUid
+                                                           account:self.account
+                                              managedObjectContext:managedObjectContext];
+        }
+    }
+    else if (actionSheet.tag == ACTIONSHEET_SET_BEACON)
+    {
+        if (buttonIndex == 0) // Set beacon - prompt for message
+        {
+            UIAlertView *inputDialog = [self inputDialogWithTitle:NSLocalizedString(@"SetBeacon", nil)
+                                                          message:NSLocalizedString(@"BeaconMessage", nil)
+                                                             text:NSLocalizedString(@"IWantToPlayThisGameWithFriends", nil)];
+            
+            inputDialog.tag = ALERTVIEW_SET_BEACON;
+            [inputDialog show];
+        }
+    }
+}
+
 #pragma mark - Actions
 
 -(void)refresh:(id)sender
@@ -431,24 +491,36 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
 
 -(void)toggleBeacon:(id)sender
 {
-    if (self.isBeaconSet)
+    UIActionSheet *actionSheet = nil;
+    if (!self.isBeaconSet)
     {
-        // Unset beacon
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self 
+                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil) 
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:
+                       NSLocalizedString(@"SetBeacon", nil), 
+                       nil];
         
-        [[TaskController sharedInstance] clearBeaconForGameUid:self.gameUid
-                                                       account:self.account
-                                          managedObjectContext:managedObjectContext];
+        actionSheet.tag = ACTIONSHEET_SET_BEACON;
     }
     else
     {
-        // Set beacon - get the message
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self 
+                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil) 
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:
+                       NSLocalizedString(@"ClearBeacon", nil), 
+                       nil];
         
-        UIAlertView *inputDialog = [self inputDialogWithTitle:NSLocalizedString(@"SetBeacon", nil)
-                                                      message:NSLocalizedString(@"BeaconMessage", nil)
-                                                         text:NSLocalizedString(@"IWantToPlayThisGameWithFriends", nil)];
-        
-        [inputDialog show];
+        actionSheet.tag = ACTIONSHEET_CLEAR_BEACON
     }
+    
+    actionSheet.actionSheetStyle = UIActionSheetStyleAutomatic;
+    
+    [actionSheet showInView:self.view];
+    [actionSheet release];
 }
 
 @end

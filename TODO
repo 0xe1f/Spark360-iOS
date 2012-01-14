@@ -1,10 +1,9 @@
 Critical:
 
-* Setting Beacons
-* Refuse to set beacon if >= 3 already set
+* release UIAlertView's
+* List beacons on profile page
 * REmove the Bundle stuff (prefs?)
 * Update game & achievement controller to show that a beacon has been set
-* Google Achievement Help links
 * ImageCache: Load achievements for PoP, then delete image cache,
               then open achieve list. Only the first image loads
 * MessageCompositionController crashes on simulated memory warnings

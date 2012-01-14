@@ -11,7 +11,7 @@
 
 #import "GenericTableViewController.h"
 
-@interface AchievementListController : GenericTableViewController <NSFetchedResultsControllerDelegate, UITableViewDataSource>
+@interface AchievementListController : GenericTableViewController <NSFetchedResultsControllerDelegate, UITableViewDataSource, UIActionSheetDelegate>
 
 @property (nonatomic, retain) IBOutlet UILabel *gameTitleLabel;
 @property (nonatomic, retain) IBOutlet UILabel *gameLastPlayedLabel;
