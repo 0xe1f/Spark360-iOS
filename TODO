@@ -1,9 +1,9 @@
 Critical:
 
-* release UIAlertView's
+* Open Netflix and try to view game details. Then press Back (crash)
+* Use UIWebView for ach. help
 * List beacons on profile page
-* REmove the Bundle stuff (prefs?)
-* Update game & achievement controller to show that a beacon has been set
+* Remove the Bundle stuff (prefs?)
 * ImageCache: Load achievements for PoP, then delete image cache,
               then open achieve list. Only the first image loads
 * MessageCompositionController crashes on simulated memory warnings

@@ -12,9 +12,12 @@
 #import "XboxLiveParser.h"
 
 #import "GameOverviewController.h"
+#import "GTMNSString+URLArguments.h"
 
 #define ALERTVIEW_ACH_DETAILS   100
 #define ALERTVIEW_SET_BEACON    101
+
+#define ALERTVIEW_ACH_HELP_BUTTON 1
 
 #define ACTIONSHEET_SET_BEACON   1
 #define ACTIONSHEET_CLEAR_BEACON 2
@@ -176,23 +179,26 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (alertView.tag == ALERTVIEW_ACH_DETAILS)
     {
-        // Achievement help
-        
-        NSString *searchTerm = [NSString stringWithFormat:NSLocalizedString(@"AchievementHelpTerm_f", nil),
-                                self.gameTitle, alertView.title];
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:NSLocalizedString(@"AchievementHelpUrl_f", nil),
-                                           [searchTerm gtm_stringByEscapingForURLArgument]]];
-        
-        if (![[UIApplication sharedApplication] openURL:url])
+        if (buttonIndex == ALERTVIEW_ACH_HELP_BUTTON)
         {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) 
-                                                                message:NSLocalizedString(@"CouldNotLaunchOnlineHelp", nil)
-                                                               delegate:nil
-                                                      cancelButtonTitle:NSLocalizedString(@"OK",nil) 
-                                                      otherButtonTitles:nil];
+            // Achievement help
             
-            [alertView show];
-            [alertView release];
+            NSString *searchTerm = [NSString stringWithFormat:NSLocalizedString(@"AchievementHelpTerm_f", nil),
+                                    self.gameTitle, alertView.title];
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:NSLocalizedString(@"AchievementHelpUrl_f", nil),
+                                               [searchTerm gtm_stringByEscapingForURLArgument]]];
+            
+            if (![[UIApplication sharedApplication] openURL:url])
+            {
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil) 
+                                                                    message:NSLocalizedString(@"CouldNotLaunchOnlineHelp", nil)
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"OK",nil) 
+                                                          otherButtonTitles:nil];
+                
+                [alertView show];
+                [alertView release];
+            }
         }
     }
     else if (alertView.tag == ALERTVIEW_SET_BEACON)
@@ -514,7 +520,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
                        NSLocalizedString(@"ClearBeacon", nil), 
                        nil];
         
-        actionSheet.tag = ACTIONSHEET_CLEAR_BEACON
+        actionSheet.tag = ACTIONSHEET_CLEAR_BEACON;
     }
     
     actionSheet.actionSheetStyle = UIActionSheetStyleAutomatic;

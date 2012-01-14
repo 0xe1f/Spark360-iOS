@@ -127,7 +127,6 @@
 		FEA247FE148F5F91003D87C5 /* MessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA247FC148F5F90003D87C5 /* MessageListController.m */; };
 		FEA24801148F6019003D87C5 /* MessageListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24800148F6019003D87C5 /* MessageListController.xib */; };
 		FEA24803148F62B6003D87C5 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24802148F62B6003D87C5 /* MessageCell.xib */; };
-		FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FEA47124144FED35009F0CB4 /* Settings.bundle */; };
 		FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */; };
 		FEAC6F1B13EA7F73000D86D1 /* GameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */; };
 		FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */; };
@@ -385,7 +384,6 @@
 		FEA247FC148F5F90003D87C5 /* MessageListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListController.m; sourceTree = "<group>"; };
 		FEA24800148F6019003D87C5 /* MessageListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageListController.xib; sourceTree = "<group>"; };
 		FEA24802148F62B6003D87C5 /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
-		FEA47124144FED35009F0CB4 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
 		FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveParser.m; sourceTree = "<group>"; };
 		FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameCell.xib; sourceTree = "<group>"; };
@@ -559,7 +557,6 @@
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
 				FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */,
 				FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */,
-				FEA47124144FED35009F0CB4 /* Settings.bundle */,
 				FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */,
 				FE3FE14913F72AD2009467EF /* Images */,
 				FE5CAE1413F728E5004BC903 /* UI */,
@@ -998,7 +995,6 @@
 				FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */,
 				FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */,
 				FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */,
-				FEA47125144FED35009F0CB4 /* Settings.bundle in Resources */,
 				FE726B801463CD7600534279 /* TODO in Resources */,
 				FEFF552814679ED900190D58 /* AccountCell.xib in Resources */,
 				FEC7F9DA1478653600537213 /* GameListController.xib in Resources */,
