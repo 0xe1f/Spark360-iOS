@@ -192,12 +192,12 @@ static AKImageCache *sharedInstance = nil;
 
 -(void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [self->opQueue release];
     [self->inMemCache release];
     [self->cacheDirectory release];
     [self->filenameSanitizer release];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [super dealloc];
 }

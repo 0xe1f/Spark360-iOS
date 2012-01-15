@@ -13,6 +13,7 @@
 #import "FriendListController.h"
 #import "XboxLiveStatusController.h"
 #import "AchievementListController.h"
+#import "AboutAppController.h"
 
 #import "AKImageCache.h"
 #import "TaskController.h"
@@ -480,6 +481,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 -(void)viewFriends:(id)sender
 {
     FriendListController *ctlr = [[FriendListController alloc] initWithAccount:self.account];
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
+}
+
+-(void)about:(id)sender
+{
+    AboutAppController *ctlr = [[AboutAppController alloc] initAbout];
     [self.navigationController pushViewController:ctlr animated:YES];
     [ctlr release];
 }

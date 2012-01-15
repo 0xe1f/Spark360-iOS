@@ -9,11 +9,13 @@
 #import "AccountListController.h"
 
 #import "AppPreferences.h"
+
 #import "AccountAddController.h"
 #import "AccountEditController.h"
 #import "GameListController.h"
 #import "ProfileOverviewController.h"
 #import "XboxLiveStatusController.h"
+#import "AboutAppController.h"
 
 #import "AKImageCache.h"
 
@@ -307,6 +309,13 @@
 }
 
 #pragma mark - Actions
+
+-(void)about:(id)sender
+{
+    AboutAppController *ctlr = [[AboutAppController alloc] initAbout];
+    [self.navigationController pushViewController:ctlr animated:YES];
+    [ctlr release];
+}
 
 -(void)refresh:(id)sender
 {

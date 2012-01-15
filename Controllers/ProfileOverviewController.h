@@ -28,6 +28,6 @@
 
 -(IBAction)refresh:(id)sender;
 -(IBAction)viewLiveStatus:(id)sender;
-//-(IBAction)about:(id)sender;
+-(IBAction)about:(id)sender;
 
 @end

@@ -131,4 +131,9 @@
     AchievementHelpTerm_f = "\"%@\" \"%@\" achievement help";
     CouldNotLaunchOnlineHelp = "Could not launch online help";
     Close = "Close";
+    About = "About";
+    VersionNo_f = "version %@";
+    Disclaimer = "This application is not produced, endorsed, or affiliated with the Microsoft Corporation.\
+\
+Microsoft, Xbox, Xbox Live, and the Xbox logos are trademarks of Microsoft Corporation.";
 }

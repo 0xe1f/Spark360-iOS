@@ -1,13 +1,17 @@
 Critical:
 
-* Default icon for Xbox.com
 * ImageCache: Load achievements for PoP, then delete image cache,
               then open achieve list. Only the first image loads
 
 Next release:
 
+* Default icon for Xbox.com
 * Notifications
 * Favorite friends
+
+Very soon:
+
+* iPad support
 
 Messages:
 

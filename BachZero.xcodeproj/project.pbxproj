@@ -76,6 +76,7 @@
 		FE8BA7F914A1B9880020D389 /* CompareGameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8BA7F814A1B9880020D389 /* CompareGameCell.xib */; };
 		FE8BA7FC14A1BB710020D389 /* CompareGameCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */; };
 		FE8BF2C6149E8B9F00FC8485 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */; };
+		FE8C8D7014C2625C00ED7802 /* AboutAppController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE8C8D6F14C2625C00ED7802 /* AboutAppController.xib */; };
 		FE8C8DA414C18D70007591D7 /* WebController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8C8DA314C18D70007591D7 /* WebController.m */; };
 		FE8C9ABE14A9C185008DACAB /* TITokenFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8C9ABD14A9C185008DACAB /* TITokenFieldView.m */; };
 		FE8C9B4314AAFE22008DACAB /* GameOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE8C9B4214AAFE21008DACAB /* GameOverviewController.m */; };
@@ -143,6 +144,13 @@
 		FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB3E14013E6404900095480 /* GTMNSString+HTML.m */; };
 		FEB4EC9A14B44C5500473BEB /* BeaconInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEB4EC9914B44C5500473BEB /* BeaconInfoCell.xib */; };
 		FEB4EC9E14B44D5800473BEB /* BeaconInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB4EC9D14B44D5800473BEB /* BeaconInfoCell.m */; };
+		FEBE045414C2C1120073D7D7 /* xboxAbout.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBE045214C2C1120073D7D7 /* xboxAbout.png */; };
+		FEBE045514C2C1120073D7D7 /* xboxAbout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBE045314C2C1120073D7D7 /* xboxAbout@2x.png */; };
+		FEBE045814C2C1E80073D7D7 /* AboutAppController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEBE045714C2C1E80073D7D7 /* AboutAppController.m */; };
+		FEBE045B14C2CBA00073D7D7 /* toolbarAbout.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBE045914C2CBA00073D7D7 /* toolbarAbout.png */; };
+		FEBE045C14C2CBA00073D7D7 /* toolbarAbout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBE045A14C2CBA00073D7D7 /* toolbarAbout@2x.png */; };
+		FEBE045F14C2D0D10073D7D7 /* table_sep.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBE045D14C2D0D10073D7D7 /* table_sep.png */; };
+		FEBE046014C2D0D10073D7D7 /* table_sep@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEBE045E14C2D0D10073D7D7 /* table_sep@2x.png */; };
 		FEC24B79149B3400008058BF /* ProfileStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC24B78149B3400008058BF /* ProfileStatusCell.m */; };
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
 		FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA7146BB25400D31608 /* AccountListController.m */; };
@@ -317,6 +325,7 @@
 		FE8BA7FB14A1BB710020D389 /* CompareGameCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompareGameCell.m; sourceTree = "<group>"; };
 		FE8BF2C4149E8B9F00FC8485 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
 		FE8BF2C5149E8B9F00FC8485 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
+		FE8C8D6F14C2625C00ED7802 /* AboutAppController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutAppController.xib; sourceTree = "<group>"; };
 		FE8C8DA214C18D70007591D7 /* WebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebController.h; sourceTree = "<group>"; };
 		FE8C8DA314C18D70007591D7 /* WebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebController.m; sourceTree = "<group>"; };
 		FE8C9ABC14A9C185008DACAB /* TITokenFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TITokenFieldView.h; sourceTree = "<group>"; };
@@ -408,6 +417,14 @@
 		FEB4EC9914B44C5500473BEB /* BeaconInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BeaconInfoCell.xib; sourceTree = "<group>"; };
 		FEB4EC9C14B44D5800473BEB /* BeaconInfoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeaconInfoCell.h; sourceTree = "<group>"; };
 		FEB4EC9D14B44D5800473BEB /* BeaconInfoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeaconInfoCell.m; sourceTree = "<group>"; };
+		FEBE045214C2C1120073D7D7 /* xboxAbout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxAbout.png; sourceTree = "<group>"; };
+		FEBE045314C2C1120073D7D7 /* xboxAbout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxAbout@2x.png"; sourceTree = "<group>"; };
+		FEBE045614C2C1E80073D7D7 /* AboutAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutAppController.h; sourceTree = "<group>"; };
+		FEBE045714C2C1E80073D7D7 /* AboutAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutAppController.m; sourceTree = "<group>"; };
+		FEBE045914C2CBA00073D7D7 /* toolbarAbout.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = toolbarAbout.png; sourceTree = "<group>"; };
+		FEBE045A14C2CBA00073D7D7 /* toolbarAbout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "toolbarAbout@2x.png"; sourceTree = "<group>"; };
+		FEBE045D14C2D0D10073D7D7 /* table_sep.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = table_sep.png; sourceTree = "<group>"; };
+		FEBE045E14C2D0D10073D7D7 /* table_sep@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table_sep@2x.png"; sourceTree = "<group>"; };
 		FEC24B77149B3400008058BF /* ProfileStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileStatusCell.h; sourceTree = "<group>"; };
 		FEC24B78149B3400008058BF /* ProfileStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileStatusCell.m; sourceTree = "<group>"; };
 		FEC26EA4146BB25400D31608 /* AccountAddController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountAddController.h; sourceTree = "<group>"; };
@@ -511,8 +528,12 @@
 				FE0DBD3314B18BC0001E7B4D /* xboxMsp@2x.png */,
 				FEFCD57614A71CCE0018F05D /* paperclip.png */,
 				FEFCD57714A71CCE0018F05D /* paperclip@2x.png */,
+				FEBE045D14C2D0D10073D7D7 /* table_sep.png */,
+				FEBE045E14C2D0D10073D7D7 /* table_sep@2x.png */,
 				FE98ADCC149F3CA300967286 /* textFieldBackground.png */,
 				FEF1081A14BD374000EF713D /* textFieldBackground@2x.png */,
+				FEBE045914C2CBA00073D7D7 /* toolbarAbout.png */,
+				FEBE045A14C2CBA00073D7D7 /* toolbarAbout@2x.png */,
 				FEB204CA14A07E35005EFA25 /* toolbarCompareGames.png */,
 				FEB204CB14A07E35005EFA25 /* toolbarCompareGames@2x.png */,
 				FE9FAA9B14B57265000ACBC0 /* toolbarFindProfile.png */,
@@ -531,6 +552,8 @@
 				FE9B1C8714BEBFE2001DF51A /* toolbarXboxBeacon@2x.png */,
 				FEFCD57214A716230018F05D /* unreadMarker.png */,
 				FEFCD57314A716230018F05D /* unreadMarker@2x.png */,
+				FEBE045214C2C1120073D7D7 /* xboxAbout.png */,
+				FEBE045314C2C1120073D7D7 /* xboxAbout@2x.png */,
 				FEF1081B14BD374000EF713D /* xboxBackground.png */,
 				FEF1081C14BD374000EF713D /* xboxBackground@2x.png */,
 				FE92D6CE149CA39300A7D6A5 /* xboxDefaultBoxart.png */,
@@ -579,6 +602,7 @@
 			children = (
 				FE993D54149891E20075882C /* Cells */,
 				FEFE0E6114774554009C7084 /* MainWindow.xib */,
+				FE8C8D6F14C2625C00ED7802 /* AboutAppController.xib */,
 				FEFF552714679ED900190D58 /* AccountCell.xib */,
 				FEC84021148A3AC1005BC782 /* AchievementCell.xib */,
 				FEC602A61494996300DD3849 /* FriendCell.xib */,
@@ -633,6 +657,8 @@
 		FE610D3713EE938400420372 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FEBE045614C2C1E80073D7D7 /* AboutAppController.h */,
+				FEBE045714C2C1E80073D7D7 /* AboutAppController.m */,
 				FEC26EA4146BB25400D31608 /* AccountAddController.h */,
 				FEC26EA5146BB25400D31608 /* AccountAddController.m */,
 				FE726B7C1463CAD200534279 /* AccountEditController.h */,
@@ -1106,6 +1132,13 @@
 				FE90381F14C18E77008BE9D1 /* WebController.xib in Resources */,
 				FE89CBFA14C1A4A30063EB44 /* toolbarMessages.png in Resources */,
 				FE89CBFB14C1A4A30063EB44 /* toolbarMessages@2x.png in Resources */,
+				FE8C8D7014C2625C00ED7802 /* AboutAppController.xib in Resources */,
+				FEBE045414C2C1120073D7D7 /* xboxAbout.png in Resources */,
+				FEBE045514C2C1120073D7D7 /* xboxAbout@2x.png in Resources */,
+				FEBE045B14C2CBA00073D7D7 /* toolbarAbout.png in Resources */,
+				FEBE045C14C2CBA00073D7D7 /* toolbarAbout@2x.png in Resources */,
+				FEBE045F14C2D0D10073D7D7 /* table_sep.png in Resources */,
+				FEBE046014C2D0D10073D7D7 /* table_sep@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1197,6 +1230,7 @@
 				FE8ED30414B6CAB8004EF96D /* AKImageCache.m in Sources */,
 				FE8B671A14B848DD00C965EC /* Reachability.m in Sources */,
 				FE8C8DA414C18D70007591D7 /* WebController.m in Sources */,
+				FEBE045814C2C1E80073D7D7 /* AboutAppController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
