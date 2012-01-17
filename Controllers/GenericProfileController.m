@@ -315,8 +315,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             
             NSDictionary *beacon = [self.beacons objectAtIndex:indexPath.row - 1];
             
+            id message = [beacon objectForKey:@"message"];
+            if (!message || (message == [NSNull null]))
+                message = @"";
+            
             biCell.titleName.text = [beacon objectForKey:@"gameName"];
-            biCell.message.text = [beacon objectForKey:@"message"];
+            biCell.message.text = message;
             biCell.titleIcon.image = [self imageFromUrl:[beacon objectForKey:@"gameBoxArtUrl"]
                                                cropRect:CGRectMake(0, 16, 85, 85)
                                               parameter:nil];

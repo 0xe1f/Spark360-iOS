@@ -152,7 +152,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)playersLoaded:(NSNotification *)notification
 {
-    NSLog(@"Got players loaded notification");
+    BACHLog(@"Got players loaded notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
     

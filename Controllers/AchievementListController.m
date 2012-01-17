@@ -50,7 +50,7 @@
 
 -(void)beaconToggled:(NSNotification *)notification
 {
-    NSLog(@"Got beacon toggled notification");
+    BACHLog(@"Got beacon toggled notification");
     
     if ([self.account isEqualToAccount:[notification.userInfo objectForKey:BACHNotificationAccount]])
     {
@@ -60,7 +60,7 @@
 
 -(void)syncCompleted:(NSNotification *)notification
 {
-    NSLog(@"Got sync completed notification");
+    BACHLog(@"Got sync completed notification");
     
     if ([self.account isEqualToAccount:[notification.userInfo objectForKey:BACHNotificationAccount]])
     {
@@ -385,7 +385,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	    BACHLog(@"Unresolved error %@, %@", error, [error userInfo]);
     
     return __fetchedResultsController;
 }    

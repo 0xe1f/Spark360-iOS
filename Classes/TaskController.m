@@ -157,13 +157,13 @@ static TaskController *sharedInstance = nil;
 {
     if ([[opQueue operations] containsObject:op])
     {
-        NSLog(@"! Task: %@ in queue", op.identifier);
+        BACHLog(@"! Task: %@ in queue", op.identifier);
         return;
     }
     
     [opQueue addOperation:op];
     
-    NSLog(@"+ Task: %@", op.identifier);
+    BACHLog(@"+ Task: %@", op.identifier);
 }
 
 -(BOOL)isOperationQueuedWithId:(NSString*)operationId

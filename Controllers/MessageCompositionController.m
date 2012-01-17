@@ -268,7 +268,7 @@ shouldChangeTextInRange:(NSRange)range
         [self.messageBody length] < 1 ||
         ![self.account canSendMessages])
     {
-        NSLog(@"Will not send - conditions not met");
+        BACHLog(@"Will not send - conditions not met");
         return;
     }
     

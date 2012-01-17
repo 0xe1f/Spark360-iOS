@@ -138,7 +138,7 @@
 
 -(void)onSyncError:(NSNotification *)notification
 {
-    NSLog(@"Got sync error notification");
+    BACHLog(@"Got sync error notification");
     
     if (_isViewVisible && !_isAlertActive) 
     {
@@ -204,7 +204,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     [[AKImageCache sharedInstance] purgeInMemCache];
     [[ImageCache sharedInstance] purgeInMemCache];
     
-    NSLog(@"++ View %@ loaded", [self class]);
+    BACHLog(@"++ View %@ loaded", [self class]);
 }
 
 -(void)viewDidUnload
@@ -219,7 +219,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
                                                     name:BACHError
                                                   object:nil];
     
-    NSLog(@"-- View %@ unloaded", [self class]);
+    BACHLog(@"-- View %@ unloaded", [self class]);
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -243,7 +243,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     [[ImageCache sharedInstance] purgeInMemCache];
     [[AKImageCache sharedInstance] purgeInMemCache];
     
-    NSLog(@"! %@ got a memory warning", [self class]);
+    BACHLog(@"! %@ got a memory warning", [self class]);
 }
 
 #pragma mark - Etc
@@ -274,9 +274,9 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
 -(UIImage*)imageFromUrl:(NSString*)url
               parameter:(id)parameter
 {
-    return [[AKImageCache sharedInstance] imageFromUrl:url
-                                             requestor:_requestor
-                                             parameter:parameter];
+    return [self imageFromUrl:url
+                     cropRect:CGRectNull
+                    parameter:parameter];
 }
 
 -(UIAlertView*)inputDialogWithTitle:(NSString*)title

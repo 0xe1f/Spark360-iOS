@@ -191,7 +191,7 @@ static ImageCache *sharedInstance = nil;
     {
         if ([op.outputFile isEqualToString:cacheFile])
         {
-            NSLog(@"Will not add %@ to queue - already queued", cacheFile);
+            BACHLog(@"Will not add %@ to queue - already queued", cacheFile);
             return nil;
         }
     }

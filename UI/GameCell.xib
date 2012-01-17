@@ -184,7 +184,6 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{300, 36}, {12, 12}}</string>
 								<reference key="NSSuperview" ref="981767642"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:541</string>
 								<bool key="IBUIUserInteractionEnabled">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -209,7 +208,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<object class="NSCustomResource" key="IBUIImage">
 									<string key="NSClassName">NSImage</string>
-									<string key="NSResourceName">beacon_on.png</string>
+									<string key="NSResourceName">xboxBeaconOn.png</string>
 								</object>
 							</object>
 						</object>
@@ -387,7 +386,7 @@
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<object class="NSArray" key="dict.sortedKeys">
 				<bool key="EncodedWithXMLCoder">YES</bool>
-				<string>beacon_on.png</string>
+				<string>xboxBeaconOn.png</string>
 				<string>xboxDefaultCroppedBoxart.png</string>
 				<string>xboxGamerscore.png</string>
 				<string>xboxGamerscoreInverse.png</string>

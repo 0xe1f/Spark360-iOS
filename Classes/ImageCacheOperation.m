@@ -77,18 +77,16 @@
                        options:NSDataWritingAtomic
                          error:&error])
         {
-            NSLog(@"*** Error writing '%@' to '%@' to cache: %@", 
-                  self->url, self.outputFile, error.localizedDescription);
+            BACHLog(@"*** Error writing '%@' to '%@' to cache: %@", 
+                    self->url, self.outputFile, error.localizedDescription);
         }
     }
     else
     {
-        NSLog(@"** %@ is null", self->url);
+        BACHLog(@"** %@ is null", self->url);
     }
     
-#ifdef CF_LOGV
-    NSLog(@"Downloaded %@ to %@", self->url, self->outputFile);
-#endif
+    BACHLog(@"Downloaded %@ to %@", self->url, self->outputFile);
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ImageLoadedFromWeb"
                                                         object:self];

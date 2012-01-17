@@ -2058,8 +2058,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                   forKey:@"beacons"];
     }
     
-    NSLog(@"parseSynchronizeGames: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseSynchronizeGames: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -2219,8 +2219,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                          forKey:@"game"];
     }
     
-    NSLog(@"parseSynchronizeAchievements: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseSynchronizeAchievements: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -2305,8 +2305,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         }
     }
     
-    NSLog(@"parseMessages: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseMessages: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -2408,8 +2407,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                   isIncoming:NO
                   isOutgoing:YES];
     
-    NSLog(@"parseFriends: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseFriends: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -2645,15 +2643,14 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                         [item objectForKey:@"gameUid"], @"gameUid",
                                         [item objectForKey:@"gameName"], @"gameName",
                                         [item objectForKey:@"gameBoxArtUrl"], @"gameBoxArtUrl",
-                                        [item objectForKey:@"message"], @"message",
+                                        message, @"message",
                                         nil]];
                 }
             }
         }
     }
     
-    NSLog(@"parseFriendProfile: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseFriendProfile: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
     return friend;
 }
@@ -2703,7 +2700,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         if (![(beaconObj = [activity objectForKey:@"beacon"]) isKindOfClass:[NSNull class]])
         {
             isBeacon = YES;
-            beaconMessage = [beaconObj objectForKey:@"text"];
+            if ([beaconObj objectForKey:@"text"] != [NSNull null])
+                beaconMessage = [beaconObj objectForKey:@"text"];
         }
         
         if (isBeacon || includeNonBeacons)
@@ -2722,8 +2720,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         }
     }
     
-    NSLog(@"parseLoadJumpInListForScreenName: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseLoadJumpInListForScreenName: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return jumpInList;
 }
@@ -2778,8 +2776,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                   isIncoming:NO
                   isOutgoing:NO];
     
-    NSLog(@"parseRecentPlayersForAccount: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseRecentPlayersForAccount: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return players;
 }
@@ -2828,8 +2826,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                   isIncoming:NO
                   isOutgoing:NO];
     
-    NSLog(@"parseFriendsOfFriendForScreenName: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseFriendsOfFriendForScreenName: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return friendsOfFriend;
 }
@@ -2882,8 +2880,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         return NO;
     }
     
-    NSLog(@"parseFriendRequestToScreenName: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseFriendRequestToScreenName: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -2978,8 +2976,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         [games addObject:game];
     }
     
-    NSLog(@"parseCompareGamesWithScreenName: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseCompareGamesWithScreenName: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return payload;
 }
@@ -3125,8 +3123,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         [achievements addObject:achieve];
     }
     
-    NSLog(@"parseCompareAchievementsWithScreenName: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseCompareAchievementsWithScreenName: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return payload;
 }
@@ -3414,8 +3412,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     NSDictionary *data = [XboxLiveParser jsonDataObjectFromPage:page
                                                           error:error];
     
-    NSLog(@"parseDeleteMessageWithUid: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseDeleteMessageWithUid: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return data != nil;
 }
@@ -3477,7 +3475,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         }
     }
     
-    NSLog(@"parseSendMessageToRecipients: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseSendMessageToRecipients: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return [[response objectForKey:@"Success"] boolValue];
 }
@@ -3526,8 +3525,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     [message setObject:messageText forKey:@"messageText"];
     [message setObject:messageText forKey:@"excerpt"];
     
-    NSLog(@"parseMessageWithUid: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseMessageWithUid: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
     return message;
 }
@@ -3672,8 +3670,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         }
     }
     
-    NSLog(@"parseProfile: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseProfile: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -3749,7 +3746,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         return NO;
     }
     
-    NSLog(@"parseToggleBeaconOfGameUid: %.04f", CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"parseToggleBeaconOfGameUid: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -3828,7 +3826,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 
 -(BOOL)restoreSessionForAccount:(XboxLiveAccount*)account
 {
-    NSLog(@"Restoring session for %@...", account.emailAddress);
+    BACHLog(@"Restoring session for %@...", account.emailAddress);
     
     [self clearAllSessions];
     
@@ -3839,14 +3837,14 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     if (!data || [data length] <= 0)
     {
-        NSLog(@"! restoreSession: No data or data empty; restore failed");
+        BACHLog(@"! restoreSession: No data or data empty; restore failed");
         return NO;
     }
     
     NSArray *cookies = [NSKeyedUnarchiver unarchiveObjectWithData:data];
     if (!cookies)
     {
-        NSLog(@"! restoreSession: Cookie data unarchival error; restore failed");
+        BACHLog(@"! restoreSession: Cookie data unarchival error; restore failed");
         return NO;
     }
     
@@ -3858,7 +3856,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 
 -(void)saveSessionForAccount:(XboxLiveAccount*)account
 {
-    NSLog(@"Saving session for %@...", account.emailAddress);
+    BACHLog(@"Saving session for %@...", account.emailAddress);
     
     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     NSString *cookieKey = [NSString stringWithFormat:@"%@.Cookies", 
@@ -3913,7 +3911,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 {
     [self clearAllSessions];
     
-    NSLog(@"Authenticating...");
+    BACHLog(@"Authenticating...");
     
     BOOL isMsn = [emailAddress hasSuffix:@"@msn.com"];
     NSString *url = [NSString stringWithFormat:isMsn ? URL_LOGIN_MSN : URL_LOGIN, 
@@ -3945,7 +3943,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                    localizationKey:@"ErrorLoginStageOne"];
         }
         
-        NSLog(@"Authentication failed in stage 1: URL");
+        BACHLog(@"Authentication failed in stage 1: URL");
         return NO;
     }
     
@@ -3971,7 +3969,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                    localizationKey:@"ErrorLoginStageOne"];
         }
         
-        NSLog(@"Authentication failed in stage 1: PPSX");
+        BACHLog(@"Authentication failed in stage 1: PPSX");
         return NO;
     }
     
@@ -4006,7 +4004,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                                    localizationKey:@"ErrorLoginInvalidCredentials"];
         }
         
-        NSLog(@"Authentication failed in stage 2");
+        BACHLog(@"Authentication failed in stage 2");
         return NO;
     }
     
@@ -4092,8 +4090,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     account.lastProfileUpdate = [NSDate date];
     [account save];
     
-    NSLog(@"synchronizeProfileWithAccount: %.04f", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"synchronizeProfileWithAccount: %.04f", 
+            CFAbsoluteTimeGetCurrent() - startTime);
     
     return YES;
 }
@@ -4257,8 +4255,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     account.lastGamesUpdate = [NSDate date];
     [account save];
     
-    NSLog(@"writeGames: (%i new, %i existing) %.04fs", 
-          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeGames: (%i new, %i existing) %.04fs", 
+            newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeAchievements:(NSDictionary*)args
@@ -4391,8 +4389,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
         return;
     }
     
-    NSLog(@"writeAchievements: (%i new, %i existing) %.04fs", 
-          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeAchievements: (%i new, %i existing) %.04fs", 
+            newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeMessages:(NSDictionary *)args
@@ -4502,8 +4500,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     account.lastMessagesUpdate = [NSDate date];
     [account save];
     
-    NSLog(@"writeMessages: (%i new, %i existing) %.04fs", 
-          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeMessages: (%i new, %i existing) %.04fs", 
+            newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeFriends:(NSDictionary *)args
@@ -4643,8 +4641,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     account.lastFriendsUpdate = [NSDate date];
     [account save];
     
-    NSLog(@"writeFriends: (%i new, %i existing) %.04fs", 
-          newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeFriends: (%i new, %i existing) %.04fs", 
+            newItems, existingItems, CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeFriendProfile:(NSDictionary *)args
@@ -4735,13 +4733,13 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     }
     else
     {
-        NSLog(@"Friend not found");
+        BACHLog(@"Friend not found");
     }
     
     [account save];
     
-    NSLog(@"writeFriendProfile: %.04fs", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeFriendProfile: %.04fs", 
+            CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeRemoveFromFriends:(NSDictionary *)args
@@ -4776,8 +4774,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     account.lastFriendsUpdate = [NSDate distantPast];
     [account save];
     
-    NSLog(@"writeRemoveFromFriends: %.04fs", 
-          CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeRemoveFromFriends: %.04fs", 
+            CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeDeleteMessage:(NSDictionary *)args
@@ -4826,7 +4824,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     [account save];
     
-    NSLog(@"writeDeleteMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeDeleteMessage: %.04fs", 
+            CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeMessage:(NSDictionary*)args
@@ -4875,7 +4874,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     [account save];
     
-    NSLog(@"writeMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeMessage: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 -(void)writeToggleBeacon:(NSDictionary*)args
@@ -4910,7 +4909,8 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     
     [self.context save:NULL];
     
-    NSLog(@"writeToggleBeacon: %.04fs", CFAbsoluteTimeGetCurrent() - startTime);
+    BACHLog(@"writeToggleBeacon: %.04fs", 
+            CFAbsoluteTimeGetCurrent() - startTime);
 }
 
 #pragma mark Helpers
@@ -5246,7 +5246,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
                 [url substringWithRange:[match rangeAtIndex:2]]];
     }
     
-    NSLog(@"%@ has an unrecognized format; returning original", url);
+    BACHLog(@"%@ has an unrecognized format; returning original", url);
     
     return url;
 }
@@ -5272,7 +5272,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
 -(void)postNotificationOnMainThread:(NSString*)postNotificationName
                            userInfo:(NSDictionary*)userInfo
 {
-    NSLog(@"Sending notification '%@' on main thread", postNotificationName);
+    BACHLog(@"Sending notification '%@' on main thread", postNotificationName);
     
     [self performSelectorOnMainThread:@selector(postNotificationSelector:) 
                            withObject:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -5317,7 +5317,7 @@ NSString* const FRIEND_ACTION_CANCEL = @"Cancel";
     NSString *httpBody = nil;
     NSURL *url = [NSURL URLWithString:requestUrl];
     
-    NSLog(@"< Parser: %@", requestUrl);
+    BACHLog(@"< Parser: %@", requestUrl);
     
     if (fields)
     {

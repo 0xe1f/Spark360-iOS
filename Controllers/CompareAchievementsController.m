@@ -219,7 +219,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)achievementsCompared:(NSNotification *)notification
 {
-    NSLog(@"Got achievements compared notification");
+    BACHLog(@"Got achievements compared notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
     NSString *screenName = [notification.userInfo objectForKey:BACHNotificationScreenName];

@@ -42,7 +42,7 @@
 
 -(void)syncCompleted:(NSNotification *)notification
 {
-    NSLog(@"Got sync completed notification");
+    BACHLog(@"Got sync completed notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
     
@@ -253,7 +253,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])
     {
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	    BACHLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	}
     
     return __fetchedResultsController;

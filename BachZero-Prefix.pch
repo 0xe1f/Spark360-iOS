@@ -4,6 +4,13 @@
 
 #import <Availability.h>
 
+#ifdef DEBUG
+    #define BACHLog(...) NSLog(__VA_ARGS__)
+#else
+    #define NSLog(...)
+    #define BACHLog(...)
+#endif
+
 #ifndef __IPHONE_3_0
 #warning "This project uses features only available in iPhone SDK 3.0 and later."
 #endif

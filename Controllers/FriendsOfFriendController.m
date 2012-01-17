@@ -157,7 +157,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)dataLoaded:(NSNotification *)notification
 {
-    NSLog(@"Got data loaded notification");
+    BACHLog(@"Got data loaded notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
     NSString *screenName = [notification.userInfo objectForKey:BACHNotificationScreenName];

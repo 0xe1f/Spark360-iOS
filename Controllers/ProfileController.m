@@ -78,7 +78,7 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
 
 -(void)syncCompleted:(NSNotification *)notification
 {
-    NSLog(@"Got sync completed notification");
+    BACHLog(@"Got sync completed notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
     

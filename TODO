@@ -1,8 +1,5 @@
 Critical:
 
-* ImageCache: Load achievements for PoP, then delete image cache,
-              then open achieve list. Only the first image loads
-
 Next release:
 
 * Default icon for Xbox.com

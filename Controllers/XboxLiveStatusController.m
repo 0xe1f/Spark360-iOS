@@ -157,7 +157,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)statusLoaded:(NSNotification *)notification
 {
-    NSLog(@"Got statusLoaded notification");
+    BACHLog(@"Got statusLoaded notification");
     
     NSDictionary *data = [notification.userInfo objectForKey:BACHNotificationData];
     NSArray *statuses = [data objectForKey:@"statusList"];

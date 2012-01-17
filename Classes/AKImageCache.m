@@ -82,7 +82,7 @@ NSString* const AKInternalImageData = @"imageData";
     
     if (!data)
     {
-        NSLog(@"** %@ is null", self.url);
+        BACHLog(@"** %@ is null", self.url);
         return;
     }
     
@@ -115,8 +115,8 @@ NSString* const AKInternalImageData = @"imageData";
                    options:NSDataWritingAtomic
                      error:&error])
     {
-        NSLog(@"*** Error writing '%@' to '%@' to cache: %@", 
-              self.url, self.outputFile, error.localizedDescription);
+        BACHLog(@"*** Error writing '%@' to '%@' to cache: %@", 
+                self.url, self.outputFile, error.localizedDescription);
         
         return;
     }

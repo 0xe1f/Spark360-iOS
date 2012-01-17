@@ -181,7 +181,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)gamesCompared:(NSNotification *)notification
 {
-    NSLog(@"Got games compared notification");
+    BACHLog(@"Got games compared notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
     NSString *screenName = [notification.userInfo objectForKey:BACHNotificationScreenName];
@@ -196,7 +196,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
         self.myIconUrl = [payload objectForKey:@"meIconUrl"];
         self.yourIconUrl = [payload objectForKey:@"youIconUrl"];
         
-        NSLog(@"%@: %@", self.myIconUrl, self.yourIconUrl);
+        BACHLog(@"%@: %@", self.myIconUrl, self.yourIconUrl);
         
         [self.games removeAllObjects];
         [self.games addObjectsFromArray:games];

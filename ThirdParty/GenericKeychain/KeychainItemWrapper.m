@@ -315,7 +315,7 @@ Keychain API expects as a validly constructed container class.
 		
         result = SecItemUpdate((CFDictionaryRef)updateItem, (CFDictionaryRef)tempCheck);
 		//NSAssert( result == noErr, @"Couldn't update the Keychain Item." );
-        NSLog(@"SecItemUpdate returned status %ld", result);
+        BACHLog(@"SecItemUpdate returned status %ld", result);
     }
     else
     {
@@ -333,13 +333,13 @@ Keychain API expects as a validly constructed container class.
             result = SecItemDelete((CFDictionaryRef)searchData);
             [searchData release];
             
-            NSLog(@"Tried to delete possibly existing account '%@' with status %ld", account, result);
+            BACHLog(@"Tried to delete possibly existing account '%@' with status %ld", account, result);
         }
         
         // No previous item found; add the new one.
         result = SecItemAdd((CFDictionaryRef)[self dictionaryToSecItemFormat:keychainItemData], NULL);
 		//NSAssert( result == noErr, @"Couldn't add the Keychain Item." );
-        NSLog(@"SecItemAdd returned status %ld", result);
+        BACHLog(@"SecItemAdd returned status %ld", result);
     }
 }
 

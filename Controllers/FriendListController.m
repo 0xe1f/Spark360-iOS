@@ -44,7 +44,7 @@
 
 -(void)syncCompleted:(NSNotification *)notification
 {
-    NSLog(@"Got syncCompleted notification");
+    BACHLog(@"Got syncCompleted notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
     
@@ -58,7 +58,7 @@
 
 -(void)friendsChanged:(NSNotification *)notification
 {
-    NSLog(@"Got friendsChanged notification");
+    BACHLog(@"Got friendsChanged notification");
     
     XboxLiveAccount *account = [notification.userInfo objectForKey:BACHNotificationAccount];
     
@@ -82,6 +82,15 @@
                                              selector:@selector(friendsChanged:)
                                                  name:BACHFriendsChanged
                                                object:nil];
+    
+    UIBarButtonItem *findFriendButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"toolbarFindProfile.png"]
+                                                                         style:UIBarButtonItemStyleBordered 
+                                                                        target:self
+                                                                        action:@selector(findGamertag:)];
+    
+    self.navigationItem.rightBarButtonItem = findFriendButton;
+    
+    [findFriendButton release];
     
     self.title = NSLocalizedString(@"MyFriends", nil);
     
@@ -287,7 +296,7 @@
 	NSError *error = nil;
 	if (![self.fetchedResultsController performFetch:&error])
     {
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	    BACHLog(@"Unresolved error %@, %@", error, [error userInfo]);
 	}
     
     return __fetchedResultsController;

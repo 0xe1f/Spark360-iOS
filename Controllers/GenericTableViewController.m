@@ -150,13 +150,10 @@
 -(void)receivedImage:(NSString*)url
            parameter:(id)parameter
 {
-    NSIndexPath *indexPath = (NSIndexPath*)parameter;
+    //NSIndexPath *indexPath = (NSIndexPath*)parameter;
     
-    if ([self.tableView cellForRowAtIndexPath:indexPath])
-    {
-        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                              withRowAnimation:UITableViewRowAnimationNone];
-    }
+    [self.tableView reloadRowsAtIndexPaths:[self.tableView indexPathsForVisibleRows]
+                          withRowAnimation:UITableViewRowAnimationNone];
 }
 
 -(UIImage*)tableCellImageFromUrl:(NSString*)url
