@@ -13,6 +13,7 @@
 		FE0DBD2D14AF028A001E7B4D /* ProfileOptionsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE0DBD2C14AF028A001E7B4D /* ProfileOptionsCell.m */; };
 		FE0DBD3414B18BC0001E7B4D /* xboxMsp.png in Resources */ = {isa = PBXBuildFile; fileRef = FE0DBD3214B18BC0001E7B4D /* xboxMsp.png */; };
 		FE0DBD3514B18BC0001E7B4D /* xboxMsp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE0DBD3314B18BC0001E7B4D /* xboxMsp@2x.png */; };
+		FE1D49AE14C6A04C00AFDC02 /* Globals.m in Sources */ = {isa = PBXBuildFile; fileRef = FE1D49AD14C6A04C00AFDC02 /* Globals.m */; };
 		FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE20CD3613F7B86B0060D902 /* AccountList.xib */; };
 		FE3AB9C914973D790056E87F /* FriendProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE3AB9C714973D790056E87F /* FriendProfileController.m */; };
 		FE3AB9CA14973D790056E87F /* ProfileController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE3AB9C814973D790056E87F /* ProfileController.xib */; };
@@ -181,6 +182,7 @@
 		FEC84020148A2EC9005BC782 /* AchievementListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC8401F148A2EC9005BC782 /* AchievementListController.m */; };
 		FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84021148A3AC1005BC782 /* AchievementCell.xib */; };
 		FEC84025148C2F37005BC782 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84024148C2F37005BC782 /* TaskController.m */; };
+		FEC84EBA14C6988000072EE5 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84EB914C6988000072EE5 /* MainWindow-iPad.xib */; };
 		FEE0282F14A52558003B3DBF /* PlayerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0282E14A52558003B3DBF /* PlayerCell.m */; };
 		FEE0283314A52594003B3DBF /* RecentPlayersController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0283214A52594003B3DBF /* RecentPlayersController.m */; };
 		FEE0283514A52623003B3DBF /* RecentPlayersController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEE0283414A52623003B3DBF /* RecentPlayersController.xib */; };
@@ -223,6 +225,8 @@
 		FE0DBD2C14AF028A001E7B4D /* ProfileOptionsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileOptionsCell.m; sourceTree = "<group>"; };
 		FE0DBD3214B18BC0001E7B4D /* xboxMsp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxMsp.png; sourceTree = "<group>"; };
 		FE0DBD3314B18BC0001E7B4D /* xboxMsp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxMsp@2x.png"; sourceTree = "<group>"; };
+		FE1D49AC14C6A04C00AFDC02 /* Globals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
+		FE1D49AD14C6A04C00AFDC02 /* Globals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Globals.m; sourceTree = "<group>"; };
 		FE20CD3613F7B86B0060D902 /* AccountList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountList.xib; sourceTree = "<group>"; };
 		FE3AB9C614973D790056E87F /* FriendProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendProfileController.h; sourceTree = "<group>"; };
 		FE3AB9C714973D790056E87F /* FriendProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendProfileController.m; sourceTree = "<group>"; };
@@ -471,6 +475,7 @@
 		FEC84021148A3AC1005BC782 /* AchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementCell.xib; sourceTree = "<group>"; };
 		FEC84023148C2F2C005BC782 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskController.h; sourceTree = "<group>"; };
 		FEC84024148C2F37005BC782 /* TaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskController.m; sourceTree = "<group>"; };
+		FEC84EB914C6988000072EE5 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "UI/iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FEE0282D14A52558003B3DBF /* PlayerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerCell.h; sourceTree = "<group>"; };
 		FEE0282E14A52558003B3DBF /* PlayerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerCell.m; sourceTree = "<group>"; };
 		FEE0283114A52594003B3DBF /* RecentPlayersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentPlayersController.h; sourceTree = "<group>"; };
@@ -653,6 +658,8 @@
 				FE8ED30314B6CAB8004EF96D /* AKImageCache.m */,
 				FE8CA92114745AED00A5C9EA /* AppPreferences.h */,
 				FE8CA92214745AED00A5C9EA /* AppPreferences.m */,
+				FE1D49AC14C6A04C00AFDC02 /* Globals.h */,
+				FE1D49AD14C6A04C00AFDC02 /* Globals.m */,
 				FE610D2F13EDD8A700420372 /* ImageCache.h */,
 				FE610D3013EDD8A700420372 /* ImageCache.m */,
 				FE610D3313EE125700420372 /* ImageCacheOperation.h */,
@@ -803,6 +810,7 @@
 				FE76A93813E636A9006D6AFC /* Frameworks */,
 				FE76A93613E636A9006D6AFC /* Products */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
+				FEC84EB814C6987D00072EE5 /* iPad */,
 				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
 				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
@@ -996,6 +1004,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		FEC84EB814C6987D00072EE5 /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+				FEC84EB914C6988000072EE5 /* MainWindow-iPad.xib */,
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1160,6 +1176,7 @@
 				FEB408EE14C3CD7800B37A37 /* navbarXboxBackground@2x.png in Resources */,
 				FEB408F514C4C0A700B37A37 /* Default.png in Resources */,
 				FEB408F614C4C0A700B37A37 /* Default@2x.png in Resources */,
+				FEC84EBA14C6988000072EE5 /* MainWindow-iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1253,6 +1270,7 @@
 				FE8C8DA414C18D70007591D7 /* WebController.m in Sources */,
 				FEBE045814C2C1E80073D7D7 /* AboutAppController.m in Sources */,
 				FEB408E914C3852800B37A37 /* CustomNavigationBar.m in Sources */,
+				FE1D49AE14C6A04C00AFDC02 /* Globals.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

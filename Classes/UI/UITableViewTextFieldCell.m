@@ -17,7 +17,8 @@
     [super dealloc];
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier 
+{
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.textField = [[[UITextField alloc] initWithFrame:self.bounds] autorelease];
@@ -48,18 +49,20 @@
     CGSize labelSize = [self.textLabel.text sizeWithFont:[UIFont boldSystemFontOfSize:17]];
     labelSize.width = ceil(labelSize.width/5) * 5; // Round to upper 5
     
-    /*
-    if (DeviceIsPad()) {
+    if (DeviceIsPad()) 
+    {
         frame = CGRectMake(labelSize.width + 50,
                            self.textLabel.frame.origin.y,
                            self.frame.size.width - labelSize.width,
                            self.textLabel.frame.size.height);
-    } else {
-    */
-    frame = CGRectMake(labelSize.width + 30,
-                       self.textLabel.frame.origin.y,
-                       self.frame.size.width - labelSize.width - 50,
-                       self.textLabel.frame.size.height);
+    }
+    else
+    {
+        frame = CGRectMake(labelSize.width + 30,
+                           self.textLabel.frame.origin.y,
+                           self.frame.size.width - labelSize.width - 50,
+                           self.textLabel.frame.size.height);
+    }
     
     self.textField.frame = frame;
 }

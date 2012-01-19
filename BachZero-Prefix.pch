@@ -20,3 +20,5 @@
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
 #endif
+
+#import "Globals.h"
