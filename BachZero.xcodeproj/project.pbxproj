@@ -182,7 +182,6 @@
 		FEC84020148A2EC9005BC782 /* AchievementListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC8401F148A2EC9005BC782 /* AchievementListController.m */; };
 		FEC84022148A3AC1005BC782 /* AchievementCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84021148A3AC1005BC782 /* AchievementCell.xib */; };
 		FEC84025148C2F37005BC782 /* TaskController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC84024148C2F37005BC782 /* TaskController.m */; };
-		FEC84EBA14C6988000072EE5 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC84EB914C6988000072EE5 /* MainWindow-iPad.xib */; };
 		FEE0282F14A52558003B3DBF /* PlayerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0282E14A52558003B3DBF /* PlayerCell.m */; };
 		FEE0283314A52594003B3DBF /* RecentPlayersController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEE0283214A52594003B3DBF /* RecentPlayersController.m */; };
 		FEE0283514A52623003B3DBF /* RecentPlayersController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEE0283414A52623003B3DBF /* RecentPlayersController.xib */; };
@@ -475,7 +474,6 @@
 		FEC84021148A3AC1005BC782 /* AchievementCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AchievementCell.xib; sourceTree = "<group>"; };
 		FEC84023148C2F2C005BC782 /* TaskController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskController.h; sourceTree = "<group>"; };
 		FEC84024148C2F37005BC782 /* TaskController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskController.m; sourceTree = "<group>"; };
-		FEC84EB914C6988000072EE5 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "UI/iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FEE0282D14A52558003B3DBF /* PlayerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerCell.h; sourceTree = "<group>"; };
 		FEE0282E14A52558003B3DBF /* PlayerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerCell.m; sourceTree = "<group>"; };
 		FEE0283114A52594003B3DBF /* RecentPlayersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentPlayersController.h; sourceTree = "<group>"; };
@@ -810,7 +808,6 @@
 				FE76A93813E636A9006D6AFC /* Frameworks */,
 				FE76A93613E636A9006D6AFC /* Products */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
-				FEC84EB814C6987D00072EE5 /* iPad */,
 				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
 				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
@@ -1004,14 +1001,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		FEC84EB814C6987D00072EE5 /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-				FEC84EB914C6988000072EE5 /* MainWindow-iPad.xib */,
-			);
-			name = iPad;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1176,7 +1165,6 @@
 				FEB408EE14C3CD7800B37A37 /* navbarXboxBackground@2x.png in Resources */,
 				FEB408F514C4C0A700B37A37 /* Default.png in Resources */,
 				FEB408F614C4C0A700B37A37 /* Default@2x.png in Resources */,
-				FEC84EBA14C6988000072EE5 /* MainWindow-iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1354,7 +1342,7 @@
 				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				PRODUCT_NAME = "Spark 360";
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1374,7 +1362,7 @@
 				PRODUCT_NAME = "Spark 360";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1418,7 +1406,7 @@
 				PRODUCT_NAME = "Spark 360";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = AdHoc;

@@ -52,7 +52,7 @@ NSString * const FriendsLastUpdatedKey = @"FriendsLastUpdated";
 NSString * const AccountTierKey = @"AccountTier";
 NSString * const CookiesKey = @"Cookies";
 
-#define DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS (60*30)
+#define DEFAULT_BROWSING_REFRESH_TIMEOUT_SECONDS (60*5)
 
 -(NSString*)uuid
 {
