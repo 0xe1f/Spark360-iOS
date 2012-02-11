@@ -246,6 +246,14 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex
     BACHLog(@"! %@ got a memory warning", [self class]);
 }
 
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
+{
+    if (DeviceIsPad())
+        return YES;
+    else 
+        return NO;
+}
+
 #pragma mark - Etc
 
 -(BOOL)isNetworkAvailable

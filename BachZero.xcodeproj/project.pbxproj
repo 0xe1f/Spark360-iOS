@@ -208,7 +208,7 @@
 		FEFCD57814A71CCE0018F05D /* paperclip.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57614A71CCE0018F05D /* paperclip.png */; };
 		FEFCD57914A71CCE0018F05D /* paperclip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57714A71CCE0018F05D /* paperclip@2x.png */; };
 		FEFCD57C14A7366D0018F05D /* ViewMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEFCD57B14A7366D0018F05D /* ViewMessageController.m */; };
-		FEFCD58014A737D40018F05D /* ViewMessageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57F14A737D30018F05D /* ViewMessageController.xib */; };
+		FEFCD58014A737D40018F05D /* GameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57F14A737D30018F05D /* GameCell.xib */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
 		FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */; };
 		FEFF552814679ED900190D58 /* AccountCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFF552714679ED900190D58 /* AccountCell.xib */; };
@@ -507,7 +507,7 @@
 		FEFCD57714A71CCE0018F05D /* paperclip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paperclip@2x.png"; sourceTree = "<group>"; };
 		FEFCD57A14A7366C0018F05D /* ViewMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewMessageController.h; sourceTree = "<group>"; };
 		FEFCD57B14A7366D0018F05D /* ViewMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewMessageController.m; sourceTree = "<group>"; };
-		FEFCD57F14A737D30018F05D /* ViewMessageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewMessageController.xib; sourceTree = "<group>"; };
+		FEFCD57F14A737D30018F05D /* GameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GameCell.xib; path = Cells/GameCell.xib; sourceTree = "<group>"; };
 		FEFE0E6114774554009C7084 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
 		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountCell.xib; sourceTree = "<group>"; };
@@ -621,10 +621,6 @@
 				FE993D54149891E20075882C /* Cells */,
 				FEFE0E6114774554009C7084 /* MainWindow.xib */,
 				FE8C8D6F14C2625C00ED7802 /* AboutAppController.xib */,
-				FEFF552714679ED900190D58 /* AccountCell.xib */,
-				FEC84021148A3AC1005BC782 /* AchievementCell.xib */,
-				FEC602A61494996300DD3849 /* FriendCell.xib */,
-				FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */,
 				FE9E371013F8E94A00A6EE36 /* AccountAdd.xib */,
 				FE20CD3613F7B86B0060D902 /* AccountList.xib */,
 				FEC84018148A29F6005BC782 /* AchievementListController.xib */,
@@ -641,7 +637,7 @@
 				FE3AB9C814973D790056E87F /* ProfileController.xib */,
 				FEC8400D148A1F37005BC782 /* ProfileOverviewController.xib */,
 				FEE0283414A52623003B3DBF /* RecentPlayersController.xib */,
-				FEFCD57F14A737D30018F05D /* ViewMessageController.xib */,
+				FEFCD57F14A737D30018F05D /* GameCell.xib */,
 				FE90381E14C18E77008BE9D1 /* WebController.xib */,
 				FE3CB75A14AD350A007EF7D8 /* XboxLiveStatusController.xib */,
 			);
@@ -808,6 +804,7 @@
 				FE76A93813E636A9006D6AFC /* Frameworks */,
 				FE76A93613E636A9006D6AFC /* Products */,
 				FE5CAE1313F728BC004BC903 /* Resources */,
+				FEA4248F14E3A64F0070E27B /* Resources-iPad */,
 				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
 				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
@@ -930,8 +927,12 @@
 		FE993D54149891E20075882C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				FEFF552714679ED900190D58 /* AccountCell.xib */,
+				FEC84021148A3AC1005BC782 /* AchievementCell.xib */,
 				FE8ECB6914A4892F00A6E2D2 /* CompareAchievementCell.xib */,
 				FE8BA7F814A1B9880020D389 /* CompareGameCell.xib */,
+				FEC602A61494996300DD3849 /* FriendCell.xib */,
+				FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */,
 				FEA24802148F62B6003D87C5 /* MessageCell.xib */,
 				FEE0283614A526A3003B3DBF /* PlayerCell.xib */,
 				FE993D59149898DA0075882C /* ProfileInfoCell.xib */,
@@ -945,6 +946,21 @@
 				FEEF0B0E14B45D2E002877F5 /* ActivityInfoCell.xib */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		FEA4248F14E3A64F0070E27B /* Resources-iPad */ = {
+			isa = PBXGroup;
+			children = (
+				FEA4249014E3A6710070E27B /* UI */,
+			);
+			path = "Resources-iPad";
+			sourceTree = "<group>";
+		};
+		FEA4249014E3A6710070E27B /* UI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 		FEB3E13D13E6404900095480 /* GTM */ = {
@@ -1117,7 +1133,7 @@
 				FEFCD57514A716230018F05D /* unreadMarker@2x.png in Resources */,
 				FEFCD57814A71CCE0018F05D /* paperclip.png in Resources */,
 				FEFCD57914A71CCE0018F05D /* paperclip@2x.png in Resources */,
-				FEFCD58014A737D40018F05D /* ViewMessageController.xib in Resources */,
+				FEFCD58014A737D40018F05D /* GameCell.xib in Resources */,
 				FE65030B14AB113500C883C3 /* GameOverviewController.xib in Resources */,
 				FE3CB75114AC8A20007EF7D8 /* ImageViewController.xib in Resources */,
 				FE3CB75914AD3428007EF7D8 /* XboxLiveStatusCell.xib in Resources */,
