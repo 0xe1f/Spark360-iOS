@@ -18,6 +18,7 @@
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 
 @synthesize navigationController = _navigationController;
+@synthesize splitViewController = _splitViewController;
 
 static BachAppDelegate *bachApp = NULL;
 
@@ -31,10 +32,43 @@ static BachAppDelegate *bachApp = NULL;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    if (!DeviceIsPad())
+    {
+        self.window.rootViewController = self.navigationController;
+    }
+    else
+    {
+        AccountListController *accountsController = [[AccountListController alloc] init];
+        
+        [self.window addSubview:self.splitViewController.view];
+        [self.window makeKeyAndVisible];
+        
+        // TODO!
+        /*
+        if ([Blog countWithContext:context] == 0)
+        {
+            WelcomeViewController *welcomeViewController = [[WelcomeViewController alloc] initWithNibName:@"WelcomeViewController-iPad" bundle:nil];
+            UINavigationController *aNavigationController = [[UINavigationController alloc] initWithRootViewController:welcomeViewController];
+            aNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+            aNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+            self.navigationController = aNavigationController;
+            [splitViewController presentModalViewController:aNavigationController animated:YES];
+            [aNavigationController release];
+            [welcomeViewController release];
+        }
+        */
+        
+        // TODO!
+        //[self performSelector:@selector(showPopoverIfNecessary) withObject:nil afterDelay:0.1];
+        
+        [accountsController release];
+    }
+    
+    [self.window makeKeyAndVisible];
+    
     // Override point for customization after application launch.
     // Add the navigation controller's view to the window and display.
-    self.window.rootViewController = self.navigationController;
-    [self.window makeKeyAndVisible];
+    //self.window.rootViewController = self.splitViewController;
     return YES;
 }
 
@@ -81,7 +115,8 @@ static BachAppDelegate *bachApp = NULL;
     [__managedObjectModel release];
     [__persistentStoreCoordinator release];
     
-    [_navigationController release];
+    self.splitViewController = nil;
+    self.navigationController = nil;
     
     [super dealloc];
 }

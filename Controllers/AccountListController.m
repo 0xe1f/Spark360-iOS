@@ -10,6 +10,7 @@
 
 #import "AppPreferences.h"
 
+#import "BachAppDelegate.h"
 #import "AccountAddController.h"
 #import "AccountEditController.h"
 #import "GameListController.h"
@@ -30,6 +31,7 @@
     NSMutableDictionary *_accountCache;
 }
 
+@synthesize selectionDelegate = _selectionDelegate;
 @synthesize fetchedResultsController = __fetchedResultsController;
 
 - (void)viewDidLoad
@@ -161,16 +163,25 @@
         }
         else
         {
-            ProfileOverviewController *ctlr = [[ProfileOverviewController alloc] initWithAccount:account];
-            [self.navigationController pushViewController:ctlr animated:YES];
-            [ctlr release];
+            if (DeviceIsPad()) 
+            {
+                if (self.selectionDelegate != nil)
+                    [self.selectionDelegate accountDidChange:account];
+            }
+            else
+            {
+                ProfileOverviewController *ctlr = [[ProfileOverviewController alloc] initWithAccount:account];
+                [self.navigationController pushViewController:ctlr animated:YES];
+                [ctlr release];
+            }
         }
     }
 }
 
 - (void)dealloc
 {
-    [__fetchedResultsController release];
+    self.selectionDelegate = nil;
+    self.fetchedResultsController = nil;
     
     [super dealloc];
 }

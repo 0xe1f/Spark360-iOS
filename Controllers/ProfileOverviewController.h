@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 
 #import "GenericController.h"
+#import "AccountListController.h"
 
-@interface ProfileOverviewController : GenericController<UITableViewDataSource>
+@interface ProfileOverviewController : GenericController<UITableViewDataSource, AccountSelectionDelegate, UISplitViewControllerDelegate>
 
 -(id)initWithAccount:(XboxLiveAccount*)account;
 
@@ -21,6 +22,8 @@
 @property (nonatomic, retain) NSMutableArray *beacons;
 @property (nonatomic, assign) NSInteger messagesUnread;
 @property (nonatomic, assign) NSInteger friendsOnline;
+
+@property (nonatomic, retain) UIPopoverController *popover;
 
 - (IBAction)viewGames:(id)sender;
 - (IBAction)viewMessages:(id)sender;

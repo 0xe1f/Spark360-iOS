@@ -4,7 +4,7 @@
 	NoAchievements = "No achievements";
 	ComparedAchievementStats = "%@/%@";
 	GameScoreStats = "%@/%@";
-	Accounts = Accounts;
+	Accounts = "Profiles";
 	LoginInfo = "Login Settings";
 	AddAccount = "Add Account";
 	EditAccount = "Edit Account";
@@ -43,7 +43,7 @@
     ErrorCouldNotSetBeacon = "Cannot set any more beacons - please remove one before adding more";
 	MyPlayedGames = "My Games";
 	MyMessages = "My Messages";
-	MyProfile = "My Profile";
+	MyProfile_f = "%@";
 	MyFriends = "My Friends";
 	Achievements_f = "%@";
     ErrorAchievementsNotFound = "Unable to load list of achievements. Please try again shortly";

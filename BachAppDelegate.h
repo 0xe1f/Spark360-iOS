@@ -11,6 +11,8 @@
 @interface BachAppDelegate : NSObject <UIApplicationDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
+@property (nonatomic, retain) IBOutlet UISplitViewController *splitViewController;
+@property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
 
 @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
@@ -20,7 +22,5 @@
 - (NSURL *)applicationDocumentsDirectory;
 
 + (BachAppDelegate*)sharedApp;
-
-@property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
 
 @end

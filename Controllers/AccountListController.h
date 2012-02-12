@@ -11,8 +11,13 @@
 
 #import "GenericTableViewController.h"
 
+@protocol AccountSelectionDelegate
+- (void)accountDidChange:(XboxLiveAccount*)account;
+@end
+
 @interface AccountListController : GenericTableViewController <NSFetchedResultsControllerDelegate>
 
+@property (nonatomic, assign) IBOutlet id<AccountSelectionDelegate> selectionDelegate;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 -(IBAction)refresh:(id)sender;

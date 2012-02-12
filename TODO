@@ -2,6 +2,18 @@ Critical:
 
 Next release:
 
+* Redo About
+* Fix welcome screen on iPad
+* Fix Account editor
+* Fix FriendProfileController
+* Fix GameOverviewController
+* Check ImageViewController
+* Fix ProfileController
+* Fix (and rename) ProfileOverviewController
+
+
+--
+
 * Default icon for Xbox.com
 * Notifications
 * Favorite friends

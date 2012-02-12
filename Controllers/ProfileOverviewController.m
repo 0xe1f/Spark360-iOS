@@ -47,6 +47,38 @@
 @synthesize friendsOnline = _friendsOnline;
 @synthesize profile = _profile;
 @synthesize beacons = _beacons;
+@synthesize popover = _popover;
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder])
+    {
+        self.profile = nil;
+        self.beacons = [NSMutableArray arrayWithCapacity:5];
+        
+        statSectionColumns = [[NSArray arrayWithObjects:
+                               @"gamerScore",
+                               @"rep",
+                               @"name",
+                               @"location",
+                               @"pointsBalance",
+                               @"accountType",
+                               @"bio",
+                               nil] retain];
+        
+        statSectionLabels = [[NSArray arrayWithObjects:
+                              NSLocalizedString(@"InfoGamerscore", nil),
+                              NSLocalizedString(@"InfoRep", nil),
+                              NSLocalizedString(@"InfoName", nil),
+                              NSLocalizedString(@"InfoLocation", nil), 
+                              NSLocalizedString(@"InfoMsp", nil), 
+                              NSLocalizedString(@"InfoMemberType", nil), 
+                              NSLocalizedString(@"InfoBio", nil), 
+                              nil] retain];
+    }
+    
+    return self;
+}
 
 -(id)initWithAccount:(XboxLiveAccount*)account
 {
@@ -84,6 +116,7 @@
 {
     self.profile = nil;
     self.beacons = nil;
+    self.popover = nil;
     
     [statSectionColumns release];
     statSectionColumns = nil;
@@ -91,6 +124,16 @@
     statSectionLabels = nil;
     
     [super dealloc];
+}
+
+#pragma mark - AccountSelectionDelegate
+
+-(void)accountDidChange:(XboxLiveAccount *)account
+{
+    self.account = account;
+    
+    [self updateData];
+    [self refreshProfile:NO];
 }
 
 #pragma mark - UITableViewDataSource
@@ -498,8 +541,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"MyProfile", nil);
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(syncCompleted:)
                                                  name:BACHMessagesSynced
@@ -528,13 +569,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 	self.tableView.backgroundColor = [UIColor clearColor];
     
     [self updateData];
-    
     [self refreshProfile:NO];
 }
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
+    
+    self.popover = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:BACHMessagesSynced
@@ -561,6 +603,31 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
     [super viewDidAppear:animated];
     
     [self updateData];
+}
+
+#pragma mark UISplitViewControllerDelegate
+
+- (void)splitViewController: (UISplitViewController*)svc 
+     willHideViewController:(UIViewController *)aViewController 
+          withBarButtonItem:(UIBarButtonItem*)barButtonItem 
+       forPopoverController: (UIPopoverController*)pc 
+{
+    barButtonItem.title = NSLocalizedString(@"Accounts", nil);
+    
+    UINavigationItem *navItem = [self navigationItem];
+    [navItem setLeftBarButtonItem:barButtonItem animated:YES];
+    
+    self.popover = pc;
+}
+
+- (void)splitViewController: (UISplitViewController*)svc 
+     willShowViewController:(UIViewController *)aViewController 
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem 
+{
+    UINavigationItem *navItem = [self navigationItem];
+    [navItem setLeftBarButtonItem:nil animated:YES];
+    
+    self.popover = nil;
 }
 
 #pragma mark - Notifications
@@ -608,6 +675,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)updateData
 {
+    self.title = [NSString stringWithFormat:NSLocalizedString(@"MyProfile_f", nil),
+                  self.account.screenName];
+    
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XboxProfile"
                                                          inManagedObjectContext:managedObjectContext];
     

@@ -62,7 +62,6 @@
 		FE76A93E13E636A9006D6AFC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */; };
 		FE76A94013E636A9006D6AFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93F13E636A9006D6AFC /* CoreData.framework */; };
 		FE76A94813E636A9006D6AFC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94713E636A9006D6AFC /* main.m */; };
-		FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */; };
 		FE80A8441495496500040D79 /* XboxLive.m in Sources */ = {isa = PBXBuildFile; fileRef = FE80A8431495496500040D79 /* XboxLive.m */; };
 		FE80A8461495A39300040D79 /* appIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8451495A39300040D79 /* appIcon.png */; };
 		FE80A8481495A39A00040D79 /* appIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FE80A8471495A39900040D79 /* appIcon@2x.png */; };
@@ -133,6 +132,7 @@
 		FEA247FE148F5F91003D87C5 /* MessageListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEA247FC148F5F90003D87C5 /* MessageListController.m */; };
 		FEA24801148F6019003D87C5 /* MessageListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24800148F6019003D87C5 /* MessageListController.xib */; };
 		FEA24803148F62B6003D87C5 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA24802148F62B6003D87C5 /* MessageCell.xib */; };
+		FEA4249714E72D570070E27B /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEA4249614E72D570070E27B /* MainWindow-iPad.xib */; };
 		FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */ = {isa = PBXBuildFile; fileRef = FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */; };
 		FEAC6F1B13EA7F73000D86D1 /* GameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */; };
 		FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FEAC6F2713EA8E8A000D86D1 /* Localizable.strings */; };
@@ -202,13 +202,13 @@
 		FEF1082514BD374000EF713D /* xboxGamerscore@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF1081E14BD374000EF713D /* xboxGamerscore@2x.png */; };
 		FEF1082614BD374000EF713D /* xboxGamerscoreInverse.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF1081F14BD374000EF713D /* xboxGamerscoreInverse.png */; };
 		FEF1082714BD374000EF713D /* xboxGamerscoreInverse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEF1082014BD374000EF713D /* xboxGamerscoreInverse@2x.png */; };
+		FEF8AD0314E79D8C00780BA4 /* BachAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FEF8AD0214E79D8C00780BA4 /* BachAppDelegate.m */; };
 		FEFCD56114A643E00018F05D /* MessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FEFCD56014A643E00018F05D /* MessageCell.m */; };
 		FEFCD57414A716230018F05D /* unreadMarker.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57214A716230018F05D /* unreadMarker.png */; };
 		FEFCD57514A716230018F05D /* unreadMarker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57314A716230018F05D /* unreadMarker@2x.png */; };
 		FEFCD57814A71CCE0018F05D /* paperclip.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57614A71CCE0018F05D /* paperclip.png */; };
 		FEFCD57914A71CCE0018F05D /* paperclip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57714A71CCE0018F05D /* paperclip@2x.png */; };
 		FEFCD57C14A7366D0018F05D /* ViewMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEFCD57B14A7366D0018F05D /* ViewMessageController.m */; };
-		FEFCD58014A737D40018F05D /* GameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFCD57F14A737D30018F05D /* GameCell.xib */; };
 		FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFE0E6114774554009C7084 /* MainWindow.xib */; };
 		FEFE0E6E1477480C009C7084 /* XboxLive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FEFE0E6C1477480C009C7084 /* XboxLive.xcdatamodeld */; };
 		FEFF552814679ED900190D58 /* AccountCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEFF552714679ED900190D58 /* AccountCell.xib */; };
@@ -313,7 +313,6 @@
 		FE76A94713E636A9006D6AFC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = SOURCE_ROOT; };
 		FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BachZero-Prefix.pch"; sourceTree = "<group>"; };
 		FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BachAppDelegate.h; sourceTree = "<group>"; };
-		FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BachAppDelegate.m; sourceTree = "<group>"; };
 		FE80A8421495496500040D79 /* XboxLive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLive.h; sourceTree = "<group>"; };
 		FE80A8431495496500040D79 /* XboxLive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLive.m; sourceTree = "<group>"; };
 		FE80A8451495A39300040D79 /* appIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = appIcon.png; path = ../appIcon.png; sourceTree = "<group>"; };
@@ -409,6 +408,7 @@
 		FEA247FC148F5F90003D87C5 /* MessageListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListController.m; sourceTree = "<group>"; };
 		FEA24800148F6019003D87C5 /* MessageListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageListController.xib; sourceTree = "<group>"; };
 		FEA24802148F62B6003D87C5 /* MessageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
+		FEA4249614E72D570070E27B /* MainWindow-iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FEAC6F1213E925D2000D86D1 /* XboxLiveParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XboxLiveParser.h; sourceTree = "<group>"; };
 		FEAC6F1313E925D2000D86D1 /* XboxLiveParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XboxLiveParser.m; sourceTree = "<group>"; };
 		FEAC6F1A13EA7F73000D86D1 /* GameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GameCell.xib; sourceTree = "<group>"; };
@@ -499,6 +499,7 @@
 		FEF1081E14BD374000EF713D /* xboxGamerscore@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxGamerscore@2x.png"; sourceTree = "<group>"; };
 		FEF1081F14BD374000EF713D /* xboxGamerscoreInverse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xboxGamerscoreInverse.png; sourceTree = "<group>"; };
 		FEF1082014BD374000EF713D /* xboxGamerscoreInverse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xboxGamerscoreInverse@2x.png"; sourceTree = "<group>"; };
+		FEF8AD0214E79D8C00780BA4 /* BachAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BachAppDelegate.m; sourceTree = "<group>"; };
 		FEFCD55F14A643E00018F05D /* MessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageCell.h; sourceTree = "<group>"; };
 		FEFCD56014A643E00018F05D /* MessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageCell.m; sourceTree = "<group>"; };
 		FEFCD57214A716230018F05D /* unreadMarker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unreadMarker.png; sourceTree = "<group>"; };
@@ -507,7 +508,6 @@
 		FEFCD57714A71CCE0018F05D /* paperclip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "paperclip@2x.png"; sourceTree = "<group>"; };
 		FEFCD57A14A7366C0018F05D /* ViewMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewMessageController.h; sourceTree = "<group>"; };
 		FEFCD57B14A7366D0018F05D /* ViewMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewMessageController.m; sourceTree = "<group>"; };
-		FEFCD57F14A737D30018F05D /* GameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GameCell.xib; path = Cells/GameCell.xib; sourceTree = "<group>"; };
 		FEFE0E6114774554009C7084 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		FEFE0E6D1477480C009C7084 /* XboxLive.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = XboxLive.xcdatamodel; sourceTree = "<group>"; };
 		FEFF552714679ED900190D58 /* AccountCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountCell.xib; sourceTree = "<group>"; };
@@ -637,7 +637,6 @@
 				FE3AB9C814973D790056E87F /* ProfileController.xib */,
 				FEC8400D148A1F37005BC782 /* ProfileOverviewController.xib */,
 				FEE0283414A52623003B3DBF /* RecentPlayersController.xib */,
-				FEFCD57F14A737D30018F05D /* GameCell.xib */,
 				FE90381E14C18E77008BE9D1 /* WebController.xib */,
 				FE3CB75A14AD350A007EF7D8 /* XboxLiveStatusController.xib */,
 			);
@@ -806,7 +805,7 @@
 				FE5CAE1313F728BC004BC903 /* Resources */,
 				FEA4248F14E3A64F0070E27B /* Resources-iPad */,
 				FE76A94A13E636A9006D6AFC /* BachAppDelegate.h */,
-				FE76A94B13E636A9006D6AFC /* BachAppDelegate.m */,
+				FEF8AD0214E79D8C00780BA4 /* BachAppDelegate.m */,
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
 				FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */,
 				FE76A94713E636A9006D6AFC /* main.m */,
@@ -959,6 +958,7 @@
 		FEA4249014E3A6710070E27B /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FEA4249614E72D570070E27B /* MainWindow-iPad.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1133,7 +1133,6 @@
 				FEFCD57514A716230018F05D /* unreadMarker@2x.png in Resources */,
 				FEFCD57814A71CCE0018F05D /* paperclip.png in Resources */,
 				FEFCD57914A71CCE0018F05D /* paperclip@2x.png in Resources */,
-				FEFCD58014A737D40018F05D /* GameCell.xib in Resources */,
 				FE65030B14AB113500C883C3 /* GameOverviewController.xib in Resources */,
 				FE3CB75114AC8A20007EF7D8 /* ImageViewController.xib in Resources */,
 				FE3CB75914AD3428007EF7D8 /* XboxLiveStatusCell.xib in Resources */,
@@ -1181,6 +1180,7 @@
 				FEB408EE14C3CD7800B37A37 /* navbarXboxBackground@2x.png in Resources */,
 				FEB408F514C4C0A700B37A37 /* Default.png in Resources */,
 				FEB408F614C4C0A700B37A37 /* Default@2x.png in Resources */,
+				FEA4249714E72D570070E27B /* MainWindow-iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1192,7 +1192,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE76A94813E636A9006D6AFC /* main.m in Sources */,
-				FE76A94C13E636A9006D6AFC /* BachAppDelegate.m in Sources */,
 				FEB3E14313E6404900095480 /* GTMNSString+HTML.m in Sources */,
 				FEAC6F1413E925D2000D86D1 /* XboxLiveParser.m in Sources */,
 				FE610D3113EDD8A700420372 /* ImageCache.m in Sources */,
@@ -1275,6 +1274,7 @@
 				FEBE045814C2C1E80073D7D7 /* AboutAppController.m in Sources */,
 				FEB408E914C3852800B37A37 /* CustomNavigationBar.m in Sources */,
 				FE1D49AE14C6A04C00AFDC02 /* Globals.m in Sources */,
+				FEF8AD0314E79D8C00780BA4 /* BachAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
