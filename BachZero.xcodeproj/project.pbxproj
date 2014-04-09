@@ -56,7 +56,6 @@
 		FE726B6C14611E9C00534279 /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B5F14611E9C00534279 /* SBJsonUTF8Stream.m */; };
 		FE726B6D14611E9C00534279 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B6114611E9C00534279 /* SBJsonWriter.m */; };
 		FE726B7E1463CAD200534279 /* AccountEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = FE726B7D1463CAD200534279 /* AccountEditController.m */; };
-		FE726B801463CD7600534279 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = FE726B7F1463CD7600534279 /* TODO */; };
 		FE76A93A13E636A9006D6AFC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93913E636A9006D6AFC /* UIKit.framework */; };
 		FE76A93C13E636A9006D6AFC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93B13E636A9006D6AFC /* Foundation.framework */; };
 		FE76A93E13E636A9006D6AFC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE76A93D13E636A9006D6AFC /* CoreGraphics.framework */; };
@@ -161,6 +160,10 @@
 		FEC26EAA146BB25400D31608 /* AccountAddController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA5146BB25400D31608 /* AccountAddController.m */; };
 		FEC26EAB146BB25400D31608 /* AccountListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA7146BB25400D31608 /* AccountListController.m */; };
 		FEC26EAC146BB25400D31608 /* GameListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC26EA9146BB25400D31608 /* GameListController.m */; };
+		FEC2D2AD18F512D8006A7752 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FEC2D2AC18F512D8006A7752 /* README.md */; };
+		FEC2D2B018F5132D006A7752 /* AUTHORS in Resources */ = {isa = PBXBuildFile; fileRef = FEC2D2AE18F5132D006A7752 /* AUTHORS */; };
+		FEC2D2B118F5132D006A7752 /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = FEC2D2AF18F5132D006A7752 /* COPYING */; };
+		FEC2D2B318F517BB006A7752 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FEC2D2B218F517BB006A7752 /* Default-568h@2x.png */; };
 		FEC602A31494921B00DD3849 /* FriendListController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC602A11494921B00DD3849 /* FriendListController.m */; };
 		FEC602A71494996300DD3849 /* FriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FEC602A61494996300DD3849 /* FriendCell.xib */; };
 		FEC602AB14949D3B00DD3849 /* GenericTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FEC602A914949D3B00DD3849 /* GenericTableViewController.m */; };
@@ -303,7 +306,6 @@
 		FE726B6114611E9C00534279 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		FE726B7C1463CAD200534279 /* AccountEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountEditController.h; sourceTree = "<group>"; };
 		FE726B7D1463CAD200534279 /* AccountEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountEditController.m; sourceTree = "<group>"; };
-		FE726B7F1463CD7600534279 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		FE76A93513E636A9006D6AFC /* Spark 360.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spark 360.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE76A93913E636A9006D6AFC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FE76A93B13E636A9006D6AFC /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -447,6 +449,10 @@
 		FEC26EA7146BB25400D31608 /* AccountListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountListController.m; sourceTree = "<group>"; };
 		FEC26EA8146BB25400D31608 /* GameListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameListController.h; sourceTree = "<group>"; };
 		FEC26EA9146BB25400D31608 /* GameListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameListController.m; sourceTree = "<group>"; };
+		FEC2D2AC18F512D8006A7752 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		FEC2D2AE18F5132D006A7752 /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AUTHORS; sourceTree = "<group>"; };
+		FEC2D2AF18F5132D006A7752 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
+		FEC2D2B218F517BB006A7752 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		FEC602A01494921B00DD3849 /* FriendListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendListController.h; sourceTree = "<group>"; };
 		FEC602A11494921B00DD3849 /* FriendListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendListController.m; sourceTree = "<group>"; };
 		FEC602A61494996300DD3849 /* FriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FriendCell.xib; sourceTree = "<group>"; };
@@ -796,6 +802,7 @@
 		FE76A92A13E636A9006D6AFC = {
 			isa = PBXGroup;
 			children = (
+				FEC2D2B218F517BB006A7752 /* Default-568h@2x.png */,
 				FE8CA91C1474592B00A5C9EA /* ThirdParty */,
 				FE5CAE1613F72980004BC903 /* Classes */,
 				FE610D3713EE938400420372 /* Controllers */,
@@ -809,7 +816,9 @@
 				FE76A94313E636A9006D6AFC /* BachZero-Info.plist */,
 				FE76A94913E636A9006D6AFC /* BachZero-Prefix.pch */,
 				FE76A94713E636A9006D6AFC /* main.m */,
-				FE726B7F1463CD7600534279 /* TODO */,
+				FEC2D2AE18F5132D006A7752 /* AUTHORS */,
+				FEC2D2AF18F5132D006A7752 /* COPYING */,
+				FEC2D2AC18F512D8006A7752 /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1043,7 +1052,7 @@
 		FE76A92C13E636A9006D6AFC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = FE76A92F13E636A9006D6AFC /* Build configuration list for PBXProject "BachZero" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1071,7 +1080,6 @@
 				FEAC6F2513EA8E8A000D86D1 /* Localizable.strings in Resources */,
 				FE20CD3813F7B86B0060D902 /* AccountList.xib in Resources */,
 				FE9E371213F8E94A00A6EE36 /* AccountAdd.xib in Resources */,
-				FE726B801463CD7600534279 /* TODO in Resources */,
 				FEFF552814679ED900190D58 /* AccountCell.xib in Resources */,
 				FEC7F9DA1478653600537213 /* GameListController.xib in Resources */,
 				FEFE0E6214774554009C7084 /* MainWindow.xib in Resources */,
@@ -1142,14 +1150,17 @@
 				FE3CB76214AD6D41007EF7D8 /* xboxStatusOk.png in Resources */,
 				FE3CB76314AD6D41007EF7D8 /* xboxStatusOk@2x.png in Resources */,
 				FE3CB76514ADAD5F007EF7D8 /* ProfileGamertagCell.xib in Resources */,
+				FEC2D2B318F517BB006A7752 /* Default-568h@2x.png in Resources */,
 				FE0DBD2A14AEFEAD001E7B4D /* ProfileOptionsCell.xib in Resources */,
 				FE0DBD3414B18BC0001E7B4D /* xboxMsp.png in Resources */,
 				FE0DBD3514B18BC0001E7B4D /* xboxMsp@2x.png in Resources */,
 				FEB4EC9A14B44C5500473BEB /* BeaconInfoCell.xib in Resources */,
 				FEEF0B0914B45851002877F5 /* xboxBeaconOff.png in Resources */,
 				FEEF0B0A14B45851002877F5 /* xboxBeaconOff@2x.png in Resources */,
+				FEC2D2B118F5132D006A7752 /* COPYING in Resources */,
 				FEEF0B0B14B45851002877F5 /* xboxBeaconOn.png in Resources */,
 				FEEF0B0C14B45851002877F5 /* xboxBeaconOn@2x.png in Resources */,
+				FEC2D2B018F5132D006A7752 /* AUTHORS in Resources */,
 				FEEF0B0F14B45D2E002877F5 /* ActivityInfoCell.xib in Resources */,
 				FE9FAA9F14B57265000ACBC0 /* toolbarFindProfile.png in Resources */,
 				FE9FAAA014B57265000ACBC0 /* toolbarFindProfile@2x.png in Resources */,
@@ -1176,6 +1187,7 @@
 				FEBE045C14C2CBA00073D7D7 /* toolbarAbout@2x.png in Resources */,
 				FEBE045F14C2D0D10073D7D7 /* table_sep.png in Resources */,
 				FEBE046014C2D0D10073D7D7 /* table_sep@2x.png in Resources */,
+				FEC2D2AD18F512D8006A7752 /* README.md in Resources */,
 				FEB408ED14C3CD7800B37A37 /* navbarXboxBackground.png in Resources */,
 				FEB408EE14C3CD7800B37A37 /* navbarXboxBackground@2x.png in Resources */,
 				FEB408F514C4C0A700B37A37 /* Default.png in Resources */,
@@ -1296,7 +1308,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -1315,6 +1326,7 @@
 				HEADER_SEARCH_PATHS = Classes;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Spark 360";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -1325,7 +1337,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Akop Karapetyan";
 				COPY_PHASE_STRIP = YES;
@@ -1387,7 +1398,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Akop Karapetyan";
 				COPY_PHASE_STRIP = YES;

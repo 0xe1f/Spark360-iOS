@@ -1,0 +1,14 @@
+Original code:
+Akop Karapetyan <dev@akop.org> (https://github.com/Melllvar/Spark360-iOS)
+
+Third-party code:
+AQGridView by Alan Quatermain (https://github.com/AlanQuatermain/AQGridView)
+EGOTableViewPullRefresh by enormego (https://github.com/enormego/EGOTableViewPullRefresh)
+GenericKeychain by Apple (https://developer.apple.com/library/ios/samplecode/GenericKeychain/Introduction/Intro.html)
+GTM HTTP Fetcher by Google (https://code.google.com/p/gtm-http-fetcher/)
+SBJSON by Stig Bratauset (https://github.com/stig/json-framework)
+Reachability by Apple (https://developer.apple.com/Library/ios/samplecode/Reachability/Introduction/Intro.html)
+TITokenFieldView by Tom Irving (https://github.com/enriquez/TITokenFieldView)
+
+Spark 360 iOS includes code from WordPress for iOS 
+(https://github.com/wordpress-mobile/WordPress-iOS).
