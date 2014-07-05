@@ -1,6 +1,6 @@
 /*
  * Spark 360 for iOS
- * https://github.com/Melllvar/Spark360-iOS
+ * https://github.com/pokebyte/Spark360-iOS
  *
  * Copyright (C) 2011-2014 Akop Karapetyan
  *
