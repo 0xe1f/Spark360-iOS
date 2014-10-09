@@ -1,11 +1,9 @@
 Spark 360 for iOS
 =================
 
-Spark 360 was an Xbox Live client for iOS, based on the [original version for Android](https://github.com/Melllvar/Spark360) - it was available on AppStore for a span of a couple of months in 2012, but was eventually removed due to lack of interest. It was written to support iOS versions 3 and 4 - 4 being the latest version of iOS at the time.
+Spark 360 was an Xbox Live client for iOS, based on the [original version for Android](https://github.com/pokebyte/Spark360) - it was available on AppStore for a span of a couple of months in 2012, but was eventually removed due to lack of interest. It was written to support iOS versions 3 and 4 - 4 being the latest version of iOS at the time.
 
-Since I stopped working on the project, Xbox Live has changed substantially - enough to break the app completely. That said, Spark iOS is fairly similar in structure to Spark 360 for Android - it should be relatively simple to migrate the Android version's  [XboxLiveParser.java](https://github.com/Melllvar/Spark360/blob/master/src/com/akop/bach/parser/XboxLiveParser.java) to its iOS counterpart, [XboxLiveParser.m](/Classes/XboxLiveParser.m).
-
-Furthermore, the present version doesn't take advantage of any post-iOS 4 features such as ARC or Storyboards.
+Since I stopped working on the project, Xbox Live has changed substantially - enough to break the app completely.
 
 Please note that **Spark 360 iOS is no longer maintained**. I'm largely providing it here with the hope that it may be useful to someone else.
 
